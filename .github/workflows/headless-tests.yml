@@ -25,4 +25,4 @@ jobs:
           warnings-as-errors: true
 
       - name: Run project-owned acceptance entry point
-        run: godot --headless --path . --script res://tests/run_all.gd
+        run: /home/runner/godot-linux/godot --headless --path . --script res://tests/run_all.gd
