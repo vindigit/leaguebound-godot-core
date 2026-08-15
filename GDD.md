@@ -243,6 +243,8 @@ The user begins with a broad position family—Guard, Wing, or Big. Exact primar
 
 Physical dimensions are selected freely within credible position limits. Point forwards, stretch bigs, and other uncommon profiles remain possible but require the corresponding investment and tradeoffs.
 
+**Creation budget exhaustion.** All creation Attribute Points must be spent before the build can be confirmed. Creation currency cannot be retained, banked, or carried into the career. A weak or experimental player remains legal through poor, lopsided, or incompatible allocation—never through refusing to allocate. The unallocated builder state is a preview, not a legal completed build, and the confirmation control stays unavailable until the budget reaches zero.
+
 ### 6.2 Builder constraints
 
 - Manual allocation of detailed ratings.
@@ -250,12 +252,16 @@ Physical dimensions are selected freely within credible position limits. Point f
 - Freshman starting limits.
 - Position and physical-profile constraints.
 - Exact per-attribute potential caps.
+- Full expenditure of the creation Attribute Point budget before confirmation.
+- Current freshman body selection and a maturity timing choice, with a bounded projected adult range.
 - A live, derived archetype preview that describes rather than restricts the build.
 - Derived role prerequisites and previewed build behavior.
 - Training capacity and diminishing returns.
 - Team, coach, role, and usage fit that affect opportunity rather than secretly rewriting ability.
 
 The player selects a broad prospect profile: Ready Now, Balanced, or High Upside. This contributes to the exact attribute potential caps.
+
+Completed builds land in profile-appropriate current Overall bands. The bands, the empty pre-allocation preview value, and the ceiling for an ordinary completed build are numeric targets owned by the Balance Specification.
 
 ### 6.3 Public ratings
 
@@ -300,15 +306,49 @@ Every rating must have a documented simulation effect, progression curve, potent
 
 ### 6.4 Overall and information
 
+LeagueBound displays three separate development values. They answer different questions, carry different certainty, and must never be presented as interchangeable.
+
+| Value | Player-facing label | Meaning |
+| --- | --- | --- |
+| Current Overall | **Current Overall** | Present role-neutral ability, calculated from current ratings only. |
+| Maximum Potential Overall | **Maximum Potential** | The Overall formula applied to the player's exact per-attribute caps. It is a physical and skill ceiling, not a promise. |
+| Projected Peak | **Projected Peak** | A realistic *range* for the best Overall this career is likely to reach, given available development, timing profile, age, ordinary opportunity, caps, and expected decline. |
+
+Rules:
+
 - One exact current Overall rating is displayed for every player.
 - The same role-neutral formula applies to the user and NPCs.
 - Overall derives from basketball abilities and their interactions. It excludes popularity, trust, team fit, and public reputation.
-- A calculated potential Overall exists but appears only inside detailed development and builder views.
+- Overall is a displayed description of ability. It is never an input to basketball resolution; the simulation reads attributes, capabilities, body, and context.
+- Maximum Potential is reached only by filling every cap. Almost no career does this, and the interface never implies otherwise.
+- Projected Peak is always shown as a range, never a single guaranteed number. It moves as development, health, opportunity, and age change.
+- The Builder and detailed development views show all three with their distinct labels and explain the distinction neutrally, without encouragement or discouragement.
 - NPC rosters and current Overall ratings are always visible.
 - Detailed NPC attributes, tendencies, health effects, and evaluations can be incomplete or stale.
 - Personal playing experience provides the strongest scouting knowledge. A long-term opponent can eventually become fully scouted.
 - Information can become stale after major development, injury, or aging.
 - Sufficient coach preparation or organizational evaluation can update the information.
+
+### 6.5 Body and maturation
+
+The body is a real basketball fact with a life of its own, separate from ratings.
+
+At creation the user selects:
+
+- Current freshman height.
+- Current freshman weight.
+- Current freshman wingspan and standing reach.
+- A maturity timing profile: **Early**, **Average**, or **Late**.
+
+The Builder then displays a **bounded projected adult range** for each physical dimension. It does not display the exact adult body.
+
+- Exact growth is deterministic from the versioned career seed and is fixed the moment the career is created.
+- Growth stays hidden until it actually occurs, then resolves visibly at its normal career moment.
+- Growth can never leave the projected range that was displayed at confirmation.
+- Growth never retroactively invalidates a confirmed build, and never silently alters ratings. Any rating change accompanying a body change is a separately resolved, visibly explained effect under the ordinary progression, health, and decline rules.
+- Early maturity means more of the growth arrives during high school; Late maturity means more of it arrives afterward. Neither timing is strictly better.
+
+Body affects action validity, reach, positioning, matchups, and a bounded redistribution of starting ratings. It is never free Overall. A taller, longer player gains access and leverage; he does not gain Overall for the measurement itself.
 
 ## 7. Attribute Progression and Aging
 
@@ -349,6 +389,31 @@ Meaningful rating decline occurs through aging, injury, extreme inactivity, or o
 - Physical decline uses a hybrid career-mileage model based on age, minutes, workload, injuries, recovery, schedule congestion, physical profile, strain, and inactivity.
 
 Durability is a hidden precise value summarized by a reliable qualitative label. Condition, workload, injury history, recurrence warnings, and medical risk remain visible. Durability is not one of the 20 public attributes and cannot be purchased with Attribute Points.
+
+### 7.5 Career peak expectations
+
+A career peak is earned, not assumed. For a sensible build without rare breakthroughs, most careers peak well below the top of the rating scale:
+
+- A poorly managed or injury-hit career peaks low.
+- An ordinary successful career peaks in a solid, unremarkable band.
+- A strong, well-managed career peaks clearly above that.
+- Exceptional and rare generational careers exist but are genuinely uncommon.
+- A current Overall of 96 or higher is practically nonexistent, even for the best careers.
+
+Individual attributes may still reach 99. The scale is not compressed; it is Overall that resists extremes, because reaching an elite Overall requires broad excellence rather than one elite skill.
+
+The exact peak distribution, its bands, and its acceptance tolerances are numeric targets owned by the Balance Specification and are verified by large-sample career reports.
+
+### 7.6 Development applies to everyone
+
+There is one development contract in LeagueBound. It governs the user and every NPC.
+
+- The user spends Attribute Points manually and permanently.
+- Fully simulated NPCs receive equivalent development opportunity and allocate it through an automatic allocator that obeys the same costs, caps, timing, aging, decline, and source-ledger rules.
+- Reduced-detail parts of the world may resolve development in aggregate for performance, but the results must match what the detailed process would have produced.
+- Changing how closely the game is simulating a player never changes that player. A prospect who becomes relevant is the same player he already was.
+
+This is why NPC careers are credible: they are not scripted rosters, and they are not given development the user cannot earn.
 
 ## 8. Badges
 
@@ -447,14 +512,29 @@ Tendencies are freely editable between games and remain unchanged unless the use
 
 During automatic play, behavior is weighted between user tendencies and coach instructions. Coaching influence varies with strictness, role, trust, professionalism, veteran status, and game context. Coaches never permanently edit user tendencies.
 
-### 10.2 Team roles
+### 10.2 Layered player identity
 
-Each player has:
+A player's identity is expressed in separate layers. They are never merged, and none of them is a substitute for ability.
 
-- A visible rotation role such as Star, Starter, Sixth Player, Rotation, Bench, Reserve, or Developmental.
-- One active tactical role for each game, such as Primary Creator, Shooter, Slasher, Interior Anchor, or Rebounder.
+**Layer 1 — Rotation role.** How much the coach intends to use the player. One of: Star, Starter, Sixth Player, Rotation, Bench, Reserve, or Developmental. Rotation role is an intent set by the coach.
+
+Availability facts—did not play, emergency duty, medically unavailable, not registered—are *not* rotation roles. They are separate derived states, and a night on the bench does not demote a Starter.
+
+**Layer 2 — Tactical role.** What job the player is asked to do in a given game. Version 1.0 supports these tactical roles:
+
+Primary Creator, Secondary Creator, Shooter, Slasher, Connector, Post Option, Roll/Pop Big, Perimeter Stopper, Interior Anchor, Rebounder, and Utility/Energy.
 
 Only one tactical role is active at a time. It remains fixed during the game and can change only between games. Emergency actions do not silently relabel the player.
+
+**Layer 3 — Derived archetype.** A read-only description assembled from body, ratings, and demonstrated profile, using composable descriptors such as *Two-Way Shot-Creating Guard* or *Stretch Rim Protector*. Archetypes describe; they never grant. No attribute, action, badge, role, or opportunity is unlocked by carrying an archetype label, and no archetype is exclusive to a build.
+
+The separation of concerns is strict:
+
+- **Tendencies** modify what the player prefers to attempt during automatic play.
+- **Tactical role** modifies the opportunity the player receives.
+- **Capability and context** determine whether the attempt succeeds.
+
+Nothing in this layer stack changes a rating. A Shooter who cannot shoot will take shots and miss them.
 
 ### 10.3 Coaching identity and rotations
 

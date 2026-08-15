@@ -168,7 +168,83 @@ Play, Sim, and Skip call the same match session and engine:
 
 Presentation may interpolate or omit events. It may not recalculate results.
 
-### 5.5 Career and world core
+### 5.5 Player-system domain types
+
+The player system is pure domain. Every type below extends `RefCounted` or another non-Node value type, receives its configuration and randomness explicitly, and has no scene, persistence, or platform dependency.
+
+| Type | Owns | Notes |
+| --- | --- | --- |
+| `AttributeKey`, `PlayerAttributes`, `Rating` | The canonical 20 attributes and the 25–99 active domain | Implemented |
+| `AttributeCaps` | Exact per-attribute potential caps | One cap per attribute; cap changes are ledgered |
+| `BodyProfile` | Realized current height, weight, wingspan, standing reach | Extend the existing type with standing reach |
+| `BodyMaturationState` | Confirmed freshman body, maturity profile, stored projected adult range, resolved-increment ledger | Career fact, not derived |
+| `MaturityProfile` | `early`, `average`, `late` | Stable IDs |
+| `CreationBudget` | Creation AP granted, spent, and remaining | Confirmation is illegal while remaining is non-zero |
+| `AttributePointLedger` | Every AP-equivalent grant and spend with source, career year, executor, and balance version | Shared by the user and every NPC executor |
+| `RotationRole` | The seven usage-intent roles | Replaces the current availability-mixing enum |
+| `TacticalRole` | The eleven version 1.0 tactical role IDs | Replaces the unconstrained string |
+| `PlayerTendencies` | The ten five-position sliders | Implemented |
+| `OverallCalculator` | The role-neutral Overall formula | Pure function of ratings and coefficients |
+| `DevelopmentProjection` | Current Overall, Maximum Potential Overall, Projected Peak range | The only supported source of these three values |
+| `DerivedArchetype` | Composable display descriptors | Side-effect free; never a simulation input |
+
+Two rules bind these types:
+
+1. **Overall is derived, never stored as authority.** Current Overall, Maximum Potential, and Projected Peak are computed from ratings, caps, and the versioned profile. A cached copy may exist for query performance, but it is invalidated on any rating, cap, or body change and is never the value a rule reads.
+2. **No basketball resolution path may depend on `DevelopmentProjection` or `DerivedArchetype`.** This is enforced by an automated dependency check (§13.2, §18), not by convention.
+
+### 5.6 Versioned profile ownership
+
+The player system reads three versioned balance profiles, all authored as Resources under `resources/balance/` and all pinned per career:
+
+| Profile | Owns | Consumers |
+| --- | --- | --- |
+| `RatingsProfile` | Overall coefficients, capability weights, rating band definitions | `OverallCalculator`, capability calculators |
+| `BuilderProfile` | Starting bases, creation AP budget, prospect-profile modifiers, per-attribute starting maxima, body redistribution bounds, projected-range widths | Builder service |
+| `ProgressionProfile` | Upgrade cost table, seasonal availability, aging and decline curves, cap distributions, projected-peak model | Development service, allocator, aggregate executor |
+
+Rules:
+
+- A career stores the version of every profile it was created with and remains pinned to them (`BALANCE_SPEC.md` §4).
+- No player-system constant may appear as an anonymous literal in domain code. A tunable without a name, unit, safe range, and version fails Gate 0.
+- Profiles are immutable at runtime. A loaded profile Resource is never mutated; session-specific variation requires an explicit duplicate (§7).
+- Changing a profile version requires a deterministic migration that records old version, new version, and reason.
+
+### 5.7 Player-system persistence facts
+
+These are **stored career facts**, not derived values, and each carries a schema version:
+
+- Current ratings for all 20 attributes.
+- Exact per-attribute caps, plus the cap-change ledger.
+- Confirmed freshman body, maturity profile, and the projected adult range stored at confirmation.
+- Realized current body and the resolved growth-increment ledger.
+- Creation budget grant and final spend record.
+- The AP-equivalent source ledger, including hidden fractional direct progress.
+- Rotation role, tactical role, and tendencies.
+- Balance-profile versions pinned at career creation.
+
+These are **derived and never stored as authority**: Current Overall, Maximum Potential Overall, Projected Peak, derived archetype, and derived position labels.
+
+Migration rules specific to this system:
+
+- Hidden fractional progress is preserved across migrations (`BALANCE_SPEC.md` §29.3).
+- A migration that cannot recover a stored projected adult range reconstructs the **widest** range consistent with the realized body and records the limitation. Narrowing a range around a realized value to fabricate precision is prohibited.
+- A migration may never resolve a growth increment, spend AP, or change a cap as a side effect.
+
+### 5.8 Player-system service boundaries
+
+| Service | Layer | Responsibility |
+| --- | --- | --- |
+| `BuilderService` | application | Validates allocation against caps, costs, and starting maxima; enforces budget exhaustion; commits the confirmed build in one transaction |
+| `DevelopmentService` | application | Grants AP-equivalent opportunity, applies allocation, enforces career-year receipts, writes the source ledger |
+| `AttributeAllocator` | domain | The full-detail NPC allocation strategy; bound by the same costs and caps as the user |
+| `AggregateDevelopmentExecutor` | domain | Bulk development that reproduces allocator distributions |
+| `BodyMaturationService` | application | Resolves scheduled growth increments deterministically and idempotently |
+| `DevelopmentProjectionQuery` | application | The single read path supplying the three development values and the archetype to presentation |
+
+The match engine consumes ratings, body, badges, tendencies, and roles. It never calls any service in this table.
+
+### 5.9 Career and world core
 
 Career/world domain services own legal transitions delegated by the design documents. They validate and resolve:
 
@@ -208,6 +284,7 @@ The tree is illustrative, not a mandate that every screen remain instantiated. S
 
 - A node may own transient presentation state such as animation progress, selected tab, focus, or an open modal.
 - A node must not be the canonical owner of career, match, economy, eligibility, roster, or save state.
+- **A scene must never independently recalculate Overall, Maximum Potential, Projected Peak, derived archetype, attribute upgrade costs, per-attribute caps, remaining creation budget, or projected body range.** These arrive as a domain projection through an application query and are rendered as received. A Builder or development screen that computes a cost table, re-derives an archetype, or recomputes Overall from displayed ratings is a dependency violation and a release blocker, even when its arithmetic happens to agree. Two implementations of one formula is one formula too many, and the scene copy is the one that silently drifts when a balance profile changes.
 - `_process` and `_physics_process` may render/interpolate committed state; they do not advance the career calendar or resolve simulation law.
 - Scene teardown cannot discard a committed choice or simulation result.
 - Re-entering a scene reconstructs its view from an application projection.
@@ -409,6 +486,14 @@ The executable name may be platform-specific. CI pins it and records the engine 
 
 - Pure domain unit tests for every rule and invalid transition.
 - Seeded match fixtures, property tests, statistical calibration, and Play/Sim parity.
+- **Builder suite:** creation-budget exhaustion, confirmation blocked while AP remains, no carry/refund/convert path, cost and cap enforcement, per-attribute starting maxima, completed-build OVR distributions against the locked profile bands, extreme-specialist tail, and the completed-build ceiling.
+- **Projection suite:** the three development values are distinct and correctly ordered, Projected Peak is always a range, projections recompute on rating/cap/body change, and a cached projection is invalidated rather than served stale.
+- **Overall-exclusion dependency check:** no basketball resolution path, balance profile, or persisted gameplay fact reads Current Overall, Maximum Potential, Projected Peak, or derived archetype.
+- **Identity suite:** rotation role affects minutes only, tactical role affects opportunity only, archetype affects nothing, one active tactical role per game fixed for the game, and availability facts never relabel a rotation role.
+- **Body suite:** growth determinism from the versioned career seed, containment inside the stored projected range, one increment per career-year milestone under shared receipts, no side-effect rating change, timing-profile separation, and the widest-range migration rule.
+- **Development parity suite:** the manual path, the full-detail allocator, and the aggregate executor produce equivalent distributions from equivalent opportunity, and no allocator writes a rating directly or exceeds a cap.
+- **Detail-promotion invariance suite:** ratings, caps, and body are identical across simulation detail levels for the same seed.
+- **Presentation boundary tests:** Builder and development scenes render projection values without recomputing Overall, archetype, costs, caps, or projected peak.
 - All 22 PRD transition scenarios recording all eleven required state axes.
 - Career-year and professional-service idempotency tests.
 - Three-slot isolation, create/load/delete, autosave, backup, recovery, and migration tests.
@@ -489,6 +574,7 @@ Gate 0 passes only when a clean new repository demonstrates:
 8. Android and iOS export builds launch on release-equivalent targets and pass a database save/resume smoke test.
 9. The 22-scenario transition runner exists, even if later content gates are still pending.
 10. The archived React Native / Expo application is absent from the new runtime dependency graph and build pipeline.
+11. The player-system dependency checks pass: no basketball resolution path reads a development projection or derived archetype, no player-system tunable appears as an anonymous literal in domain code, and no scene recalculates Overall, archetype, costs, caps, or projected peak.
 
 ## 19. Definition of architecture readiness
 

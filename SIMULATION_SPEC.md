@@ -8,7 +8,7 @@
 | Basketball design source | `GDD.md`, within the approved source-authority hierarchy |
 | Product requirements | `PRD.md` |
 | Architecture implementation | `GODOT_TDD.md`; it cannot redefine gameplay |
-| Current implementation evidence | `PROJECT_STATUS.md` |
+| Current implementation evidence | The Godot repository itself: `README.md`, the headless acceptance runner under `tests/`, and CI results |
 
 ## 1. Purpose
 
@@ -235,6 +235,53 @@ interface PlayerMatchRuntime {
 ```
 
 Potential caps, Attribute Points, follower count, money, and scouting visibility are not match-resolution inputs.
+
+**Overall is not a match-resolution input either.** Current Overall, Maximum Potential Overall, and Projected Peak are display projections derived from ratings and caps (`BALANCE_SPEC.md` §6.3). No capability, action weight, shot profile, contest, rebound score, foul curve, rotation decision, or Tier B aggregate may read any of them. Basketball reads the 20 attributes, body, badges, and match context. This keeps Overall truthful as a description without letting a display value become a cause.
+
+### 6.1 Body contract
+
+`BodyProfile` is a persistent player fact supplied to the engine, not a match-only value. The engine consumes the **realized current body**; it never consumes the projected adult range, the maturity profile, or any unresolved growth.
+
+```ts
+interface BodyProfile {
+  heightInches: number;        // realized current
+  weightPounds: number;        // realized current
+  wingspanInches: number;      // realized current
+  standingReachInches: number; // realized current
+}
+```
+
+Body affects, and only affects:
+
+- **Action validity.** Whether a dunk, post seal, block attempt, or contest is physically available.
+- **Reach.** Contest arrival quality, block access, rebound access, passing-lane coverage, and finish access over a defender.
+- **Positioning and leverage.** Post resistance, box-out results, screen quality, and drive absorption, in combination with Strength.
+- **Matchups.** Assignment suitability and the size/speed mismatch terms in advantage resolution.
+
+Body must never contribute a general bonus to unrelated outcomes, and it must never be read as a proxy for Overall. Maturity profile, projected adult range, and growth resolution live in the career domain (`BALANCE_SPEC.md` §7.4); the match engine cannot resolve, advance, or observe growth.
+
+### 6.2 Layered identity in the match profile
+
+`rotationRole` and `tacticalRole` are separate fields with separate effects (§10.6). Derived archetype is **not** a match-profile field: it is a display projection and is never supplied to the engine.
+
+Availability facts — did not play, emergency duty, medically unavailable, not registered — are represented by lineup, rotation, and `injuryLimitations` state, not by overloading `rotationRole`.
+
+### 6.3 Body state transitions
+
+Body state changes only in the career domain, only at approved career-year moments, and only under these transitions:
+
+| Transition | Preconditions | Effects |
+| --- | --- | --- |
+| `CONFIRM_BODY` | Build confirmation; creation budget exhausted | Stores freshman body, maturity profile, and the displayed projected adult range as immutable career facts |
+| `RESOLVE_GROWTH_INCREMENT` | Scheduled career-year body milestone; not already resolved for that career year | Applies a deterministic increment from the versioned career seed; writes an increment ledger entry |
+| `REACH_ADULT_BODY` | All scheduled increments resolved | Marks the body final; no further increments are legal |
+
+Invariants:
+
+- Every increment leaves the realized body inside the stored projected range on every dimension.
+- Growth is idempotent per career year under the shared completion-receipt rules; reloading, changing level, or changing simulation tier cannot re-resolve or skip an increment.
+- No increment writes a public rating. Any intended rating consequence resolves as a separate, visible, ledgered progression effect.
+- A match in progress never observes a body change. Growth resolves outside match sessions and enters the next `MatchSnapshot` through an ordinary game-start profile.
 
 ## 7. Derived Basketball Capabilities
 
@@ -466,6 +513,80 @@ Coach instructions modify automatic behavior according to:
 - Current play call and game state.
 
 The player’s saved tendencies remain the behavioral baseline. Coaching can substantially shape role and opportunity but cannot permanently rewrite those sliders.
+
+### 10.6 Layered identity contract
+
+Rotation role, tactical role, and derived archetype are three separate layers. This section owns their behavioral contract and their stable identifiers. `BALANCE_SPEC.md` §12.4 owns the numeric bounds.
+
+#### 10.6.1 Rotation roles
+
+Rotation role is the coach's usage intent. Version 1.0 stable IDs:
+
+| ID | Label |
+| --- | --- |
+| `star` | Star |
+| `starter` | Starter |
+| `sixth_player` | Sixth Player |
+| `rotation` | Rotation |
+| `bench` | Bench |
+| `reserve` | Reserve |
+| `developmental` | Developmental |
+
+Rotation role affects planned minutes, substitution priority, and closing-lineup consideration. It does not affect capability or success probability.
+
+Availability and outcome facts are **not** rotation roles. Did-not-play, emergency duty, limited availability, medical unavailability, and non-registration are separate derived states. A Starter who does not play remains a Starter; the engine records a DNP, not a demotion.
+
+#### 10.6.2 Tactical roles
+
+Tactical role is the job assigned for one game. Version 1.0 stable IDs:
+
+| ID | Label | Primary opportunity effect |
+| --- | --- | --- |
+| `primary_creator` | Primary Creator | On-ball initiation, pick-and-roll handling, late-clock creation |
+| `secondary_creator` | Secondary Creator | Secondary initiation, attacking closeouts, advantage continuation |
+| `shooter` | Shooter | Spot-up and relocation volume, off-screen usage |
+| `slasher` | Slasher | Cutting, driving lanes, rim attempts off advantage |
+| `connector` | Connector | Swing passing, short-roll reads, ball movement continuity |
+| `post_option` | Post Option | Post entries, seals, interior attempts |
+| `roll_pop_big` | Roll/Pop Big | Screen setting, roll and pop continuations |
+| `perimeter_stopper` | Perimeter Stopper | Toughest perimeter assignment, on-ball containment share |
+| `interior_anchor` | Interior Anchor | Rim protection responsibility, help positioning priority |
+| `rebounder` | Rebounder | Crash and box-out priority on both glasses |
+| `utility_energy` | Utility/Energy | Flexible assignment, effort actions, matchup coverage |
+
+Rules:
+
+- Exactly one tactical role is active per player per game. It is fixed for the game and can change only between games (§18.1).
+- No consolidation was applied. All eleven roles required by the owner ruling are retained as distinct IDs because each maps to a distinct opportunity vector in the table above; merging any two would erase a real difference in candidate generation and role opportunity.
+- Tactical role modifies `RoleOpportunity` in the §10.3 weight construction, and planned minutes and assignment in §18. It modifies **nothing else**. It never contributes to a capability, a shot profile, a contest, a rebound candidate score, a turnover risk, or a foul curve.
+- A tactical role never gates action validity. A `shooter` may drive and a `roll_pop_big` may pass; the role changes how often those are selected, not whether they are legal.
+- Assigning a role a player is unsuited for is legal and produces bad basketball, not corrected basketball. The engine does not silently reassign.
+
+#### 10.6.3 Derived archetype
+
+Derived archetype is a read-only description assembled from body, current ratings, and demonstrated profile. It uses composable descriptors, for example *Two-Way Shot-Creating Guard* or *Stretch Rim Protector*, built from:
+
+1. A two-way axis descriptor, from the balance of offensive and defensive capability.
+2. One or two capability descriptors, from the player's dominant capability clusters.
+3. A position-family noun, from body and position profile.
+
+Rules:
+
+- Archetype is computed for display only. It is not a match input, is not persisted as a gameplay fact, and computing it is side-effect free.
+- Archetype grants nothing: no attribute, capability, action, opportunity, badge, role eligibility, or probability.
+- Archetype is not exclusive. Two players may share a descriptor without sharing any mechanical property, and a build is never restricted to archetype-appropriate attributes.
+- Archetype updates as ratings and body change. It has no memory and creates no lock-in.
+
+#### 10.6.4 Separation of concerns
+
+| Input | Determines |
+| --- | --- |
+| Tendencies | What the player prefers to attempt when several actions are valid |
+| Tactical role | What opportunity the player receives |
+| Rotation role | How much the player is on the floor |
+| Capability and context | Whether the attempt succeeds |
+
+Success flows only from the last row. No identity layer may be used to reach it.
 
 ## 11. Offensive Action Resolution
 
@@ -1173,6 +1294,22 @@ Team Power Rating is a reduced-detail team input summarizing roster quality, coa
 
 A background school or player enters relevant-aggregate simulation when direct competition, recruiting, notability, award relevance, transfer or draft interest, scouting, a relationship, or a narrative dependency makes it relevant. At that point the world service persists identity, legal membership, eligibility, sufficient aggregate evidence, awards and movement, and committed history. Promotion to full detail adds only previously uncommitted roster, rotation, coaching, health, and tactical detail prospectively and deterministically. It cannot change a committed result or tournament seed, and previously summarized games never receive fabricated player box scores.
 
+### 26.5 Development boundary and detail-promotion invariance
+
+Development is a career-domain resolution, not a match resolution. This specification defines the boundary; `BALANCE_SPEC.md` §9.7 owns the canonical development contract and its distributions.
+
+**The match engine's role.** The engine emits participation, role-relative performance, and workload evidence in `MatchFinalResult`. It never grants Attribute Points, never allocates them, never changes a rating or a cap, and never advances a career year (§25).
+
+**Executor equivalence.** One canonical development contract governs the user, full-detail NPCs, and aggregate executors. Detail level changes how the contract is executed, never what it produces:
+
+- The user allocates manually.
+- Full-detail NPCs receive AP-equivalent opportunity and allocate through an automatic allocator bound by identical costs, caps, timing, aging, decline, and source-ledger rules.
+- Tier B and Tier C executors may resolve development in aggregate, but must reproduce the distributions the full-detail path would have produced, within the tolerances in `BALANCE_SPEC.md` §27.2.
+
+**Detail-promotion invariance.** Changing a player's simulation detail level must not change the player. Promotion and demotion may add or drop evidence resolution; they may never alter current ratings, potential caps, body state, maturity state, accumulated development, or committed history. This extends §26.4's prospective-promotion rule from history to development state.
+
+The engine must therefore never receive a player whose ratings depend on how closely he is being simulated. A player who is stronger because the user is about to face him violates this contract and the parity requirements in §27.5.
+
 ## 27. Calibration Framework
 
 ### 27.1 Calibration hierarchy
@@ -1289,6 +1426,12 @@ Required suites:
 19. Tier B relevance-promotion persistence and no-retroactive-box-score tests.
 20. Tier B/Tier C annual-receipt, professional-service, level-change, and Out-of-Basketball idempotency tests.
 21. Award-candidate non-BDP and exactly-once downstream award-finalization tests.
+22. Overall-exclusion tests proving no resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak (§6).
+23. Layered-identity tests: rotation role affects minutes only, tactical role affects opportunity only, derived archetype affects nothing, and no identity layer reaches a capability or probability (§10.6).
+24. Tactical-role stability tests proving one active role per player per game, fixed for the game, with emergency duty and DNP never relabeling the player.
+25. Body contract tests covering action validity, reach, positioning, and matchup effects, and proving the engine cannot observe or resolve growth (§6.1, §6.3).
+26. Detail-promotion invariance tests proving ratings, caps, and body are identical across simulation detail levels for the same seed (§26.5).
+27. User/NPC development parity tests proving the manual path and the full-detail allocator produce equivalent distributions from equivalent opportunity.
 
 Statistical tests use fixed seeds, sample-size declarations, confidence intervals, and failure tolerances from the Balance Specification. They cannot pass by expanding tolerances after every failure without a documented tuning decision.
 
@@ -1304,15 +1447,25 @@ Statistical tests use fixed seeds, sample-size declarations, confidence interval
 
 ### 30.2 Replace or expand
 
-- Replace 16-attribute inputs with the canonical 20-attribute model.
+Completed in the current Godot core:
+
+- ✅ Replace 16-attribute inputs with the canonical 20-attribute model.
+- ✅ Add free-throw rating, Offensive IQ, Defensive IQ, and Vertical contracts.
+- ✅ Replace raw RNG callbacks with the injected versioned `RandomSource`.
+- ✅ Keep scene nodes and presentation state from owning score, clock, box score, or engine state. (Currently trivially satisfied: no presentation layer exists yet.)
+
+Outstanding:
+
 - Replace fixed five-player `Team` tuples with upstream-validated roster, lineup, and rotation snapshots.
 - Replace generic league scaling with explicit competition rule/environment profiles.
 - Expand one-action possessions into multi-action possession state.
-- Add free-throw rating, Offensive IQ, Defensive IQ, and Vertical contracts.
 - Add planned rotations, substitutions, full fouls, minutes, tactical coordinates, coverage, and role state.
-- Remove career money, morale, and Ink state from the match adapter.
-- Keep scene nodes and presentation state from owning score, clock, box score, or engine state.
-- Replace raw RNG callbacks with the injected versioned `RandomSource`.
+- Expand `CapabilityCalculator` from its three scaffold capabilities to the full derived-capability set in §7, using the weights owned by `BALANCE_SPEC.md` §5.2. The current scaffold weights diverge from that table and are not authoritative.
+- Move the anonymous numeric literals in shot resolution into the versioned simulation balance profile, as `BALANCE_SPEC.md` §4 requires.
+- Replace the unconstrained `TacticalRole` string and its `balanced` default with the stable ID set in §10.6.2.
+- Replace the current `RotationRole` enumeration, which mixes usage intent with availability facts, with the seven rotation roles in §10.6.1 plus separate availability state.
+- Extend `BodyProfile` with standing reach, and add the career-domain maturity, projected-range, and growth-ledger state defined in §6.3.
+- Remove career money, morale, and Ink state from the match adapter. (No such coupling exists in the new repository; this remains a rule for future adapters rather than a migration task.)
 - Prevent match-initialization drift by using `MatchSessionService` after legal-roster preflight and any authorized automatic replacement.
 
 ### 30.3 Implementation stages
@@ -1343,6 +1496,10 @@ At every stage, approved statistical baselines and trustworthy archived evidence
 - Competition pace, rules, environment, and statistical targets.
 - Tier A/Tier B tolerance bands.
 - Calibration sample sizes and confidence thresholds.
+- Role-opportunity bounds for every tactical role, and the proof that no identity layer reaches a capability.
+- Body dimension effects on action validity, reach, positioning, and matchups.
+- Projected-peak model inputs, coverage rate, and range-width guardrails.
+- Development-opportunity distributions for the full-detail NPC allocator and aggregate executors.
 
 No production tuning constant should remain anonymously embedded in engine code. Every tunable value belongs to a named, validated, versioned balance profile with documented units and safe range.
 
@@ -1352,6 +1509,10 @@ The simulation contract is implementation-ready when:
 
 - All 20 attributes have approved measurable effects and contract tests.
 - Active named Tier A and Tier B player ratings validate at 25–99, and sub-25 placeholders are rejected from matches.
+- No resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak.
+- Rotation role, tactical role, and derived archetype are separate, use their stable IDs, and stay within their declared effect boundaries.
+- Body affects only action validity, reach, positioning, and matchups, and the engine cannot observe or resolve growth.
+- Detail-promotion invariance holds for ratings, caps, and body state.
 - Canonical player, roster, lineup, match, event, and result types compile.
 - Every match begins from an upstream-validated legal roster and game-day registration, with any authorized temporary replacement supplied before `MatchSnapshot` creation.
 - One user game can Play, Sim, and Skip through one match session.

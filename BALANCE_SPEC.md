@@ -53,6 +53,21 @@ The explicitly deferred tuneable categories are:
 
 These categories may move only inside the structure established by their owning design source. Tuning cannot create a new pathway, membership state, contract authority, award qualification, history result, or ending rule.
 
+### 2.2 Owner-locked player-system decisions
+
+The following decisions are explicit owner rulings. They sit at the top of the authority hierarchy, supersede conflicting older wording anywhere in this specification, and are **Locked values**. Tuning may change the parameters that produce them; it may not change the targets themselves.
+
+| ID | Locked decision | Owning sections |
+| --- | --- | --- |
+| **OD-A** | Career peak distribution for a sensible Balanced build without rare breakthroughs. | §8.4 |
+| **OD-B** | Completed freshman Builder outcome bands, creation-budget exhaustion, and the empty-preview distinction. | §7.1, §7.3 |
+| **OD-C** | Body maturation: user-selected freshman body and timing, bounded projected adult range, deterministic hidden growth. | §7.4 |
+| **OD-D** | Current Overall, Maximum Potential Overall, and Projected Peak are three distinct values. | §6.3 |
+| **OD-E** | One canonical development contract for the user, full-detail NPCs, and aggregate executors. | §9.7 |
+| **OD-F** | Rotation role, tactical role, and derived archetype are separate layers. | §12.4 |
+
+An owner-locked target is never satisfied by widening its own band. When a candidate profile misses a locked target, the tunable moves, not the target.
+
 ## 3. Balance Principles
 
 1. **One standard difficulty.** There are no easier economy, progression, injury, recruiting, or simulation presets.
@@ -134,6 +149,8 @@ One ten-point capability advantage is therefore one standard opposed-check unit 
 
 Derived capabilities use a weighted average on the 25–99 scale before context modifiers. Primary inputs must retain at least 55% of the weight.
 
+Every weight in the following table is a **Baseline**. The 55% primary-input floor and the requirement that each capability name its primary skill are structural; the exact percentages are versioned tunables that become ship-approved only after the attribute sensitivity report (§31 report 2) and the build-diversity report (§31 report 3) pass. Do not cite these percentages as proven values.
+
 | Capability | Initial weights |
 | --- | --- |
 | Ball Security | Handle 65%, Strength 15%, Offensive IQ 20% |
@@ -159,6 +176,8 @@ Derived capabilities use a weighted average on the 25–99 scale before context 
 
 Fatigue, injury, body, badges, and live context apply after the base capability. IQ improves the circumstances in which a skill is used and cannot replace the named primary skill.
 
+**"Role execution" is not a role.** The 10% `role execution` term in Help Recognition means the quality of the player's execution of his current defensive assignment in the live possession — a contextual behavioral input. It is not the tactical role identity, and it must not be implemented by reading a `TacticalRole` ID. No capability in this table may take rotation role, tactical role, or derived archetype as an input (§12.4). Identity layers reach opportunity, never capability.
+
 ## 6. Role-Neutral Overall
 
 Current Overall is exact, public, and calculated identically for users and NPCs. It excludes position, role, popularity, followers, trust, morale, team fit, potential, and reputation.
@@ -178,7 +197,7 @@ DisplayedOverall = round(clamp(OverallRaw, 25, 99))
 
 This formula is role-neutral, gives specialized strengths some credit, and still makes serious weaknesses matter. No attribute receives a permanent position-based weight.
 
-Potential Overall applies the same formula to exact per-attribute caps. It appears only in approved detailed builder and development views.
+The *structure* of the blend—mean, top-eight, bottom-six, role-neutral, no positional weighting—is locked. The three coefficients `0.65 / 0.25 / 0.10` are **Baselines**. They are versioned tunables and are ship-approved only after the OVR population histogram report (§31 report 1) and the build-diversity and dominance report (§31 report 3) pass. Because every Builder and progression target in this document is expressed in Overall, changing a coefficient invalidates §7.3 and §8.4 evidence and requires those reports to be rerun.
 
 ### 6.2 OVR guardrails
 
@@ -188,6 +207,30 @@ Potential Overall applies the same formula to exact per-attribute caps. It appea
 - No ordinary generated active player may have 99 Overall.
 - Fewer than 0.1% of top-domestic active players should reach 95+ Overall in a stable mature world.
 - The top domestic league should generally contain 0–3 players at 93+ and 4–15 players at 90+ in a season.
+- A current Overall of 96 or above is practically nonexistent. It is not forbidden by a clamp, but no ordinary career path may produce it, and a candidate profile that generates a measurable population above 95 fails Gate B1. (**Locked value**, OD-A.)
+- Individual attributes may reach 99. The resistance to extreme Overall comes from the breadth requirement in the blend, never from compressing the attribute scale.
+- **Overall is never a simulation input.** No resolution path—shot, pass, defense, rebound, foul, rotation, matchup, or Tier B aggregation—may read Current Overall, Maximum Potential Overall, or Projected Peak. They are display projections derived from ratings. A dependency check enforcing this is a release blocker (§28).
+
+### 6.3 Three distinct development values
+
+Three separate values describe a player's development. They are computed differently, carry different certainty, and each requires its own UI label. Presenting any one of them as another is a defect. (**Locked value**, OD-D.)
+
+| Value | Required UI label | Definition | Type |
+| --- | --- | --- | --- |
+| Current Overall | **Current Overall** | §6.1 formula applied to current ratings. | Exact integer |
+| Maximum Potential Overall | **Maximum Potential** | §6.1 formula applied to the player's exact per-attribute caps (§8). | Exact integer |
+| Projected Peak | **Projected Peak** | Realistic best Overall this career is likely to reach. | Inclusive integer **range** |
+
+Rules:
+
+1. Maximum Potential is a physical and skill ceiling, not a promise. It assumes every cap is filled, which effectively no career achieves. It must never be labeled "potential rating," "future Overall," or anything implying attainment.
+2. Projected Peak is always a range and never a single number. Its inputs are: available development opportunity for the remaining career, the prospect timing profile (§7.2), current age and the aging curves (§10.2), ordinary—not best-case—opportunity, exact per-attribute caps, and expected decline.
+3. Projected Peak is recomputed as those inputs change. It is not stored as a promise made at creation, and it moves both directions.
+4. `CurrentOverall ≤ MaximumPotentialOverall` always holds. The Projected Peak range must lie at or below Maximum Potential and at or above Current Overall, except that a player already in decline may show a Projected Peak range whose upper bound equals his historical peak.
+5. Projected Peak must never be more optimistic than the evidence supports. Its honesty is an acceptance requirement, not a presentation preference (§30, Gate B3).
+6. None of the three values may be used as a simulation input (§6.2).
+
+**Projected-peak honesty target.** Across the million-career progression report, the realized career peak Overall must fall inside the Projected Peak range displayed at the start of the career for **70–85%** of careers, and the range must not be so wide that it is uninformative: the median displayed range width is a **Guardrail** of 6–12 Overall points. Both figures are **Baselines pending the §31 report 7 result**; the requirement that the range be honest and bounded is Locked. A model that achieves coverage by widening the range to meaninglessness fails, as does one that achieves a narrow range by systematic optimism. Systematic bias is reported separately: the median signed error between realized peak and range midpoint must not exceed ±2 Overall points.
 
 ## 7. Builder and Prospect Profiles
 
@@ -207,6 +250,12 @@ The user begins the freshman year of high school. The builder begins from a body
 
 Body choices redistribute at most 18 total rating points and are approximately zero-sum. No body selection can create more than a four-point direct modifier on one starting attribute. Physical dimensions primarily affect action access, reach, and matchups rather than granting free universal Overall.
 
+**Creation-budget exhaustion.** The creation Attribute Point budget must be fully spent before a build can be confirmed. Retained creation currency cannot be carried into the career, converted to direct progress, refunded, or banked for later seasons. The Builder blocks confirmation while any creation AP remains unspent. (**Locked value**, OD-B.)
+
+This makes weak builds a consequence of allocation, not of hoarding. An intentionally poor player is produced by spending the full budget into incompatible, redundant, or role-irrelevant attributes—which is legal and unblocked—rather than by declining to spend it.
+
+The starting bases and the 150 AP budget in the table above are **Baselines**, not proven values. See §7.3 for the derived shortfall against the locked outcome bands and the calibration constraint that governs any change to them.
+
 ### 7.2 Broad prospect profiles
 
 | Profile | Starting AP modifier | Cap-generation modifier | Growth timing |
@@ -219,9 +268,93 @@ Profile multipliers change the number and quality of opportunities generated, no
 
 ### 7.3 Freshman outcome targets
 
-The builder must permit final starting OVR from approximately 37 through 61. Most neutral preset builds should land from 46 through 54. An optimized specialist can place one or two abilities in the high 60s or low 70s only by accepting visible weaknesses elsewhere.
+This section supersedes the earlier "approximately 37 through 61" completed-build range, which conflated three different states. The empty preview, a completed profile build, and an extreme specialist are separate targets and are stated separately below.
 
-The confirmation screen reports current OVR, potential OVR, all exact caps, archetype description, likely behavioral profile, and all allocations. It does not label a legal build as bad.
+#### 7.3.1 Empty pre-allocation preview
+
+Before any creation AP is spent, the Builder displays a preview Overall of approximately **37–39**. At the §7.1 baselines this value is derived, not chosen:
+
+```text
+M20 = (14 × 35 + 2 × 38 + 4 × 45) / 20 = 37.30
+T8  = (4 × 45 + 2 × 38 + 2 × 35) / 8   = 40.75
+B6  = 35.00
+OverallRaw = 0.65 × 37.30 + 0.25 × 40.75 + 0.10 × 35.00 = 37.93  →  38
+```
+
+This state is a **preview only**. It is not a legal completed build, cannot be confirmed (§7.1), and must never be cited as the Builder's minimum outcome. Any statement that the Builder permits a completed freshman near 37 OVR is incorrect. (**Locked value**, OD-B.)
+
+#### 7.3.2 Completed profile bands
+
+A completed, confirmed freshman build lands in the band for its prospect profile. (**Locked values**, OD-B.)
+
+| Prospect profile | Completed freshman current OVR |
+| --- | ---: |
+| High Upside | 44–48 |
+| Balanced | 46–50 |
+| Ready Now | 48–52 |
+
+- An **extreme specialist**—a build concentrating its budget into very few attributes while accepting severe weaknesses—may land approximately **two OVR outside** its profile band in either direction.
+- An **ordinary completed build must not exceed approximately 54 current OVR**. This is the absolute completed-freshman ceiling across all profiles and allocation strategies, including specialists. A candidate profile that produces completed builds above 54 fails Gate B1.
+- There is no corresponding floor beyond the 25-per-attribute minimum. Deliberately poor allocation may land below its profile band, and that is a legal, intended outcome.
+
+The confirmation screen reports Current Overall, Maximum Potential, Projected Peak, all exact caps, the projected adult body range, archetype description, likely behavioral profile, and all allocations, using the distinct labels required by §6.3. It does not label a legal build as bad.
+
+#### 7.3.3 Derived calibration gap in the current baselines
+
+The §7.1 baselines do not currently reach the locked bands in §7.3.2. Deriving the reachable outcome from the documented base ratings, the §7.2 profile AP modifiers, and the §9.1 cost table—where all allocation below rating 60 costs 1 AP per point—gives:
+
+| Prospect profile | Creation AP | Flat allocation | Maximum concentration | Locked band |
+| --- | ---: | ---: | ---: | ---: |
+| High Upside | 130 | 44 | 46 | 44–48 |
+| Balanced | 150 | 45 | 47 | 46–50 |
+| Ready Now | 175 | 47 | 48 | 48–52 |
+
+Because every attribute stays inside the 1 AP band, `M20` rises by exactly `AP / 20` regardless of distribution; concentration adds a further 1–2 OVR by raising `T8` while `B6` stays at its floor. The upper half of every locked band is therefore unreachable, and the Balanced and Ready Now bands are reachable only at their extreme lower edge under maximum concentration.
+
+**Resolution.** The locked bands are the acceptance target; the creation AP budget and the body-adjusted starting bases are the tunables. Stage 4 calibration must move the tunables until the §31 report 3 distributions satisfy §7.3.2. No replacement AP value is stated here, because none has been measured — inventing one would be exactly the unevidenced number this specification prohibits.
+
+Calibration is bounded by three constraints that must hold simultaneously:
+
+1. Completed builds must reach the locked bands in §7.3.2.
+2. No ordinary completed build may exceed approximately 54 OVR.
+3. The soft and absolute per-attribute starting maxima of 70 and 75 remain in force.
+
+Raising the AP budget alone satisfies constraint 1 while threatening constraint 2. The report must therefore evaluate the budget, the starting bases, and the low-band cost curve together, and record which combination was accepted. Until it passes, the 150 AP budget, the 35/38/45 bases, and the ±25/−20 profile modifiers are all explicitly provisional (§32).
+
+### 7.4 Body maturation
+
+The body is a persistent, versioned player fact with its own state and its own resolution schedule. (**Locked structure**, OD-C.)
+
+#### 7.4.1 Selected state
+
+At creation the user selects current freshman height, weight, wingspan/standing reach, and one maturity timing profile: **Early**, **Average**, or **Late**. All four selections are stored as the confirmed freshman body.
+
+#### 7.4.2 Projected adult range
+
+From the selected body and timing profile, the Builder computes and displays a **bounded projected adult range** for each dimension. The displayed range is stored with the career at confirmation and becomes a binding contract.
+
+| Rule | Status |
+| --- | --- |
+| The displayed range is stored at confirmation and is immutable for the career. | Structural invariant |
+| Realized adult body must fall inside the stored range on every dimension. | Structural invariant |
+| The exact adult body is drawn deterministically from the versioned career seed at creation and remains hidden until each increment resolves. | Structural invariant |
+| Range widths per dimension | **Baseline**, pending §31 report 15 |
+| Share of total growth delivered by timing profile and career phase | **Baseline**, pending §31 report 15 |
+
+Range width is a genuine tuning tension and is deliberately left unset: too narrow makes the maturity choice meaningless, too wide makes the projection uninformative. The report must show that Early, Average, and Late produce materially different realized high-school bodies while every realization stays inside its stored range.
+
+#### 7.4.3 Resolution invariants
+
+1. **Determinism.** Growth is a function of the versioned career seed, career-year identity, and stored body state. Reloading, changing simulation detail, Play/Sim choice, or device cannot reroll it.
+2. **Containment.** No growth increment may take any dimension outside the stored projected range. A tuning change that would violate containment for an existing career is invalid; it applies to new careers only.
+3. **No retroactive invalidation.** Growth never invalidates a confirmed build, never re-runs allocation, never refunds or re-charges AP, and never changes a per-attribute cap by itself.
+4. **No silent rating change.** A body increment may not alter any of the 20 public ratings as a side effect. Where design intends a rating consequence, it resolves as a separate, visible, ledgered effect under the ordinary progression rules, exactly as §8.3 and HEALTH-006 require for cap changes.
+5. **Bounded starting redistribution only.** The ±18-point, approximately zero-sum redistribution in §7.1 applies once, at creation. Later growth does not grant a second redistribution.
+6. **Not free Overall.** Body affects action validity, reach, positioning, and matchups. Across the build-diversity report, body selection alone must not produce a systematic Overall advantage; a body configuration that dominates every major observable is a release blocker (§28).
+
+#### 7.4.4 Persistence and migration
+
+Confirmed freshman body, maturity profile, stored projected adult range, realized current body, and the resolved-increment ledger are all saved career facts, not derived values. They carry a schema version. Any migration that cannot recover a stored projected range must reconstruct the widest range consistent with the realized body and record the limitation, never narrow a range around the realized value to fabricate precision. `GODOT_TDD.md` §5.5 and §5.7 own the type and persistence contract.
 
 ## 8. Potential Cap Distribution
 
@@ -245,10 +378,12 @@ Per-attribute noise is normally distributed with standard deviation 2.5 and clip
 
 | Population | Median OVR | 90th percentile | 99th percentile |
 | --- | ---: | ---: | ---: |
-| Incoming HS freshmen, potential OVR | 58–63 | 70–75 | 82–88 |
-| Recruited college entrants, potential OVR | 67–72 | 78–83 | 88–92 |
-| Top domestic draft pool, potential OVR | 74–78 | 84–88 | 92–95 |
+| Incoming HS freshmen, Maximum Potential OVR | 58–63 | 70–75 | 82–88 |
+| Recruited college entrants, Maximum Potential OVR | 67–72 | 78–83 | 88–92 |
+| Top domestic draft pool, Maximum Potential OVR | 74–78 | 84–88 | 92–95 |
 | Top domestic rostered players, current OVR | 77–81 | 87–90 | 92–95 |
+
+"Maximum Potential OVR" here is the value defined in §6.3: the Overall formula applied to exact per-attribute caps. It is a ceiling, and these targets describe the distribution of ceilings in each population — not what those players will actually reach. Realized peaks are governed by §8.4.
 
 Selection creates later-phase distributions; the engine must not silently increase a player’s cap merely because he reached a higher league.
 
@@ -266,6 +401,33 @@ Ordinary development never changes caps.
 Random cap changes use cooldowns and should affect no more than 12% of complete user careers outside injury. A change larger than four points requires a major injury or explicitly approved unique event.
 
 A potential-cap reduction by itself never lowers the current rating. If the new cap is below current ability, the current rating remains unchanged and further growth in that attribute is blocked until current ability is no longer above the cap. A separately resolved and visibly explained health, injury, or decline effect may lower current ability, but it uses its own effect and ledger entry; current-rating loss is never inferred silently from the cap mutation.
+
+### 8.4 Career peak distribution
+
+This is the acceptance target for peak **current** Overall reached at any point in a complete career, measured for a sensible Balanced build that receives no rare breakthrough. (**Locked value**, OD-A.)
+
+| Career outcome | Peak current OVR |
+| --- | ---: |
+| Poorly managed or injury-hit | Below 72 |
+| Ordinary successful | 74–79 |
+| Strong and well-managed | 80–85 |
+| Exceptional | 86–91 |
+| Rare generational | 92–95 |
+| Practically nonexistent | 96+ |
+
+Reading rules:
+
+- "Sensible Balanced build" means the Balanced prospect profile, a completed build inside §7.3.2, allocation that is coherent for its position family, and no rare cap breakthrough (§8.3).
+- The bands describe career management quality and opportunity, not difficulty settings. There is one standard difficulty (§3.1).
+- 96+ is not blocked by a clamp. It must simply not occur through any ordinary path. Individual attributes may still reach 99 (§6.2).
+- The gap between the 72-and-below band and the 74–79 band is intentional: it is the region where a career is neither clearly failed nor clearly successful, and the report should show a continuous distribution across it rather than a spike.
+- Ready Now and High Upside peaks are expected to shift within these bands—earlier and lower, later and higher respectively—but no profile may relocate the top of the distribution.
+
+**Verification.** The million-career progression report (§27.1, §31 report 7) segments complete careers by outcome classification and reports the peak-OVR distribution for each band, plus the population share above 95. Failing this target is a Gate B3 failure. It is corrected by tuning seasonal AP availability, the cost curve, cap distributions, aging, or decline — never by relabeling the bands.
+
+**Relationship to other targets.** This distribution, the §8.2 population targets, the §6.2 OVR guardrails, and the §6.3 projected-peak honesty target are four views of the same underlying progression model and must be reported together. A profile that satisfies one by breaking another has not passed.
+
+**Unmeasured relationship.** The mapping from the §8.1 ceiling center, through Maximum Potential Overall, to realized Projected Peak is not currently defined numerically. §8.1 states explicitly that the ceiling center is not Potential Overall, and no conversion has been measured. Stage 4 must report that mapping rather than assume it; until then, no statement of the form "a Balanced player peaks near his ceiling center" may be made in any document or interface.
 
 ## 9. Attribute Point Economy
 
@@ -338,6 +500,10 @@ Every annual progression source uses the shared career-year identity and its com
 
 These totals include training, game participation, focused direct progress converted to AP equivalent, and ordinary development events. They exclude rare breakthroughs.
 
+**Status: calibration inputs, not proven values.** Every band in the following table is a **Baseline** supplied as a starting point for the million-career progression report. They are not evidence that the resulting careers peak correctly. The locked career peak distribution in §8.4 is the acceptance target; these bands are the primary tunable used to reach it, together with the §9.1 cost curve and the §10 aging and decline model. Until §31 report 7 passes, no document, interface, or design decision may treat these numbers as established, and they may not be quoted as the reason a career progresses at a given rate.
+
+The lifetime conversion from seasonal AP availability to peak Overall is unmeasured. A completed freshman near 48 OVR reaching a strong peak of 80–85 requires a specific total AP income, a specific spending pattern against the escalating cost bands, and a specific decline offset; none of the three has been reported. The report must publish that conversion explicitly.
+
 | Phase | Typical available AP-equivalent per season | High-engagement upper guardrail |
 | --- | ---: | ---: |
 | High school | 45–65 | 78 |
@@ -365,6 +531,49 @@ GameDevelopment = ParticipationBase × RoleRelativePerformance × CompetitionQua
 - `DevelopmentRoom` declines from 1.00 below 70 rating to 0.25 at 95+.
 
 Seasonal game-development caps are 12 AP-equivalent in HS, 16 in college/alternatives, and 20 in top domestic professional basketball. Played and simulated games share the same pool and formula.
+
+### 9.7 One canonical development contract
+
+There is exactly one development contract in LeagueBound. It governs the user, fully simulated NPCs, and aggregate executors alike. Detail level changes how the contract is executed, never what it produces. (**Locked structure**, OD-E.)
+
+#### 9.7.1 Executors
+
+| Executor | Applies to | Allocation method |
+| --- | --- | --- |
+| **Manual** | The user | The user spends AP and direct progress personally and permanently. |
+| **Full-detail allocator** | Named NPCs in full-detail simulation | An AI allocator spends AP-equivalent opportunity under identical rules. |
+| **Aggregate executor** | Reduced-detail populations | Development is resolved in bulk, reproducing the distributions the full-detail allocator would have produced. |
+
+#### 9.7.2 Rules binding every executor
+
+All three executors are bound identically by:
+
+- The universal destination-rating cost table (§9.1).
+- Exact per-attribute caps and the cap-change rules (§8, §8.3).
+- Prospect timing profiles and growth availability multipliers (§7.2).
+- Aging curves, mileage, and annual decline (§10).
+- Seasonal availability bands and upper guardrails (§9.5).
+- The source ledger. Every AP-equivalent unit granted or spent records its source, career year, executor, and balance-profile version — for NPCs exactly as for the user.
+- Career-year completion receipts. One career year permits one natural development-or-decline resolution per player regardless of executor (§9.5).
+
+The full-detail allocator receives **AP-equivalent opportunity**, not finished ratings. It is not permitted to write a rating directly, to exceed a cap, to spend currency it was not granted, or to use a private cost table. An allocator implemented as "assign a target rating and interpolate" violates this contract even when its aggregate output looks correct.
+
+#### 9.7.3 Aggregate executors
+
+An aggregate executor may skip per-attribute deliberation for performance. It must still:
+
+- Draw its totals from the same seasonal availability model.
+- Respect caps, cost bands, and decline.
+- Produce attribute-level distributions statistically indistinguishable from the full-detail allocator at equivalent inputs, within the Tier A/Tier B tolerances in §27.2.
+- Write source-ledger entries at whatever granularity it resolves, so promotion has real history to inherit.
+
+#### 9.7.4 Detail-promotion invariance
+
+**Changing a player's simulation detail level must not change the player.** Promoting a background prospect to full detail, or demoting a player to aggregate simulation, may add or drop *evidence resolution* — it may never alter current ratings, caps, body, maturity state, accumulated development, or committed history.
+
+This extends the existing prospective-promotion rule (WORLD-008, `SIMULATION_SPEC.md` §26.4) from history to the player's development state itself. The acceptance test is exact and is a Gate B3 requirement: simulate a matched cohort to a fixed career year under each detail level, then compare. Ratings, caps, and body must match exactly for the same seed; aggregate-resolved cohorts must match full-detail cohorts distributionally within §27.2 tolerances.
+
+A player who improves because the user is about to face him is a release blocker (§28).
 
 ## 10. Aging, Mileage, and Decline
 
@@ -492,6 +701,26 @@ After multiplication, a valid candidate weight is clamped to 0.15–3.50 times i
 The user’s saved tendencies provide 75% of the ordinary behavioral preference and coach instruction provides 25%.
 
 The player share ranges from 60% for a low-trust young player under a strict coach to 90% for a trusted veteran leader. Explicit called plays can control the immediate action structure but do not permanently change tendencies.
+
+### 12.4 Layered identity and its numeric boundaries
+
+Rotation role, tactical role, and derived archetype are three separate layers with three separate numeric privileges. (**Locked structure**, OD-F. `SIMULATION_SPEC.md` §10.6 owns the behavioral contract and the stable IDs.)
+
+| Layer | May affect | May never affect |
+| --- | --- | --- |
+| Tendencies | The player-preference share of action weight, via the §12.1 five-position multipliers | Ratings, capabilities, success probability |
+| Tactical role | `RoleOpportunity` in the §12.2 action-weight table, and planned minutes/usage | Ratings, capabilities, success probability |
+| Rotation role | Planned minutes and substitution priority | Ratings, capabilities, success probability |
+| Derived archetype | **Nothing.** It is a read-only description. | Everything |
+
+Numeric consequences:
+
+- `RoleOpportunity` stays inside its existing 0.60–1.50 ordinary and 0.35–1.80 exceptional bounds (§12.2). Tactical role is the primary contributor to that factor and gains no separate multiplier elsewhere in the resolution chain. Role therefore changes how often a player attempts something, never how well it goes.
+- No tactical role may contribute to any capability score, shot probability, contest strength, rebound candidate score, turnover risk, or foul curve.
+- Derived archetype has no numeric representation in any resolution path. It is computed for display from body, ratings, and demonstrated profile, and computing it must be side-effect free. A balance profile containing an archetype-keyed coefficient is invalid.
+- Capability plus context determines success. This is the only path to a better outcome, and it is fed by ratings, body, badges, fatigue, and match context — never by identity labels.
+
+**Equal-budget build diversity and universal dominance.** Given an identical creation AP budget, materially different legal builds must produce materially different, non-dominated outcome profiles. The build-diversity report (§31 report 3) must show that no single legal combination of body, allocation, tendencies, and tactical role produces better results across every major observable. A universally dominant configuration is a release blocker (§28) and is corrected by changing capability weights, cost curves, or opportunity bounds — never by hiding the configuration from the Builder.
 
 ## 13. Shot and Manual Execution Balance
 
@@ -1213,24 +1442,46 @@ The following are release blockers:
 - Chemistry, home court, morale, badges, or pressure exceed their documented caps.
 - Tier B world simulation systematically creates different player archetypes, award leaders, or career survival than Tier A.
 - Rare-event probability is interpreted as a visible annual chance or clusters implausibly.
+- Any resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak as a simulation input.
+- Changing a player's simulation detail level changes his ratings, caps, body, or accumulated development.
+- Creation Attribute Points survive build confirmation in any form.
+- A realized body leaves the projected adult range stored at confirmation, or a body increment alters a rating without a separate visible effect.
+- A derived archetype grants any capability, opportunity, attribute, or probability.
+- Projected Peak is displayed as a single value, or is systematically optimistic beyond its approved bias tolerance.
 
 ## 29. Implementation Migration
 
-The current code contains useful prototypes but is not the approved balance model.
+This section describes the **actual state of the Godot repository**, not the archived React Native / Expo prototype. Items 1–4 below were satisfied by the Godot simulation-core baseline; the remainder are outstanding.
 
-Required changes:
+### 29.1 Satisfied in the current Godot core
 
-1. Replace the current 16-attribute cost registry with all 20 canonical attributes.
-2. Remove attribute-specific upgrade prices; use the universal destination-rating table.
-3. Replace position-weighted OVR with the role-neutral formula in Section 6.
-4. Add Free Throw, Offensive IQ, Defensive IQ, and Vertical to all builder, cap, progression, simulation, fixture, and persistence contracts.
-5. Replace legacy potential-tier-only logic with exact per-attribute caps plus derived potential OVR.
-6. Preserve hidden fractional progress through migrations.
-7. Move all possession constants into the versioned simulation balance profile.
-8. Add balance ledgers for AP sources, BDP sources, economy transactions, rare-event hazards, and cap changes.
-9. Require shared career-year completion receipts before annual age, natural development or decline, generic offseason development, or professional service can resolve.
-10. Establish frozen legacy-engine reports before changing formulas so improvements are measured.
-11. Do not weaken typed domain contracts or tests to accommodate incompatible archived schemas.
+1. All 20 canonical attributes exist as a typed domain model (`AttributeKey`, `PlayerAttributes`). The archived 16-attribute model is gone, not merely deprecated.
+2. Free Throw, Offensive IQ, Defensive IQ, and Vertical are present in the attribute domain and in match profiles.
+3. Active ratings validate at 25–99 with sub-25 rejection (`Rating`).
+4. Randomness flows through an injected, versioned, label-derived `RandomSource`; domain code calls no global RNG.
+
+Satisfied here means the contract exists in the domain model. It does **not** mean the values are calibrated, and it does not extend to the builder, progression, or career systems, which are not yet implemented.
+
+### 29.2 Outstanding
+
+1. There is no Overall calculation in the repository. The role-neutral formula in §6.1, Maximum Potential, and Projected Peak are unimplemented.
+2. There is no builder, creation budget, AP economy, per-attribute cap model, or progression system.
+3. `CapabilityCalculator` implements three capabilities against the twenty required by §5.2, and its weights diverge from this specification (handle creation and point-of-attack containment differ in both inputs and percentages). The specification is authoritative; the code is scaffold.
+4. `ShotResolver` contains anonymous numeric literals inside resolution code, which §4 prohibits. All possession constants must move into the versioned simulation balance profile.
+5. `BodyProfile` stores height, weight, and wingspan only. Maturity profile, stored projected adult range, realized growth, and the increment ledger required by §7.4 do not exist.
+6. `TacticalRole` is an unconstrained string with a default of `balanced`, which is not one of the version 1.0 tactical roles. The stable ID set in `SIMULATION_SPEC.md` §10.6 must replace it.
+7. `RotationRole` enumerates `STARTER, ROTATION, LIMITED, EMERGENCY, DNP`, mixing rotation intent with availability facts. The seven locked rotation roles and the separate availability states in `GDD.md` §10.2 must replace it.
+8. Attribute monotonicity tests are explicitly deferred in `tests/simulation/test_attribute_contracts.gd`. Only addressability is currently verified.
+9. Balance ledgers for AP sources, BDP sources, economy transactions, rare-event hazards, cap changes, and body increments do not exist.
+10. Shared career-year completion receipts do not exist; no career domain is implemented.
+11. No balance profile Resource exists for ratings, builder, or progression. Only `SimulationBalanceProfile` exists, covering a small set of possession constants.
+
+### 29.3 Standing rules
+
+- Establish frozen baseline reports before changing formulas so improvements are measured rather than assumed.
+- Preserve hidden fractional progress through migrations.
+- Do not weaken typed domain contracts or tests to accommodate incompatible archived schemas.
+- Do not mark a §29.2 item satisfied because a type exists. It is satisfied when the contract is implemented, tested, and its required report passes.
 
 Existing values are retained only when they pass the new contract and calibration requirements.
 
@@ -1244,9 +1495,14 @@ Existing values are retained only when they pass the new contract and calibratio
 
 ### Gate B1 — Ratings and builder
 
-- All 20 attributes satisfy monotonic observable tests.
+- All 20 attributes satisfy monotonic observable tests, and each produces at least one statistically detectable required observable (§8 of `SIMULATION_SPEC.md`).
 - OVR is role-neutral and population distributions match targets.
 - Weak, experimental, specialist, and conventional builds are all legal and distinct.
+- **Creation-budget exhaustion:** confirmation is impossible while creation AP remains, no path carries creation currency into the career, and no refund, conversion, or banking route exists (§7.1).
+- **Builder profile OVR distributions:** completed builds satisfy the locked bands in §7.3.2 per prospect profile, extreme specialists stay within approximately two OVR of their band, and no ordinary completed build exceeds approximately 54 OVR. The empty preview is verified to be non-confirmable and is reported separately from completed builds.
+- **Equal-budget build diversity and universal-dominance rejection:** no legal configuration dominates across every major observable at equal budget (§12.4).
+- **OVR truthfulness without simulation input:** displayed Overall matches the formula applied to current ratings within the one-point rounding boundary, and a dependency check proves no resolution path reads Overall, Maximum Potential, or Projected Peak (§6.2).
+- **Three-value labeling:** Current Overall, Maximum Potential, and Projected Peak are distinct, distinctly labeled, and satisfy the ordering rules in §6.3.
 
 ### Gate B2 — Basketball distributions
 
@@ -1260,6 +1516,11 @@ Existing values are retained only when they pass the new contract and calibratio
 - Played and simulated development are equivalent.
 - Elite outcomes remain rare without making ordinary careers static.
 - Cross-level tests prove one career year cannot duplicate age, natural development or decline, generic offseason development, or professional-service resolution.
+- **Career peak distribution:** the locked §8.4 bands are reproduced, including a practically nonexistent population above 95 OVR.
+- **Projected-peak honesty:** realized peaks fall inside the displayed range at the §6.3 coverage rate, median range width stays inside its guardrail, and median signed error stays within ±2 OVR.
+- **User/NPC progression parity:** the manual path and the full-detail allocator produce statistically indistinguishable rating, cap-attainment, peak-age, and decline distributions from equivalent opportunity (§9.7).
+- **Detail-promotion invariance:** matched cohorts simulated at different detail levels produce identical ratings, caps, and body state for the same seed, and aggregate-resolved cohorts match full-detail cohorts within §27.2 tolerances (§9.7.4).
+- **Body maturation:** every realized adult body falls inside its stored projected range, growth is reproducible from the career seed, no body increment alters a rating as a side effect, and Early/Average/Late produce materially different realized high-school bodies (§7.4).
 
 ### Gate B4 — Career systems
 
@@ -1277,13 +1538,13 @@ Existing values are retained only when they pass the new contract and calibratio
 
 Every candidate release profile produces:
 
-1. Rating and OVR population histograms by phase and age.
-2. Attribute sensitivity plots for all 20 ratings.
-3. Builder build-diversity and dominance report.
+1. Rating and OVR population histograms by phase and age, including the share above 95 current OVR.
+2. Attribute sensitivity plots for all 20 ratings, with the required-observable effect size for each.
+3. Builder build-diversity and dominance report, including completed-build OVR distributions by prospect profile, the extreme-specialist tail, the completed-build ceiling, and creation-budget exhaustion evidence.
 4. Team and player basketball statistics by competition.
 5. Role, rotation, usage, and award-leader report.
 6. Play/Sim/Skip and Tier A/Tier B parity report.
-7. AP income/spending, cap attainment, peak age, and decline report.
+7. AP income/spending, cap attainment, peak age, and decline report, including the career peak distribution against §8.4, the lifetime AP-to-peak-Overall conversion, and projected-peak coverage, width, and signed bias.
 8. Badge earning, spending, tier, and stacking report.
 9. Injury frequency, severity, recovery, recurrence, and career-ending report.
 10. Recruiting offers, transfers, pathway access, and roster-interest report.
@@ -1291,20 +1552,45 @@ Every candidate release profile produces:
 12. Follower, NIL, agent, contract, cash, asset, and investment report.
 13. Death, incarceration, clustering, and Second Chance report.
 14. Monetization frequency and protected-context report.
+15. Body maturation report: realized-versus-projected containment, timing-profile separation, growth determinism, and the absence of side-effect rating changes.
+16. User/NPC development parity and detail-promotion invariance report, covering the manual path, the full-detail allocator, and aggregate executors at equivalent opportunity.
 
 ## 32. Draft Decisions Requiring Evidence, Not New Design Discussion
 
-The following numeric baselines should be implemented behind the balance registry and tested before being marked approved:
+The following numeric baselines should be implemented behind the balance registry and tested before being marked approved. Each names the report that must pass before it becomes a shipping value.
 
-- The 150 AP starting builder budget and freshman OVR distribution.
-- The role-neutral OVR blend of mean, top-eight, and bottom-six ratings.
-- Seasonal AP availability and the six-band upgrade-cost curve.
-- Exact shot table and perfect-zone widths.
-- Competition statistical ranges and opposed-event sensitivity.
-- Injury incident and severity rates.
-- Follower economic multipliers and contract salary bands.
-- Investment pre-clipping drift and the realized clipped return and volatility.
-- Provisional death phase hazards required to produce the locked lifetime targets after the unified clock is verified.
-- Provisional comeback-offer likelihood after the unified clock is verified.
+| Provisional value | Owning section | Required report |
+| --- | --- | ---: |
+| The 150 AP creation budget, the 35/38/45 starting bases, and the ±25/−20 profile modifiers | §7.1, §7.2 | 3 |
+| The role-neutral OVR coefficients 0.65 / 0.25 / 0.10 | §6.1 | 1, 3 |
+| Derived-capability weights for all 20 capabilities | §5.2 | 2, 3 |
+| Seasonal AP availability bands and upper guardrails | §9.5 | 7 |
+| The six-band upgrade-cost curve | §9.1 | 7 |
+| Projected-peak model, coverage rate, and range-width guardrail | §6.3 | 7 |
+| Body projected-range widths and timing-profile growth shares | §7.4.2 | 15 |
+| Full-detail NPC allocator behavior and aggregate-executor distributions | §9.7 | 16 |
+| Ceiling-center to Maximum-Potential to Projected-Peak mapping | §8.1, §8.4 | 7 |
+| Exact shot table and perfect-zone widths | §13 | 4 |
+| Competition statistical ranges and opposed-event sensitivity | §14 | 4 |
+| Injury incident and severity rates | §16 | 9 |
+| Follower economic multipliers and contract salary bands | §20, §22 | 12 |
+| Investment pre-clipping drift and realized clipped return and volatility | §23.4 | 12 |
+| Death phase hazards required to produce the locked lifetime targets after the unified clock is verified | §24.1 | 13 |
+| Comeback-offer likelihood after the unified clock is verified | §22.3 | 10 |
 
-Testing may tune these numbers inside their stated guardrails. Changing one-standard difficulty, the 20 ratings, permanent allocation, exact caps, guaranteed valid perfect releases, full Play/Sim parity, rare-event intent, non-pay-to-win economy, or any other structural invariant requires explicit approval from the owning design source under the authority hierarchy rather than an ordinary balance change.
+The locked targets these values must reach — the §7.3.2 Builder bands, the §8.4 career peak distribution, and the §24 lifetime rare-event targets — are not in this table. They are owner rulings and are not tunable.
+
+Testing may tune these numbers inside their stated guardrails. Changing one-standard difficulty, the 20 ratings, permanent allocation, exact caps, guaranteed valid perfect releases, full Play/Sim parity, rare-event intent, non-pay-to-win economy, the separation of the three development values, the separation of the identity layers, body-growth containment, or any other structural invariant requires explicit approval from the owning design source under the authority hierarchy rather than an ordinary balance change.
+
+## 33. Owner-Locked Decision Traceability
+
+Each locked decision, its owning sections, and the implementation and test consumers that must satisfy it.
+
+| Decision | Owning sections | Implementation consumers | Test and report consumers |
+| --- | --- | --- | --- |
+| **OD-A** Career peak distribution | `BALANCE_SPEC.md` §8.4 (numeric owner); `GDD.md` §7.5 (philosophy); `PRD.md` PROG-009 | Progression service, aging and decline model, cap distribution, seasonal AP model | Gate B3; report 7; `GODOT_TDD.md` §13.2 progression suite |
+| **OD-B** Builder outcome bands and budget exhaustion | `BALANCE_SPEC.md` §7.1, §7.3 (numeric owner); `GDD.md` §6.1–6.2; `PRD.md` BUILD-003, BUILD-006, BUILD-010 | `BuilderService`, `CreationBudget`, cost table, confirmation guard | Gate B1; report 3; `GODOT_TDD.md` §13.2 builder suite |
+| **OD-C** Body maturation | `BALANCE_SPEC.md` §7.4 (numeric owner); `GDD.md` §6.5; `SIMULATION_SPEC.md` §6.1, §6.3; `PRD.md` BUILD-008, BUILD-009, AGE-002 | `BodyProfile`, `BodyMaturationState`, `BodyMaturationService`, increment ledger, save schema and migration | Gate B3; report 15; `GODOT_TDD.md` §13.2 body suite and migration tests |
+| **OD-D** Three development values | `BALANCE_SPEC.md` §6.2, §6.3 (numeric owner); `GDD.md` §6.4; `SIMULATION_SPEC.md` §6; `PRD.md` BUILD-007, BUILD-011, PROG-010 | `DevelopmentProjection`, `OverallCalculator`, cap model, projected-peak model, `DevelopmentProjectionQuery` | Gate B1, Gate B3; reports 1, 3, 7; `GODOT_TDD.md` §13.2 projection suite and Overall-exclusion check |
+| **OD-E** One development contract | `BALANCE_SPEC.md` §9.7 (numeric owner); `GDD.md` §7.6; `SIMULATION_SPEC.md` §26.5; `PRD.md` PROG-007, PROG-008 | `DevelopmentService`, `AttributeAllocator`, `AggregateDevelopmentExecutor`, `AttributePointLedger`, career-year receipts | Gate B3; report 16; `GODOT_TDD.md` §13.2 parity and promotion suites |
+| **OD-F** Layered identity | `SIMULATION_SPEC.md` §10.6 (behavioral owner and stable IDs); `BALANCE_SPEC.md` §12.4 (numeric bounds); `GDD.md` §10.2; `PRD.md` ROLE-002, ROLE-004 | `RotationRole`, `TacticalRole`, archetype projection, action-weight construction, rotation planning | Gate B1, Gate B2; report 3, report 5; `GODOT_TDD.md` §13.2 identity suite |

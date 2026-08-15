@@ -152,11 +152,12 @@ Content counts are release floors, not substitutes for quality. Duplicate text w
 
 1. Select an empty save slot.
 2. Create and customize the player.
-3. Allocate physical profile and detailed ratings.
-4. Review exact Overall, visible caps, derived archetype, and build summary.
-5. Confirm the permanent build.
-6. Choose to play or skip the middle-school prologue.
-7. Enter the freshman Personal Hub.
+3. Select the freshman body — height, weight, wingspan and reach — and a maturity timing profile, and review the bounded projected adult range.
+4. Allocate detailed ratings until the creation Attribute Point budget is fully spent.
+5. Review Current Overall, Maximum Potential, Projected Peak, visible caps, projected adult body range, derived archetype, and build summary.
+6. Confirm the permanent build.
+7. Choose to play or skip the middle-school prologue.
+8. Enter the freshman Personal Hub.
 
 **Success condition:** The user reaches the freshman Personal Hub with a valid player, valid assigned public school, initialized world, initialized schedule, and durable autosave.
 
@@ -242,7 +243,13 @@ Requirement priority uses:
 | BUILD-002 | P0 | The user manually allocates all 20 public attributes. | Allocation uses whole points, universal bands, increasing costs, and exact per-attribute potential caps. |
 | BUILD-003 | P0 | The builder permits weak, experimental, and specialized builds. | Confirmation summarizes the result without blocking or labeling a build as incorrect. |
 | BUILD-004 | P0 | Current Overall is exact and role-neutral. | The same formula applies to user and NPC players and excludes popularity, trust, and team fit. |
-| BUILD-005 | P0 | Archetype and position labels are derived descriptions. | Changing physical or attribute inputs updates the preview without imposing archetype-exclusive attributes. |
+| BUILD-005 | P0 | Archetype and position labels are derived descriptions. | Changing physical or attribute inputs updates the preview without imposing archetype-exclusive attributes. An archetype grants no attribute, capability, action, opportunity, badge, or probability, and no archetype is exclusive to a build. |
+| BUILD-006 | P0 | The creation Attribute Point budget must be fully spent before a build can be confirmed. | Confirmation is unavailable while any creation AP remains. No path carries creation currency into the career, converts it to direct progress, refunds it, or banks it. Weak builds remain legal through poor or incompatible allocation. |
+| BUILD-007 | P0 | The Builder and detailed development views display Current Overall, Maximum Potential, and Projected Peak as three distinctly labeled values. | Each uses its required label; Projected Peak always renders as a range and never as a single number; the screen explains the distinction neutrally. `CurrentOverall ≤ MaximumPotential` always holds, and no value is presented as a promise. |
+| BUILD-008 | P0 | The user selects a freshman body and a maturity timing profile of Early, Average, or Late. | Height, weight, wingspan/reach, and timing persist as confirmed career facts and are validated against credible position limits. |
+| BUILD-009 | P0 | The Builder displays a bounded projected adult body range that is stored at confirmation and binds later growth. | The realized adult body falls inside the stored range on every dimension in every career. Growth is deterministic from the versioned career seed, hidden until it occurs, never invalidates a confirmed build, and never alters a rating without a separate visible effect. |
+| BUILD-010 | P0 | Completed builds land in the owner-locked outcome bands for their prospect profile. | Completed Current Overall satisfies the bands in `BALANCE_SPEC.md` §7.3.2, extreme specialists stay within approximately two OVR of their band, and no ordinary completed build exceeds approximately 54. The unallocated preview state is never presented as a completed build outcome. |
+| BUILD-011 | P0 | Overall is a displayed description and never a simulation input. | Automated dependency checks prove that no basketball resolution path reads Current Overall, Maximum Potential, or Projected Peak; displayed Overall matches the formula applied to current ratings within the one-point rounding boundary. |
 | AVATAR-001 | P0 | The user can customize a modular portrait avatar. | Skin tone, face, hair, facial hair where applicable, clothing, and supported accessories persist across every portrait surface. |
 | AVATAR-002 | P0 | NPC portraits are generated from the compatible modular system. | Generated combinations are valid, diverse, stable by character ID, and render offline. |
 | AVATAR-003 | P1 | Portrait expressions respond to circumstances. | At minimum, neutral, confident, celebratory, angry, injured, fatigued, embarrassed, and grieving states are supported where context permits. |
@@ -310,6 +317,7 @@ Requirement priority uses:
 | --- | --- | --- | --- |
 | ROLE-001 | P0 | The user has ten freely editable five-position tendency sliders between games. | Tendencies persist, never change automatically, and affect simulated behavior. |
 | ROLE-002 | P0 | Players have one rotation role and one active tactical role. | The tactical label remains fixed during a game and can change only between games. |
+| ROLE-004 | P0 | Rotation role, tactical role, and derived archetype are three separate layers with separate effects. | Rotation role affects planned minutes and substitution priority only; tactical role affects opportunity only; derived archetype affects nothing. Version 1.0 supports the eleven tactical roles and seven rotation roles defined in `SIMULATION_SPEC.md` §10.6. Availability facts such as DNP, emergency duty, and medical unavailability are separate derived states and never relabel a player's rotation role. |
 | ROLE-003 | P0 | Coaches have one recognizable tactical identity and compatible management traits. | Identity affects tactics; traits affect rotation, development, discipline, and mistake tolerance. |
 | TRUST-001 | P0 | Coach Trust and institution-equivalent trust are distinct. | High school uses Program Trust, college uses Athletic Department Trust, and professional phases use Front Office Trust. |
 | TRUST-002 | P1 | Trust unlocks influence without transferring organizational control. | Veteran users can call plays, suggest strategy, and influence decisions while the organization keeps final authority. |
@@ -325,7 +333,12 @@ Requirement priority uses:
 | PROG-004 | P0 | Training previews and pays an exact ordinary reward. | A completed ordinary session always provides the displayed Attribute Points; exceptional interruption is clearly signaled. |
 | PROG-005 | P0 | Training opportunities accumulate to a visible contextual cap. | Stored amount survives restart and responds to age, facilities, coaching, offseason, and major circumstances within documented limits. |
 | PROG-006 | P0 | Played and simulated games use identical development rules. | Neither path produces a hidden progression multiplier; seasonal anti-farming limits apply equally. |
+| PROG-007 | P0 | One canonical development contract governs the user and every NPC. | The user allocates manually; full-detail NPCs receive AP-equivalent opportunity and allocate through an automatic allocator bound by identical costs, caps, timing, aging, decline, and source-ledger rules. Large-sample reports show equivalent distributions from equivalent opportunity. No NPC receives development the contract does not permit, and no allocator writes a rating directly. |
+| PROG-008 | P0 | Changing a player's simulation detail level never changes the player. | Promotion or demotion between full-detail and aggregate simulation preserves ratings, caps, body state, maturity state, accumulated development, and committed history exactly for the same seed. Aggregate-resolved populations match full-detail populations within approved tolerances. A player cannot improve because he became relevant. |
+| PROG-009 | P0 | Career peaks follow the owner-locked distribution. | Large-sample career reports reproduce the peak Overall bands in `BALANCE_SPEC.md` §8.4 for sensible Balanced builds, with a practically nonexistent population at 96+ current Overall. Individual attributes may still reach 99. |
+| PROG-010 | P0 | Projected Peak is honest. | Realized career peaks fall inside the Projected Peak range displayed at career start at the approved coverage rate, the median range width stays inside its guardrail, and the model shows no systematic optimism beyond its approved bias tolerance. |
 | AGE-001 | P0 | Aging and decline are category-specific and mileage-aware. | Physical abilities decline earlier; technical and IQ ratings follow documented later-career curves influenced by workload, injury, and inactivity. |
+| AGE-002 | P0 | Body maturation resolves deterministically inside its projected range. | Growth increments resolve once per scheduled career-year milestone under the shared completion receipts, stay inside the stored projected adult range, reproduce exactly from the versioned career seed, and never alter a public rating as a side effect. Early, Average, and Late timing produce materially different realized high-school bodies. |
 | BADGE-001 | P0 | Version 1.0 contains exactly 16 badges in four focused families. | Each supports Bronze, Silver, Gold, and Hall of Fame and has a measurable simulation contract. |
 | BADGE-002 | P0 | Finalized qualifying awards identified by the owning competition can award spendable Badge Development Points. | Each competition finalizes awards exactly once after its postseason for the career year. Candidate, watch-list, nomination, semifinalist, and finalist status never grants a point; a repeated finalized award grants another point only when the owning rule permits it. Unspent points persist indefinitely. |
 | BADGE-003 | P1 | One paid badge-only respec is available per career. | It refunds only spent badge points, is clearly priced, cannot affect attributes or potential, and cannot be purchased twice for the same career. |
@@ -589,7 +602,7 @@ Gates are evidence-based outcomes, not calendar estimates. Work does not advance
 ### Gate 1 — Freshman vertical slice
 
 - Exactly three isolated local career slots and reliable autosave.
-- Locked player builder and avatar foundation.
+- Locked player builder and avatar foundation, including creation-budget exhaustion, the three distinctly labeled development values, body and maturity selection with a stored bounded projected adult range, and completed-build distributions measured against the locked profile bands.
 - Optional three-game middle-school prologue.
 - Freshman bedroom Personal Hub.
 - One complete weekly loop.
@@ -655,6 +668,13 @@ Any of the following blocks version 1.0 submission:
 - Unrated, undisclosed, graphic, or policy-incompatible content.
 - A required decision that can disappear, expire invisibly, or be automated against the player’s stated rules.
 - Inaccessible required controls or unreadable essential information on supported devices.
+- Creation Attribute Points surviving build confirmation, or a completed build outside the locked profile outcome bands.
+- Overall, Maximum Potential, or Projected Peak read as an input by any basketball resolution path.
+- Projected Peak displayed as a single value, or systematically optimistic beyond its approved bias tolerance.
+- A player whose ratings, caps, body, or accumulated development change when his simulation detail level changes.
+- A realized body outside the projected adult range stored at confirmation, or a body change that alters a rating without a separate visible effect.
+- A derived archetype that grants any capability, opportunity, attribute, or probability.
+- A single legal build, body, tendency, or role configuration that dominates every major observable at equal budget.
 - Any required transition scenario that creates overlapping membership or playing contracts, duplicates career-year or professional-service resolution, permits rights-only assignment, begins a match without a legal roster, rewrites committed background history, misattributes competition history, or archives a qualifying ending before Second Chance resolves.
 
 ## 13. Companion Documents Required
