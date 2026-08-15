@@ -60,7 +60,7 @@ The following decisions are explicit owner rulings. They sit at the top of the a
 | ID | Locked decision | Owning sections |
 | --- | --- | --- |
 | **OD-A** | Career peak distribution for a sensible Balanced build without rare breakthroughs. | §8.4 |
-| **OD-B** | Completed freshman Builder outcome bands, creation-budget exhaustion, and the empty-preview distinction. | §7.1, §7.3 |
+| **OD-B** | Completed freshman Builder outcome bands, creation-budget exhaustion, and the empty-preview distinction. | §7.1, §7.3, §7.3.4 |
 | **OD-C** | Body maturation: user-selected freshman body and timing, bounded projected adult range, deterministic hidden growth. | §7.4 |
 | **OD-D** | Current Overall, Maximum Potential Overall, and Projected Peak are three distinct values. | §6.3 |
 | **OD-E** | One canonical development contract for the user, full-detail NPCs, and aggregate executors. | §9.7 |
@@ -243,7 +243,7 @@ The user begins the freshman year of high school. The builder begins from a body
 | Technical, scoring, playmaking, defense, and rebounding base | 35 |
 | Offensive IQ and Defensive IQ base | 38 |
 | Physical base before body adjustment | 45 |
-| Manual starting Attribute Point budget | 150 AP |
+| Manual starting Attribute Point budget | 195 AP |
 | Minimum final attribute | 25 |
 | Freshman builder soft starting maximum | 70 |
 | Freshman builder absolute starting maximum | 75 |
@@ -254,15 +254,15 @@ Body choices redistribute at most 18 total rating points and are approximately z
 
 This makes weak builds a consequence of allocation, not of hoarding. An intentionally poor player is produced by spending the full budget into incompatible, redundant, or role-irrelevant attributes—which is legal and unblocked—rather than by declining to spend it.
 
-The starting bases and the 150 AP budget in the table above are **Baselines**, not proven values. See §7.3 for the derived shortfall against the locked outcome bands and the calibration constraint that governs any change to them.
+The starting bases and the 195 AP budget in the table above are **Baselines**, not proven values. The budget was raised from 150 to 195 by the Stage 2 Builder calibration run; see §7.3.3 for the measurement and the constraints that governed it. Reachability against the §7.3.2 bands is demonstrated; the full §31 report 3 distribution at the §27.1 sample size is not, and the values remain provisional (§32).
 
 ### 7.2 Broad prospect profiles
 
 | Profile | Starting AP modifier | Cap-generation modifier | Growth timing |
 | --- | ---: | ---: | --- |
-| Ready Now | +25 AP | −3 to non-primary cap center | 115% HS, 90% college, 80% pro growth availability |
+| Ready Now | +40 AP | −3 to non-primary cap center | 115% HS, 90% college, 80% pro growth availability |
 | Balanced | 0 AP | No global modifier | 100% at every phase |
-| High Upside | −20 AP | +4 to cap center | 85% HS, 115% college, 120% early-pro growth availability |
+| High Upside | −40 AP | +4 to cap center | 85% HS, 115% college, 120% early-pro growth availability |
 
 Profile multipliers change the number and quality of opportunities generated, not the AP cost of a rating. Exact displayed training rewards remain truthful after the multiplier is resolved.
 
@@ -311,7 +311,7 @@ The §7.1 baselines do not currently reach the locked bands in §7.3.2. Deriving
 
 Because every attribute stays inside the 1 AP band, `M20` rises by exactly `AP / 20` regardless of distribution; concentration adds a further 1–2 OVR by raising `T8` while `B6` stays at its floor. The upper half of every locked band is therefore unreachable, and the Balanced and Ready Now bands are reachable only at their extreme lower edge under maximum concentration.
 
-**Resolution.** The locked bands are the acceptance target; the creation AP budget and the body-adjusted starting bases are the tunables. Stage 4 calibration must move the tunables until the §31 report 3 distributions satisfy §7.3.2. No replacement AP value is stated here, because none has been measured — inventing one would be exactly the unevidenced number this specification prohibits.
+**Resolution.** The locked bands are the acceptance target; the creation AP budget and the body-adjusted starting bases are the tunables.
 
 Calibration is bounded by three constraints that must hold simultaneously:
 
@@ -319,7 +319,35 @@ Calibration is bounded by three constraints that must hold simultaneously:
 2. No ordinary completed build may exceed approximately 54 OVR.
 3. The soft and absolute per-attribute starting maxima of 70 and 75 remain in force.
 
-Raising the AP budget alone satisfies constraint 1 while threatening constraint 2. The report must therefore evaluate the budget, the starting bases, and the low-band cost curve together, and record which combination was accepted. Until it passes, the 150 AP budget, the 35/38/45 bases, and the ±25/−20 profile modifiers are all explicitly provisional (§32).
+Raising the AP budget alone satisfies constraint 1 while threatening constraint 2. Calibration must therefore evaluate the budget, the starting bases, and the low-band cost curve together, and record which combination was accepted.
+
+#### 7.3.4 Accepted Stage 2 combination
+
+The Stage 2 Builder calibration harness (`tools/builder_calibration_harness.gd`) swept 810 completed builds across every prospect profile, maturity profile, position family, three body variants per family, and six allocation strategies plus randomized builds, from fixed seeds. The accepted combination is:
+
+| Tunable | Was | Now |
+| --- | ---: | ---: |
+| Creation AP budget (Balanced) | 150 | **195** |
+| Ready Now modifier | +25 | **+40** |
+| High Upside modifier | −20 | **−40** |
+| Starting bases | 35 / 38 / 45 | **unchanged** |
+| Low-band cost curve | 1 AP below 60 | **unchanged** |
+
+The bases were deliberately left alone so the §7.3.1 empty-preview derivation still yields 38 from the documented bases, rather than becoming a second number needing its own evidence.
+
+Measured completed-build current OVR:
+
+| Prospect profile | Ordinary builds | Extreme specialists | Locked band |
+| --- | ---: | ---: | ---: |
+| High Upside | 46–47 | 45–46 | 44–48 |
+| Balanced | 48–49 | 46–48 | 46–50 |
+| Ready Now | 49–50 | 47–49 | 48–52 |
+
+All three constraints hold: every ordinary build lands inside its locked band, every extreme specialist lands within the approximately two-OVR tolerance, and the ordinary high-water mark is 50 against the 54 ceiling.
+
+**Why the distributions are narrow.** Each profile spans roughly two OVR rather than filling its four-point band. This is the same mechanism §7.3.3 identified: below rating 60 every point costs 1 AP, so `M20` rises by `AP / 20` almost regardless of distribution, and allocation strategy moves the result only through `T8` and `B6`. Concentration past 60 is *less* efficient, not more, because the cost doubles. Widening the spread would require changing the low-band cost curve, which would alter every progression figure downstream. That trade is a Stage 4 decision with report 7 evidence, not a Stage 2 one.
+
+**Status.** This demonstrates reachability at fixed seeds. It is not the §31 report 3 build-diversity run at the §27.1 sample size, and it does not close the calibration. The 195 AP budget, the 35/38/45 bases, and the ±40 profile modifiers all remain explicitly provisional (§32).
 
 ### 7.4 Body maturation
 
@@ -1451,7 +1479,7 @@ The following are release blockers:
 
 ## 29. Implementation Migration
 
-This section describes the **actual state of the Godot repository**, not the archived React Native / Expo prototype. Items 1–4 below were satisfied by the Godot simulation-core baseline; the remainder are outstanding.
+This section describes the **actual state of the Godot repository**, not the archived React Native / Expo prototype. Items 1–4 in §29.1 were satisfied by the Godot simulation-core baseline; items 5–15 by the Stage 2 player-development domain.
 
 ### 29.1 Satisfied in the current Godot core
 
@@ -1459,22 +1487,30 @@ This section describes the **actual state of the Godot repository**, not the arc
 2. Free Throw, Offensive IQ, Defensive IQ, and Vertical are present in the attribute domain and in match profiles.
 3. Active ratings validate at 25–99 with sub-25 rejection (`Rating`).
 4. Randomness flows through an injected, versioned, label-derived `RandomSource`; domain code calls no global RNG.
+5. The role-neutral Overall formula, Maximum Potential, and Projected Peak exist as one canonical implementation each (`OverallCalculator`, `ProjectedPeakCalculator`, `DevelopmentProjection`).
+6. The Builder, creation budget, AP economy, exact per-attribute cap model, and progression system exist (`BuilderService`, `CreationBudget`, `AttributeCostTable`, `AttributeCaps`, `DevelopmentService`).
+7. `BodyProfile` carries standing reach. Maturity profile, stored projected adult range, realized growth, and the increment ledger exist (`BodyMaturationState`, `BodyRange`, `GrowthIncrement`).
+8. `TacticalRole` is the eleven locked version 1.0 IDs. The `balanced` default is gone.
+9. `RotationRole` is the seven locked usage-intent IDs. Availability facts are no longer overloaded onto it.
+10. Balance ledgers exist for AP sources, cap changes, and body increments (`AttributePointLedger`, `CapChangeLedger`, growth-increment ledger). BDP, economy, and rare-event ledgers remain outstanding.
+11. Shared career-year completion receipts exist (`CareerYearReceipts`) and are honoured by every executor.
+12. Versioned, validated balance profiles exist for ratings, builder, and progression (`RatingsProfile`, `BuilderProfile`, `ProgressionProfile`, `BalanceProfileSet`), each publishing named tunables with units and safe ranges.
+13. One canonical development contract binds the user, the full-detail NPC allocator, and the aggregate executor to the same costs, caps, receipts, and source ledger (§9.7).
+14. Detail-promotion invariance is implemented and tested (`PlayerDevelopmentState.invariant_signature`).
+15. A deterministic migration exists for every player-system schema change made in Stage 2 (`PlayerSystemMigration`).
 
-Satisfied here means the contract exists in the domain model. It does **not** mean the values are calibrated, and it does not extend to the builder, progression, or career systems, which are not yet implemented.
+Satisfied here means the contract exists, is implemented, and is tested. It does **not** mean the values are calibrated: the §31 reports at §27.1 sample sizes have not been run, and §32 governs which values remain provisional.
 
 ### 29.2 Outstanding
 
-1. There is no Overall calculation in the repository. The role-neutral formula in §6.1, Maximum Potential, and Projected Peak are unimplemented.
-2. There is no builder, creation budget, AP economy, per-attribute cap model, or progression system.
-3. `CapabilityCalculator` implements three capabilities against the twenty required by §5.2, and its weights diverge from this specification (handle creation and point-of-attack containment differ in both inputs and percentages). The specification is authoritative; the code is scaffold.
-4. `ShotResolver` contains anonymous numeric literals inside resolution code, which §4 prohibits. All possession constants must move into the versioned simulation balance profile.
-5. `BodyProfile` stores height, weight, and wingspan only. Maturity profile, stored projected adult range, realized growth, and the increment ledger required by §7.4 do not exist.
-6. `TacticalRole` is an unconstrained string with a default of `balanced`, which is not one of the version 1.0 tactical roles. The stable ID set in `SIMULATION_SPEC.md` §10.6 must replace it.
-7. `RotationRole` enumerates `STARTER, ROTATION, LIMITED, EMERGENCY, DNP`, mixing rotation intent with availability facts. The seven locked rotation roles and the separate availability states in `GDD.md` §10.2 must replace it.
-8. Attribute monotonicity tests are explicitly deferred in `tests/simulation/test_attribute_contracts.gd`. Only addressability is currently verified.
-9. Balance ledgers for AP sources, BDP sources, economy transactions, rare-event hazards, cap changes, and body increments do not exist.
-10. Shared career-year completion receipts do not exist; no career domain is implemented.
-11. No balance profile Resource exists for ratings, builder, or progression. Only `SimulationBalanceProfile` exists, covering a small set of possession constants.
+1. `CapabilityCalculator` implements three capabilities against the twenty required by §5.2, and its weights diverge from this specification (handle creation and point-of-attack containment differ in both inputs and percentages). The specification is authoritative; the code is scaffold.
+2. `ShotResolver` contains anonymous numeric literals inside resolution code, which §4 prohibits. All possession constants must move into the versioned simulation balance profile.
+3. Attribute monotonicity tests are explicitly deferred in `tests/simulation/test_attribute_contracts.gd`. Only addressability is currently verified. Overall monotonicity *is* verified (`tests/unit/basketball/test_overall_calculator.gd`); the per-attribute simulation observables of §8 of `SIMULATION_SPEC.md` are not.
+4. BDP, economy transaction, and rare-event hazard ledgers do not exist.
+5. No career or world domain is implemented. Career-year receipts exist as a type but nothing advances the calendar, so professional-service credit and offseason scheduling are untested end to end.
+6. Balance profiles are typed domain value objects rather than authored Resources under `resources/balance/` as `GODOT_TDD.md` §5.6 specifies. The domain purity boundary (§5.1) forbids domain code from loading Resources, so the intended shape is an infrastructure loader mapping authored `.tres` files onto these value objects. That loader is not written, and no persistence layer exists to pin a profile version per career.
+7. Seasonal AP availability, the projected-peak model, and cap distributions are implemented but uncalibrated; reports 3, 7, 15, and 16 have not been run.
+8. `PlayerSystemMigration` operates on record dictionaries because no SQLite persistence layer exists yet to supply real rows.
 
 ### 29.3 Standing rules
 
@@ -1561,7 +1597,7 @@ The following numeric baselines should be implemented behind the balance registr
 
 | Provisional value | Owning section | Required report |
 | --- | --- | ---: |
-| The 150 AP creation budget, the 35/38/45 starting bases, and the ±25/−20 profile modifiers | §7.1, §7.2 | 3 |
+| The 195 AP creation budget, the 35/38/45 starting bases, and the ±40 profile modifiers | §7.1, §7.2, §7.3.4 | 3 |
 | The role-neutral OVR coefficients 0.65 / 0.25 / 0.10 | §6.1 | 1, 3 |
 | Derived-capability weights for all 20 capabilities | §5.2 | 2, 3 |
 | Seasonal AP availability bands and upper guardrails | §9.5 | 7 |

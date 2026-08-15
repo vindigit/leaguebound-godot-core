@@ -8,7 +8,10 @@ var body: BodyProfile
 var attributes: PlayerAttributes
 var badges: Array[ActiveBadgeView]
 var tendencies: PlayerTendencies
-var rotation_role: RotationRole.Value
+## `SIMULATION_SPEC.md` §6.2: rotation role and tactical role are separate
+## fields with separate effects. Derived archetype is deliberately absent — it
+## is a display projection and is never supplied to the engine.
+var rotation_role: int
 var tactical_role: TacticalRole
 var condition: float
 var injury_limitations: Array[InjuryLimitation]
@@ -22,7 +25,7 @@ func _init(
 	p_attributes: PlayerAttributes = null,
 	p_badges: Array[ActiveBadgeView] = [],
 	p_tendencies: PlayerTendencies = null,
-	p_rotation_role: RotationRole.Value = RotationRole.Value.ROTATION,
+	p_rotation_role: int = RotationRole.Value.ROTATION,
 	p_tactical_role: TacticalRole = null,
 	p_condition: float = 1.0,
 	p_injury_limitations: Array[InjuryLimitation] = [],
@@ -30,6 +33,8 @@ func _init(
 ) -> void:
 	assert(not p_player_id.is_empty(), "player identity is required")
 	assert(p_condition >= 0.0 and p_condition <= 1.0, "condition must be normalized")
+	assert(RotationRole.is_valid(p_rotation_role),
+		"rotation role must be one of the seven locked usage-intent roles")
 	player_id = p_player_id
 	positions = p_positions if p_positions != null else PositionProfile.new()
 	body = p_body if p_body != null else BodyProfile.new()

@@ -24,5 +24,22 @@ jobs:
           paths: "res://tests"
           warnings-as-errors: true
 
+      - name: Parse-check every script under warnings-as-errors
+        run: /home/runner/godot-linux/godot --headless --path . --script res://tools/parse_check.gd
+
       - name: Run project-owned acceptance entry point
         run: /home/runner/godot-linux/godot --headless --path . --script res://tests/run_all.gd
+
+      # Gate B1: completed builds must satisfy the owner-locked BALANCE_SPEC
+      # §7.3.2 bands. The harness fails the build if they do not, so a balance
+      # change that silently moves the distribution cannot merge.
+      - name: Run Builder calibration harness
+        run: /home/runner/godot-linux/godot --headless --path . --script res://tools/builder_calibration_harness.gd
+
+      - name: Upload Builder calibration report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: builder-calibration-report
+          path: reports/builder_calibration.json
+          if-no-files-found: warn

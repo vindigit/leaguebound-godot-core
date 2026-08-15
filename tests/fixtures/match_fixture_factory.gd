@@ -33,16 +33,17 @@ static func _team(team_id: StringName, base_rating: int) -> TeamMatchProfile:
 			rating, rating, rating, rating, rating,
 			rating, rating, rating, rating, rating,
 		)
-		var role := RotationRole.Value.STARTER if index < 5 else RotationRole.Value.ROTATION
+		var role: int = RotationRole.Value.STARTER if index < 5 else RotationRole.Value.ROTATION
+		var tactical: int = TacticalRole.all()[index % TacticalRole.COUNT]
 		players.append(PlayerMatchProfile.new(
 			player_id,
 			PositionProfile.new(StringName("P%d" % [index % 5 + 1])),
-			BodyProfile.new(73 + index, 185 + index * 6, 75 + index),
+			BodyProfile.new(73 + index, 185 + index * 6, 75 + index, 0),
 			attributes,
 			[],
 			PlayerTendencies.new(),
 			role,
-			TacticalRole.new(&"balanced"),
+			TacticalRole.new(tactical),
 			1.0,
 			[],
 			&"average",
