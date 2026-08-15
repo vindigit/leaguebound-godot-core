@@ -1,0 +1,27 @@
+name: Headless simulation tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run GdUnit4 and Godot headless checks
+        uses: godot-gdunit-labs/gdUnit4-action@v1
+        with:
+          godot-version: "4.7.1"
+          version: "v6.2.0"
+          paths: "res://tests"
+          warnings-as-errors: true
+
+      - name: Run project-owned acceptance entry point
+        run: godot --headless --path . --script res://tests/run_all.gd

@@ -1,0 +1,113 @@
+# Godot 4 generated state
+.godot/
+.import/
+~*.dll
+.nomedia
+export.cfg
+export_credentials.cfg
+*.translation
+*.tmp
+
+# Mono/C# defensive ignores (C# is not the launch stack)
+.mono/
+data_*/
+mono_crash.*.json
+
+# Build and export outputs
+/bin/
+/build/
+/builds/
+/dist/
+/exports/
+/artifacts/
+*.apk
+*.aab
+*.ipa
+*.pck
+*.xcarchive
+
+# Android/Gradle generated state
+.gradle/
+**/build/
+local.properties
+.externalNativeBuild/
+.cxx/
+captures/
+
+# Apple/Xcode generated state
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+
+# Test and coverage output
+/test-results/
+/coverage/
+/reports/
+*.lcov
+coverage.xml
+junit.xml
+test-report.xml
+
+# Logs and local secrets
+*.log
+logs/
+crash_dump/
+crash_dumps/
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
+*.pfx
+*.mobileprovision
+*.provisionprofile
+
+# Editors
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.code-workspace
+
+# Optional local Python tooling
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Operating system metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary and merge files
+*~
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+
+# Intentionally tracked: project.godot, export_presets.cfg, *.uid,
+# .gdignore, authored .tres/.res/.tscn files, and addons/gdUnit4.
+
+# Upstream GdUnit4 self-test fixtures are not part of the vendored runtime.
+/addons/gdUnit4/test/

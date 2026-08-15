@@ -1,0 +1,38 @@
+; Engine configuration file.
+; Edit through the Godot editor when possible.
+config_version=5
+
+[application]
+
+config/name="LeagueBound Godot Core"
+config/description="Pure, seeded, deterministic LeagueBound basketball simulation core"
+run/main_scene=""
+
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+gdscript/warnings/unsafe_method_access=2
+gdscript/warnings/unsafe_property_access=2
+gdscript/warnings/unsafe_call_argument=2
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/handheld/orientation=1
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"
+textures/default_filters/use_nearest_mipmap_filter=false
+
+[simulation]
+
+engine_version="4.7.1-stable"
+ruleset_version="simulation-scaffold-v1"
+random_source_version="godot-pcg32-v1"
