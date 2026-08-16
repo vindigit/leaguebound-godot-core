@@ -11,7 +11,13 @@ extends SceneTree
 ## Run:
 ##   godot --headless --path . --script res://tools/parse_check.gd
 
-const ROOTS: PackedStringArray = ["res://src", "res://tools", "res://tests"]
+## `res://calibration` belongs here as much as the rest. Its runners are only
+## loaded when someone runs them, so before it was listed a type error in a
+## harness that the pull-request gate does not execute would survive review and
+## surface hours into a nightly run.
+const ROOTS: PackedStringArray = [
+	"res://src", "res://tools", "res://tests", "res://calibration",
+]
 
 var _checked: int = 0
 var _failed: PackedStringArray = []
