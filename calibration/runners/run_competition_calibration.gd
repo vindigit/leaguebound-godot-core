@@ -94,8 +94,14 @@ func _run() -> void:
 		SeededRandomSource.new(1).get_version())
 	context.sample_unit = "complete games per competition"
 	context.sample_count = games * competitions.size()
-	context.seed_description = "shard %d of %d, seeds %d..%d per competition" % [
-		shard, shards, shard * games + 1, shard * games + games]
+	# Structured shard identity so the aggregator can prove the shard set is
+	# complete and seed-disjoint rather than trusting a sentence.
+	context.set_shard(shard, shards, shard * games + 1, shard * games + games)
+	context.require_certification_sample(
+		CalibrationTargets.REQUIRED_COMPETITION_GAMES,
+		CalibrationTargets.sample_size_source())
+	if competitions.size() == 1:
+		context.competition_id = CalibrationTargets.competition_id(competitions[0])
 	context.notes.append(
 		"§27.1 certification sample is %d complete games per competition; this run used %d."
 			% [CalibrationTargets.REQUIRED_COMPETITION_GAMES, games])
@@ -168,147 +174,174 @@ func _judge(
 ) -> void:
 	var id: StringName = CalibrationTargets.competition_id(competition)
 
+	# Every metric below carries the raw counts it was derived from, so a
+	# sharded run recombines by pooling those counts instead of averaging shard
+	# estimates. `with_aggregation` also rebuilds the estimate and interval from
+	# them, which means the single-shard path and the combined path are produced
+	# by identical arithmetic.
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.possessions_per_game" % id),
 		"Engine possessions from terminal possession records, per team per game.",
-		"team-games", totals.possessions_per_game(),
-		CalibrationTargets.possessions_per_game(competition), totals.team_games,
-		CalibrationStatistics.mean_interval_half_width(totals.team_game_possessions)))
+		"team-games", 0.0,
+		CalibrationTargets.possessions_per_game(competition), totals.team_games)
+		.with_aggregation(MetricAggregation.mean_of(totals.team_game_possessions)))
 	report.add_metric(CalibrationMetric.raw(
 		StringName("%s.possession_estimate_per_game" % id),
 		"Classic estimate FGA + w*FTA - ORB + TOV, per team per game. Reported "
 		+ "beside engine possessions and never substituted for them.",
-		"team-games", totals.possession_estimate_per_game(), totals.team_games))
+		"team-games", 0.0)
+		.with_aggregation(MetricAggregation.ratio(
+			totals.possession_estimate, float(totals.team_games))))
 	report.add_metric(CalibrationMetric.raw(
 		StringName("%s.points_per_game" % id),
-		"Points per team per game.",
-		"team-games", totals.points_per_game(), totals.team_games)
-		.with_interval(CalibrationStatistics.mean_interval_half_width(totals.team_game_points)))
+		"Points per team per game.", "team-games", 0.0)
+		.with_aggregation(MetricAggregation.mean_of(totals.team_game_points)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.points_per_possession" % id),
 		"Total points divided by total engine possessions.",
-		"engine possessions", totals.points_per_possession(),
-		CalibrationTargets.points_per_possession(competition), totals.engine_possessions))
+		"engine possessions", 0.0,
+		CalibrationTargets.points_per_possession(competition), totals.engine_possessions)
+		.with_aggregation(MetricAggregation.ratio(
+			float(totals.points), float(totals.engine_possessions))))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.field_goal_percentage" % id),
 		"Field goals made divided by field goals attempted.",
-		"field-goal attempts", totals.field_goal_percentage(),
-		CalibrationTargets.field_goal_percentage(competition), totals.field_goals_attempted,
-		totals.proportion_half_width(totals.field_goals_made, totals.field_goals_attempted)))
+		"field-goal attempts", 0.0,
+		CalibrationTargets.field_goal_percentage(competition), totals.field_goals_attempted)
+		.with_aggregation(MetricAggregation.proportion(
+			totals.field_goals_made, totals.field_goals_attempted)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.three_point_percentage" % id),
 		"Three-pointers made divided by three-pointers attempted.",
-		"three-point attempts", totals.three_point_percentage(),
-		CalibrationTargets.three_point_percentage(competition), totals.three_pointers_attempted,
-		totals.proportion_half_width(
+		"three-point attempts", 0.0,
+		CalibrationTargets.three_point_percentage(competition), totals.three_pointers_attempted)
+		.with_aggregation(MetricAggregation.proportion(
 			totals.three_pointers_made, totals.three_pointers_attempted)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.three_point_attempt_rate" % id),
 		"Three-point attempts divided by all field-goal attempts.",
-		"field-goal attempts", totals.three_point_attempt_rate(),
-		CalibrationTargets.three_point_attempt_rate(competition), totals.field_goals_attempted,
-		totals.proportion_half_width(
+		"field-goal attempts", 0.0,
+		CalibrationTargets.three_point_attempt_rate(competition), totals.field_goals_attempted)
+		.with_aggregation(MetricAggregation.proportion(
 			totals.three_pointers_attempted, totals.field_goals_attempted)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.free_throw_percentage" % id),
 		"Free throws made divided by free throws attempted.",
-		"free-throw attempts", totals.free_throw_percentage(),
-		CalibrationTargets.free_throw_percentage(competition), totals.free_throws_attempted,
-		totals.proportion_half_width(totals.free_throws_made, totals.free_throws_attempted)))
+		"free-throw attempts", 0.0,
+		CalibrationTargets.free_throw_percentage(competition), totals.free_throws_attempted)
+		.with_aggregation(MetricAggregation.proportion(
+			totals.free_throws_made, totals.free_throws_attempted)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.free_throw_attempt_rate" % id),
 		"Free-throw attempts divided by field-goal attempts.",
-		"field-goal attempts", totals.free_throw_attempt_rate(),
-		CalibrationTargets.free_throw_attempt_rate(competition), totals.field_goals_attempted))
+		"field-goal attempts", 0.0,
+		CalibrationTargets.free_throw_attempt_rate(competition), totals.field_goals_attempted)
+		.with_aggregation(MetricAggregation.proportion(
+			totals.free_throws_attempted, totals.field_goals_attempted)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.turnovers_per_100_possessions" % id),
 		"Turnovers times 100 divided by engine possessions.",
-		"engine possessions", totals.turnovers_per_100_possessions(),
-		CalibrationTargets.turnovers_per_100(competition), totals.engine_possessions))
+		"engine possessions", 0.0,
+		CalibrationTargets.turnovers_per_100(competition), totals.engine_possessions)
+		.with_aggregation(MetricAggregation.ratio(
+			float(totals.turnovers), float(totals.engine_possessions), 100.0)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.offensive_rebound_percentage" % id),
 		"ORB / (ORB + opponent DREB). Possession count is never the denominator.",
-		"offensive-rebound chances", totals.offensive_rebound_percentage(),
+		"offensive-rebound chances", 0.0,
 		CalibrationTargets.offensive_rebound_percentage(competition),
-		totals.offensive_rebound_chances,
-		totals.proportion_half_width(
+		totals.offensive_rebound_chances)
+		.with_aggregation(MetricAggregation.proportion(
 			totals.offensive_rebounds, totals.offensive_rebound_chances)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.assist_percentage" % id),
 		"Assists divided by the team's own made field goals.",
-		"made field goals", totals.assist_percentage(),
-		CalibrationTargets.assist_percentage(competition), totals.field_goals_made,
-		totals.proportion_half_width(totals.assists, totals.field_goals_made)))
+		"made field goals", 0.0,
+		CalibrationTargets.assist_percentage(competition), totals.field_goals_made)
+		.with_aggregation(MetricAggregation.proportion(
+			totals.assists, totals.field_goals_made)))
 
 	# --- §14.2 game shape ---------------------------------------------------
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.home_win_rate" % id),
 		"Home wins divided by games with a decided result.",
-		"decided games", totals.home_win_rate(),
-		CalibrationTargets.home_win_rate(), totals.decided_games,
-		totals.proportion_half_width(totals.home_wins, totals.decided_games)))
+		"decided games", 0.0,
+		CalibrationTargets.home_win_rate(), totals.decided_games)
+		.with_aggregation(MetricAggregation.proportion(
+			totals.home_wins, totals.decided_games)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.overtime_rate" % id),
 		"Games reaching at least one overtime period, divided by games played.",
-		"complete games", totals.overtime_rate(),
-		CalibrationTargets.overtime_frequency(), totals.games,
-		totals.proportion_half_width(totals.overtime_games, totals.games)))
+		"complete games", 0.0,
+		CalibrationTargets.overtime_frequency(), totals.games)
+		.with_aggregation(MetricAggregation.proportion(totals.overtime_games, totals.games)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.close_game_rate" % id),
 		"Games decided by five points or fewer, divided by games played.",
-		"complete games", totals.close_game_rate(),
-		CalibrationTargets.close_game_share(), totals.games,
-		totals.proportion_half_width(totals.close_games, totals.games)))
+		"complete games", 0.0,
+		CalibrationTargets.close_game_share(), totals.games)
+		.with_aggregation(MetricAggregation.proportion(totals.close_games, totals.games)))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.blowout_rate" % id),
 		"Games decided by twenty points or more, divided by games played.",
-		"complete games", totals.blowout_rate(),
-		CalibrationTargets.blowout_share(), totals.games,
-		totals.proportion_half_width(totals.blowout_games, totals.games)))
+		"complete games", 0.0,
+		CalibrationTargets.blowout_share(), totals.games)
+		.with_aggregation(MetricAggregation.proportion(totals.blowout_games, totals.games)))
 
 	# --- §14.2 rotation minutes: certified for top domestic only ------------
-	var starter_mean: float = totals.mean_minutes_for_rotation_role(RotationRole.Value.STARTER)
 	if competition == CalibrationTargets.Competition.TOP_DOMESTIC_PRO:
 		report.add_metric(CalibrationMetric.banded(
 			StringName("%s.starter_mean_minutes" % id),
 			"Mean minutes played by players whose rotation role is Starter.",
-			"starter appearances", starter_mean,
+			"starter appearances", 0.0,
 			CalibrationTargets.starter_minutes(),
-			totals.appearances_by_rotation_role[RotationRole.Value.STARTER],
-			CalibrationStatistics.mean_interval_half_width(totals.starter_minutes)))
+			totals.appearances_by_rotation_role[RotationRole.Value.STARTER])
+			.with_aggregation(MetricAggregation.mean_of(totals.starter_minutes)))
 		report.add_metric(CalibrationMetric.banded(
 			StringName("%s.star_mean_minutes" % id),
 			"Mean minutes played by players whose rotation role is Star.",
-			"star appearances",
-			totals.mean_minutes_for_rotation_role(RotationRole.Value.STAR),
+			"star appearances", 0.0,
 			CalibrationTargets.rotation_minutes_envelope(),
-			totals.appearances_by_rotation_role[RotationRole.Value.STAR]))
+			totals.appearances_by_rotation_role[RotationRole.Value.STAR])
+			.with_aggregation(MetricAggregation.ratio(
+				totals.minutes_by_rotation_role[RotationRole.Value.STAR],
+				float(totals.appearances_by_rotation_role[RotationRole.Value.STAR]))))
 		report.add_metric(CalibrationMetric.banded(
 			StringName("%s.rotation_mean_minutes" % id),
 			"Mean minutes played by players whose rotation role is Rotation.",
-			"rotation appearances",
-			totals.mean_minutes_for_rotation_role(RotationRole.Value.ROTATION),
+			"rotation appearances", 0.0,
 			CalibrationTargets.rotation_minutes_envelope(),
-			totals.appearances_by_rotation_role[RotationRole.Value.ROTATION]))
+			totals.appearances_by_rotation_role[RotationRole.Value.ROTATION])
+			.with_aggregation(MetricAggregation.ratio(
+				totals.minutes_by_rotation_role[RotationRole.Value.ROTATION],
+				float(totals.appearances_by_rotation_role[RotationRole.Value.ROTATION]))))
 	else:
 		report.add_metric(CalibrationMetric.raw(
 			StringName("%s.starter_mean_minutes" % id),
 			"Mean minutes played by Starters. §14.2 states its minute bands for "
 			+ "top domestic professional basketball only, so this is reported "
 			+ "without a verdict at other competitions.",
-			"starter appearances", starter_mean,
-			totals.appearances_by_rotation_role[RotationRole.Value.STARTER]))
+			"starter appearances", 0.0)
+			.with_aggregation(MetricAggregation.mean_of(totals.starter_minutes)))
 
 	# --- stat-leader plausibility -------------------------------------------
+	#
+	# The mean pools exactly. The 99th percentile deliberately does not: a
+	# percentile is not recoverable from summed moments, and pooling shard
+	# percentiles would be the same mistake as averaging shard rates. It is
+	# reported per shard and the aggregator will name it as un-aggregatable
+	# rather than silently combining it.
 	var sorted_leaders: PackedFloat64Array = totals.top_scorer_points.duplicate()
 	sorted_leaders.sort()
 	report.add_metric(CalibrationMetric.raw(
 		StringName("%s.team_leading_scorer_mean" % id),
 		"Mean points scored by each team-game's leading scorer.",
-		"team-games", CalibrationStatistics.mean(totals.top_scorer_points), totals.team_games))
+		"team-games", 0.0)
+		.with_aggregation(MetricAggregation.mean_of(totals.top_scorer_points)))
 	report.add_metric(CalibrationMetric.raw(
 		StringName("%s.team_leading_scorer_p99" % id),
-		"99th percentile of the leading scorer's points, for tail plausibility.",
+		"99th percentile of the leading scorer's points, for tail plausibility. "
+		+ "Not poolable across shards; reported per shard only.",
 		"team-games", CalibrationStatistics.percentile(sorted_leaders, 0.99), totals.team_games))
 
 

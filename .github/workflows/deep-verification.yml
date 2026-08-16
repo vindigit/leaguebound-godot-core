@@ -87,3 +87,81 @@ jobs:
           name: competition-deep-${{ matrix.competition }}-${{ matrix.shard }}
           path: reports/
           if-no-files-found: warn
+
+  # --- certification ---------------------------------------------------------
+  #
+  # The shards above are independent by design and individually meaningless: no
+  # single shard reaches a §27.1 sample. These jobs are what turn them into a
+  # certification, and they are hostile by design — a missing shard, a duplicate
+  # shard, an overlapping seed interval, or a profile-version mismatch fails the
+  # job rather than quietly certifying a partial sample.
+
+  certify-competition:
+    name: Certify ${{ matrix.competition }}
+    needs: competition
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # Every shard of this competition lands in one directory; the aggregator
+      # requires all ten and refuses to combine anything else.
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: competition-deep-${{ matrix.competition }}-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards into one certification report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=competition_calibration --shards=10
+          --directory=res://shards
+          --label=${{ matrix.competition }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: certification-${{ matrix.competition }}
+          path: reports/certification_*.json
+          if-no-files-found: error
+
+  certify-progression:
+    name: Certify million-career progression
+    needs: progression
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: career-progression-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards into one certification report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=career_progression --shards=20
+          --directory=res://shards --label=career_progression
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: certification-career-progression
+          path: reports/certification_*.json
+          if-no-files-found: error

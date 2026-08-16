@@ -45,8 +45,9 @@ func _run() -> void:
 	context.balance_profile_version = profiles.progression.version
 	context.sample_count = careers
 	context.sample_unit = "complete player careers"
-	context.seed_description = "shard %d of %d, seeds %d..%d" % [
-		shard, shards, shard * careers + 1, shard * careers + careers]
+	context.set_shard(shard, shards, shard * careers + 1, shard * careers + careers)
+	context.require_certification_sample(
+		CalibrationTargets.REQUIRED_CAREERS, CalibrationTargets.sample_size_source())
 	context.notes.append(
 		"Â§27.1 certification sample is %d complete careers; this run used %d."
 			% [CalibrationTargets.REQUIRED_CAREERS, careers])
@@ -141,13 +142,17 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		sorted.sort()
 		var median: float = CalibrationStatistics.percentile(sorted, 0.50)
 		var id: StringName = CareerSimulator.path_id(path)
+		# The §8.4 band is stated on the median, and a median cannot be pooled
+		# from summed moments. Carrying the whole peak-Overall distribution as a
+		# histogram lets the deep run recover the exact combined median instead
+		# of averaging shard medians, which would not be a median of anything.
 		report.add_metric(CalibrationMetric.banded(
 			StringName("career_peak.%s.median" % id),
 			"Median peak current Overall reached at any point in a complete career, "
 			+ "for careers classified %s." % id,
 			"complete careers", median,
-			CalibrationTargets.career_peak_overall(path), peaks.size(),
-			CalibrationStatistics.mean_interval_half_width(peaks)))
+			CalibrationTargets.career_peak_overall(path), peaks.size())
+			.with_aggregation(MetricAggregation.histogram_of(peaks, 0.50)))
 		rows.append({
 			"outcome": String(id),
 			"careers": peaks.size(),
@@ -160,47 +165,46 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		})
 	report.add_section(&"career_peak_distribution", rows)
 
-	var above_interval: PackedFloat64Array = CalibrationStatistics.wilson_interval(
-		above_95, results.size())
 	report.add_metric(CalibrationMetric.banded(
 		&"career_peak.share_above_95",
 		"Share of complete careers whose peak current Overall exceeded 95. Â§8.4 "
 		+ "requires 96+ to be practically nonexistent.",
-		"complete careers", float(above_95) / float(results.size()),
-		CalibrationTargets.share_above_95_overall(), results.size(),
-		(above_interval[1] - above_interval[0]) / 2.0))
+		"complete careers", 0.0,
+		CalibrationTargets.share_above_95_overall(), results.size())
+		.with_aggregation(MetricAggregation.proportion(above_95, results.size())))
 	report.add_metric(CalibrationMetric.banded(
 		&"career_peak.transition_gap_share",
 		"Share of careers peaking at 72 or 73. Â§8.4 wants a continuous "
 		+ "distribution across the deliberate gap rather than a spike or a hole.",
-		"complete careers", float(in_transition_gap) / float(results.size()),
-		CalibrationTargets.transition_band_share(), results.size()))
+		"complete careers", 0.0,
+		CalibrationTargets.transition_band_share(), results.size())
+		.with_aggregation(MetricAggregation.proportion(in_transition_gap, results.size())))
 
 	# --- Â§6.3 projected-peak honesty ----------------------------------------
-	var coverage_interval: PackedFloat64Array = CalibrationStatistics.wilson_interval(
-		coverage_hits, results.size())
 	report.add_metric(CalibrationMetric.banded(
 		&"projected_peak.coverage",
 		"Share of careers whose realized peak Overall fell inside the Projected "
 		+ "Peak range displayed at the start of the career.",
-		"complete careers", float(coverage_hits) / float(results.size()),
-		CalibrationTargets.projected_peak_coverage(), results.size(),
-		(coverage_interval[1] - coverage_interval[0]) / 2.0))
+		"complete careers", 0.0,
+		CalibrationTargets.projected_peak_coverage(), results.size())
+		.with_aggregation(MetricAggregation.proportion(coverage_hits, results.size())))
 	var sorted_widths: PackedFloat64Array = widths.duplicate()
 	sorted_widths.sort()
 	report.add_metric(CalibrationMetric.banded(
 		&"projected_peak.median_width",
 		"Median width of the displayed Projected Peak range, in Overall points.",
-		"complete careers", CalibrationStatistics.percentile(sorted_widths, 0.50),
-		CalibrationTargets.projected_peak_median_width(), results.size()))
+		"complete careers", 0.0,
+		CalibrationTargets.projected_peak_median_width(), results.size())
+		.with_aggregation(MetricAggregation.histogram_of(widths, 0.50)))
 	var sorted_errors: PackedFloat64Array = signed_errors.duplicate()
 	sorted_errors.sort()
 	report.add_metric(CalibrationMetric.banded(
 		&"projected_peak.median_signed_error",
 		"Median of realized peak minus the midpoint of the displayed range. "
 		+ "Positive means the display was systematically pessimistic.",
-		"complete careers", CalibrationStatistics.percentile(sorted_errors, 0.50),
-		CalibrationTargets.projected_peak_signed_bias(), results.size()))
+		"complete careers", 0.0,
+		CalibrationTargets.projected_peak_signed_bias(), results.size())
+		.with_aggregation(MetricAggregation.histogram_of(signed_errors, 0.50)))
 
 	# --- Â§9.5 lifetime conversion, previously unmeasured --------------------
 	report.add_metric(CalibrationMetric.raw(
@@ -243,20 +247,34 @@ func _judge_parity(
 		var career: CareerSimulator.CareerResult = entry
 		right_peaks.append(float(career.peak_overall))
 
-	var left_mean: float = CalibrationStatistics.mean(left_peaks)
-	var right_mean: float = CalibrationStatistics.mean(right_peaks)
-	var difference: float = right_mean - left_mean
-	var half_width: float = CalibrationStatistics.difference_interval_half_width(
-		left_peaks, right_peaks)
+	assert(left_peaks.size() == right_peaks.size(),
+		"a parity cohort is matched; unequal sizes would make the pooled ratio wrong")
+	var left_sum: float = 0.0
+	var right_sum: float = 0.0
+	for value in left_peaks:
+		left_sum += value
+	for value in right_peaks:
+		right_sum += value
 	var effect: float = CalibrationStatistics.cohens_d(left_peaks, right_peaks)
-	# The tolerance is the Â§27.2 relative-rate tolerance applied to mean peak
-	# Overall, which is the distribution this pair is being compared on.
-	var tolerance: float = CalibrationTargets.PARITY_EVENT_RELATIVE * left_mean
+	# The parity tolerance in the spec is a *relative* figure, so the metric is
+	# the relative difference and the band is the fixed two percent. Reporting an
+	# absolute difference against a tolerance derived from the sample's own mean
+	# gave every shard a different target, which the aggregator correctly refused
+	# to combine: a target that moves with the sample is not a target.
+	#
+	# The relative difference of two matched cohorts is a ratio of two sums, so
+	# it pools exactly across shards.
 	var metric := CalibrationMetric.banded(
-		StringName("parity.%s.mean_peak_difference" % pair),
-		"Difference in mean peak current Overall between two executors given "
-		+ "equivalent opportunity. Â§9.7 binds all three to one contract.",
-		"complete careers", difference,
-		CalibrationBand.new(-tolerance, tolerance, CalibrationTargets.parity_source()),
-		left_peaks.size(), half_width)
-	report.add_metric(metric.with_effect_size(effect, &"cohens_d"))
+		StringName("parity.%s.relative_peak_difference" % pair),
+		"Relative difference in mean peak current Overall between two executors "
+		+ "given equivalent opportunity, as (right - left) / left. One development "
+		+ "contract binds all three executors.",
+		"complete careers", 0.0,
+		CalibrationBand.new(
+			-CalibrationTargets.PARITY_EVENT_RELATIVE,
+			CalibrationTargets.PARITY_EVENT_RELATIVE,
+			CalibrationTargets.parity_source()),
+		left_peaks.size())
+	report.add_metric(metric
+		.with_aggregation(MetricAggregation.ratio(right_sum - left_sum, left_sum))
+		.with_effect_size(effect, &"cohens_d"))

@@ -77,9 +77,11 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
 - Machine-readable report types and provenance.
-- Pull-request, nightly, and deep-verification workflow definitions.
+- Deterministic sharded-report aggregation, with structured seed intervals, shard identity, and raw aggregation terms on every metric (§6.1).
+- Pull-request, nightly, and deep-verification workflow definitions, including nightly summary and deep certification aggregation jobs.
 - Additional simulation and progression tuning.
 - A Stage 4 evidence record in `BALANCE_SPEC.md`.
+- Implementation-status synchronization in `SIMULATION_SPEC.md` §30.2, with no change to its basketball contracts.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. A PR or an explicitly dispatched equivalent run is still required.
 
@@ -167,9 +169,11 @@ The active branch contains:
 - Career-progression simulation.
 - Performance profiling.
 - JSON reports with rules, balance, RNG, seed, sample, duration, and denominator provenance.
-- Separate fast, nightly, and deep workflow layers.
+- Raw aggregation terms on every poolable metric, so a sharded run recombines exactly instead of averaging shard estimates.
+- A deterministic shard combiner with provenance, completeness, and seed-disjointness validation (§6.1).
+- Separate fast, nightly, and deep workflow layers, with aggregation jobs in the latter two.
 
-The harness is real foundation work. It does not become certification until the required samples are completed, combined correctly, archived, and judged by the owning tolerances.
+The harness is real foundation work. It does not become certification until the required samples are completed, combined correctly, archived, and judged by the owning tolerances. Combining correctly is now implemented; completing the required samples is not.
 
 ## 5. Current Stage 4 findings
 
@@ -190,13 +194,15 @@ These findings remain subject to the sample sizes and limitations recorded by th
 
 ### 5.2 Known failures or unmeasured requirements
 
+The figures below are now taken from the **pooled** three-shard progression run (1,200 careers over seeds 1–1200), which supersedes the earlier single-shard 400-career figures. Pooling moved two of them slightly; none of them passes.
+
 | Requirement | Current recorded status |
 | --- | --- |
-| Rare-generational peak band | **Fail:** median 91 against target 92–95 |
-| Projected-peak coverage | **Fail:** 33% coverage |
-| Projected-peak signed error | **Fail:** median +9.5; systematic under-prediction after progression tuning |
+| Rare-generational peak band | **Fail:** pooled median 90 against target 92–95 (was 91 single-shard) |
+| Projected-peak coverage | **Fail:** 29.2% pooled coverage against 70–85% (was 33% single-shard) |
+| Projected-peak signed error | **Fail:** pooled median +10.0 against ±2; systematic under-prediction after progression tuning (was +9.5 single-shard) |
 | Competition §14.1 bands | Substantially converged, not certified; approximately ten recorded misses remain |
-| Assist percentage | Still low in development, overseas, and top domestic profiles |
+| Assist percentage | Still low in development, overseas, and top domestic profiles (48.2% top domestic against 52–72%) |
 | §14.2 game-shape targets | Not assessable at the samples run |
 | Builder dominance tournament | Not implemented/run |
 | OVR truthfulness report 1 | Not implemented/run |
@@ -205,24 +211,36 @@ These findings remain subject to the sample sizes and limitations recorded by th
 | Tier A/Tier B parity | Not implemented/run at the required scale |
 | §27.1 competition certification | Not reached |
 
+The projected-peak coverage and signed-error failures are a direct consequence of the Stage 4 progression change rather than an independent defect: `ProjectedPeakCalculator` was calibrated against the pre-Stage-4 seasonal AP bands, and raising those bands to reach the §8.4 curve left the projection systematically pessimistic. It must be recalibrated against the current bands.
+
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation
 
-Status: **Blocked.**
+Status: **Resolved as implementation; certification still gated on sample size.**
 
-The deep workflow launches ten 10,000-game shards for each competition, but the current competition runner evaluates each shard as a 10,000-game report. No committed aggregation job currently combines raw counts, validates seed disjointness and provenance, recomputes intervals, and emits one 100,000-game verdict.
+The combiner now exists: `calibration/harness/report_aggregator.gd`, driven by `calibration/runners/run_report_aggregation.gd`, with aggregation jobs added to the nightly workflow (summary, `--allow-uncertified`) and to deep verification (certification, per competition and for progression).
 
-Separate shard artifacts do not automatically satisfy the 100,000-game certification requirement. A deterministic report combiner is required before the workflow can claim certification.
+Each of the six minimum requirements above is met:
 
-The combiner must at minimum:
+1. **Every expected shard required.** A missing index, a duplicate index, or an index outside the declared range is a rejection.
+2. **Provenance verified.** Commit SHA, Godot build mode, rules profile and version, balance profile and version, ratings version, RNG algorithm and stream-key version, target version, competition, and sample unit must all agree. Metric definition, denominator, and target must agree per metric.
+3. **Seed disjointness enforced structurally.** Reports now carry a `seed_range` interval and a shard index rather than a sentence describing them, so overlap is checkable. Two shards that declare no interval are treated as overlapping rather than assumed safe.
+4. **Raw terms combined, never rounded rates.** This required a schema change: reports previously carried only an estimate and a sample count, so combining them would necessarily have averaged shard estimates. Metrics now carry numerator, denominator, count, sum, and sum-of-squares. Percentile metrics — including the locked career-peak medians, which cannot be recovered from summed moments — carry the full bounded-integer histogram, which pools by addition and yields the exact combined percentile.
+5. **Intervals and verdicts recomputed.** Wilson for proportions, moment-based for means, and every verdict re-evaluated against its band from the pooled estimate. `MetricAggregation.estimate()` is the only place a sharded estimate is produced, so "never average shard means" holds by construction rather than by review.
+6. **One immutable aggregate report; job fails when incomplete.** Any rejection fails the job. An aggregation that is valid but short of its required sample also fails unless `--allow-uncertified` is passed, which the nightly summary uses because nightly samples cannot reach the requirement.
 
-1. Require every expected shard.
-2. Verify identical commit, Godot build mode, rules version, balance version, RNG version, target version, and metric definition.
-3. Reject missing, duplicate, or overlapping seed ranges.
-4. Combine raw numerators, denominators, counts, sums, and sum-of-squares rather than averaging rounded rates.
-5. Recompute confidence intervals and acceptance verdicts from the combined sample.
-6. Publish one immutable aggregate report and fail the certification job when it is incomplete or outside an approved band.
+Metrics that genuinely cannot be pooled — a 99th percentile with no histogram — are reported as un-aggregatable rather than silently combined.
+
+Verification, recorded so this entry is not merely a claim:
+
+- Ten synthetic-shard cases run in the fast acceptance suite, including one whose shard denominators differ by an order of magnitude so that pooling (0.8960) and averaging (0.70) give visibly different answers.
+- End-to-end on real three-shard competition and career-progression runs.
+- **Mutation testing.** Returning the first shard's estimate instead of the pooled one failed 6 cases; disabling seed-overlap detection failed 1; disabling missing-shard detection failed 2; restoring the code returned the suite to PASS.
+
+The aggregator found one real defect on first contact with live data: the executor-parity metric derived its tolerance from each shard's own sample mean, so every shard declared a different target and the shards could not legitimately be combined. A target that moves with the sample is not a target. It now reports the relative difference against the fixed ±2% tolerance the Balance Specification states, which is also exactly poolable for matched cohorts.
+
+**What this does not do** is certify anything. It removes the blocker; the required samples still have to be run. No nightly or deep workflow run has executed.
 
 ### 6.2 Pull-request evidence
 
@@ -287,9 +305,9 @@ Level-specific and career documents remain authoritative constraints. Their exis
 Work should proceed in this order unless new evidence changes a dependency:
 
 1. Open a pull request from `stage4-calibration` and run the fast branch gate.
-2. Add deterministic aggregation for sharded competition and progression reports.
-3. Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.
-4. Recalibrate `ProjectedPeakCalculator` against the current progression bands and close the coverage/bias failure.
+2. ~~Add deterministic aggregation for sharded competition and progression reports.~~ **Done** (§6.1). Remaining dependency: execute a nightly or deep run, which has never happened, and confirm the `chickensoft-games/setup-godot@v2` action referenced by both new workflows actually resolves on this project's runner — it was written from convention, not verified.
+3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
+4. Recalibrate `ProjectedPeakCalculator` against the current progression bands and close the coverage/bias failure. This is now the highest-value open item: it is a known-cause failure with a known fix direction.
 5. Resolve the rare-generational 92–95 peak miss without distorting ordinary and exceptional careers.
 6. Resolve the remaining competition-process misses, beginning with assist creation and attribution, then marginal shooting and points-per-possession edges.
 7. Implement and run the Builder dominance tournament, OVR truthfulness report, and body maturation report.

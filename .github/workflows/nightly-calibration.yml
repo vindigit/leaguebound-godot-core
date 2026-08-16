@@ -61,6 +61,53 @@ jobs:
           path: reports/
           if-no-files-found: warn
 
+  # Nightly shards are far below the §27.1 sample, so this job can never
+  # certify. It runs anyway because aggregation is the part most likely to break
+  # silently: a shard that stopped emitting a metric, a profile version that
+  # moved under one job, a seed range that started overlapping. Catching that
+  # nightly is much cheaper than catching it in a pre-release deep run.
+  summarize-competition:
+    name: Summarize ${{ matrix.competition }}
+    needs: competition
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: competition-${{ matrix.competition }}-*
+          path: shards
+          merge-multiple: true
+      # `--allow-uncertified` because the nightly sample cannot reach the
+      # requirement. The aggregation itself must still be valid: a rejected
+      # shard set fails this job regardless of the flag.
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=competition_calibration --shards=4
+          --directory=res://shards --label=${{ matrix.competition }}
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-${{ matrix.competition }}
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
   sensitivity:
     name: Attribute sensitivity
     runs-on: ubuntu-latest
