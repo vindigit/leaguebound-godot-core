@@ -19,6 +19,9 @@ on:
       careers:
         description: "Complete careers per shard"
         default: "20000"
+      body_triples:
+        description: "Matched maturity triples per shard"
+        default: "25000"
 
 permissions:
   contents: read
@@ -105,6 +108,127 @@ jobs:
         if: always()
         with:
           name: nightly-summary-${{ matrix.competition }}
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
+  # The `careers` input above was declared from the workflow's first commit and
+  # no job consumed it, so the nightly layer has never exercised the progression
+  # runner at all — the §8.4 and §6.3 metrics were only ever seen in a developer
+  # shell. Sharding four ways keeps a nightly window while still exercising the
+  # aggregation path that the deep run depends on.
+  progression:
+    name: Career progression shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 720
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run career progression shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_career_progression.gd --
+          --careers=${{ github.event.inputs.careers || '20000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=nightly_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: career-progression-nightly-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  summarize-progression:
+    name: Summarize career progression
+    needs: progression
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: career-progression-nightly-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=career_progression --shards=4
+          --directory=res://shards --label=nightly_progression
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-progression
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
+  body:
+    name: Body maturation shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run body maturation shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_body_maturation.gd --
+          --careers=${{ github.event.inputs.body_triples || '25000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=nightly_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: body-maturation-nightly-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  summarize-body:
+    name: Summarize body maturation
+    needs: body
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: body-maturation-nightly-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=body_maturation --shards=4
+          --directory=res://shards --label=nightly_body
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-body
           path: reports/certification_*.json
           if-no-files-found: warn
 

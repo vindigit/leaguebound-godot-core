@@ -16,6 +16,9 @@ on:
       careers_per_shard:
         description: "Complete careers per shard (20 shards reach the §27.1 million)"
         default: "50000"
+      body_triples_per_shard:
+        description: "Matched maturity triples per shard (20 shards reach the §27.1 million)"
+        default: "50000"
 
 permissions:
   contents: read
@@ -85,6 +88,38 @@ jobs:
         if: always()
         with:
           name: competition-deep-${{ matrix.competition }}-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  body:
+    name: Body maturation shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # Report 15 resolves six increments per maturation and simulates no
+      # matches and no attribute allocation, so unlike the progression report it
+      # genuinely reaches its §27.1 sample inside a runner window.
+      - name: Run body maturation shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_body_maturation.gd --
+          --careers=${{ github.event.inputs.body_triples_per_shard || '50000' }}
+          --shard=${{ matrix.shard }} --shards=20
+          --label=deep_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: body-maturation-${{ matrix.shard }}
           path: reports/
           if-no-files-found: warn
 
@@ -163,5 +198,34 @@ jobs:
         if: always()
         with:
           name: certification-career-progression
+          path: reports/certification_*.json
+          if-no-files-found: error
+
+  certify-body:
+    name: Certify body maturation
+    needs: body
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: body-maturation-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards into one certification report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=body_maturation --shards=20
+          --directory=res://shards --label=body_maturation
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: certification-body-maturation
           path: reports/certification_*.json
           if-no-files-found: error
