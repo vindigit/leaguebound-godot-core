@@ -257,6 +257,39 @@ static func projected_peak_signed_bias() -> CalibrationBand:
 	return CalibrationBand.new(-2.0, 2.0, _SECTION_6_3)
 
 
+# --- §7.4 body maturation (report 15) ---------------------------------------
+
+const _SECTION_7_4: String = "BALANCE_SPEC.md §7.4 (Structural invariant, OD-C)"
+
+## A structural invariant is not a band with a tolerance. Every one of these
+## must hold in every career, so the target is exactly 1.0 and a single
+## violation in a million careers is a failure rather than a rounding artifact.
+static func structural_invariant_share() -> CalibrationBand:
+	return CalibrationBand.new(1.0, 1.0, _SECTION_7_4)
+
+
+## §7.4.2 requires report 15 to show "that Early, Average, and Late produce
+## materially different realized high-school bodies". "Materially different"
+## needs a number before a report can fail on it; this is the harness's reading,
+## expressed as the minimum gap between the Early and Late shares of total
+## growth delivered by the end of high school. The configured shares are 0.75
+## and 0.25, so a model that keeps even half that separation still passes, and
+## one that has quietly collapsed the maturity choice does not.
+static func body_timing_separation() -> CalibrationBand:
+	return CalibrationBand.new(0.20, 1.0, "BALANCE_SPEC.md §7.4.2 (report 15)")
+
+
+## How far the realized high-school growth share may sit from the share the
+## Builder profile configures. Growth is delivered in whole inches and pounds,
+## so rounding alone moves the realized share; this bounds that drift without
+## permitting the schedule to be quietly re-shaped.
+const BODY_TIMING_SHARE_TOLERANCE: float = 0.08
+
+
+static func body_timing_share_source() -> String:
+	return "BALANCE_SPEC.md §7.4.2 (Baseline pending report 15)"
+
+
 # --- §8.2 population distribution targets -----------------------------------
 
 const _SECTION_8_2: String = "BALANCE_SPEC.md §8.2"
