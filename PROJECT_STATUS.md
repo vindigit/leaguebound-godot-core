@@ -6,7 +6,7 @@
 | Repository | `vindigit/leaguebound-godot-core` |
 | Runtime | Godot 4.7.1-stable; typed GDScript |
 | Default branch baseline | `main` at `c38bd2257d27ebce86beb61439fcac524acca0ef` |
-| Active work branch | `stage4-calibration`, one commit ahead of the recorded `main` baseline at this snapshot |
+| Active work branch | `stage4-calibration`; contains unmerged Stage 4 implementation and status-documentation commits |
 | Current internal milestone | Builder, ratings, development, and match-core calibration |
 | Current PRD delivery gate | **Gate 0 — Godot foundation** |
 | Gate 0 status | **Not met** |
@@ -72,7 +72,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` is one commit ahead of the recorded `main` baseline and has no open pull request. It adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents, and it has no open pull request. The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
