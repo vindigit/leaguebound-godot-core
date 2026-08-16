@@ -712,9 +712,16 @@ func _resolve_free_throws(
 	for index in range(attempts):
 		# §9.4: free throws use separate event time and do not consume the shot
 		# clock; the possession either ends or resets after the sequence.
-		_consume(_clock.free_throw_ms())
-		if _terminated:
-			return
+		#
+		# The buzzer cannot cancel an awarded attempt. A foul drawn before the
+		# horn is shot after it, so free-throw event time advances the stamped
+		# clock but is never allowed to expire the period mid-sequence. Running
+		# it through `_consume` did exactly that: a two-shot foul drawn with one
+		# second left terminated the possession before the first attempt was
+		# emitted, leaving a FREE_THROW_AWARDED in the ledger that nothing ever
+		# took, which §13.2 forbids — attempts are attributed exactly once, and
+		# zero is not once.
+		_advance_dead_ball(_clock.free_throw_ms())
 		var made: bool = _free_throw_resolver.resolve(
 			_context, shooter_id, random_source.derive(StringName("attempt:%d" % (index + 1))))
 		last_made = made
@@ -907,3 +914,16 @@ func _consume(elapsed_ms: int) -> void:
 	_writer.consume(elapsed_ms)
 	if _writer.clock_ms <= 0:
 		_terminate(PossessionEndReason.Value.PERIOD_EXPIRED, _context.offense.team_id, false)
+
+
+## Advances event time across a dead ball without letting the buzzer interrupt
+## it, leaving at least one millisecond on the clock.
+##
+## The period still ends — the next `_consume` on live action finds a clock at
+## one millisecond and expires it — but it ends *after* the dead-ball sequence
+## has been attributed rather than in the middle of it. That is the difference
+## between a period expiring and a period cancelling a foul's consequences.
+func _advance_dead_ball(elapsed_ms: int) -> void:
+	if _terminated:
+		return
+	_writer.consume(mini(elapsed_ms, maxi(_writer.clock_ms - 1, 0)))

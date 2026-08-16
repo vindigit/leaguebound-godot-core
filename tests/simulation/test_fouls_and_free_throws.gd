@@ -125,6 +125,14 @@ func test_free_throw_attempts_are_attributed_exactly_once() -> void:
 
 
 ## §13.2 one-and-one: the second attempt exists only if the first is made.
+##
+## Only a *bonus* award is a one-and-one. A shooting foul in the same fixture
+## awards its attempts outright, and both are taken however the first lands —
+## `FoulResolver.resolve_shooting_foul` passes `one_and_one = false`. This test
+## previously applied the one-and-one rule to every award in the fixture, so a
+## perfectly legal two-shot shooting foul whose first attempt missed read as a
+## contract violation. It now separates the two and checks both rules, because
+## the two-shot case needs asserting just as much as the earned-attempt case.
 func test_one_and_one_second_attempt_must_be_earned() -> void:
 	var rules: CompetitionRuleProfile = MatchFixtureFactory.one_and_one_match().rule_profile
 	assert_bool(rules.is_one_and_one(1)).is_true()
@@ -132,32 +140,113 @@ func test_one_and_one_second_attempt_must_be_earned() -> void:
 	assert_int(rules.bonus_free_throws_for(1)).is_equal(2)
 	assert_int(rules.bonus_free_throws_for(0)).is_equal(0)
 
-	var output: MatchSimulationOutput = GoldenScenarios.simulate(GoldenScenarios.LATE_GAME)
-	var missed_firsts: int = 0
-	var made_firsts: int = 0
-	for index in range(output.events.size() - 1):
+	# This test owns its match rather than borrowing a golden scenario.
+	#
+	# The golden `late_game` ledger happens to contain four one-and-one awards
+	# whose first attempt was *made*, and none that forfeited. The forfeiture
+	# branch was therefore never exercised there: the old version of this test
+	# counted shooting fouls into its missed-first tally, so it reported coverage
+	# of a rule it never reached. Seed 6078 on the same fixture produces three
+	# forfeits and three earned second attempts, so both halves of §13.2's
+	# one-and-one rule are genuinely asserted.
+	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
+		MatchFixtureFactory.one_and_one_match(), SeededRandomSource.new(6078))
+	var missed_bonus_firsts: int = 0
+	var made_bonus_firsts: int = 0
+	var shooting_sequences: int = 0
+	for index in range(output.events.size() - 2):
 		var event: MatchDomainEvent = output.events[index]
 		if event.event_type != MatchDomainEvent.FREE_THROW_AWARDED:
 			continue
 		var first: MatchDomainEvent = output.events[index + 1]
+		var following: MatchDomainEvent = output.events[index + 2]
+		var another_attempt: bool = (
+			following.event_type == MatchDomainEvent.FREE_THROW_MADE
+			or following.event_type == MatchDomainEvent.FREE_THROW_MISSED)
+
+		if _causing_foul_type(output, index) == FoulType.Value.SHOOTING:
+			# A shooting foul is never a one-and-one: every awarded attempt is
+			# taken, whatever the first one did.
+			shooting_sequences += 1
+			assert_int(_attempts_taken(output, index)).is_equal(event.amount)
+			continue
+
 		if first.event_type == MatchDomainEvent.FREE_THROW_MISSED:
-			missed_firsts += 1
+			missed_bonus_firsts += 1
 			# The earned attempt is forfeited; the ball is live instead.
-			var following: MatchDomainEvent = output.events[index + 2]
-			assert_str(String(following.event_type)).is_not_equal(
-				String(MatchDomainEvent.FREE_THROW_MADE))
-			assert_str(String(following.event_type)).is_not_equal(
-				String(MatchDomainEvent.FREE_THROW_MISSED))
+			assert_bool(another_attempt).is_false()
+			assert_int(_attempts_taken(output, index)).is_equal(1)
 		elif first.event_type == MatchDomainEvent.FREE_THROW_MADE:
-			made_firsts += 1
+			made_bonus_firsts += 1
 			# Making the first earns the second.
-			var following: MatchDomainEvent = output.events[index + 2]
-			assert_bool(
-				following.event_type == MatchDomainEvent.FREE_THROW_MADE
-				or following.event_type == MatchDomainEvent.FREE_THROW_MISSED
-			).is_true()
-	assert_int(missed_firsts).is_greater(0)
-	assert_int(made_firsts).is_greater(0)
+			assert_bool(another_attempt).is_true()
+			assert_int(_attempts_taken(output, index)).is_equal(event.amount)
+	assert_int(missed_bonus_firsts).is_greater(0)
+	assert_int(made_bonus_firsts).is_greater(0)
+	assert_int(shooting_sequences).is_greater(0)
+
+
+## The foul that produced an award, found by searching back to the nearest
+## whistle. The ledger records the award count but not the bonus kind, so the
+## causing foul is what distinguishes an earned second attempt from an outright
+## one.
+func _causing_foul_type(output: MatchSimulationOutput, award_index: int) -> int:
+	for back in range(award_index - 1, maxi(award_index - 8, -1), -1):
+		var event: MatchDomainEvent = output.events[back]
+		if event.event_type == MatchDomainEvent.FOUL:
+			for foul_type in FoulType.all():
+				if event.detail_id == FoulType.id_of(foul_type):
+					return foul_type
+			return -1
+	return -1
+
+
+## The `FoulType` a FOUL event records, or -1 when the detail is unrecognized.
+func _foul_type_of(event: MatchDomainEvent) -> int:
+	for foul_type in FoulType.all():
+		if event.detail_id == FoulType.id_of(foul_type):
+			return foul_type
+	return -1
+
+
+func _attempts_taken(output: MatchSimulationOutput, award_index: int) -> int:
+	var taken: int = 0
+	for scan in range(award_index + 1, output.events.size()):
+		var attempt: MatchDomainEvent = output.events[scan]
+		if (
+			attempt.event_type != MatchDomainEvent.FREE_THROW_MADE
+			and attempt.event_type != MatchDomainEvent.FREE_THROW_MISSED
+		):
+			break
+		taken += 1
+	return taken
+
+
+## Regression guard for the buzzer defect: a foul drawn with the period almost
+## expired still has its awarded attempts taken.
+##
+## `foul_free_throw` at seed 4242 previously produced a two-shot shooting foul
+## at one second remaining whose free-throw event time expired the period before
+## either attempt was emitted, leaving an award nothing ever took. The general
+## attribution test above catches the symptom across every scenario; this one
+## names the cause, so a regression cannot be mistaken for an unrelated drift.
+func test_awarded_free_throws_survive_the_period_buzzer() -> void:
+	var checked: int = 0
+	for scenario in GoldenScenarios.names():
+		var output: MatchSimulationOutput = GoldenScenarios.simulate(scenario)
+		for index in range(output.events.size()):
+			var event: MatchDomainEvent = output.events[index]
+			if event.event_type != MatchDomainEvent.FREE_THROW_AWARDED:
+				continue
+			var taken: int = _attempts_taken(output, index)
+			# A one-and-one whose first attempt missed is the only legal shortfall.
+			if taken < event.amount:
+				assert_int(taken).is_equal(1)
+				assert_str(String(output.events[index + 1].event_type)).is_equal(
+					String(MatchDomainEvent.FREE_THROW_MISSED))
+			assert_int(taken).is_greater(0)
+			checked += 1
+	assert_int(checked).is_greater(0)
 
 
 ## A missed final attempt is live where the rules say so (§13.2, §14).
@@ -248,25 +337,48 @@ func test_team_fouls_reset_each_period_and_personal_fouls_do_not() -> void:
 	assert_bool(input.rule_profile.team_fouls_reset_each_period).is_true()
 	var session := MatchSession.new(input, SeededRandomSource.new(4242))
 	session.open()
-
-	var observed_reset: bool = false
-	var previous_period: int = session.snapshot().period
-	var fouls_before_reset: int = 0
 	while not session.is_complete():
 		session.advance_possession()
-		var snapshot: MatchSnapshot = session.snapshot()
-		if snapshot.period != previous_period:
-			if fouls_before_reset > 0:
-				assert_int(snapshot.home.team_fouls).is_equal(0)
-				assert_int(snapshot.away.team_fouls).is_equal(0)
-				observed_reset = true
-			previous_period = snapshot.period
-		fouls_before_reset = maxi(
-			fouls_before_reset, maxi(snapshot.home.team_fouls, snapshot.away.team_fouls))
-	assert_bool(observed_reset).is_true()
+	var output: MatchSimulationOutput = session.build_output()
+
+	# The reset is asserted from the ledger rather than from snapshots sampled
+	# between possessions.
+	#
+	# `advance_possession` folds a period transition and the first possession of
+	# the new period into one call, so a snapshot taken after it can show a
+	# non-zero team-foul count that is entirely legitimate — the count reset and
+	# was then incremented by a foul in that first possession. Sampling could not
+	# tell that apart from a reset that never happened, which made the old form
+	# pass or fail on where the fouls happened to land. Replaying the ordered
+	# events checks every boundary instead of the ones sampling happened to see.
+	var boundaries_with_prior_fouls: int = 0
+	var home_running: int = 0
+	var away_running: int = 0
+	var carried_into_period: int = 0
+	for event in output.events:
+		if event.event_type == MatchDomainEvent.PERIOD_STARTED:
+			carried_into_period = maxi(home_running, away_running)
+			if carried_into_period > 0:
+				boundaries_with_prior_fouls += 1
+			home_running = 0
+			away_running = 0
+			continue
+		if event.event_type != MatchDomainEvent.FOUL:
+			continue
+		if not FoulType.advances_team_fouls(_foul_type_of(event)):
+			continue
+		if event.team_id == input.home.team_id:
+			home_running += 1
+		else:
+			away_running += 1
+	assert_int(boundaries_with_prior_fouls).is_greater(0)
+
+	# The reduced state agrees with that replay for the final period, which is
+	# what proves the reducer is the thing doing the resetting.
+	assert_int(session.snapshot().home.team_fouls).is_equal(home_running)
+	assert_int(session.snapshot().away.team_fouls).is_equal(away_running)
 
 	# Personal fouls survive the reset: the game total equals the ledger total.
-	var output: MatchSimulationOutput = session.build_output()
 	var ledger_fouls: int = 0
 	for event in output.events:
 		if event.event_type == MatchDomainEvent.FOUL:

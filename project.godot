@@ -38,5 +38,5 @@ renderer/rendering_method="mobile"
 [simulation]
 
 engine_version="4.7.1-stable"
-ruleset_version="simulation-calibrated-v2"
+ruleset_version="simulation-calibrated-v3"
 random_source_version="godot-pcg32-v1"
