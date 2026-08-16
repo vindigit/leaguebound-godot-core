@@ -528,20 +528,24 @@ Every annual progression source uses the shared career-year identity and its com
 
 These totals include training, game participation, focused direct progress converted to AP equivalent, and ordinary development events. They exclude rare breakthroughs.
 
-**Status: calibration inputs, not proven values.** Every band in the following table is a **Baseline** supplied as a starting point for the million-career progression report. They are not evidence that the resulting careers peak correctly. The locked career peak distribution in §8.4 is the acceptance target; these bands are the primary tunable used to reach it, together with the §9.1 cost curve and the §10 aging and decline model. Until §31 report 7 passes, no document, interface, or design decision may treat these numbers as established, and they may not be quoted as the reason a career progresses at a given rate.
+**Status: raised by the Stage 4 progression measurement; still short of certification.** The bands below were multiplied by approximately 2.4 during Stage 4. The previous values are recorded in the table so the change is auditable.
 
-The lifetime conversion from seasonal AP availability to peak Overall is unmeasured. A completed freshman near 48 OVR reaching a strong peak of 80–85 requires a specific total AP income, a specific spending pattern against the escalating cost bands, and a specific decline offset; none of the three has been reported. The report must publish that conversion explicitly.
+**The lifetime conversion is now measured.** It was the largest single finding of Stage 4. Deriving the requirement arithmetically: a completed freshman near 48 OVR reaching a strong peak of 80–85 must raise twenty attributes by roughly thirty points each, which against the §9.1 escalating cost bands (1 AP below 60, 2 AP at 60–69, 3 AP at 70–79, 5 AP at 80–89) costs approximately **1,150 lifetime AP-equivalent**. The previous bands delivered a measured mean of **469**. The §8.4 curve was therefore unreachable by construction rather than by mistuning, and no amount of allocation skill could have closed a 2.5× shortfall.
 
-| Phase | Typical available AP-equivalent per season | High-engagement upper guardrail |
-| --- | ---: | ---: |
-| High school | 45–65 | 78 |
-| Summer circuit | 8–16 | 20 |
-| College | 35–55 | 68 |
-| Domestic development | 30–48 | 60 |
-| Overseas | 25–45 | 56 |
-| Top domestic pro, age 19–24 | 24–40 | 50 |
-| Top domestic pro, age 25–29 | 16–30 | 38 |
-| Top domestic pro, age 30+ | 8–22 | 30 |
+At the raised bands the measured mean lifetime grant is **1,165 AP-equivalent** and mean cap attainment is **0.88**, so caps — not currency — are now the binding constraint, which is the intended relationship.
+
+| Phase | Typical available AP-equivalent per season | High-engagement upper guardrail | Previous baseline |
+| --- | ---: | ---: | ---: |
+| High school | 108–156 | 187 | 45–65 |
+| Summer circuit | 18–38 | 48 | 8–16 |
+| College | 84–132 | 163 | 35–55 |
+| Domestic development | 72–115 | 144 | 30–48 |
+| Overseas | 60–108 | 134 | 25–45 |
+| Top domestic pro, age 19–24 | 58–96 | 120 | 24–40 |
+| Top domestic pro, age 25–29 | 38–72 | 91 | 16–30 |
+| Top domestic pro, age 30+ | 19–53 | 72 | 8–22 |
+
+These remain **Baselines**. The measurement behind them used 400 complete careers, not the §27.1 million, and one §8.4 band (rare generational) still misses. They are better-founded than the values they replace and are not yet ship-approved.
 
 The upper guardrail is not a hard currency cap. It triggers a balance warning and requires the source ledger to explain why the season was exceptional.
 
@@ -1503,9 +1507,11 @@ Satisfied here means the contract exists, is implemented, and is tested. It does
 
 ### 29.2 Outstanding
 
-1. `CapabilityCalculator` implements three capabilities against the twenty required by §5.2, and its weights diverge from this specification (handle creation and point-of-attack containment differ in both inputs and percentages). The specification is authoritative; the code is scaffold.
-2. `ShotResolver` contains anonymous numeric literals inside resolution code, which §4 prohibits. All possession constants must move into the versioned simulation balance profile.
-3. Attribute monotonicity tests are explicitly deferred in `tests/simulation/test_attribute_contracts.gd`. Only addressability is currently verified. Overall monotonicity *is* verified (`tests/unit/basketball/test_overall_calculator.gd`); the per-attribute simulation observables of §8 of `SIMULATION_SPEC.md` are not.
+Items 1–3 below were satisfied before Stage 4 or by it; they are retained with their resolution recorded rather than deleted, because §29.3 forbids marking an item satisfied merely because a type exists.
+
+1. ~~`CapabilityCalculator` implements three capabilities against the twenty required by §5.2.~~ **Resolved before Stage 4.** All twenty §5.2 capabilities plus the four §7.3 physical capabilities exist in `RatingsProfile` with the specified weights, and Stage 4 verified every weight row against this document.
+2. ~~`ShotResolver` contains anonymous numeric literals inside resolution code.~~ **Resolved.** Every shot, contest, and continuation constant is a named tunable on `SimulationBalanceProfile` with a unit and a safe range, and Gate B0 rejects one outside its range — which it did during Stage 4 calibration, catching a kick-out share pushed past its declared bound.
+3. ~~Attribute monotonicity tests are explicitly deferred.~~ **Resolved by Stage 4.** `calibration/runners/run_attribute_sensitivity.gd` verifies, for all twenty attributes: addressability, monotonic direction across ratings 40/50/65/80/90, and a meaningful 50→80 effect; and for every capability weighting an IQ rating alongside a different primary, that the IQ movement stays under 60% of the primary's. It runs in the pull-request gate at the §27.1 isolated-boundary sample size of 100,000 resolutions per test point. **What remains uncovered** is the match-level half of §8 of `SIMULATION_SPEC.md`: box-score effects, role-relative value, team impact, and fatigue/availability effects per attribute are not yet measured.
 4. BDP, economy transaction, and rare-event hazard ledgers do not exist.
 5. No career or world domain is implemented. Career-year receipts exist as a type but nothing advances the calendar, so professional-service credit and offseason scheduling are untested end to end.
 6. Balance profiles are typed domain value objects rather than authored Resources under `resources/balance/` as `GODOT_TDD.md` §5.6 specifies. The domain purity boundary (§5.1) forbids domain code from loading Resources, so the intended shape is an infrastructure loader mapping authored `.tres` files onto these value objects. That loader is not written, and no persistence layer exists to pin a profile version per career.
@@ -1615,6 +1621,38 @@ The following numeric baselines should be implemented behind the balance registr
 | Comeback-offer likelihood after the unified clock is verified | §22.3 | 10 |
 
 The locked targets these values must reach — the §7.3.2 Builder bands, the §8.4 career peak distribution, and the §24 lifetime rare-event targets — are not in this table. They are owner rulings and are not tunable.
+
+### 32.1 Stage 4 calibration status
+
+Stage 4 built a committed calibration harness under `calibration/`, ran it, and moved values on the evidence. This section records what the evidence actually supports, because §2 forbids treating a Baseline as approved and §29.3 forbids marking an item satisfied because a type exists.
+
+**Passing at the sample size run.**
+
+- All twenty attributes: addressed, monotonic, meaningful 50→80 effect, no IQ substitution for a primary skill. Run at the full §27.1 isolated-boundary sample.
+- Career peak distribution for four of the five §8.4 bands: poorly managed (median 66, target below 72), ordinary successful (77, target 74–79), strong (82, target 80–85), exceptional (87, target 86–91).
+- Population share peaking above 95 Overall: zero, against the "practically nonexistent" requirement.
+- Continuity across the deliberate 72–74 gap.
+- Manual, full-detail-allocator, and aggregate-executor progression parity: identical mean peak Overall from equivalent opportunity.
+- Builder completed-build bands (§7.3.2) continue to hold after the progression change.
+- Determinism: committed golden ledgers reproduce exactly; regenerated deliberately under an explicit engine and balance version change.
+
+**Failing or unmeasured, with the reason.**
+
+| Item | Status | Reason |
+| --- | --- | --- |
+| §8.4 rare generational band | Fails at median 91 against 92–95 | The top of the distribution is one Overall point short; cap generation at the high-upside tail needs a further pass. |
+| §6.3 projected-peak coverage and bias | Fails: 33% coverage, +9.5 median signed error | `ProjectedPeakCalculator` was calibrated against the old seasonal AP bands and now systematically under-predicts. It must be recalibrated against the raised bands; the failure is a direct consequence of the §9.5 change and was not present before it. |
+| §14.1 competition bands | Substantially converged, not certified | From roughly fifty failing metrics to about ten, most marginal. Remaining: assist percentage still low at development, overseas, and top domestic; a few marginal field-goal and points-per-possession edges. |
+| §14.2 game-shape targets | Not assessable | Home win rate, overtime frequency, and close/blowout shares need thousands of games for a usable interval. At the sample sizes reachable in a single session their confidence intervals span ±25 percentage points or more. The nightly and deep workflows exist to run them. |
+| §27.1 certification sample sizes | Not reached anywhere except attribute sensitivity | See the performance finding below. |
+| Builder tournament dominance rejection (§12.4) | Not run | The round-robin tournament runner is not implemented. |
+| OVR truthfulness suite (§31 report 1) | Not run | Not implemented. |
+| Play/Sim/Skip and Tier A/Tier B parity at §27.1 sizes | Not run at scale | Play/Sim/Skip parity remains proven structurally by byte-identical ledgers in the acceptance suite, which is stronger evidence than a distributional test, but the §27.1 matched-triplet sample was not run. |
+| Body maturation report (§31 report 15) | Not run | Not implemented. |
+
+**The performance finding that constrains all of the above.** The Stage 4 profile measured the match engine at **5,496 ms per complete reference game** before optimization and **1,345 ms after** — a 4.09× improvement with byte-identical ledgers. The dominant cost was found by measurement, not assumption: `Rating.normalized` was formatting a three-argument assert message on every call, because GDScript evaluates an assert message eagerly in a debug build, costing 3.92 µs against 0.026 µs for the arithmetic it exists to do. Fixing that, memoizing the immutable half of capability resolution, and removing per-candidate string construction accounted for the whole gain.
+
+At 1,345 ms per game, the §27.1 requirement of 100,000 games per competition is roughly 37 hours per competition on one process. **The 10 ms per game calibration goal is not reachable in GDScript for this engine design**: a game resolves roughly 460 candidate-generation calls of about 25 candidates each, and at GDScript's method-dispatch cost that is a few hundred milliseconds of irreducible floor. Reaching the goal requires the possession engine in a compiled extension. This is a documented risk, not a solved problem.
 
 Testing may tune these numbers inside their stated guardrails. Changing one-standard difficulty, the 20 ratings, permanent allocation, exact caps, guaranteed valid perfect releases, full Play/Sim parity, rare-event intent, non-pay-to-win economy, the separation of the three development values, the separation of the identity layers, body-growth containment, or any other structural invariant requires explicit approval from the owning design source under the authority hierarchy rather than an ordinary balance change.
 

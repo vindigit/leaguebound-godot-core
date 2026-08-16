@@ -1,0 +1,124 @@
+name: Nightly calibration
+
+# The middle layer. Runs the full statistical suites at sample sizes that take
+# hours rather than minutes, shards them across parallel jobs, and archives the
+# machine-readable reports.
+#
+# These runs are allowed to fail without blocking a merge: a band that drifts is
+# a calibration finding, not a broken build. What they must not do is fail
+# silently, so every job uploads its report and the summary job reads them back.
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      games_per_competition:
+        description: "Complete games per competition, per shard"
+        default: "2000"
+      careers:
+        description: "Complete careers per shard"
+        default: "20000"
+
+permissions:
+  contents: read
+
+jobs:
+  competition:
+    name: Competition ${{ matrix.competition }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 720
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # Process-level sharding: each job owns a disjoint seed range, so the
+      # shards are independent and a rerun of one reproduces exactly.
+      - name: Run competition calibration
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_competition_calibration.gd --
+          --competition=${{ matrix.competition }}
+          --games=${{ github.event.inputs.games_per_competition || '2000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=${{ matrix.competition }}_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: competition-${{ matrix.competition }}-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  sensitivity:
+    name: Attribute sensitivity
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run attribute sensitivity at the §27.1 sample size
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_attribute_sensitivity.gd --
+          --resolutions=100000 --label=nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: attribute-sensitivity
+          path: reports/
+
+  builder:
+    name: Builder tournament
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run Builder calibration portfolio
+        run: godot --headless --path . --script res://tools/builder_calibration_harness.gd
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: builder-calibration
+          path: reports/
+
+  performance:
+    name: Performance profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # The profile records the runner's build mode in its own provenance block,
+      # so a debug-template number is never compared with a release one.
+      - name: Run performance profile
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_performance_profile.gd --
+          --games=40 --label=nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-profile
+          path: reports/

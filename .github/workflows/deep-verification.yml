@@ -1,0 +1,89 @@
+name: Deep verification
+
+# The pre-release layer. Runs the `BALANCE_SPEC.md` §27.1 minimum samples that
+# are too large for a nightly window — principally the million-career
+# progression report behind Gate B3 and the owner-locked §8.4 curve.
+#
+# It is scheduled weekly and can be dispatched before a release. Sharding is
+# process-level and seed-disjoint, so a shard can be rerun in isolation and
+# reproduces exactly.
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"
+  workflow_dispatch:
+    inputs:
+      careers_per_shard:
+        description: "Complete careers per shard (20 shards reach the §27.1 million)"
+        default: "50000"
+
+permissions:
+  contents: read
+
+jobs:
+  progression:
+    name: Million-career progression shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run career progression shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_career_progression.gd --
+          --careers=${{ github.event.inputs.careers_per_shard || '50000' }}
+          --shard=${{ matrix.shard }} --shards=20
+          --label=deep_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: career-progression-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  competition:
+    name: Competition certification ${{ matrix.competition }} shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1440
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # Ten shards of 10,000 games reach the §27.1 100,000-game certification
+      # sample for one competition. Whether a shard finishes inside the timeout
+      # depends on the engine's cost per game, which the performance report
+      # documents; see the Stage 4 risk note in BALANCE_SPEC §32.
+      - name: Run competition certification shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_competition_calibration.gd --
+          --competition=${{ matrix.competition }} --games=10000
+          --shard=${{ matrix.shard }} --shards=10
+          --label=deep_${{ matrix.competition }}_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: competition-deep-${{ matrix.competition }}-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn

@@ -1,0 +1,262 @@
+﻿extends SceneTree
+
+## Career and NPC progression calibration (`BALANCE_SPEC.md` Â§8.4 OD-A, Â§6.3,
+## Â§9.7, Â§31 report 7 and report 16).
+##
+## Measures, for a population of complete careers:
+##
+## - the peak current-Overall distribution per Â§8.4 outcome band;
+## - the population share above 95 current Overall;
+## - the continuity of the deliberate 72-74 gap;
+## - projected-peak coverage, median width, and median signed bias (Â§6.3);
+## - the lifetime AP-to-peak-Overall conversion Â§9.5 says is unmeasured;
+## - user, full-detail NPC, and aggregate executor parity (Â§9.7).
+##
+## A career here runs the real `BuilderService`, `DevelopmentService`,
+## `AttributeAllocator`, and `AgingResolver` â€” it is not a second progression
+## model. Matches are not simulated: Â§9.6 makes game participation a source of
+## seasonal AP, and the AP is what progression consumes.
+##
+## Run:
+##   godot --headless --path . --script res://calibration/runners/run_career_progression.gd -- \
+##       [--careers=N] [--shard=I --shards=N] [--label=NAME]
+
+const DEFAULT_CAREERS: int = 20000
+
+
+func _init() -> void:
+	call_deferred("_run")
+
+
+func _run() -> void:
+	var options: Dictionary = CalibrationCli.parse(OS.get_cmdline_user_args())
+	var careers: int = CalibrationCli.int_option(options, &"careers", DEFAULT_CAREERS)
+	var shard: int = CalibrationCli.int_option(options, &"shard", 0)
+	var shards: int = maxi(1, CalibrationCli.int_option(options, &"shards", 1))
+	var label: String = CalibrationCli.string_option(options, &"label", "career")
+
+	var profiles: BalanceProfileSet = BalanceProfileSet.default_set()
+	var configuration: PackedStringArray = profiles.validate()
+	var context := ReportContext.create(
+		&"career_progression",
+		"Career and NPC progression calibration",
+		null, null, SeededRandomSource.new(1).get_version())
+	context.balance_profile_id = &"progression"
+	context.balance_profile_version = profiles.progression.version
+	context.sample_count = careers
+	context.sample_unit = "complete player careers"
+	context.seed_description = "shard %d of %d, seeds %d..%d" % [
+		shard, shards, shard * careers + 1, shard * careers + careers]
+	context.notes.append(
+		"Â§27.1 certification sample is %d complete careers; this run used %d."
+			% [CalibrationTargets.REQUIRED_CAREERS, careers])
+	context.notes.append(
+		"Matches are not simulated. Â§9.6 makes game participation a source of seasonal "
+		+ "AP-equivalent opportunity; the AP is what progression consumes.")
+
+	var report := CalibrationReport.new(context)
+	report.add_metric(CalibrationMetric.boolean(
+		&"configuration.valid",
+		"Gate B0: the balance profile set validates offline.",
+		configuration.is_empty(), "BALANCE_SPEC.md Â§30 Gate B0"))
+	for failure in configuration:
+		context.notes.append("configuration failure: %s" % failure)
+	report.add_metric(CalibrationMetric.boolean(
+		&"sample.meets_certification_size",
+		"Whether this run reached the Â§27.1 sample size for a certifying progression report.",
+		careers >= CalibrationTargets.REQUIRED_CAREERS,
+		CalibrationTargets.sample_size_source(), careers))
+
+	var simulator := CareerSimulator.new(profiles)
+	var manual: Array = _run_population(
+		simulator, careers, shard, DevelopmentExecutor.Value.MANUAL)
+	_judge_population(report, manual, careers)
+
+	# Â§9.7 parity: a matched cohort under the full-detail allocator and the
+	# aggregate executor, at a reduced size because parity is a comparison of
+	# distributions rather than a tail measurement.
+	var parity_size: int = maxi(1, mini(careers, 4000))
+	var full_detail: Array = _run_population(
+		simulator, parity_size, shard, DevelopmentExecutor.Value.FULL_DETAIL_ALLOCATOR)
+	var aggregate: Array = _run_population(
+		simulator, parity_size, shard, DevelopmentExecutor.Value.AGGREGATE)
+	var manual_slice: Array = manual.slice(0, parity_size)
+	_judge_parity(report, &"manual_vs_full_detail", manual_slice, full_detail)
+	_judge_parity(report, &"manual_vs_aggregate", manual_slice, aggregate)
+
+	report.finish()
+	quit(ReportWriter.publish(report, "career_progression_%s" % label))
+
+
+func _run_population(
+	simulator: CareerSimulator,
+	careers: int,
+	shard: int,
+	executor: int,
+) -> Array:
+	var results: Array = []
+	var base: int = shard * careers
+	for index in range(careers):
+		results.append(simulator.simulate(base + index + 1, executor))
+	return results
+
+
+func _judge_population(report: CalibrationReport, results: Array, careers: int) -> void:
+	var peaks_by_path: Array[PackedFloat64Array] = []
+	for path in range(CareerSimulator.PATH_COUNT):
+		peaks_by_path.append(PackedFloat64Array())
+	var all_peaks := PackedFloat64Array()
+	var coverage_hits: int = 0
+	var widths := PackedFloat64Array()
+	var signed_errors := PackedFloat64Array()
+	var above_95: int = 0
+	var in_transition_gap: int = 0
+	var ap_totals := PackedFloat64Array()
+	var cap_attainment := PackedFloat64Array()
+	var peak_ages := PackedFloat64Array()
+
+	for entry: CareerSimulator.CareerResult in results:
+		var career: CareerSimulator.CareerResult = entry
+		peaks_by_path[career.path].append(float(career.peak_overall))
+		all_peaks.append(float(career.peak_overall))
+		widths.append(float(career.projected_peak_width()))
+		signed_errors.append(career.projected_peak_signed_error())
+		peak_ages.append(float(career.peak_age))
+		ap_totals.append(career.total_ap_granted)
+		cap_attainment.append(career.cap_attainment)
+		if career.projected_peak_covers_realized():
+			coverage_hits += 1
+		if career.peak_overall > 95:
+			above_95 += 1
+		if career.peak_overall == 72 or career.peak_overall == 73:
+			in_transition_gap += 1
+
+	# --- Â§8.4 locked peak distribution --------------------------------------
+	var rows: Array = []
+	for path in range(CareerSimulator.PATH_COUNT):
+		var peaks: PackedFloat64Array = peaks_by_path[path]
+		if peaks.is_empty():
+			continue
+		var sorted: PackedFloat64Array = peaks.duplicate()
+		sorted.sort()
+		var median: float = CalibrationStatistics.percentile(sorted, 0.50)
+		var id: StringName = CareerSimulator.path_id(path)
+		report.add_metric(CalibrationMetric.banded(
+			StringName("career_peak.%s.median" % id),
+			"Median peak current Overall reached at any point in a complete career, "
+			+ "for careers classified %s." % id,
+			"complete careers", median,
+			CalibrationTargets.career_peak_overall(path), peaks.size(),
+			CalibrationStatistics.mean_interval_half_width(peaks)))
+		rows.append({
+			"outcome": String(id),
+			"careers": peaks.size(),
+			"share": float(peaks.size()) / float(results.size()),
+			"peak_p10": CalibrationStatistics.percentile(sorted, 0.10),
+			"peak_median": median,
+			"peak_p90": CalibrationStatistics.percentile(sorted, 0.90),
+			"peak_min": sorted[0],
+			"peak_max": sorted[sorted.size() - 1],
+		})
+	report.add_section(&"career_peak_distribution", rows)
+
+	var above_interval: PackedFloat64Array = CalibrationStatistics.wilson_interval(
+		above_95, results.size())
+	report.add_metric(CalibrationMetric.banded(
+		&"career_peak.share_above_95",
+		"Share of complete careers whose peak current Overall exceeded 95. Â§8.4 "
+		+ "requires 96+ to be practically nonexistent.",
+		"complete careers", float(above_95) / float(results.size()),
+		CalibrationTargets.share_above_95_overall(), results.size(),
+		(above_interval[1] - above_interval[0]) / 2.0))
+	report.add_metric(CalibrationMetric.banded(
+		&"career_peak.transition_gap_share",
+		"Share of careers peaking at 72 or 73. Â§8.4 wants a continuous "
+		+ "distribution across the deliberate gap rather than a spike or a hole.",
+		"complete careers", float(in_transition_gap) / float(results.size()),
+		CalibrationTargets.transition_band_share(), results.size()))
+
+	# --- Â§6.3 projected-peak honesty ----------------------------------------
+	var coverage_interval: PackedFloat64Array = CalibrationStatistics.wilson_interval(
+		coverage_hits, results.size())
+	report.add_metric(CalibrationMetric.banded(
+		&"projected_peak.coverage",
+		"Share of careers whose realized peak Overall fell inside the Projected "
+		+ "Peak range displayed at the start of the career.",
+		"complete careers", float(coverage_hits) / float(results.size()),
+		CalibrationTargets.projected_peak_coverage(), results.size(),
+		(coverage_interval[1] - coverage_interval[0]) / 2.0))
+	var sorted_widths: PackedFloat64Array = widths.duplicate()
+	sorted_widths.sort()
+	report.add_metric(CalibrationMetric.banded(
+		&"projected_peak.median_width",
+		"Median width of the displayed Projected Peak range, in Overall points.",
+		"complete careers", CalibrationStatistics.percentile(sorted_widths, 0.50),
+		CalibrationTargets.projected_peak_median_width(), results.size()))
+	var sorted_errors: PackedFloat64Array = signed_errors.duplicate()
+	sorted_errors.sort()
+	report.add_metric(CalibrationMetric.banded(
+		&"projected_peak.median_signed_error",
+		"Median of realized peak minus the midpoint of the displayed range. "
+		+ "Positive means the display was systematically pessimistic.",
+		"complete careers", CalibrationStatistics.percentile(sorted_errors, 0.50),
+		CalibrationTargets.projected_peak_signed_bias(), results.size()))
+
+	# --- Â§9.5 lifetime conversion, previously unmeasured --------------------
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_lifetime_ap_granted",
+		"Mean AP-equivalent granted across a complete career. Â§9.5 records this "
+		+ "conversion as unmeasured; this is the measurement.",
+		"complete careers", CalibrationStatistics.mean(ap_totals), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(ap_totals)))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_peak_overall",
+		"Mean peak current Overall across the whole population.",
+		"complete careers", CalibrationStatistics.mean(all_peaks), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(all_peaks)))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_cap_attainment",
+		"Mean share of the player's own per-attribute caps actually filled.",
+		"complete careers", CalibrationStatistics.mean(cap_attainment), results.size()))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_peak_age",
+		"Mean age at which peak current Overall was reached.",
+		"complete careers", CalibrationStatistics.mean(peak_ages), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(peak_ages)))
+
+
+## Â§9.7 / Â§27.2: the manual path and the NPC executors receive identical
+## opportunity under identical rules, so their outcome distributions must be
+## statistically indistinguishable.
+func _judge_parity(
+	report: CalibrationReport,
+	pair: StringName,
+	left: Array,
+	right: Array,
+) -> void:
+	var left_peaks := PackedFloat64Array()
+	var right_peaks := PackedFloat64Array()
+	for entry: CareerSimulator.CareerResult in left:
+		var career: CareerSimulator.CareerResult = entry
+		left_peaks.append(float(career.peak_overall))
+	for entry: CareerSimulator.CareerResult in right:
+		var career: CareerSimulator.CareerResult = entry
+		right_peaks.append(float(career.peak_overall))
+
+	var left_mean: float = CalibrationStatistics.mean(left_peaks)
+	var right_mean: float = CalibrationStatistics.mean(right_peaks)
+	var difference: float = right_mean - left_mean
+	var half_width: float = CalibrationStatistics.difference_interval_half_width(
+		left_peaks, right_peaks)
+	var effect: float = CalibrationStatistics.cohens_d(left_peaks, right_peaks)
+	# The tolerance is the Â§27.2 relative-rate tolerance applied to mean peak
+	# Overall, which is the distribution this pair is being compared on.
+	var tolerance: float = CalibrationTargets.PARITY_EVENT_RELATIVE * left_mean
+	var metric := CalibrationMetric.banded(
+		StringName("parity.%s.mean_peak_difference" % pair),
+		"Difference in mean peak current Overall between two executors given "
+		+ "equivalent opportunity. Â§9.7 binds all three to one contract.",
+		"complete careers", difference,
+		CalibrationBand.new(-tolerance, tolerance, CalibrationTargets.parity_source()),
+		left_peaks.size(), half_width)
+	report.add_metric(metric.with_effect_size(effect, &"cohens_d"))

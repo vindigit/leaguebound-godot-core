@@ -54,12 +54,17 @@ static func input_for(scenario: StringName) -> MatchInput:
 ## is named for. `tools/golden_ledger_harness.gd --verify` re-checks that claim,
 ## so a balance change that quietly stops producing overtime is a failure rather
 ## than a golden hash that still passes while testing nothing.
+##
+## When a balance change does invalidate one, re-derive it with
+## `calibration/runners/find_scenario_seeds.gd` rather than guessing. The
+## overtime seed moved from 5150 to 126704 at the Stage 4 calibration: the
+## calibrated scoring rates changed which fixed seeds finish level.
 static func seed_for(scenario: StringName) -> int:
 	match scenario:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			return 5150
+			return 126704
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

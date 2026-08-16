@@ -13,14 +13,24 @@ extends RefCounted
 ## possession without changing anyone's ratings.
 
 var _balance: SimulationBalanceProfile
+## The competition's pace environment (§4). Every draw is scaled by it, so the
+## §14.1 possessions band is a property of the competition rather than of the
+## shared time bands.
+var _pace_multiplier: float
 
 
-func _init(p_balance: SimulationBalanceProfile) -> void:
+func _init(
+	p_balance: SimulationBalanceProfile,
+	p_rules: CompetitionRuleProfile = null,
+) -> void:
 	_balance = p_balance
+	_pace_multiplier = 1.0 if p_rules == null else p_rules.pace_multiplier
 
 
 func inbound_ms(random_source: RandomSource) -> int:
-	return _draw(_balance.inbound_seconds_min, _balance.inbound_seconds_max, 1.0, random_source)
+	return _draw(
+		_balance.inbound_seconds_min, _balance.inbound_seconds_max,
+		_pace_multiplier, random_source)
 
 
 func advance_ms(context: PossessionContext, random_source: RandomSource) -> int:
@@ -62,7 +72,9 @@ func action_ms(context: PossessionContext, action_family: int, random_source: Ra
 
 
 func rebound_ms(random_source: RandomSource) -> int:
-	return _draw(_balance.rebound_seconds_min, _balance.rebound_seconds_max, 1.0, random_source)
+	return _draw(
+		_balance.rebound_seconds_min, _balance.rebound_seconds_max,
+		_pace_multiplier, random_source)
 
 
 ## §9.4: "Dead-ball fouls and free throws use separate event time without
@@ -85,7 +97,7 @@ func _pace(context: PossessionContext) -> float:
 		var handler: PlayerMatchProfile = context.offense_profile(context.ball_handler_id)
 		player = _balance.tendency_multiplier(
 			handler.tendencies.at(TendencySlider.Value.PUSH_TRANSITION_CONTROL_TEMPO))
-	return clampf(
+	return _pace_multiplier * clampf(
 		pow(coach, _balance.coach_preference_share) * pow(player, _balance.player_preference_share),
 		0.70,
 		1.40)

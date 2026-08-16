@@ -19,6 +19,88 @@ extends RefCounted
 ## raised to the player share and the coach's to the coach share, so a strict
 ## coach moves behaviour without either factor leaving its own band.
 
+## Per-actor scratch for one `generate` call.
+##
+## Everything here is a property of *the actor in this action*, not of an
+## individual candidate. The same player supplies three off-ball candidates, and
+## the ball handler supplies two candidates for every team-mate, so resolving
+## his defender, his matchup edge, and his confidence once per family class
+## rather than once per candidate removes work without changing a single
+## arithmetic result: the inputs are identical for every candidate that shares
+## the class.
+##
+## The memos are per-call and die with the call. Nothing context-dependent
+## survives into the next action.
+class ActorFrame extends RefCounted:
+	## Matchup classes, in the order `_matchup_opportunity` branches on them.
+	const MATCHUP_DRIVE: int = 0
+	const MATCHUP_POST: int = 1
+	const MATCHUP_DEFAULT: int = 2
+	const MATCHUP_CLASS_COUNT: int = 3
+
+	## Confidence classes for the non-shot families.
+	const CONFIDENCE_PASS: int = 0
+	const CONFIDENCE_CREATION: int = 1
+	const CONFIDENCE_POST: int = 2
+	const CONFIDENCE_SCREEN: int = 3
+	const CONFIDENCE_OFF_BALL: int = 4
+	const CONFIDENCE_CLASS_COUNT: int = 5
+
+	const UNSET: float = -1.0
+
+	## The four memos share one flat buffer at fixed offsets. Four separate
+	## arrays meant four allocations per player per action, which cost about as
+	## much as the recomputation the memo was there to avoid.
+	const _MATCHUP_CLASS_BASE: int = 0
+	const _MATCHUP_ZONE_BASE: int = MATCHUP_CLASS_COUNT
+	const _CONFIDENCE_CLASS_BASE: int = _MATCHUP_ZONE_BASE + ShotZone.COUNT
+	const _CONFIDENCE_ZONE_BASE: int = _CONFIDENCE_CLASS_BASE + CONFIDENCE_CLASS_COUNT
+	const _MEMO_SIZE: int = _CONFIDENCE_ZONE_BASE + ShotZone.COUNT
+
+	var profile: PlayerMatchProfile
+	var runtime: PlayerMatchRuntime
+	var defender: PlayerMatchProfile
+	var defender_runtime: PlayerMatchRuntime
+	var fatigue: float
+	var usage: float
+	var _memo: PackedFloat64Array
+
+	func _init() -> void:
+		_memo = PackedFloat64Array()
+		_memo.resize(_MEMO_SIZE)
+		reset()
+
+	## Clears the memo so a pooled frame can be refilled for the next action
+	## without reallocating. Called at the start of every action; nothing
+	## context-dependent survives it.
+	func reset() -> void:
+		_memo.fill(UNSET)
+
+	func matchup_for_class(matchup_class: int) -> float:
+		return _memo[_MATCHUP_CLASS_BASE + matchup_class]
+
+	func set_matchup_for_class(matchup_class: int, value: float) -> void:
+		_memo[_MATCHUP_CLASS_BASE + matchup_class] = value
+
+	func matchup_for_zone(zone: int) -> float:
+		return _memo[_MATCHUP_ZONE_BASE + zone]
+
+	func set_matchup_for_zone(zone: int, value: float) -> void:
+		_memo[_MATCHUP_ZONE_BASE + zone] = value
+
+	func confidence_for_class(confidence_class: int) -> float:
+		return _memo[_CONFIDENCE_CLASS_BASE + confidence_class]
+
+	func set_confidence_for_class(confidence_class: int, value: float) -> void:
+		_memo[_CONFIDENCE_CLASS_BASE + confidence_class] = value
+
+	func confidence_for_zone(zone: int) -> float:
+		return _memo[_CONFIDENCE_ZONE_BASE + zone]
+
+	func set_confidence_for_zone(zone: int, value: float) -> void:
+		_memo[_CONFIDENCE_ZONE_BASE + zone] = value
+
+
 var _capability: CapabilityCalculator
 var _body: BodyEffects
 var _balance: SimulationBalanceProfile
@@ -31,6 +113,11 @@ var _participants: ParticipantSelector
 ## generation into the slowest part of the engine by an order of magnitude.
 var _frame_spacing: float = 0.5
 var _frame_usage: Dictionary = {}
+var _frame_on_court: Array[StringName] = []
+## Pooled actor scratch, keyed by player id and reused across actions.
+var _frame_pool: Dictionary = {}
+## Which pooled frames have been refreshed for the action being generated.
+var _frame_live: Dictionary = {}
 
 
 func _init(
@@ -74,7 +161,7 @@ func generate(context: PossessionContext) -> Array[ActionCandidate]:
 		if not screener_id.is_empty():
 			candidates.append(
 				_build(context, handler_id, ActionFamily.Value.PICK_ACTION, screener_id, -1))
-		for teammate_id in context.offense_on_court():
+		for teammate_id in _frame_on_court:
 			if teammate_id == handler_id:
 				continue
 			candidates.append(
@@ -94,22 +181,52 @@ func generate(context: PossessionContext) -> Array[ActionCandidate]:
 	return candidates
 
 
-## Resolves the possession-level facts every candidate shares.
+## Resolves the possession-level facts every candidate shares, and the per-actor
+## facts every candidate from the same actor shares.
 func _begin_frame(context: PossessionContext) -> void:
-	var on_court: Array[StringName] = context.offense_on_court()
+	_frame_on_court = context.offense_on_court()
 	_frame_usage = _participants.usage_damping_table(context)
-	if on_court.is_empty():
+	_frame_live.clear()
+	if _frame_on_court.is_empty():
 		_frame_spacing = 0.5
 		return
 	var spacers: int = 0
-	for player_id in on_court:
-		var player: PlayerMatchProfile = context.offense_profile(player_id)
-		var runtime: PlayerMatchRuntime = context.offense_runtime(player_id)
+	for player_id in _frame_on_court:
+		var frame: ActorFrame = _refresh_actor(context, player_id)
 		var three: float = _capability.capability_of(
-			CapabilityKey.Value.THREE_POINT_SHOTMAKING, player, runtime)
+			CapabilityKey.Value.THREE_POINT_SHOTMAKING, frame.profile, frame.runtime)
 		if three >= _balance.spacer_capability_threshold:
 			spacers += 1
-	_frame_spacing = float(spacers) / float(on_court.size())
+	_frame_spacing = float(spacers) / float(_frame_on_court.size())
+
+
+## The actor scratch for a player on the floor. Frames are pooled by player id
+## across actions and cleared on reuse, so the memo costs one allocation per
+## player per match rather than one per player per action.
+func _actor_frame(context: PossessionContext, player_id: StringName) -> ActorFrame:
+	if _frame_live.has(player_id):
+		var cached: ActorFrame = _frame_pool[player_id]
+		return cached
+	return _refresh_actor(context, player_id)
+
+
+func _refresh_actor(context: PossessionContext, player_id: StringName) -> ActorFrame:
+	var frame: ActorFrame
+	if _frame_pool.has(player_id):
+		frame = _frame_pool[player_id]
+		frame.reset()
+	else:
+		frame = ActorFrame.new()
+		_frame_pool[player_id] = frame
+	frame.profile = context.offense_profile(player_id)
+	frame.runtime = context.offense_runtime(player_id)
+	var defender_id: StringName = context.defender_of(player_id)
+	frame.defender = context.defense_profile(defender_id)
+	frame.defender_runtime = context.defense_runtime(defender_id)
+	frame.fatigue = _participants.fatigue_availability(frame.runtime)
+	frame.usage = _usage_of(player_id)
+	_frame_live[player_id] = true
+	return frame
 
 
 func _usage_of(player_id: StringName) -> float:
@@ -129,7 +246,7 @@ func putback_candidate(context: PossessionContext, rebounder_id: StringName) -> 
 	return ActionCandidate.new(
 		ActionFamily.Value.PUTBACK, rebounder_id,
 		_balance.action_base_weight(ActionFamily.Value.PUTBACK),
-		&"", zone, dunk, "putback")
+		&"", zone, dunk)
 
 
 # --- validity ---------------------------------------------------------------
@@ -208,8 +325,9 @@ func _build(
 	target_id: StringName,
 	zone: int,
 ) -> ActionCandidate:
-	var actor: PlayerMatchProfile = context.offense_profile(actor_id)
-	var runtime: PlayerMatchRuntime = context.offense_runtime(actor_id)
+	var frame: ActorFrame = _actor_frame(context, actor_id)
+	var actor: PlayerMatchProfile = frame.profile
+	var runtime: PlayerMatchRuntime = frame.runtime
 	var base: float = _balance.action_base_weight(family)
 
 	var role_opportunity: float = _balance.role_opportunity(actor.tactical_role.role, family)
@@ -221,13 +339,13 @@ func _build(
 		_balance.coach_instruction_min,
 		_balance.coach_instruction_max)
 	var tactical_fit: float = _tactical_fit(context, actor, runtime, family, zone)
-	var matchup: float = _matchup_opportunity(context, actor, runtime, family, zone)
+	var matchup: float = _matchup_opportunity(context, frame, family, zone)
 	var score_clock: float = _score_clock(context, family, zone)
-	var confidence: float = _capability_confidence(context, actor, runtime, family, zone)
-	var fatigue: float = _participants.fatigue_availability(runtime)
+	var confidence: float = _capability_confidence(context, frame, family, zone)
+	var fatigue: float = frame.fatigue
 	var usage: float = 1.0
 	if _consumes_usage(family):
-		usage = _usage_of(actor_id)
+		usage = frame.usage
 	elif family == ActionFamily.Value.PASS_SWING or family == ActionFamily.Value.HANDOFF:
 		# A pass is weighted by the *receiver's* claim on the budget, which is
 		# what makes usage a team constraint rather than a per-player one.
@@ -237,14 +355,16 @@ func _build(
 		base * role_opportunity * tendency * coach * tactical_fit
 		* matchup * score_clock * confidence * fatigue * usage
 	)
-	var trace: String = "role=%.2f tend=%.2f coach=%.2f fit=%.2f match=%.2f clock=%.2f conf=%.2f fat=%.2f use=%.2f" % [
+	# The §28 trace keeps the factors, not a rendered string: see the note on
+	# `ActionCandidate`. Order matches `ActionCandidate.FACTOR_NAMES`.
+	var factors := PackedFloat64Array([
 		role_opportunity, tendency, coach, tactical_fit, matchup,
 		score_clock, confidence, fatigue, usage,
-	]
+	])
 	var dunk: bool = _dunk_is_valid(context, actor, runtime, zone)
 	return ActionCandidate.new(
 		family, actor_id, _balance.clamp_candidate_weight(weight, base),
-		target_id, zone, dunk, trace)
+		target_id, zone, dunk, factors)
 
 
 func _consumes_usage(family: int) -> bool:
@@ -373,16 +493,55 @@ func _tactical_fit(
 
 ## §10.3 matchup opportunity: the actor's edge over his current assignment,
 ## including the §6.1 size channel. Bounded by the §12.2 band.
+##
+## The result depends only on the actor, his assigned defender, the family's
+## matchup class, and — for a pull-up — the zone. Every candidate sharing those
+## gets the identical number, so the frame memoizes by class and by zone rather
+## than recomputing four capabilities per candidate.
 func _matchup_opportunity(
 	context: PossessionContext,
-	actor: PlayerMatchProfile,
-	runtime: PlayerMatchRuntime,
+	frame: ActorFrame,
 	family: int,
 	zone: int,
 ) -> float:
-	var defender_id: StringName = context.defender_of(actor.player_id)
-	var defender: PlayerMatchProfile = context.defense_profile(defender_id)
-	var defender_runtime: PlayerMatchRuntime = context.defense_runtime(defender_id)
+	if family == ActionFamily.Value.PULL_UP:
+		var shot_zone: int = maxi(zone, 0)
+		var memoized_zone: float = frame.matchup_for_zone(shot_zone)
+		if memoized_zone >= 0.0:
+			return memoized_zone
+		var zone_value: float = _matchup_value(context, frame, family, shot_zone)
+		frame.set_matchup_for_zone(shot_zone, zone_value)
+		return zone_value
+
+	var matchup_class: int = _matchup_class(family)
+	var memoized: float = frame.matchup_for_class(matchup_class)
+	if memoized >= 0.0:
+		return memoized
+	var value: float = _matchup_value(context, frame, family, zone)
+	frame.set_matchup_for_class(matchup_class, value)
+	return value
+
+
+func _matchup_class(family: int) -> int:
+	match family:
+		ActionFamily.Value.DRIVE, ActionFamily.Value.TRANSITION_ATTACK, ActionFamily.Value.PICK_ACTION:
+			return ActorFrame.MATCHUP_DRIVE
+		ActionFamily.Value.POST_ACTION:
+			return ActorFrame.MATCHUP_POST
+		_:
+			return ActorFrame.MATCHUP_DEFAULT
+
+
+func _matchup_value(
+	context: PossessionContext,
+	frame: ActorFrame,
+	family: int,
+	zone: int,
+) -> float:
+	var actor: PlayerMatchProfile = frame.profile
+	var runtime: PlayerMatchRuntime = frame.runtime
+	var defender: PlayerMatchProfile = frame.defender
+	var defender_runtime: PlayerMatchRuntime = frame.defender_runtime
 	var attack: float = 0.0
 	var resist: float = 0.0
 	match family:
@@ -462,32 +621,56 @@ func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
 ## capability check.
 func _capability_confidence(
 	context: PossessionContext,
-	actor: PlayerMatchProfile,
-	runtime: PlayerMatchRuntime,
+	frame: ActorFrame,
 	family: int,
 	zone: int,
 ) -> float:
 	var capability: float = 0.0
 	if zone >= 0:
-		capability = _capability.shot_selection(actor, runtime, zone)
+		var memoized_zone: float = frame.confidence_for_zone(zone)
+		if memoized_zone >= 0.0:
+			capability = memoized_zone
+		else:
+			capability = _capability.shot_selection(frame.profile, frame.runtime, zone)
+			frame.set_confidence_for_zone(zone, capability)
 	else:
-		match family:
-			ActionFamily.Value.PASS_SWING, ActionFamily.Value.HANDOFF:
-				capability = _capability.capability_of(
-					CapabilityKey.Value.PASS_READ_QUALITY, actor, runtime)
-			ActionFamily.Value.DRIVE, ActionFamily.Value.PICK_ACTION, ActionFamily.Value.TRANSITION_ATTACK:
-				capability = _capability.capability_of(
-					CapabilityKey.Value.HANDLE_CREATION, actor, runtime)
-			ActionFamily.Value.POST_ACTION:
-				capability = _capability.capability_of(
-					CapabilityKey.Value.RIM_TOUCH_FINISH, actor, runtime)
-			ActionFamily.Value.SCREEN:
-				capability = _capability.capability_of(
-					CapabilityKey.Value.CONTACT_FORCE, actor, runtime)
-			_:
-				capability = _capability.capability_of(
-					CapabilityKey.Value.OFF_BALL_TIMING, actor, runtime)
+		var confidence_class: int = _confidence_class(family)
+		var memoized: float = frame.confidence_for_class(confidence_class)
+		if memoized >= 0.0:
+			capability = memoized
+		else:
+			capability = _capability.capability_of(
+				_confidence_capability(confidence_class), frame.profile, frame.runtime)
+			frame.set_confidence_for_class(confidence_class, capability)
 	return lerpf(
 		_balance.capability_confidence_min,
 		_balance.capability_confidence_max,
 		clampf(capability, 0.0, 1.0))
+
+
+func _confidence_class(family: int) -> int:
+	match family:
+		ActionFamily.Value.PASS_SWING, ActionFamily.Value.HANDOFF:
+			return ActorFrame.CONFIDENCE_PASS
+		ActionFamily.Value.DRIVE, ActionFamily.Value.PICK_ACTION, ActionFamily.Value.TRANSITION_ATTACK:
+			return ActorFrame.CONFIDENCE_CREATION
+		ActionFamily.Value.POST_ACTION:
+			return ActorFrame.CONFIDENCE_POST
+		ActionFamily.Value.SCREEN:
+			return ActorFrame.CONFIDENCE_SCREEN
+		_:
+			return ActorFrame.CONFIDENCE_OFF_BALL
+
+
+func _confidence_capability(confidence_class: int) -> int:
+	match confidence_class:
+		ActorFrame.CONFIDENCE_PASS:
+			return CapabilityKey.Value.PASS_READ_QUALITY
+		ActorFrame.CONFIDENCE_CREATION:
+			return CapabilityKey.Value.HANDLE_CREATION
+		ActorFrame.CONFIDENCE_POST:
+			return CapabilityKey.Value.RIM_TOUCH_FINISH
+		ActorFrame.CONFIDENCE_SCREEN:
+			return CapabilityKey.Value.CONTACT_FORCE
+		_:
+			return CapabilityKey.Value.OFF_BALL_TIMING

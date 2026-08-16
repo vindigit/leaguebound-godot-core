@@ -58,7 +58,7 @@ func resolve_ball_handling(
 				true, TurnoverCause.Value.STRIP, candidate.actor_id, defender_id)
 
 	var probability: float = _balance.opposed_probability(
-		_balance.turnover_base * (0.60 + advantage.turnover_risk),
+		_balance.unforced_turnover_base(security) * (0.60 + advantage.turnover_risk),
 		units,
 		_balance.turnover_floor,
 		_balance.turnover_ceiling)
@@ -111,7 +111,7 @@ func resolve_pass(
 				true, TurnoverCause.Value.INTERCEPTION, candidate.actor_id, defender_id)
 
 	var probability: float = _balance.opposed_probability(
-		_balance.turnover_base * (0.55 + advantage.turnover_risk) * creativity,
+		_balance.unforced_turnover_base(quality) * (0.55 + advantage.turnover_risk) * creativity,
 		units,
 		_balance.turnover_floor,
 		_balance.turnover_ceiling)

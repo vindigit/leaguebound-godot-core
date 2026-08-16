@@ -1,37 +1,37 @@
-class_name SimulationBalanceProfile
+﻿class_name SimulationBalanceProfile
 extends RefCounted
 
 ## The versioned owner of every match-resolution tuning constant.
 ##
-## `BALANCE_SPEC.md` §4: "Every production tuning constant belongs to a named
+## `BALANCE_SPEC.md` Â§4: "Every production tuning constant belongs to a named
 ## balance profile. Anonymous numeric literals are prohibited inside resolution
-## code." `SIMULATION_SPEC.md` §30.2 lists "Move the anonymous numeric literals
+## code." `SIMULATION_SPEC.md` Â§30.2 lists "Move the anonymous numeric literals
 ## in shot resolution into the versioned simulation balance profile" as
 ## outstanding work; this type closes it.
 ##
-## Values here are **Baselines** in the §2 sense. They are calibrated targets
-## drawn from §12–§15, not proven values, and they become ship-approved only
-## after the §31 reports pass. Nothing in this file may be cited as evidence.
+## Values here are **Baselines** in the Â§2 sense. They are calibrated targets
+## drawn from Â§12â€“Â§15, not proven values, and they become ship-approved only
+## after the Â§31 reports pass. Nothing in this file may be cited as evidence.
 ##
 ## Every scalar is published through `describe_tunables()` with a name, unit,
 ## and safe range so the Gate B0 configuration-integrity check can assert those
 ## facts without reflection.
 
-## §13.1 anchors the open, balanced make baselines at these five ratings.
+## Â§13.1 anchors the open, balanced make baselines at these five ratings.
 const SHOT_BASELINE_ANCHOR_RATINGS: PackedFloat64Array = [40.0, 55.0, 70.0, 85.0, 99.0]
 
-## §15.1 acute fatigue is a hidden 0-100 value; the capability penalty is
+## Â§15.1 acute fatigue is a hidden 0-100 value; the capability penalty is
 ## expressed in rating points at these band edges.
 const FATIGUE_PENALTY_ANCHORS: PackedFloat64Array = [0.0, 24.0, 44.0, 64.0, 79.0, 100.0]
 const FATIGUE_PENALTY_POINTS: PackedFloat64Array = [0.0, 0.0, 2.0, 6.0, 10.0, 16.0]
 
-## §12.1 five-position tendency mapping.
+## Â§12.1 five-position tendency mapping.
 const TENDENCY_MULTIPLIERS: PackedFloat64Array = [0.82, 0.91, 1.00, 1.10, 1.22]
 
-## §17.1 action intensity, as a share of the §15.1 per-action load range.
+## Â§17.1 action intensity, as a share of the Â§15.1 per-action load range.
 ## Indexed by `ActionFamily.Value`. "Transition sprint, repeated creation,
 ## full-pressure defense, contact finishes, and aggressive rebounding cost
-## more" — the ordering here is that sentence.
+## more" â€” the ordering here is that sentence.
 const ACTION_INTENSITY_SHARES: PackedFloat64Array = [
 	0.00, # pass_swing
 	0.75, # drive
@@ -50,20 +50,20 @@ const ACTION_INTENSITY_SHARES: PackedFloat64Array = [
 var profile_id: StringName
 var version: StringName
 
-# --- §13.1 open, balanced simulated make baselines -------------------------
+# --- Â§13.1 open, balanced simulated make baselines -------------------------
 var baseline_close_non_dunk: PackedFloat64Array = [0.40, 0.50, 0.60, 0.69, 0.78]
 var baseline_dunk: PackedFloat64Array = [0.62, 0.72, 0.82, 0.90, 0.96]
 var baseline_midrange: PackedFloat64Array = [0.25, 0.34, 0.43, 0.51, 0.58]
 var baseline_three: PackedFloat64Array = [0.20, 0.29, 0.37, 0.44, 0.50]
 var baseline_free_throw: PackedFloat64Array = [0.50, 0.64, 0.76, 0.86, 0.94]
 ## A close non-rim attempt is the same touch from further out than the
-## restricted area, so it sits under the §13.1 close baseline.
+## restricted area, so it sits under the Â§13.1 close baseline.
 var close_non_rim_penalty: float = 0.06
-## §13.2 lists deep three separately with a lower ceiling; the same distance
+## Â§13.2 lists deep three separately with a lower ceiling; the same distance
 ## penalty applies to its baseline.
 var deep_three_penalty: float = 0.06
 
-# --- §13.2 probability floors and ceilings ---------------------------------
+# --- Â§13.2 probability floors and ceilings ---------------------------------
 var floor_close_non_dunk: float = 0.02
 var ceiling_close_non_dunk: float = 0.88
 var floor_dunk: float = 0.05
@@ -77,7 +77,7 @@ var ceiling_deep_three: float = 0.48
 var floor_free_throw: float = 0.35
 var ceiling_free_throw: float = 0.97
 
-# --- §13.3 contest and context penalties -----------------------------------
+# --- Â§13.3 contest and context penalties -----------------------------------
 var contest_penalty_open: float = 0.0
 var contest_penalty_light: float = 0.04
 var contest_penalty_moderate: float = 0.10
@@ -87,10 +87,10 @@ var movement_penalty_max: float = 0.08
 var catch_quality_penalty_max: float = 0.07
 var fatigue_shot_penalty_max: float = 0.10
 var clock_desperation_penalty_max: float = 0.12
-## §12.6 lists advantage and pass quality as a positive make-quality term.
+## Â§12.6 lists advantage and pass quality as a positive make-quality term.
 var advantage_shot_bonus_max: float = 0.10
 
-# --- §12.3 contest construction ---------------------------------------------
+# --- Â§12.3 contest construction ---------------------------------------------
 ## Contest pressure is centred rather than read straight off the defender's
 ## capability. An average defender on an average shooter with no advantage is a
 ## light-to-moderate contest, not a smothering one; without the centre, every
@@ -101,12 +101,12 @@ var contest_capability_span: float = 0.35
 var contest_advantage_relief: float = 0.55
 var contest_help_weight: float = 0.55
 
-# --- §13.1 contact load ------------------------------------------------------
+# --- Â§13.1 contact load ------------------------------------------------------
 ## How much illegal-contact opportunity a shot in each area generates, before
-## the §14.3 conversion rate turns opportunity into a whistle.
-var interior_contact_base: float = 0.55
+## the Â§14.3 conversion rate turns opportunity into a whistle.
+var interior_contact_base: float = 0.76
 var interior_contact_pressure_share: float = 0.70
-var perimeter_contact_base: float = 0.08
+var perimeter_contact_base: float = 0.14
 var perimeter_contact_pressure_share: float = 0.25
 ## A block opportunity is not simply proportional to contest pressure: a
 ## defender in the area has some chance at the ball even on a light contest.
@@ -114,38 +114,50 @@ var block_opportunity_base_share: float = 0.40
 var block_opportunity_pressure_share: float = 0.80
 ## A completed ordinary pass is a clean catch. Reading catch quality straight
 ## off Pass Accuracy made every catch-and-shoot attempt carry a penalty, which
-## is not what §12.2 means by "catch/pass quality".
+## is not what Â§12.2 means by "catch/pass quality".
 var catch_quality_floor: float = 0.70
 
-# --- §11.2 steal opportunity -------------------------------------------------
-## §14.3's 28% is the rate at which a *valid strip or interception* converts,
+# --- Â§11.2 steal opportunity -------------------------------------------------
+## Â§14.3's 28% is the rate at which a *valid strip or interception* converts,
 ## not the share of turnovers that happen to be steals. The opportunity itself
 ## therefore has its own rate, driven by coverage pressure and the defender's
-## Disciplined ↔ Gamble slider.
-var steal_opportunity_on_ball: float = 0.20
-var steal_opportunity_pass: float = 0.16
+## Disciplined â†” Gamble slider.
+var steal_opportunity_on_ball: float = 0.175
+var steal_opportunity_pass: float = 0.14
 
-# --- §14.3 opposed event curves --------------------------------------------
+# --- Â§14.3 opposed event curves --------------------------------------------
 ## An ordinary ten-point capability edge changes a qualifying-event probability
 ## by roughly this relative share; a twenty-five-point edge compounds to the
-## 40-70% band §14.3 requires.
+## 40-70% band Â§14.3 requires.
 var opposed_relative_sensitivity: float = 0.20
-var turnover_base: float = 0.08
+var turnover_base: float = 0.050
 var turnover_floor: float = 0.01
 var turnover_ceiling: float = 0.35
+## How much absolute ball-handling skill reduces the unforced-mistake rate, on
+## top of the §14.3 differential response.
+##
+## The opposed-event model is differential-neutral by design: a strong handler
+## against a strong defender sits where a weak handler against a weak defender
+## does. That is correct for *contested* outcomes, but §14.1 steps the turnover
+## band down as competition rises — 15-24 at high school to 11-16 at top
+## domestic — which is a statement about absolute skill, not about the matchup.
+## Without this term the engine produced its *highest* turnover rate in its
+## strongest competition, exactly inverting the table. The differential response
+## is untouched; only the base rate an unforced mistake starts from moves.
+var turnover_absolute_skill_relief: float = 0.95
 var steal_conversion_base: float = 0.28
 var steal_conversion_floor: float = 0.05
 var steal_conversion_ceiling: float = 0.65
 var block_conversion_base: float = 0.18
 var block_conversion_floor: float = 0.03
 var block_conversion_ceiling: float = 0.55
-var foul_conversion_base: float = 0.20
+var foul_conversion_base: float = 0.27
 var foul_conversion_floor: float = 0.03
 var foul_conversion_ceiling: float = 0.58
 var advantage_base: float = 0.24
 var advantage_floor: float = 0.05
 var advantage_ceiling: float = 0.70
-var assist_base: float = 0.74
+var assist_base: float = 0.94
 var assist_floor: float = 0.55
 var assist_ceiling: float = 0.95
 var offensive_rebound_base: float = 0.28
@@ -155,7 +167,7 @@ var putback_base: float = 0.23
 var putback_floor: float = 0.08
 var putback_ceiling: float = 0.48
 
-# --- §12.2 action-weight factor guardrails ---------------------------------
+# --- Â§12.2 action-weight factor guardrails ---------------------------------
 var role_opportunity_min: float = 0.60
 var role_opportunity_max: float = 1.50
 var coach_instruction_min: float = 0.88
@@ -175,13 +187,13 @@ var fatigue_availability_floor: float = 0.55
 var candidate_weight_min: float = 0.15
 var candidate_weight_max: float = 3.50
 
-# --- §10.1 action family base weights --------------------------------------
-## The base rate at which each family is considered before any §10.3 factor.
-## These set the shape of an offence — how often it swings the ball, how often
-## it attacks — and are the primary lever for pace and shot mix.
-var base_weight_pass_swing: float = 0.80
-var base_weight_drive: float = 0.85
-var base_weight_pull_up: float = 0.66
+# --- Â§10.1 action family base weights --------------------------------------
+## The base rate at which each family is considered before any Â§10.3 factor.
+## These set the shape of an offence â€” how often it swings the ball, how often
+## it attacks â€” and are the primary lever for pace and shot mix.
+var base_weight_pass_swing: float = 1.20
+var base_weight_drive: float = 0.72
+var base_weight_pull_up: float = 0.86
 var base_weight_post_action: float = 0.30
 var base_weight_pick_action: float = 0.60
 var base_weight_handoff: float = 0.22
@@ -192,7 +204,7 @@ var base_weight_reset: float = 0.30
 var base_weight_transition_attack: float = 0.95
 var base_weight_putback: float = 1.00
 
-# --- §11.1 advantage continuations ------------------------------------------
+# --- Â§11.1 advantage continuations ------------------------------------------
 ## How often an attacking action finishes at the rim rather than continuing as
 ## a kick-out or reset when no clear advantage was created. A clear or
 ## breakdown advantage always finishes; these govern the ambiguous case, and
@@ -200,12 +212,33 @@ var base_weight_putback: float = 1.00
 var drive_finish_share: float = 0.55
 var post_finish_share: float = 0.70
 var pick_finish_share: float = 0.35
-var cut_finish_share: float = 0.80
+var cut_finish_share: float = 0.85
 
-# --- §10.2 candidate validity thresholds ------------------------------------
+## Â§11.1 advantage continuation, kick-out branch.
+##
+## An attack that collapses the defence does not always finish at the rim. The
+## help it drew leaves someone open, and the pass out to that player is both the
+## dominant source of catch-and-shoot three-point attempts and the dominant
+## source of assists in modern basketball. Without this branch a material
+## advantage always ended at the rim, which suppressed the three-point attempt
+## rate and the assist rate together â€” the Â§14.1 bands for both were unreachable
+## by construction rather than by tuning.
+var drive_kick_out_share: float = 0.92
+var pick_kick_out_share: float = 0.82
+var post_kick_out_share: float = 0.55
+## The share of a pick action's material advantage that resolves as the screener
+## rolling and finishing off the handler's pass, rather than the handler
+## shooting. This is the other half of the same missing branch: the roll finish
+## is an assisted basket and the handler's pull-up is not.
+var roll_finish_share: float = 0.80
+## A kicked-out pass only exists if someone is actually spaced for it; a
+## team-mate below this three-point capability is not a kick-out target.
+var kick_out_spacer_threshold: float = 0.30
+
+# --- Â§10.2 candidate validity thresholds ------------------------------------
 ## "An impossible action receives no weight." These are the capability and
-## clock gates that decide whether a candidate exists at all — the only place a
-## factor is allowed to reach zero (§10.3).
+## clock gates that decide whether a candidate exists at all â€” the only place a
+## factor is allowed to reach zero (Â§10.3).
 var deep_three_capability_threshold: float = 0.55
 var post_action_capability_threshold: float = 0.42
 var pull_up_three_capability_threshold: float = 0.18
@@ -216,7 +249,7 @@ var desperation_clock_ms: int = 2500
 ## Spacing: the three-point capability at which a player counts as a spacer.
 var spacer_capability_threshold: float = 0.45
 
-# --- §12.3 player and coach priority ---------------------------------------
+# --- Â§12.3 player and coach priority ---------------------------------------
 var player_preference_share: float = 0.75
 var coach_preference_share: float = 0.25
 
@@ -228,7 +261,7 @@ var usage_elasticity: float = 0.55
 var usage_damping_min: float = 0.55
 var usage_damping_max: float = 1.60
 
-# --- §15.1 fatigue, condition, and recovery --------------------------------
+# --- Â§15.1 fatigue, condition, and recovery --------------------------------
 var base_fatigue_per_active_minute: float = 1.20
 var stamina_fatigue_relief: float = 0.42
 var action_load_min: float = 0.15
@@ -237,7 +270,7 @@ var bench_recovery_per_minute: float = 1.50
 var recovery_stamina_min_multiplier: float = 0.85
 var recovery_stamina_max_multiplier: float = 1.20
 
-# --- §6.1 body effects ------------------------------------------------------
+# --- Â§6.1 body effects ------------------------------------------------------
 ## Body affects action validity, reach, positioning/leverage, and matchups, and
 ## nothing else. Every constant here belongs to one of those four channels, and
 ## none of them is allowed to become a general bonus.
@@ -256,24 +289,24 @@ var body_effect_max: float = 0.15
 var rebound_reach_min_inches: float = 96.0
 var rebound_reach_max_inches: float = 156.0
 ## How much an active injury limitation can suppress capability, on top of
-## pregame condition. §17.3 keeps this an availability and execution effect,
+## pregame condition. Â§17.3 keeps this an availability and execution effect,
 ## never a rating rewrite.
 var injury_capability_share: float = 0.35
 
-# --- §18 planned rotation ---------------------------------------------------
+# --- Â§18 planned rotation ---------------------------------------------------
 ## Planned share of a player's team's available on-court seconds, by rotation
-## role. §10.6.1: rotation role "affects planned minutes, substitution
+## role. Â§10.6.1: rotation role "affects planned minutes, substitution
 ## priority, and closing-lineup consideration. It does not affect capability or
 ## success probability." These shares are the whole of that privilege.
-var minute_share_star: float = 0.80
+var minute_share_star: float = 0.75
 var minute_share_starter: float = 0.70
 var minute_share_sixth_player: float = 0.55
 var minute_share_rotation: float = 0.42
 var minute_share_bench: float = 0.25
 var minute_share_reserve: float = 0.10
 var minute_share_developmental: float = 0.04
-## §18.2: rotations adjust for fatigue, foul trouble, injury, score, matchup,
-## and overtime — they are not recomputed from scratch every possession.
+## Â§18.2: rotations adjust for fatigue, foul trouble, injury, score, matchup,
+## and overtime â€” they are not recomputed from scratch every possession.
 var substitution_stint_seconds: int = 300
 var substitution_rest_seconds: int = 150
 var fatigue_substitution_threshold: float = 68.0
@@ -283,7 +316,7 @@ var foul_trouble_margin: int = 1
 ## starter in the closing period).
 var foul_protection_final_period_relief: int = 1
 
-# --- §9.4 time consumption --------------------------------------------------
+# --- Â§9.4 time consumption --------------------------------------------------
 var inbound_seconds_min: int = 2
 var inbound_seconds_max: int = 4
 var advance_seconds_min: int = 2
@@ -300,7 +333,7 @@ var transition_seconds_min: int = 2
 var transition_seconds_max: int = 4
 var rebound_seconds_min: int = 1
 var rebound_seconds_max: int = 2
-## §9.4: "Dead-ball fouls and free throws use separate event time without
+## Â§9.4: "Dead-ball fouls and free throws use separate event time without
 ## incorrectly consuming shot-clock time."
 var free_throw_event_seconds: int = 2
 var dead_ball_event_seconds: int = 1
@@ -317,24 +350,24 @@ var crash_share_max: float = 0.80
 ## occasionally; zero would make the offensive glass a pure function of who
 ## crashed.
 var crash_retreat_intent_share: float = 0.30
-## The raw candidate-score share an ordinary lineup produces. The §14.3 base
+## The raw candidate-score share an ordinary lineup produces. The Â§14.3 base
 ## rate is defined *at* this reference, so lineup quality moves the rate around
 ## its calibration target instead of dragging it to a bound.
 var offensive_rebound_reference_share: float = 0.34
 var offensive_rebound_spread: float = 1.20
 
-# --- §17 chemistry and home environment (bounded, never a flat bonus) -------
+# --- Â§17 chemistry and home environment (bounded, never a flat bonus) -------
 var chemistry_pass_bonus_max: float = 0.04
 var chemistry_help_bonus_max: float = 0.04
 var home_environment_shot_bonus: float = 0.006
 var home_environment_foul_bonus: float = 0.010
 
-# --- deliberate late-game fouling (§13.1 "deliberate late-game strategy") ---
+# --- deliberate late-game fouling (Â§13.1 "deliberate late-game strategy") ---
 var intentional_foul_max_margin: int = 6
 var intentional_foul_clock_ms: int = 40000
 var intentional_foul_share: float = 0.55
 
-# --- §24.2 possessions estimate --------------------------------------------
+# --- Â§24.2 possessions estimate --------------------------------------------
 ## The classic estimator's free-throw weight. Engine possessions come from
 ## terminal possession records; this is only the published estimate beside them.
 var possession_estimate_free_throw_weight: float = 0.44
@@ -342,14 +375,14 @@ var possession_estimate_free_throw_weight: float = 0.44
 # --- safety bounds ----------------------------------------------------------
 var max_actions_per_possession: int = 24
 
-## Tactical role's whole numeric privilege (§12.4), owned by this profile so it
+## Tactical role's whole numeric privilege (Â§12.4), owned by this profile so it
 ## is versioned with everything else it competes against.
 var _role_opportunity_table: RoleOpportunityTable
 
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v1",
+	p_version: StringName = &"simulation-v2-calibrated",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -358,7 +391,7 @@ func _init(
 	_role_opportunity_table = RoleOpportunityTable.new()
 
 
-## §10.1 base consideration rate for an action family.
+## Â§10.1 base consideration rate for an action family.
 func action_base_weight(action_family: int) -> float:
 	match action_family:
 		ActionFamily.Value.PASS_SWING:
@@ -390,7 +423,7 @@ func action_base_weight(action_family: int) -> float:
 	return base_weight_reset
 
 
-## §12.2/§12.4 role opportunity, clamped to the ordinary band unless the table
+## Â§12.2/Â§12.4 role opportunity, clamped to the ordinary band unless the table
 ## deliberately reaches into the exceptional one.
 func role_opportunity(tactical_role: int, action_family: int) -> float:
 	var raw: float = _role_opportunity_table.opportunity(tactical_role, action_family)
@@ -399,7 +432,7 @@ func role_opportunity(tactical_role: int, action_family: int) -> float:
 
 # --- shot profile access ----------------------------------------------------
 
-## The §13.1 open, balanced baseline for a zone, given the shooter's relevant
+## The Â§13.1 open, balanced baseline for a zone, given the shooter's relevant
 ## shot capability on the unit interval.
 func shot_baseline(zone: int, capability: float, dunk: bool) -> float:
 	var rating: float = Rating.ACTIVE_MINIMUM + clampf(capability, 0.0, 1.0) * float(
@@ -481,8 +514,8 @@ func contest_penalty(band: int) -> float:
 
 # --- opposed event resolution ----------------------------------------------
 
-## §14.3: a conditional event rate, shifted by a capability differential
-## expressed in §5.1 `RatingDifferential` units, then clamped to the event's
+## Â§14.3: a conditional event rate, shifted by a capability differential
+## expressed in Â§5.1 `RatingDifferential` units, then clamped to the event's
 ## own floor and ceiling. This is the only place an opposed rate is built, so
 ## the 15-25% relative response to a ten-point edge holds everywhere.
 func opposed_probability(
@@ -495,7 +528,14 @@ func opposed_probability(
 	return clampf(scaled, event_floor, event_ceiling)
 
 
-# --- §12.1 tendency and §12.2 clamps ---------------------------------------
+## The unforced-mistake base for a ball handler of a given absolute security,
+## before the §14.3 differential response is applied on top.
+func unforced_turnover_base(absolute_security: float) -> float:
+	return turnover_base * (
+		1.0 - turnover_absolute_skill_relief * clampf(absolute_security, 0.0, 1.0))
+
+
+# --- Â§12.1 tendency and Â§12.2 clamps ---------------------------------------
 
 ## The multiplier a slider position contributes toward its selected pole.
 func tendency_multiplier(position: int) -> float:
@@ -504,7 +544,7 @@ func tendency_multiplier(position: int) -> float:
 	return TENDENCY_MULTIPLIERS[position - 1]
 
 
-## The reciprocal multiplier the opposing action family receives (§12.1).
+## The reciprocal multiplier the opposing action family receives (Â§12.1).
 func opposing_tendency_multiplier(position: int) -> float:
 	return 1.0 / tendency_multiplier(position)
 
@@ -513,7 +553,7 @@ func clamp_candidate_weight(weight: float, base: float) -> float:
 	return clampf(weight, candidate_weight_min * base, candidate_weight_max * base)
 
 
-# --- §15.1 fatigue ----------------------------------------------------------
+# --- Â§15.1 fatigue ----------------------------------------------------------
 
 ## Acute fatigue added per active minute, before per-action load.
 func fatigue_per_active_minute(stamina: int) -> float:
@@ -521,14 +561,14 @@ func fatigue_per_active_minute(stamina: int) -> float:
 		1.0 - stamina_fatigue_relief * Rating.normalized(stamina))
 
 
-## §15.1 additional load for one high-intensity action, in fatigue points.
+## Â§15.1 additional load for one high-intensity action, in fatigue points.
 func action_load(action_family: int) -> float:
 	assert(ActionFamily.is_valid(action_family), "unknown action family")
 	return lerpf(
 		action_load_min, action_load_max, ACTION_INTENSITY_SHARES[action_family])
 
 
-## The planned share of team on-court seconds for a rotation role (§18.1).
+## The planned share of team on-court seconds for a rotation role (Â§18.1).
 func rotation_minute_share(rotation_role: int) -> float:
 	match rotation_role:
 		RotationRole.Value.STAR:
@@ -558,7 +598,7 @@ func recovery_per_bench_minute(stamina: int) -> float:
 	return bench_recovery_per_minute * multiplier
 
 
-## The §15.1 capability penalty, in rating points, for an acute fatigue value.
+## The Â§15.1 capability penalty, in rating points, for an acute fatigue value.
 func fatigue_penalty_points(acute_fatigue: float) -> float:
 	var bounded: float = clampf(acute_fatigue, 0.0, 100.0)
 	for index in range(1, FATIGUE_PENALTY_ANCHORS.size()):
@@ -620,6 +660,7 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"rebound.spread", &"multiplier", offensive_rebound_spread, 0.10, 3.0)
 	_add(tunables, &"opposed.relative_sensitivity", &"relative_share", opposed_relative_sensitivity, 0.05, 0.45)
 	_add(tunables, &"opposed.turnover_base", &"probability", turnover_base, 0.01, 0.35)
+	_add(tunables, &"opposed.turnover_absolute_skill_relief", &"share", turnover_absolute_skill_relief, 0.0, 0.95)
 	_add(tunables, &"opposed.steal_conversion_base", &"probability", steal_conversion_base, 0.05, 0.65)
 	_add(tunables, &"opposed.block_conversion_base", &"probability", block_conversion_base, 0.03, 0.55)
 	_add(tunables, &"opposed.foul_conversion_base", &"probability", foul_conversion_base, 0.03, 0.58)
@@ -646,6 +687,11 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"continuation.post_finish_share", &"probability", post_finish_share, 0.10, 0.98)
 	_add(tunables, &"continuation.pick_finish_share", &"probability", pick_finish_share, 0.05, 0.90)
 	_add(tunables, &"continuation.cut_finish_share", &"probability", cut_finish_share, 0.20, 0.99)
+	_add(tunables, &"continuation.drive_kick_out_share", &"probability", drive_kick_out_share, 0.0, 0.95)
+	_add(tunables, &"continuation.pick_kick_out_share", &"probability", pick_kick_out_share, 0.0, 0.95)
+	_add(tunables, &"continuation.post_kick_out_share", &"probability", post_kick_out_share, 0.0, 0.95)
+	_add(tunables, &"continuation.roll_finish_share", &"probability", roll_finish_share, 0.0, 0.90)
+	_add(tunables, &"continuation.kick_out_spacer_threshold", &"capability", kick_out_spacer_threshold, 0.0, 1.0)
 	_add(tunables, &"validity.deep_three_capability_threshold", &"capability", deep_three_capability_threshold, 0.0, 1.0)
 	_add(tunables, &"validity.post_action_capability_threshold", &"capability", post_action_capability_threshold, 0.0, 1.0)
 	_add(tunables, &"validity.pull_up_three_capability_threshold", &"capability", pull_up_three_capability_threshold, 0.0, 1.0)
@@ -764,7 +810,7 @@ func validate() -> PackedStringArray:
 	_require_monotonic(failures, &"baseline_three", baseline_three)
 	_require_monotonic(failures, &"baseline_free_throw", baseline_free_throw)
 	if absf(player_preference_share + coach_preference_share - 1.0) > 0.000001:
-		failures.append("the §12.3 player and coach shares must sum to 1.0")
+		failures.append("the Â§12.3 player and coach shares must sum to 1.0")
 	failures.append_array(_role_opportunity_table.validate())
 	return failures
 
@@ -785,7 +831,7 @@ func _require_monotonic(
 	table: PackedFloat64Array,
 ) -> void:
 	if table.size() != SHOT_BASELINE_ANCHOR_RATINGS.size():
-		failures.append("%s must supply one value per §13.1 anchor rating" % table_name)
+		failures.append("%s must supply one value per Â§13.1 anchor rating" % table_name)
 		return
 	for index in range(1, table.size()):
 		if table[index] < table[index - 1]:
@@ -804,9 +850,9 @@ func _add(
 	tunables.append(BalanceTunable.new(tunable_name, unit, value, safe_minimum, safe_maximum))
 
 
-## Linear interpolation across the §13.1 anchor ratings, extended linearly
+## Linear interpolation across the Â§13.1 anchor ratings, extended linearly
 ## below the lowest anchor so a 25-rated shooter is still worse than a 40-rated
-## one. The §13.2 floors clamp the result afterwards.
+## one. The Â§13.2 floors clamp the result afterwards.
 func _interpolate(table: PackedFloat64Array, rating: float) -> float:
 	var anchors: PackedFloat64Array = SHOT_BASELINE_ANCHOR_RATINGS
 	if rating <= anchors[0]:

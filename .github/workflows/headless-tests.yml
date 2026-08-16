@@ -1,4 +1,11 @@
-name: Headless simulation tests
+name: Pull request gate
+
+# The fast, always-on layer. Everything here must finish in ordinary PR time, so
+# it covers structure, determinism, reconciliation, and a *small* deterministic
+# calibration smoke run with broad control limits. It deliberately does not
+# certify a statistical band: `BALANCE_SPEC.md` §27.1 sets the certifying sample
+# sizes and no run of this length reaches them. The nightly and pre-release
+# workflows own that.
 
 on:
   push:
@@ -27,25 +34,42 @@ jobs:
       - name: Parse-check every script under warnings-as-errors
         run: /home/runner/godot-linux/godot --headless --path . --script res://tools/parse_check.gd
 
+      # Structural invariants, reconciliation, determinism, and the committed
+      # golden fixtures. A golden change requires an explicit engine or balance
+      # version change and review, so a diff here is a deliberate act.
       - name: Run project-owned acceptance entry point
         run: /home/runner/godot-linux/godot --headless --path . --script res://tests/run_all.gd
 
-      # Stage 3 gate item 7: a fixed-seed smoke run completes without invariant
-      # violations. The statistical bands it prints are diagnostic only until
-      # the balance pass; the tool fails on invariants, never on a band.
       - name: Run simulation smoke diagnostics
         run: /home/runner/godot-linux/godot --headless --path . --script res://tools/simulation_smoke.gd
 
       # Gate B1: completed builds must satisfy the owner-locked BALANCE_SPEC
-      # §7.3.2 bands. The harness fails the build if they do not, so a balance
-      # change that silently moves the distribution cannot merge.
-      - name: Run Builder calibration harness
+      # §7.3.2 bands.
+      - name: Run Builder smoke portfolio
         run: /home/runner/godot-linux/godot --headless --path . --script res://tools/builder_calibration_harness.gd
 
-      - name: Upload Builder calibration report
+      # Gate B1 / §29.2 item 3: all twenty attributes monotonic with a
+      # meaningful observable effect, and no IQ rating substituting for a
+      # primary skill. The capability layer is exact, so this is fast and is a
+      # real gate rather than a smoke check.
+      - name: Run attribute sensitivity suite
+        run: >-
+          /home/runner/godot-linux/godot --headless --path . --script
+          res://calibration/runners/run_attribute_sensitivity.gd --
+          --resolutions=100000 --label=pr
+
+      # A small deterministic calibration run with broad control limits. It
+      # exists to catch a structural regression — an event family that stopped
+      # firing, a possession count that collapsed — not to certify a band.
+      - name: Run calibration smoke
+        run: >-
+          /home/runner/godot-linux/godot --headless --path . --script
+          res://calibration/runners/run_calibration_smoke.gd -- --games=6 --label=pr
+
+      - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: builder-calibration-report
-          path: reports/builder_calibration.json
+          name: pr-gate-reports
+          path: reports/
           if-no-files-found: warn

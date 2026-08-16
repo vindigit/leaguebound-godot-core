@@ -77,7 +77,7 @@ func _init(input: MatchInput) -> void:
 	_foul_resolver = FoulResolver.new(_capability, _body, _balance)
 	_free_throw_resolver = FreeThrowResolver.new(_capability, _balance)
 	_rebound_resolver = ReboundResolver.new(_capability, _body, _balance)
-	_clock = ClockResolver.new(_balance)
+	_clock = ClockResolver.new(_balance, _rules)
 	_rotation = RotationResolver.new(_balance)
 
 
@@ -234,11 +234,17 @@ func _resolve_action(candidate: ActionCandidate, action_stream: RandomSource) ->
 			_resolve_shot(candidate.actor_id, candidate.zone, candidate.dunk,
 				candidate.action_family, advantage, action_stream)
 		ActionFamily.Value.DRIVE, ActionFamily.Value.TRANSITION_ATTACK:
-			_resolve_attack(candidate, advantage, action_stream, _balance.drive_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.drive_finish_share, _balance.drive_kick_out_share)
 		ActionFamily.Value.POST_ACTION:
-			_resolve_attack(candidate, advantage, action_stream, _balance.post_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.post_finish_share, _balance.post_kick_out_share)
 		ActionFamily.Value.PICK_ACTION:
-			_resolve_attack(candidate, advantage, action_stream, _balance.pick_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.pick_finish_share, _balance.pick_kick_out_share)
 		ActionFamily.Value.OFF_BALL_CUT:
 			_resolve_cut(candidate, advantage, action_stream)
 		ActionFamily.Value.SCREEN:
@@ -279,6 +285,7 @@ func _resolve_attack(
 	advantage: AdvantageResult,
 	action_stream: RandomSource,
 	finish_share: float,
+	kick_out_share: float,
 ) -> void:
 	var offensive_foul: FoulCall = _foul_resolver.resolve_offensive_foul(
 		_context, candidate, action_stream.derive(&"offensive_foul"))
@@ -303,6 +310,26 @@ func _resolve_attack(
 		_resolve_defensive_foul(contact, action_stream.derive(&"contact_consequences"))
 		return
 
+	# §11.1 advantage continuation. A collapsed defence has three real endings,
+	# not one: the attacker finishes, he kicks to the player the help left open,
+	# or — on a pick action — the screener rolls behind the help and finishes the
+	# handler's pass. Resolving only the first made a material advantage
+	# synonymous with a rim attempt and put the §14.1 three-point-attempt and
+	# assist bands out of reach structurally.
+	if advantage.is_material() and not _context.is_late_clock():
+		if (
+			candidate.action_family == ActionFamily.Value.PICK_ACTION
+			and not candidate.target_id.is_empty()
+			and action_stream.derive(&"roll").next_float() < _balance.roll_finish_share
+			and _resolve_roll_finish(candidate, advantage, action_stream)
+		):
+			return
+		if (
+			action_stream.derive(&"kick_out").next_float() < kick_out_share
+			and _resolve_kick_out(candidate, advantage, action_stream)
+		):
+			return
+
 	var finishes: bool = (
 		advantage.is_material()
 		or _context.is_late_clock()
@@ -319,6 +346,98 @@ func _resolve_attack(
 		and _body.dunk_is_available(shooter.body, shooter.attributes.vertical)
 	)
 	_resolve_shot(candidate.actor_id, zone, dunk, candidate.action_family, advantage, action_stream)
+
+
+## The kick-out. The attacker passes to the best-spaced team-mate, who shoots a
+## catch-and-shoot three carrying the advantage the attack created.
+##
+## Returns false when nobody is spaced for it, in which case the caller falls
+## through to the ordinary finish. The pass is a real pass: it can be turned
+## over, and it is the assist candidate if the shot drops.
+func _resolve_kick_out(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> bool:
+	var receiver_id: StringName = _best_spacer(candidate.actor_id)
+	if receiver_id.is_empty():
+		return false
+	var kick_stream: RandomSource = action_stream.derive(&"kick_pass")
+	if not _deliver_advantage_pass(candidate.actor_id, receiver_id, advantage, kick_stream):
+		return true
+	_resolve_shot(
+		receiver_id, ShotZone.Value.STANDARD_THREE, false,
+		ActionFamily.Value.PULL_UP, advantage, kick_stream)
+	return true
+
+
+## The roll finish. The screener rolls behind the help and finishes the
+## handler's pass at the rim.
+func _resolve_roll_finish(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> bool:
+	var roller_id: StringName = candidate.target_id
+	if roller_id == candidate.actor_id or not _context.offense_state().is_on_court(roller_id):
+		return false
+	var roll_stream: RandomSource = action_stream.derive(&"roll_pass")
+	if not _deliver_advantage_pass(candidate.actor_id, roller_id, advantage, roll_stream):
+		return true
+	var roller: PlayerMatchProfile = _context.offense_profile(roller_id)
+	var dunk: bool = _body.dunk_is_available(roller.body, roller.attributes.vertical)
+	_resolve_shot(
+		roller_id, ShotZone.Value.RESTRICTED_RIM, dunk,
+		ActionFamily.Value.OFF_BALL_CUT, advantage, roll_stream)
+	return true
+
+
+## Delivers an advantage pass and reports whether it arrived. A turnover
+## terminates the possession, exactly as any other failed pass does.
+func _deliver_advantage_pass(
+	passer_id: StringName,
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	stream: RandomSource,
+) -> bool:
+	var pass_candidate := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, passer_id, 1.0, receiver_id)
+	var turnover: TurnoverOutcome = _turnover_resolver.resolve_pass(
+		_context, pass_candidate, advantage, stream.derive(&"turnover"))
+	if turnover.occurred:
+		_terminate_turnover(turnover)
+		return false
+	_emit(
+		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, passer_id,
+		receiver_id, &"", pass_candidate.action_id(), advantage.level_id())
+	_context.last_passer_id = passer_id
+	_context.last_pass_created_advantage = true
+	_context.ball_handler_id = receiver_id
+	return true
+
+
+## The team-mate best placed to punish a collapsed defence: the highest
+## three-point shotmaking on the floor, excluding the attacker, and only if he
+## clears the spacer threshold. Ties break on player id so the choice is
+## canonical before any draw is consumed.
+func _best_spacer(actor_id: StringName) -> StringName:
+	var best_id: StringName = &""
+	var best_capability: float = _balance.kick_out_spacer_threshold
+	for player_id in _context.offense_on_court():
+		if player_id == actor_id:
+			continue
+		var player: PlayerMatchProfile = _context.offense_profile(player_id)
+		var runtime: PlayerMatchRuntime = _context.offense_runtime(player_id)
+		var shooting: float = _capability.capability_of(
+			CapabilityKey.Value.THREE_POINT_SHOTMAKING, player, runtime)
+		if shooting > best_capability + 0.000001 or (
+			absf(shooting - best_capability) <= 0.000001
+			and not best_id.is_empty()
+			and String(player_id) < String(best_id)
+		):
+			best_capability = shooting
+			best_id = player_id
+	return best_id
 
 
 func _attack_zone(candidate: ActionCandidate, advantage: AdvantageResult) -> int:
