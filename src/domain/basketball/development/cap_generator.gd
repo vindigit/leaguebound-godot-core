@@ -31,22 +31,42 @@ const STREAM_LABEL: StringName = &"player_system:cap_generation"
 ## `random_source` must already be derived for this player's career-generation
 ## stream; the function derives one further child so cap draws cannot be
 ## disturbed by unrelated draws on the same parent (`GODOT_TDD.md` §5.2).
+##
+## `selection_pool` applies §8.1's "competition-appropriate selection pressure":
+## the ceiling is the highest of that many draws from the profile's own
+## distribution, so a selected population is the top of a wider pool rather than
+## a different distribution. A pool of one is no selection and consumes exactly
+## one normal draw, which is what every ordinary generation path uses.
+##
+## This is deliberately *not* a bonus added to a ceiling. §8.2 states that
+## "Selection creates later-phase distributions" and that "the engine must not
+## silently increase a player's cap merely because he reached a higher league" —
+## an order statistic over the same distribution honours both, because every
+## ceiling it can produce was already reachable without it.
 static func generate(
 	prospect: int,
 	emphasis: Array[int],
 	random_source: RandomSource,
 	profile: ProgressionProfile,
+	selection_pool: int = 1,
 ) -> AttributeCaps:
 	assert(ProspectProfile.is_valid(prospect), "unknown prospect profile")
 	assert(emphasis.size() == AttributeKey.COUNT,
 		"one emphasis value per canonical attribute is required")
+	assert(selection_pool >= 1, "a selection pool is at least the one player drawn")
 
 	var stream: RandomSource = random_source.derive(STREAM_LABEL)
 
 	# One correlated player ceiling anchors every attribute.
 	var centre: float = float(profile.ceiling_center[prospect])
+	var best: float = 0.0
+	for candidate in range(selection_pool):
+		var draw: float = (
+			centre + RandomDraw.standard_normal(stream) * profile.ceiling_deviation[prospect])
+		if candidate == 0 or draw > best:
+			best = draw
 	var ceiling: float = clampf(
-		centre + RandomDraw.standard_normal(stream) * profile.ceiling_deviation[prospect],
+		best,
 		float(profile.ceiling_minimum[prospect]),
 		float(profile.ceiling_maximum[prospect])
 	)

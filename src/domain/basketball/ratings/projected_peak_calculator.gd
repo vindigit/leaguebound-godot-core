@@ -61,24 +61,14 @@ static func project(
 	var current_values: Array[int] = attributes.canonical_values()
 	var peak_age: int = progression.expected_peak_age[prospect]
 
-	var low_ap: float = 0.0
-	var high_ap: float = 0.0
-	for season_age in range(age, peak_age):
-		var phase: int = CareerPhase.default_phase_for_age(season_age)
-		var growth_phase: int = CareerPhase.growth_phase_of(phase)
-		var availability: float = progression.growth_availability_for(prospect, growth_phase)
-		low_ap += float(progression.seasonal_ap_minimum[phase]) * availability
-		high_ap += float(progression.seasonal_ap_maximum[phase]) * availability
+	var opportunity: PackedFloat64Array = projected_opportunity_ap(
+		prospect, age, progression, opportunity_scale)
+	var low_ap: float = opportunity[0]
+	var high_ap: float = opportunity[1]
 
-	# Ordinary, not best-case (§6.3 rule 2), and scaled by the caller's context.
-	low_ap *= progression.ordinary_opportunity_share \
-		* progression.ordinary_allocation_efficiency_low * opportunity_scale
-	high_ap *= progression.ordinary_opportunity_share \
-		* progression.ordinary_allocation_efficiency_high * opportunity_scale
-
-	var low_peak: int = _overall_after_spending(
+	var low_peak: int = overall_after_spending(
 		current_values, caps, int(floorf(low_ap)), ratings, progression)
-	var high_peak: int = _overall_after_spending(
+	var high_peak: int = overall_after_spending(
 		current_values, caps, int(floorf(high_ap)), ratings, progression)
 
 	# Expected decline for a player already past his peak age. §10.3 decline is
@@ -103,7 +93,43 @@ static func project(
 	return _apply_width_guardrail(low_result, high_result, low_bound, high_bound, progression)
 
 
-static func _overall_after_spending(
+## The AP-equivalent opportunity the model credits to the remaining career,
+## returned as `[low, high]`.
+##
+## Split out from `project` so the calibration harness can measure the budget
+## half of the model separately from the rating half. A projected peak that
+## misses can miss because it assumed the wrong amount of opportunity or because
+## it converted opportunity into Overall wrongly, and those two defects have
+## different fixes; a diagnostic that cannot tell them apart is guesswork.
+static func projected_opportunity_ap(
+	prospect: int,
+	age: int,
+	progression: ProgressionProfile,
+	opportunity_scale: float = 1.0,
+) -> PackedFloat64Array:
+	var peak_age: int = progression.expected_peak_age[prospect]
+	var low_ap: float = 0.0
+	var high_ap: float = 0.0
+	for season_age in range(age, peak_age):
+		var phase: int = CareerPhase.default_phase_for_age(season_age)
+		var growth_phase: int = CareerPhase.growth_phase_of(phase)
+		var availability: float = progression.growth_availability_for(prospect, growth_phase)
+		low_ap += float(progression.seasonal_ap_minimum[phase]) * availability
+		high_ap += float(progression.seasonal_ap_maximum[phase]) * availability
+
+	# Ordinary, not best-case (§6.3 rule 2), and scaled by the caller's context.
+	low_ap *= progression.ordinary_opportunity_share \
+		* progression.ordinary_allocation_efficiency_low * opportunity_scale
+	high_ap *= progression.ordinary_opportunity_share \
+		* progression.ordinary_allocation_efficiency_high * opportunity_scale
+	return PackedFloat64Array([low_ap, high_ap])
+
+
+## Overall reached by spending `available_ap` from `current_values` under the
+## model's ordinary allocation pattern. Public so the harness can ask the
+## counterfactual question "what would the model have predicted had it known the
+## true budget?" without reimplementing the conversion.
+static func overall_after_spending(
 	current_values: Array[int],
 	caps: AttributeCaps,
 	available_ap: int,

@@ -52,6 +52,22 @@ const PATH_MILEAGE: PackedFloat64Array = [1.34, 1.05, 0.95, 0.88, 0.82]
 ## injury-hit career ends earlier.
 const PATH_SEASONS: PackedInt32Array = [11, 16, 19, 21, 23]
 
+## Â§8.1 ceiling selection pressure by path.
+##
+## Measured cause of the rare-generational miss: at the 2026-08 baseline the top
+## two paths reached 96-98% cap attainment on 2,200-2,600 lifetime AP, so
+## opportunity was saturated and the ceiling was the only remaining lever. Their
+## Maximum Potential medians were 90 and 92 against Â§8.4 bands of 86-91 and
+## 92-95 â€” two points apart where the bands are six apart. More opportunity buys
+## a career at 97% attainment nothing at all.
+##
+## Â§8.4 describes the generational outcome as the rare conjunction of an elite
+## ceiling *and* an elite career, and Â§8.1 provides selection pressure as the
+## mechanism. Drawing the top path's ceiling as the best of a small pool is that
+## conjunction: the talent is selected, not granted, and every ceiling it yields
+## was already reachable from the same distribution.
+const PATH_CEILING_SELECTION_POOL: PackedInt32Array = [1, 1, 1, 1, 2]
+
 ## The `CareerPhase` a career occupies at each season index from the freshman
 ## year: four high-school seasons, three college seasons, then early, prime, and
 ## late professional phases.
@@ -96,6 +112,16 @@ class CareerResult extends RefCounted:
 	var total_ap_spent: int
 	var cap_attainment: float
 
+	## Diagnostic-only fields, populated when the simulator is asked to capture
+	## them. They exist so the projected-peak harness can re-run the model's own
+	## conversion against a counterfactual budget; nothing in the domain reads
+	## them, and a production projection never sees a realized career fact.
+	var starting_values: Array[int] = []
+	var starting_caps: AttributeCaps = null
+	## AP the projection credited to the remaining career at creation.
+	var projected_ap_low: float = 0.0
+	var projected_ap_high: float = 0.0
+
 	func projected_peak_width() -> int:
 		return projected_peak_high - projected_peak_low
 
@@ -112,6 +138,9 @@ var _profiles: BalanceProfileSet
 var _builder: BuilderService
 var _development: DevelopmentService
 var _query: DevelopmentProjectionQuery
+## Retains the creation-time inputs on every result. Off by default because the
+## certification run holds a million results in memory and does not need them.
+var capture_diagnostics: bool = false
 
 
 func _init(p_profiles: BalanceProfileSet = null) -> void:
@@ -159,7 +188,8 @@ func simulate(seed_value: int, executor: int) -> CareerResult:
 
 	var body: BodyProfile = _builder.default_body_for_family(family)
 	var build: BuilderState = _builder.begin_build(
-		family, prospect, maturity, body, source.derive(&"build"))
+		family, prospect, maturity, body, source.derive(&"build"),
+		PATH_CEILING_SELECTION_POOL[path])
 	build.spend_remaining_weighted(_family_weights(family))
 	build.fill_remaining_anywhere()
 	var view: BuilderConfirmationView = _query.builder_confirmation_view(build)
@@ -174,6 +204,13 @@ func simulate(seed_value: int, executor: int) -> CareerResult:
 	result.maximum_potential = view.projection.maximum_potential
 	result.projected_peak_low = view.projection.projected_peak.low
 	result.projected_peak_high = view.projection.projected_peak.high
+	if capture_diagnostics:
+		result.starting_values = build.attributes().canonical_values()
+		result.starting_caps = build.caps.duplicate_caps()
+		var opportunity: PackedFloat64Array = ProjectedPeakCalculator.projected_opportunity_ap(
+			prospect, BuilderService.FRESHMAN_AGE, _profiles.progression)
+		result.projected_ap_low = opportunity[0]
+		result.projected_ap_high = opportunity[1]
 
 	var state: PlayerDevelopmentState = _builder.confirm(
 		build, &"calibration_player", seed_value, source.derive(&"confirm"))
