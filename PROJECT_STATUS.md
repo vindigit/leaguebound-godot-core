@@ -32,6 +32,8 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
+**Stage 4 is not complete.** Three locked metrics are measured and failing — projected-peak coverage, projected-peak signed error, and the §8.4 rare-generational band — and two mandatory reports remain unimplemented. Both progression failures now have a measured root cause rather than an assumed one (§5.3), which is a prerequisite for fixing them and is not a fix. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.5.
+
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
 ## 2. Authority and evidence rules
@@ -72,7 +74,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents, and it has no open pull request. The Stage 4 implementation adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. **Pull request #1 is open as a draft into `main`, and its Pull request gate passed at commit `00567d4`.** The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
@@ -82,8 +84,11 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - Additional simulation and progression tuning.
 - A Stage 4 evidence record in `BALANCE_SPEC.md`.
 - Implementation-status synchronization in `SIMULATION_SPEC.md` §30.2, with no change to its basketball contracts.
+- A free-throw accounting correction (`00567d4`), described in §4.4.
+- The body maturation report (§31 report 15) and its nightly and deep workflow jobs.
+- Projected-peak and career-peak diagnostic runners, and §8.1 ceiling selection pressure.
 
-Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. A PR or an explicitly dispatched equivalent run is still required.
+Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
 ## 4. Implemented Godot foundations
 
@@ -157,6 +162,21 @@ Committed golden hashes cover:
 
 Each scenario has a behavioral assertion so a hash cannot continue passing after its named behavior stops occurring. Golden changes require an intentional engine or balance version change and review.
 
+**One golden hash was deliberately regenerated during Stage 4, at `00567d4`.** Any earlier wording — in this file, in the pull request, or in a commit message — suggesting that Stage 4 regenerated no golden hash is superseded by this entry.
+
+| Fact | Value |
+| --- | --- |
+| Scenario regenerated | `foul_free_throw` |
+| Scenarios byte-identical | The other five |
+| Ruleset version | Bumped to `simulation-calibrated-v3` |
+| Regression coverage added | Yes — see below |
+
+The reason is a genuine simulation-rule correction, not a convenience. The committed `foul_free_throw` ledger encoded an **invalid awarded-without-attempted free-throw sequence**: a shooting foul with 1.0 s left in period 1 awarded two free throws, then free-throw event time expired the period and the possession terminated before a single attempt was emitted. The ledger therefore contained a `FREE_THROW_AWARDED` that nothing ever took. `SIMULATION_SPEC.md` §13.2 requires an attempt to be attributed exactly once, and zero is not once; in basketball the horn does not cancel free throws already awarded.
+
+No correct engine can reproduce that ledger, so the hash had to move. The blast radius is proven by the five unchanged hashes: the correction is confined to the scenario that actually contained the defect. Free-throw event time now advances through the dead-ball path, which consumes clock but cannot take a period to zero, so the period still ends — the next live action finds a one-millisecond clock and expires it — but it ends after the sequence is attributed rather than in the middle of it.
+
+Regression coverage was added rather than adjusted. `test_one_and_one_second_attempt_must_be_earned` had been applying the one-and-one forfeiture rule to every award in its fixture, including shooting fouls, which award their attempts outright; the forfeiture branch was consequently never reached. It now separates bonus awards from shooting fouls by the causing whistle and asserts both rules, on a fixture that produces three forfeits and three earned second attempts. `test_team_fouls_reset_each_period_and_personal_fouls_do_not` now replays the ordered ledger at every period boundary instead of sampling between possessions. Both are strictly more coverage than before.
+
 ### 4.5 Calibration tooling
 
 Status: **Partial; measured, not certified.**
@@ -206,12 +226,115 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | §14.2 game-shape targets | Not assessable at the samples run |
 | Builder dominance tournament | Not implemented/run |
 | OVR truthfulness report 1 | Not implemented/run |
-| Body maturation report 15 | Not implemented/run |
+| Body maturation report 15 | **Implemented and measured** — see §5.3 |
 | Play/Sim/Skip large-sample report | Structural byte parity exists; required scale report not run |
 | Tier A/Tier B parity | Not implemented/run at the required scale |
 | §27.1 competition certification | Not reached |
 
-The projected-peak coverage and signed-error failures are a direct consequence of the Stage 4 progression change rather than an independent defect: `ProjectedPeakCalculator` was calibrated against the pre-Stage-4 seasonal AP bands, and raising those bands to reach the §8.4 curve left the projection systematically pessimistic. It must be recalibrated against the current bands.
+### 5.3 Diagnosis of the two progression failures
+
+Both failures above were carried with an assumed cause. Both assumptions were measured and both were wrong in a way that changes the fix. The measurements come from `calibration/runners/run_projected_peak_diagnostics.gd` at 3,000 careers over seeds 1–3000; the error decomposition reproduces at 600 careers and the subgroup pattern reproduces at 600 and 1,500.
+
+**Projected peak is entirely a budget defect, not a conversion defect.** The recorded cause — that `ProjectedPeakCalculator` was calibrated against the pre-Stage-4 bands — is right about the direction and gives no idea of the size. Splitting the signed error into the model's two independent halves:
+
+| Component | Median |
+| --- | ---: |
+| Total signed error | +10.0 |
+| Attributable to the credited opportunity budget | +10.0 |
+| Attributable to the AP-to-Overall conversion | **0.0** |
+
+The conversion is exact: given the true lifetime AP, the model predicts the realized peak with a median error of zero. The model credits a mean of 603 AP against 1,198 actually granted, and realized opportunity runs at **1.39× the projection's own upper bound**. By outcome class the displayed range brackets only poorly-managed careers:
+
+| Outcome class | Coverage | Median signed error |
+| --- | ---: | ---: |
+| Poor / injury-hit | 1.000 | −1.0 |
+| Ordinary successful | 0.046 | +9.5 |
+| Strong, well managed | 0.042 | +15.0 |
+| Exceptional | 0.033 | +19.5 |
+| Rare generational | 0.000 | +22.5 |
+
+What the model calls "ordinary opportunity" is poor-career opportunity. This is a severe hidden subgroup failure that the pooled 29.2% coverage figure conceals.
+
+**Rare generational is cap-bound *and* opportunity-bound.** The recorded cause — that cap generation at the high-upside tail "needs a further pass" — is half the answer. Those careers reach 96–98% cap attainment on 2,200–2,600 lifetime AP, so opportunity is saturated and more AP buys nothing; but their Maximum Potential median was 92 against exceptional's 90, two points apart where the §8.4 bands are six apart. That is a mismatch between the label and the generated talent.
+
+`CapGenerator.generate` now takes §8.1's "competition-appropriate selection pressure" as an explicit parameter: the ceiling is the highest of a small pool of draws from the same distribution. This is selection rather than a bonus — every ceiling it can produce was already reachable, which is what §8.2's prohibition on silently increasing a cap requires — and a pool of one consumes exactly one normal draw, so every existing generation path is bit-identical and no golden hash moves.
+
+Applying a pool of two to the generational class raised its Maximum Potential median from 92 to 94 and **left its realized peak at 90**, with attainment falling from 0.976 to 0.965. That is reported rather than tuned around: the ceiling alone does not close the band, because those careers then run out of AP before filling the headroom. Reaching a peak of 93 needs roughly 2,900 lifetime AP against the 2,620 currently granted. Both levers are required and the second is not yet applied — see §6.4 for why applying it is not straightforward.
+
+### 5.4 Body maturation report 15
+
+Status: **Measured below requirement.** Implemented in `calibration/runners/run_body_maturation.gd`, wired into the nightly and deep workflows, and verified to aggregate through the existing shard pipeline.
+
+Measured at 2,000 matched maturity triples (6,000 individual maturations) over seeds 1–2000:
+
+| Metric | Value | Target |
+| --- | ---: | ---: |
+| Adult containment in the stored range | 1.0000 | 1.0 |
+| Intermediate legality | 1.0000 | 1.0 |
+| Skeletal monotonicity | 1.0000 | 1.0 |
+| Growth determinism from the career seed | 1.0000 | 1.0 |
+| Increment idempotency | 1.0000 | 1.0 |
+| Exact increment count | 1.0000 | 1.0 |
+| No rating side effect | 1.0000 | 1.0 |
+| No cap side effect | 1.0000 | 1.0 |
+| No currency side effect | 1.0000 | 1.0 |
+| Body plausibility | 1.0000 | 1.0 |
+| Stored range matches the versioned widths | 1.0000 | 1.0 |
+| Timing is a schedule, not a budget | 1.0000 | 1.0 |
+| Early-minus-Late high-school growth share | 0.4797 | ≥ 0.20 |
+| High-school share, early / average / late | 0.785 / 0.547 / 0.306 | 0.75 / 0.50 / 0.25 ± 0.08 |
+
+Every judged metric passes except `sample.meets_certification_size`, which fails correctly: 2,000 triples is not the §27.1 progression sample of 1,000,000. Three shards over seeds 1–1200 were aggregated end to end; the aggregator accepted all three, validated provenance and seed-disjointness, pooled the raw terms, and refused to certify the short sample.
+
+The timing comparison is paired: each seed builds the same prospect three times, holding family, prospect profile, freshman body, caps, and the drawn adult body identical and varying only the timing profile. That isolates the timing effect and, being one number per unit, pools across shards exactly as a mean — an unpaired difference of two cohort means does not pool at all.
+
+### 5.5 Stage 4 gate inventory
+
+Every Stage 4 gate, classified. The categories are kept distinct on purpose: a structural proof and an undersized statistical sample are different kinds of evidence, and collapsing them is how an undersized sample comes to be described as certified.
+
+- **Structural** — an invariant or contract proven by deterministic tests. No statistical sample applies.
+- **Measured below requirement** — a real measurement at a sample smaller than §27.1 requires.
+- **Measured at requirement** — a real measurement at the §27.1 sample, not yet combined into a validated certification report.
+- **Certified** — aggregated from complete, seed-disjoint, provenance-matched shards at or above the §27.1 sample, every metric passing.
+- **Failed** — measured, and outside its target band.
+- **Blocked** — a missing prerequisite prevents the measurement.
+- **Not implemented** — no runner exists. This is outside the five evidence categories because those presuppose a report; it is listed rather than folded into "Blocked", which would imply the work is merely waiting on something.
+
+| Gate | Classification | Evidence |
+| --- | --- | --- |
+| GdUnit4 suite | **Structural** | 209 cases, 26 suites, 0 failures |
+| `tests/run_all.gd` acceptance | **Structural** | PASS |
+| Parse check under warnings-as-errors | **Structural** | 186 scripts, 0 failures |
+| Simulation smoke diagnostics | **Structural** | Invariants PASS at `00567d4` |
+| Golden ledgers and determinism | **Structural** | Six scenarios; one deliberately regenerated (§4.4) |
+| Event/stat reconciliation | **Structural** | In the acceptance suite |
+| Play/Sim/Skip parity | **Structural** | Byte-identical ledgers. The §27.1 50,000-triplet distributional report is **not run** |
+| Detail-promotion invariance | **Structural** | `PlayerDevelopmentState.invariant_signature` |
+| Creation-budget exhaustion | **Structural** | Builder suite |
+| Overall-exclusion dependency check | **Structural** | Dependency test |
+| Shard aggregation and provenance validation | **Structural** | Ten synthetic cases plus mutation testing; verified on real body-maturation shards |
+| Attribute sensitivity | **Measured at requirement** | 100,000 resolutions per test point; 80/80 pass. Not aggregated into a certification report |
+| Builder completed-build bands | **Measured below requirement** | 810 builds at fixed seeds |
+| Body maturation (report 15) | **Measured below requirement** | 2,000 triples; all 13 invariants at 1.0000, timing separation 0.4797 |
+| Career progression, four of five §8.4 bands | **Measured below requirement** | 3,000 careers; poor 66, ordinary 77, strong 82, exceptional 87 |
+| Population share peaking above 95 OVR | **Measured below requirement** | 0.0000 at 3,000 careers |
+| §8.4 continuity across the 72–74 gap | **Measured below requirement** | 0.017 share at 3,000 careers, against a 0.01–0.20 band |
+| Executor parity (manual / full-detail / aggregate) | **Measured below requirement** | Relative peak difference 0.0000 at 3,000 careers |
+| Performance profile | **Measured below requirement** | 1,345 ms/game debug; no release-template measurement |
+| Competition §14.1 bands | **Measured below requirement, and stale** | ~10 misses recorded before `00567d4`; the free-throw correction changes scoring and possession outcomes, so every competition figure predates its own engine |
+| **§8.4 rare-generational band** | **Failed** | Median 90 against 92–95, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
+| **§6.3 projected-peak coverage** | **Failed** | 0.283 against 0.70–0.85, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
+| **§6.3 projected-peak signed error** | **Failed** | +10.0 against ±2, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
+| §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12; passing, but only because the range is wrongly placed |
+| §14.2 game-shape targets | **Blocked** | Confidence intervals span ±25 points at reachable samples |
+| §27.1 certification, every report | **Blocked** | See §6.4; the samples are not reachable on developer hardware |
+| Nightly workflow | **Blocked** | Never executed. `chickensoft-games/setup-godot@v2` remains unverified on this project's runner |
+| Deep-verification workflow | **Blocked** | Never executed |
+| Builder dominance tournament (report 3) | **Not implemented** | — |
+| OVR truthfulness (report 1) | **Not implemented** | — |
+| Tier A/Tier B parity | **Not implemented** | — |
+
+Nothing in this table is **Certified**.
 
 ## 6. Certification and workflow blockers
 
@@ -244,9 +367,27 @@ The aggregator found one real defect on first contact with live data: the execut
 
 ### 6.2 Pull-request evidence
 
-Status: **Blocked.**
+Status: **Partially resolved.**
 
-At this snapshot, the active branch has no open pull request. Its fast workflow therefore has not been established through the repository's normal PR path. Open a PR or execute and archive an equivalent branch-specific run before merge.
+Pull request #1 is open as a draft from `stage4-calibration` into `main`, and its Pull request gate passed at commit `00567d4`. The branch has therefore been through the repository's normal PR path at least once.
+
+What remains open is that commits after `00567d4` have not yet been through that gate at the time of this snapshot. The gate must be green on the pull request's **current head**, not on an ancestor, before the draft is lifted.
+
+### 6.4 Certification sample sizes are not reachable on a developer machine
+
+Status: **Blocked on infrastructure, not on implementation.**
+
+This is the constraint that governs every remaining Stage 4 statistical claim, and it is arithmetic rather than opinion. Measured throughput on the reference development machine (8 logical cores, debug build with asserts active):
+
+| Report | Measured rate | §27.1 requirement | Single-process time |
+| --- | ---: | ---: | ---: |
+| Career progression | 9.1 careers/s | 1,000,000 careers | ≈ 31 hours |
+| Body maturation | 12.3 triples/s | 1,000,000 triples | ≈ 23 hours |
+| Competition calibration | ≈ 1.3 s/game | 100,000 games × 5 competitions | ≈ 180 hours |
+
+Process-level sharding divides these by the number of cores, not below them. No developer-machine session produces a certified result for any of the three, and none should claim one. The nightly and deep workflows exist precisely because this work belongs on CI hardware across many parallel runners; neither has ever executed.
+
+The practical consequence for reading this document: where a metric below is marked **measured**, it was measured at the stated sample and that sample is stated because it is short of the requirement. Nothing in Stage 4 is currently **certified**.
 
 ### 6.3 Performance risk
 
@@ -304,13 +445,13 @@ Level-specific and career documents remain authoritative constraints. Their exis
 
 Work should proceed in this order unless new evidence changes a dependency:
 
-1. Open a pull request from `stage4-calibration` and run the fast branch gate.
+1. ~~Open a pull request from `stage4-calibration` and run the fast branch gate.~~ **Done.** PR #1 is open as a draft and its gate passed at `00567d4`. It must be re-run on the pull request's current head before the draft is lifted.
 2. ~~Add deterministic aggregation for sharded competition and progression reports.~~ **Done** (§6.1). Remaining dependency: execute a nightly or deep run, which has never happened, and confirm the `chickensoft-games/setup-godot@v2` action referenced by both new workflows actually resolves on this project's runner — it was written from convention, not verified.
 3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
-4. Recalibrate `ProjectedPeakCalculator` against the current progression bands and close the coverage/bias failure. This is now the highest-value open item: it is a known-cause failure with a known fix direction.
-5. Resolve the rare-generational 92–95 peak miss without distorting ordinary and exceptional careers.
-6. Resolve the remaining competition-process misses, beginning with assist creation and attribution, then marginal shooting and points-per-possession edges.
-7. Implement and run the Builder dominance tournament, OVR truthfulness report, and body maturation report.
+4. **Settle whether the §6.3 coverage band and width guardrail are jointly satisfiable**, then either recalibrate the projected-peak opportunity model or raise a contradiction for an owner decision. The cause is now measured rather than assumed (§5.3): the conversion is exact and the whole error is the credited budget. What is not yet established is whether a range narrow enough to satisfy the width guardrail can cover 70% of realized peaks at all, given that the §8.4 outcome classes span roughly 25 Overall points and the outcome is unknowable at career start. `calibration/runners/run_projected_peak_sweep.gd` measures both the parameter surface and the irreducible width that bounds any creation-time model.
+5. Resolve the rare-generational 92–95 peak miss. Selection pressure has moved Maximum Potential to 94 and is not sufficient alone; those careers also need roughly 280 more lifetime AP-equivalent, and §9.5's guardrails and §9.6's game-development caps both constrain how that may be supplied (§5.3).
+6. **Re-measure every competition metric before tuning any of it.** The recorded §14.1 misses, including the 48.2% top-domestic assist percentage, all predate the `00567d4` free-throw correction, which changes scoring and possession outcomes. Tuning against a stale measurement would be tuning against the wrong engine. Re-measure first, then diagnose assist creation versus attribution, then the marginal shooting and points-per-possession edges. The 1.186 points-per-possession figure was taken at 80 games and is not a valid basis for any tuning decision.
+7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
 8. Complete the required game-shape and parity reports at usable samples.
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.
 10. Merge Stage 4 only when its reports and CI evidence support every claim made at merge time.

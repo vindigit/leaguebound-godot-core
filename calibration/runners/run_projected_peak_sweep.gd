@@ -46,6 +46,25 @@ const MULTIPLIER_MAXIMUM: float = 3.00
 const MULTIPLIER_STEP: float = 0.05
 
 
+## Width of the Maximum Potential bucket used to group careers that share their
+## creation-time information, in Overall points.
+const MAX_POTENTIAL_BUCKET: int = 2
+
+## Smallest group the irreducible-width estimate is taken from. Below this a
+## narrowest-window estimate is dominated by sampling noise and would understate
+## the true width.
+const MINIMUM_GROUP: int = 30
+
+
+## A mutable holder for one group's realized peaks.
+##
+## `PackedFloat64Array` is a value type, so fetching one out of a Dictionary and
+## appending to it modifies a copy and leaves the stored array empty. Wrapping it
+## in a RefCounted is what makes the accumulation actually accumulate.
+class Bucket extends RefCounted:
+	var peaks := PackedFloat64Array()
+
+
 ## One candidate pair's score against the three §6.3 measures.
 class Score extends RefCounted:
 	var low: float = 0.0
@@ -205,22 +224,28 @@ func _report_irreducible_width(samples: Array[Sample]) -> void:
 	var coverage_floor: float = CalibrationTargets.projected_peak_coverage().minimum
 	var groups: Dictionary = {}
 	for sample in samples:
+		# Maximum Potential is bucketed rather than exact. Conditioning on the
+		# exact integer splits the sample into groups too small to estimate a
+		# 70% window from, and a bucket two Overall points wide is still a group
+		# the projection cannot tell apart in any way that matters.
 		var key: String = "%s|maxpot=%d" % [
-			ProspectProfile.id_of(sample.prospect), sample.maximum_potential]
+			ProspectProfile.id_of(sample.prospect),
+			(sample.maximum_potential / MAX_POTENTIAL_BUCKET) * MAX_POTENTIAL_BUCKET]
 		if not groups.has(key):
-			groups[key] = PackedFloat64Array()
-		(groups[key] as PackedFloat64Array).append(float(sample.realized_peak))
+			groups[key] = Bucket.new()
+		var bucket: Bucket = groups[key]
+		bucket.peaks.append(float(sample.realized_peak))
 
 	# A group too small to estimate a 70% window from would report a spuriously
 	# narrow one, so it is excluded and its exclusion is reported.
-	const MINIMUM_GROUP: int = 12
 	var widths := PackedFloat64Array()
 	var weights := PackedFloat64Array()
 	var covered_careers: int = 0
 	var excluded: int = 0
 
 	for key: Variant in groups.keys():
-		var peaks: PackedFloat64Array = groups[key]
+		var group: Bucket = groups[key]
+		var peaks: PackedFloat64Array = group.peaks
 		if peaks.size() < MINIMUM_GROUP:
 			excluded += peaks.size()
 			continue
