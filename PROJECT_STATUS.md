@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** Three locked metrics are measured and failing — projected-peak coverage, projected-peak signed error, and the §8.4 rare-generational band — and two mandatory reports remain unimplemented. Both progression failures now have a measured root cause rather than an assumed one (§5.3), which is a prerequisite for fixing them and is not a fix. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.5.
+**Stage 4 is not complete.** Three locked metrics are measured and failing — projected-peak coverage, projected-peak signed error, and the §8.4 rare-generational band — and two mandatory reports remain unimplemented. Both progression failures now have a measured root cause rather than an assumed one (§5.3), which is a prerequisite for fixing them and is not a fix. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -221,9 +221,9 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Rare-generational peak band | **Fail:** pooled median 90 against target 92–95 (was 91 single-shard) |
 | Projected-peak coverage | **Fail:** 29.2% pooled coverage against 70–85% (was 33% single-shard) |
 | Projected-peak signed error | **Fail:** pooled median +10.0 against ±2; systematic under-prediction after progression tuning (was +9.5 single-shard) |
-| Competition §14.1 bands | Substantially converged, not certified; approximately ten recorded misses remain |
-| Assist percentage | Still low in development, overseas, and top domestic profiles (48.2% top domestic against 52–72%) |
-| §14.2 game-shape targets | Not assessable at the samples run |
+| Competition §14.1 bands | Substantially converged, not certified; see §5.5 for the post-correction re-measurement |
+| Assist percentage | **Fail, and confirmed unchanged by the free-throw correction:** 48.15% top domestic at 400 games against 52–72% |
+| §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
 | Builder dominance tournament | Not implemented/run |
 | OVR truthfulness report 1 | Not implemented/run |
 | Body maturation report 15 | **Implemented and measured** — see §5.3 |
@@ -301,7 +301,39 @@ Every judged metric passes except `sample.meets_certification_size`, which fails
 
 The timing comparison is paired: each seed builds the same prospect three times, holding family, prospect profile, freshman body, caps, and the drawn adult body identical and varying only the timing profile. That isolates the timing effect and, being one number per unit, pools across shards exactly as a mean — an unpaired difference of two cohort means does not pool at all.
 
-### 5.5 Stage 4 gate inventory
+### 5.5 Top-domestic re-measurement after the free-throw correction
+
+Every recorded §14.1 and §14.2 figure predated `00567d4`, which changed how free throws are attributed and therefore changes scoring and possession outcomes. Tuning against those figures would have been tuning against an engine that no longer exists, so the profile was re-measured before anything was touched. 400 complete games, seeds 1–400, at commit `c57f34e`.
+
+| Metric | Measured | Target | Verdict |
+| --- | ---: | ---: | --- |
+| Possessions/game | 99.64 ±0.23 | 96–103 | PASS |
+| Points per possession | **1.2084** | 1.08–1.18 | **FAIL** |
+| FG% | 0.4601 ±0.0035 | 0.45–0.51 | PASS |
+| 3P% | 0.3741 ±0.0053 | 0.34–0.40 | PASS |
+| 3PA/FGA | 0.4091 ±0.0035 | 0.36–0.49 | PASS |
+| FT% | 0.8013 ±0.0061 | 0.73–0.83 | PASS |
+| FTA/FGA | 0.2132 ±0.0029 | 0.18–0.34 | PASS |
+| Turnovers/100 | 13.50 | 11–16 | PASS |
+| Offensive rebound % | 0.2838 ±0.0044 | 0.20–0.31 | PASS |
+| **Assist %** | **0.4815 ±0.0052** | 0.52–0.72 | **FAIL** |
+| Home win rate | 0.5625 ±0.0484 | 0.53–0.56 | FAIL (interval spans the band) |
+| **Overtime rate** | **0.0175 ±0.0136** | 0.04–0.08 | **FAIL** |
+| **Close-game share** | **0.1925 ±0.0386** | 0.22–0.34 | **FAIL** |
+| **Blowout share** | **0.3450 ±0.0464** | 0.08–0.18 | **FAIL** |
+| Starter mean minutes | 31.07 ±0.14 | 27–35 | PASS |
+
+Three findings change the recorded picture.
+
+**Assist percentage is unchanged by the correction.** 0.4815 at 400 games against the 0.482 previously recorded at 80. The failure is a real property of the assist model rather than an artifact of the pre-correction engine, so the §5.2 diagnosis of creation versus attribution can proceed against the current engine.
+
+**Points per possession did not improve, and the previous figure understated the miss.** 1.2084 at 400 games against 1.186 at 80 — five times the sample and further outside the band. It is still far short of the §27.1 100,000, but it is no longer resting on a sample too small to act on, and the direction is now clear.
+
+**§14.2 game shape is assessable at 400 games, and it is badly wrong.** This supersedes the "not assessable at the samples run" entry, which was written when only tens of games had been run. Four of five targets fail, and they fail as one coherent pattern rather than independently: 34.5% of games are blowouts against a target of 8–18%, only 19.3% are close against 22–34%, and only 1.8% reach overtime against 4–8%. Too many decided games and too few tight ones is a single defect — the game-to-game score margin is over-dispersed — and it is very likely the same defect that puts points per possession above its band. The home win rate is nominally outside its band but its interval spans it and it should not be treated as an independent failure at this sample.
+
+This is the largest single block of new Stage 4 evidence, and it argues that the remaining competition work is not "roughly ten marginal misses" but one structural problem in how possession outcomes accumulate into a final margin.
+
+### 5.6 Stage 4 gate inventory
 
 Every Stage 4 gate, classified. The categories are kept distinct on purpose: a structural proof and an undersized statistical sample are different kinds of evidence, and collapsing them is how an undersized sample comes to be described as certified.
 
@@ -334,12 +366,19 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | §8.4 continuity across the 72–74 gap | **Measured below requirement** | 0.017 share at 3,000 careers, against a 0.01–0.20 band |
 | Executor parity (manual / full-detail / aggregate) | **Measured below requirement** | Relative peak difference 0.0000 at 3,000 careers |
 | Performance profile | **Measured below requirement** | 1,345 ms/game debug; no release-template measurement |
-| Competition §14.1 bands | **Measured below requirement, and stale** | ~10 misses recorded before `00567d4`; the free-throw correction changes scoring and possession outcomes, so every competition figure predates its own engine |
+| Competition §14.1 bands, top domestic | **Measured below requirement** | Re-measured after `00567d4` at 400 games (§5.5). Nine of eleven pass |
+| Competition §14.1 bands, other four | **Measured below requirement, and stale** | Recorded before `00567d4`; the free-throw correction changes scoring and possession outcomes, so those figures predate their own engine and must be re-measured before use |
+| **§14.1 top-domestic assist percentage** | **Failed** | 0.4815 ±0.0052 against 0.52–0.72 at 400 games. Confirmed unchanged by the free-throw correction |
+| **§14.1 top-domestic points per possession** | **Failed** | 1.2084 against 1.08–1.18 at 400 games, worse than the 1.186 recorded at 80 |
+| **§14.2 blowout share** | **Failed** | 0.3450 ±0.0464 against 0.08–0.18 at 400 games |
+| **§14.2 close-game share** | **Failed** | 0.1925 ±0.0386 against 0.22–0.34 at 400 games |
+| **§14.2 overtime rate** | **Failed** | 0.0175 ±0.0136 against 0.04–0.08 at 400 games |
+| §14.2 home win rate | **Measured below requirement** | 0.5625 ±0.0484 against 0.53–0.56; the interval spans the band, so not an independent failure at this sample |
 | **§8.4 rare-generational band** | **Failed** | Median 90 against 92–95, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
 | **§6.3 projected-peak coverage** | **Failed** | 0.283 against 0.70–0.85, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
 | **§6.3 projected-peak signed error** | **Failed** | +10.0 against ±2, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
 | §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12; passing, but only because the range is wrongly placed |
-| §14.2 game-shape targets | **Blocked** | Confidence intervals span ±25 points at reachable samples |
+| §14.2 starter and rotation minutes | **Measured below requirement** | 31.07 ±0.14 starter mean against 27–35 at 400 games |
 | §27.1 certification, every report | **Blocked** | See §6.4; the samples are not reachable on developer hardware |
 | Nightly workflow | **Blocked** | Never executed. `chickensoft-games/setup-godot@v2` remains unverified on this project's runner |
 | Deep-verification workflow | **Blocked** | Never executed |
@@ -463,7 +502,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
 4. **Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.** Everything needed to specify this work is now measured (§5.3). The conversion is exact and the whole error is the credited budget. The §6.3 bands are jointly satisfiable — the irreducible width is 8.0 against a 6–12 guardrail, reproduced on two independent seed ranges — so this is a modelling job and not an owner decision. What must change is the shape: a single global opportunity interval applied to every career tops out at 0.666 coverage, while the irreducible width varies from 6 to 16 across career groups. The interval must widen where the career's outcome is genuinely less predictable and narrow where the caps already bind, and it must do so from creation-time inputs only — §28 makes a projection that reads realized career data a release blocker.
 5. Resolve the rare-generational 92–95 peak miss. Selection pressure has moved Maximum Potential to 94 and is not sufficient alone; those careers also need roughly 280 more lifetime AP-equivalent, and §9.5's guardrails and §9.6's game-development caps both constrain how that may be supplied (§5.3).
-6. **Re-measure every competition metric before tuning any of it.** The recorded §14.1 misses, including the 48.2% top-domestic assist percentage, all predate the `00567d4` free-throw correction, which changes scoring and possession outcomes. Tuning against a stale measurement would be tuning against the wrong engine. Re-measure first, then diagnose assist creation versus attribution, then the marginal shooting and points-per-possession edges. The 1.186 points-per-possession figure was taken at 80 games and is not a valid basis for any tuning decision.
+6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
 8. Complete the required game-shape and parity reports at usable samples.
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.
