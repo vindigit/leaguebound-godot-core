@@ -13,7 +13,11 @@ func _run() -> void:
 	_test_attribute_contract()
 	_test_possession_reproduction()
 	_test_full_game_reproduction()
+	_test_possession_contract()
+	_test_golden_ledgers()
+	_test_play_sim_parity()
 	_test_balance_configuration_integrity()
+	_test_simulation_balance_integrity()
 	_test_builder_budget_exhaustion()
 	_test_development_values_are_ordered()
 	_test_detail_promotion_invariance()
@@ -56,8 +60,10 @@ func _test_attribute_contract() -> void:
 
 func _test_possession_reproduction() -> void:
 	var input := MatchFixtureFactory.standard_match()
-	var first := PossessionEngine.new().simulate(MatchSnapshot.new(input), input, SeededRandomSource.new(1234))
-	var second := PossessionEngine.new().simulate(MatchSnapshot.new(input), input, SeededRandomSource.new(1234))
+	var first := PossessionEngine.new(input).simulate(
+		MatchSnapshot.new(input), input, SeededRandomSource.new(1234))
+	var second := PossessionEngine.new(input).simulate(
+		MatchSnapshot.new(input), input, SeededRandomSource.new(1234))
 	_check(first.elapsed_ms == second.elapsed_ms, "possession elapsed time did not reproduce")
 	_check(first.events.size() == second.events.size(), "possession event count did not reproduce")
 	for index in range(mini(first.events.size(), second.events.size())):
@@ -81,6 +87,104 @@ func _test_full_game_reproduction() -> void:
 	)
 	for index in range(first.events.size()):
 		_check(first.events[index].sequence == index + 1, "event ledger contains a sequence gap at %d" % index)
+
+
+## The Stage 3 possession contract: one start and one terminal end per
+## possession, stable identity, and an offensive rebound that continues the
+## possession it belongs to rather than starting a new one.
+func _test_possession_contract() -> void:
+	var output := MatchEngine.new().simulate_match(
+		MatchFixtureFactory.offensive_rebound_match(), SeededRandomSource.new(7001))
+	var starts: Dictionary = {}
+	var ends: Dictionary = {}
+	for event in output.events:
+		if event.event_type == MatchDomainEvent.POSSESSION_STARTED:
+			starts[event.possession_id] = _possession_count(starts, event.possession_id) + 1
+		elif event.event_type == MatchDomainEvent.POSSESSION_ENDED:
+			ends[event.possession_id] = _possession_count(ends, event.possession_id) + 1
+			_check(
+				not event.next_team_id.is_empty(),
+				"possession %d ended without naming the next team" % event.possession_id)
+	var continued := 0
+	for record in output.possessions:
+		_check(_possession_count(starts, record.possession_id) == 1,
+			"possession %d does not have exactly one start" % record.possession_id)
+		_check(_possession_count(ends, record.possession_id) == 1,
+			"possession %d does not have exactly one end" % record.possession_id)
+		continued += record.offensive_rebounds
+	_check(continued > 0, "no offensive rebound continued a possession")
+	for team_id: StringName in [
+		output.final_result.home_team_id, output.final_result.away_team_id
+	]:
+		_check(
+			output.final_result.statistics.team_line(team_id).engine_possessions
+			== output.engine_possessions(team_id),
+			"engine possessions disagree with the terminal records for %s" % team_id)
+	var failures := output.final_result.statistics.reconcile()
+	_check(failures.is_empty(), "box score did not reconcile: %s" % ", ".join(failures))
+
+
+func _possession_count(counts: Dictionary, possession_id: int) -> int:
+	if not counts.has(possession_id):
+		return 0
+	var value: int = counts[possession_id]
+	return value
+
+
+## Committed golden ledgers for the six required scenarios.
+func _test_golden_ledgers() -> void:
+	var file := FileAccess.open(GoldenScenarios.HASH_PATH, FileAccess.READ)
+	if file == null:
+		_failures.append("missing committed golden hashes at %s" % GoldenScenarios.HASH_PATH)
+		return
+	var text := file.get_as_text()
+	file.close()
+	var parsed: Variant = JSON.parse_string(text)
+	if not (parsed is Dictionary):
+		_failures.append("committed golden hashes are not a JSON object")
+		return
+	var document: Dictionary = parsed
+	var scenarios: Dictionary = document["scenarios"]
+	for scenario in GoldenScenarios.names():
+		if not scenarios.has(String(scenario)):
+			_failures.append("no committed golden hash for scenario %s" % scenario)
+			continue
+		var entry: Dictionary = scenarios[String(scenario)]
+		var expected: String = entry["hash"]
+		var output := GoldenScenarios.simulate_uncached(scenario)
+		_check(
+			MatchLedgerSerializer.hash_output(output) == expected,
+			"golden ledger changed for scenario %s" % scenario)
+		_check(
+			GoldenScenarios.meets_requirement(scenario, output),
+			"scenario %s no longer produces %s" % [
+				scenario, GoldenScenarios.describe_requirement(scenario)])
+
+
+## §23 / §27.5: Play, Sim, and Skip resolve through one authoritative path.
+func _test_play_sim_parity() -> void:
+	var simulated := MatchEngine.new().simulate_match(
+		MatchFixtureFactory.standard_match(), SeededRandomSource.new(20260815))
+	var session := MatchSession.new(
+		MatchFixtureFactory.standard_match(), SeededRandomSource.new(20260815))
+	session.open()
+	while not session.is_complete():
+		session.advance_possession()
+	_check(
+		session.build_output().signature() == simulated.signature(),
+		"stepped play diverged from a full simulation")
+
+
+## Gate B0 for the simulation profile: every match tunable is named, has a
+## unit and safe range, and sits inside it.
+func _test_simulation_balance_integrity() -> void:
+	var profile := SimulationBalanceProfile.new()
+	var failures := profile.validate()
+	_check(failures.is_empty(), "simulation balance invalid: %s" % ", ".join(failures))
+	for tunable in profile.describe_tunables():
+		_check(
+			not tunable.tunable_name.is_empty() and not tunable.unit.is_empty(),
+			"a simulation tunable is missing its name or unit")
 
 
 ## Gate B0: one validated profile loads offline and every tuneable has a name,

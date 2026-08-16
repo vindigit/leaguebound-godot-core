@@ -1,55 +1,35 @@
 class_name MatchEngine
 extends RefCounted
 
-
-const MAX_POSSESSIONS: int = 2000
-
-var _possession_engine := PossessionEngine.new()
-var _state_reducer := MatchStateReducer.new()
-var _period_controller := PeriodController.new()
-var _rotation_resolver := RotationResolver.new()
-var _box_score_projector := BoxScoreProjector.new()
+## The match-engine entry point (`GODOT_TDD.md` §5.3).
+##
+## ```gdscript
+## func simulate_match(input: MatchInput, random_source: RandomSource) -> MatchResult
+## ```
+##
+## The engine is a thin front door onto `MatchSession`, which is the same object
+## Play and Skip drive. Keeping one session behind all three is what makes §2.1
+## structural instead of aspirational: there is no separate simulated-game path
+## that could acquire its own rules.
+##
+## The engine "cannot create or change roster membership, a playing contract,
+## signing rights, a professional assignment, college eligibility, import
+## classification, or Out-of-Basketball state", generate a replacement player,
+## finalize awards, advance a career year, or write a save. It resolves
+## basketball and returns evidence.
 
 
 func simulate_match(input: MatchInput, random_source: RandomSource) -> MatchSimulationOutput:
 	assert(input != null, "match input is required")
 	assert(random_source != null, "an injected random source is required")
-	var snapshot := MatchSnapshot.new(input)
-	var ledger := EventLedger.new()
-	while not snapshot.completed:
-		_rotation_resolver.apply_and_validate(snapshot, input)
-		if snapshot.clock_ms <= 0:
-			snapshot = _period_controller.advance_if_needed(snapshot, input.rule_profile)
-			continue
-		assert(snapshot.possession_sequence < MAX_POSSESSIONS, "match exceeded the possession safety bound")
-		var stream_label := StringName("match:%s:possession:%d" % [
-			input.match_id,
-			snapshot.possession_sequence,
-		])
-		var possession := _possession_engine.simulate(
-			snapshot,
-			input,
-			random_source.derive(stream_label)
-		)
-		ledger.append_all(possession.events)
-		snapshot = _state_reducer.apply(snapshot, input, possession)
-		snapshot = _period_controller.advance_if_needed(snapshot, input.rule_profile)
-	var statistics := _box_score_projector.project(input, ledger.events)
-	assert(statistics.team_line(input.home.team_id).points == snapshot.home.score, "home box score does not reconcile")
-	assert(statistics.team_line(input.away.team_id).points == snapshot.away.score, "away box score does not reconcile")
-	var result := MatchFinalResult.new(
-		input.match_id,
-		input.game_id,
-		input.rule_profile.profile_id,
-		input.rule_profile.version,
-		input.balance_profile.profile_id,
-		input.balance_profile.version,
-		input.home.team_id,
-		input.away.team_id,
-		snapshot.home.score,
-		snapshot.away.score,
-		snapshot.overtime_periods,
-		statistics,
-		snapshot.event_sequence,
-	)
-	return MatchSimulationOutput.new(result, ledger.events)
+	return MatchSession.new(input, random_source).run_to_completion()
+
+
+## Opens a stepped session for Play or Skip. Identical inputs and seed produce
+## the identical ledger whether the caller steps or runs straight through.
+func open_session(input: MatchInput, random_source: RandomSource) -> MatchSession:
+	assert(input != null, "match input is required")
+	assert(random_source != null, "an injected random source is required")
+	var session := MatchSession.new(input, random_source)
+	session.open()
+	return session

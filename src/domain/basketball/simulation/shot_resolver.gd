@@ -1,26 +1,208 @@
 class_name ShotResolver
 extends RefCounted
 
+## Contest construction, block evaluation, and make resolution
+## (`SIMULATION_SPEC.md` §12).
+##
+## The order matters and is fixed by the spec:
+##
+## 1. §12.3 builds the contest "from actual defensive positioning and
+##    capabilities", never as flavour chosen after the probability is known.
+## 2. §12.7 evaluates the block *before* ordinary make resolution when the
+##    defender has a valid block opportunity.
+## 3. §12.6 then resolves make quality and maps it to a probability inside the
+##    §13.2 floors and ceilings for that shot family.
+##
+## Every magnitude is read from `SimulationBalanceProfile`. §30.2 lists moving
+## the anonymous literals out of shot resolution as outstanding work; the shape
+## of the model lives here and the numbers live there.
 
+var _capability: CapabilityCalculator
+var _body: BodyEffects
+var _balance: SimulationBalanceProfile
+
+
+func _init(
+	p_capability: CapabilityCalculator,
+	p_body: BodyEffects,
+	p_balance: SimulationBalanceProfile,
+) -> void:
+	_capability = p_capability
+	_body = p_body
+	_balance = p_balance
+
+
+func build_contest(
+	context: PossessionContext,
+	shooter_id: StringName,
+	zone: int,
+	advantage: AdvantageResult,
+) -> ShotContest:
+	var shooter: PlayerMatchProfile = context.offense_profile(shooter_id)
+	var defender_id: StringName = context.defender_of(shooter_id)
+	var defender: PlayerMatchProfile = context.defense_profile(defender_id)
+	var defender_runtime: PlayerMatchRuntime = context.defense_runtime(defender_id)
+
+	var interior: bool = ShotZone.is_paint(zone)
+	var contest_capability: float = (
+		_capability.capability_of(CapabilityKey.Value.INTERIOR_POSITIONING, defender, defender_runtime)
+		if interior
+		else _capability.capability_of(CapabilityKey.Value.PERIMETER_CONTEST, defender, defender_runtime)
+	)
+	# §6.1 reach: contest arrival quality and finish access over a defender.
+	var reach: float = _body.reach_edge(defender.body, shooter.body)
+
+	var helper_id: StringName = &""
+	var help_pressure: float = 0.0
+	if interior:
+		var help_share: float = CoverageFamily.help_share(context.defense.game_plan.coverage_family)
+		var best: float = 0.0
+		for candidate_id in context.defense_on_court():
+			if candidate_id == defender_id:
+				continue
+			var helper: PlayerMatchProfile = context.defense_profile(candidate_id)
+			var helper_runtime: PlayerMatchRuntime = context.defense_runtime(candidate_id)
+			var protection: float = _capability.capability_of(
+				CapabilityKey.Value.RIM_PROTECTION, helper, helper_runtime)
+			if protection > best:
+				best = protection
+				helper_id = candidate_id
+		help_pressure = best * help_share
+		if help_pressure <= 0.0:
+			helper_id = &""
+
+	# Pressure is centred on `contest_base_pressure` and moved by how much the
+	# defender's contest capability differs from the middle of the scale. Read
+	# raw, an ordinary defender's capability sits near 0.6, which would band
+	# every ordinary jumper as `HEAVY` — the centring is what keeps an average
+	# contest average. The advantage the offence built is what relieves it.
+	var pressure: float = clampf(
+		_balance.contest_base_pressure
+		+ (contest_capability - 0.5) * _balance.contest_capability_span
+		+ reach
+		+ help_pressure * _balance.contest_help_weight
+		- advantage.quality_share() * _balance.contest_advantage_relief,
+		0.0,
+		1.0)
+	var band: int = ContestBand.from_pressure(pressure)
+	# §12.7 evaluates a block only when the defender has a *valid* block
+	# opportunity. Proximity is that validity: an unpressured attempt has no
+	# defender close enough to reach it.
+	var block_eligible: bool = (
+		(interior and band >= ContestBand.Value.LIGHT)
+		or band >= ContestBand.Value.HEAVY
+	)
+	var legal_contact: float = clampf(
+		(_balance.interior_contact_base + pressure * _balance.interior_contact_pressure_share)
+		if interior
+		else (_balance.perimeter_contact_base + pressure * _balance.perimeter_contact_pressure_share),
+		0.0,
+		1.0)
+	return ShotContest.new(
+		band, defender_id, helper_id, block_eligible,
+		band >= ContestBand.Value.MODERATE, pressure, legal_contact)
+
+
+## §12.7. "Blocking is primary. Interior or Perimeter Defense selects
+## positioning quality by shot area. Vertical and reach/body profile affect
+## access. Shooter separation, release type, height, strength, and dunk force
+## resist the block."
+func resolve_block(
+	context: PossessionContext,
+	shooter_id: StringName,
+	zone: int,
+	dunk: bool,
+	contest: ShotContest,
+	advantage: AdvantageResult,
+	random_source: RandomSource,
+) -> StringName:
+	if not contest.block_eligible:
+		return &""
+	var blocker_id: StringName = (
+		contest.helper_id if not contest.helper_id.is_empty() else contest.primary_defender_id)
+	if blocker_id.is_empty():
+		return &""
+	var shooter: PlayerMatchProfile = context.offense_profile(shooter_id)
+	var shooter_runtime: PlayerMatchRuntime = context.offense_runtime(shooter_id)
+	var blocker: PlayerMatchProfile = context.defense_profile(blocker_id)
+	var blocker_runtime: PlayerMatchRuntime = context.defense_runtime(blocker_id)
+
+	var protection: float = _capability.capability_of(
+		CapabilityKey.Value.RIM_PROTECTION, blocker, blocker_runtime)
+	var access: float = _body.reach_edge(blocker.body, shooter.body)
+	var resistance: float = _capability.shot_capability(shooter, shooter_runtime, zone) * 0.5
+	if dunk:
+		resistance += _capability.capability_of(
+			CapabilityKey.Value.DUNK_THREAT, shooter, shooter_runtime) * 0.5
+	else:
+		resistance += _capability.capability_of(
+			CapabilityKey.Value.BURST_REACH, shooter, shooter_runtime) * 0.3
+	resistance += advantage.quality_share() * 0.35
+
+	# The conversion rate is conditional on a valid opportunity, so the strength
+	# of that opportunity — how close the contest actually was — scales it.
+	var units: float = _capability.differential_units(protection + access, resistance)
+	var opportunity: float = clampf(
+		_balance.block_opportunity_base_share
+		+ contest.pressure * _balance.block_opportunity_pressure_share,
+		0.0,
+		1.0)
+	var probability: float = _balance.opposed_probability(
+		_balance.block_conversion_base * opportunity,
+		units,
+		_balance.block_conversion_floor,
+		_balance.block_conversion_ceiling)
+	if random_source.next_float() < probability:
+		return blocker_id
+	return &""
+
+
+## §12.6 make resolution. `catch_quality` and `movement_load` are the §12.2
+## context terms the possession supplies from what actually happened.
 func resolve(
-	shooter: PlayerMatchProfile,
-	defender: PlayerMatchProfile,
-	action_id: StringName,
-	advantage: float,
-	shooter_fatigue: float,
-	defender_fatigue: float,
-	balance: SimulationBalanceProfile,
+	context: PossessionContext,
+	shooter_id: StringName,
+	zone: int,
+	dunk: bool,
+	contest: ShotContest,
+	advantage: AdvantageResult,
+	catch_quality: float,
+	movement_load: float,
 	random_source: RandomSource,
 ) -> ShotOutcome:
-	var capability := CapabilityCalculator.shot_capability(shooter, action_id, shooter_fatigue)
-	var contest_rating := defender.attributes.interior_defense if action_id == &"shot_short" else defender.attributes.perimeter_defense
-	var contest := (
-		Rating.normalized(contest_rating) * 0.70
-		+ Rating.normalized(defender.attributes.defensive_iq) * 0.20
-		+ Rating.normalized(defender.attributes.vertical) * 0.10
-	) * (1.0 - clampf(defender_fatigue, 0.0, 1.0) * 0.25)
-	var environment_adjustment := -0.04 if action_id == &"shot_three" else 0.02
-	var raw_probability := 0.30 + capability * 0.48 - contest * 0.24 + advantage * 0.30 + environment_adjustment
-	var probability := clampf(raw_probability, balance.shot_probability_floor, balance.shot_probability_ceiling)
-	var points := 3 if action_id == &"shot_three" else 2
-	return ShotOutcome.new(random_source.next_float() < probability, points, probability)
+	var shooter: PlayerMatchProfile = context.offense_profile(shooter_id)
+	var runtime: PlayerMatchRuntime = context.offense_runtime(shooter_id)
+	var capability: float = _capability.shot_capability(shooter, runtime, zone)
+	if dunk:
+		capability = _capability.capability_of(CapabilityKey.Value.DUNK_THREAT, shooter, runtime)
+
+	var probability: float = _balance.shot_baseline(zone, capability, dunk)
+	probability -= _balance.contest_penalty(contest.band)
+	probability += advantage.quality_share() * _balance.advantage_shot_bonus_max
+	probability -= clampf(1.0 - catch_quality, 0.0, 1.0) * _balance.catch_quality_penalty_max
+	probability -= clampf(movement_load, 0.0, 1.0) * _balance.movement_penalty_max
+	probability -= (
+		clampf(runtime.acute_fatigue / 100.0, 0.0, 1.0) * _balance.fatigue_shot_penalty_max)
+	probability -= _clock_desperation(context) * _balance.clock_desperation_penalty_max
+	# §12.2 shot selection: Offensive IQ improves the circumstances of the
+	# attempt. Bounded by the advantage bonus so it cannot replace the shot.
+	var selection: float = _capability.shot_selection(shooter, runtime, zone)
+	probability += (selection - 0.5) * _balance.advantage_shot_bonus_max * 0.5
+	if context.input.is_home(context.offense.team_id):
+		probability += _balance.home_environment_shot_bonus * context.input.home_environment
+
+	probability = clampf(
+		probability, _balance.shot_floor(zone, dunk), _balance.shot_ceiling(zone, dunk))
+	var made: bool = random_source.next_float() < probability
+	return ShotOutcome.new(
+		made, ShotZone.points_for(zone), probability, zone, dunk, false, &"", contest)
+
+
+func _clock_desperation(context: PossessionContext) -> float:
+	var threshold: float = float(_balance.desperation_clock_ms)
+	if threshold <= 0.0:
+		return 0.0
+	var remaining: float = float(context.state.shot_clock_ms)
+	if remaining >= threshold:
+		return 0.0
+	return clampf(1.0 - remaining / threshold, 0.0, 1.0)

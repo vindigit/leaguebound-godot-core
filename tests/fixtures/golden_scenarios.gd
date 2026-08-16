@@ -1,0 +1,159 @@
+class_name GoldenScenarios
+extends RefCounted
+
+## The named determinism scenarios the Stage 3 gate requires golden ledgers for:
+## regulation, overtime, offensive-rebound continuation, foul and free throw,
+## substitution and foul-out, and late game.
+##
+## Scenario identity is `(name, fixture, seed)`. Keeping the triple in one place
+## means the golden hash file, the harness that regenerates it, and the test
+## that enforces it cannot drift apart — which is the usual way a golden suite
+## quietly stops testing anything.
+
+const HASH_PATH: String = "res://tests/golden/match_golden_hashes.json"
+
+const REGULATION: StringName = &"regulation"
+const OVERTIME: StringName = &"overtime"
+const OFFENSIVE_REBOUND: StringName = &"offensive_rebound"
+const FOUL_FREE_THROW: StringName = &"foul_free_throw"
+const SUBSTITUTION_FOUL_OUT: StringName = &"substitution_foul_out"
+const LATE_GAME: StringName = &"late_game"
+
+
+static func names() -> Array[StringName]:
+	return [
+		REGULATION,
+		OVERTIME,
+		OFFENSIVE_REBOUND,
+		FOUL_FREE_THROW,
+		SUBSTITUTION_FOUL_OUT,
+		LATE_GAME,
+	]
+
+
+static func input_for(scenario: StringName) -> MatchInput:
+	match scenario:
+		REGULATION:
+			return MatchFixtureFactory.standard_match()
+		OVERTIME:
+			return MatchFixtureFactory.even_match()
+		OFFENSIVE_REBOUND:
+			return MatchFixtureFactory.offensive_rebound_match()
+		FOUL_FREE_THROW:
+			return MatchFixtureFactory.bonus_match()
+		SUBSTITUTION_FOUL_OUT:
+			return MatchFixtureFactory.foul_out_match()
+		LATE_GAME:
+			return MatchFixtureFactory.one_and_one_match()
+		_:
+			assert(false, "unknown golden scenario")
+	return MatchFixtureFactory.standard_match()
+
+
+## Seeds chosen because each one actually exercises the behaviour its scenario
+## is named for. `tools/golden_ledger_harness.gd --verify` re-checks that claim,
+## so a balance change that quietly stops producing overtime is a failure rather
+## than a golden hash that still passes while testing nothing.
+static func seed_for(scenario: StringName) -> int:
+	match scenario:
+		REGULATION:
+			return 20260815
+		OVERTIME:
+			return 5150
+		OFFENSIVE_REBOUND:
+			return 7001
+		FOUL_FREE_THROW:
+			return 4242
+		SUBSTITUTION_FOUL_OUT:
+			return 31337
+		LATE_GAME:
+			return 8675309
+		_:
+			assert(false, "unknown golden scenario")
+	return 1
+
+
+## Memoized because a scenario is a pure function of its fixture and seed, and
+## the suites read the same handful of games from a dozen angles. Re-simulating
+## per assertion turned the structural suites into the slowest thing in CI for
+## no additional coverage.
+static var _cache: Dictionary = {}
+
+
+static func simulate(scenario: StringName) -> MatchSimulationOutput:
+	if _cache.has(scenario):
+		var cached: MatchSimulationOutput = _cache[scenario]
+		return cached
+	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
+		input_for(scenario), SeededRandomSource.new(seed_for(scenario)))
+	_cache[scenario] = output
+	return output
+
+
+## Forces a fresh simulation, for the determinism tests that must prove
+## reproduction rather than read a cache.
+static func simulate_uncached(scenario: StringName) -> MatchSimulationOutput:
+	return MatchEngine.new().simulate_match(
+		input_for(scenario), SeededRandomSource.new(seed_for(scenario)))
+
+
+static func hash_of(scenario: StringName) -> String:
+	return MatchLedgerSerializer.hash_output(simulate_uncached(scenario))
+
+
+## What each scenario must actually contain. A golden hash proves reproduction;
+## these predicates prove the reproduced thing is the scenario it claims to be.
+static func describe_requirement(scenario: StringName) -> String:
+	match scenario:
+		REGULATION:
+			return "a completed regulation game with no overtime"
+		OVERTIME:
+			return "at least one overtime period"
+		OFFENSIVE_REBOUND:
+			return "an offensive rebound that continued its possession"
+		FOUL_FREE_THROW:
+			return "free throws awarded from a foul"
+		SUBSTITUTION_FOUL_OUT:
+			return "a foul-out followed by a substitution"
+		LATE_GAME:
+			return "a one-and-one free-throw sequence"
+		_:
+			assert(false, "unknown golden scenario")
+	return ""
+
+
+static func meets_requirement(scenario: StringName, output: MatchSimulationOutput) -> bool:
+	match scenario:
+		REGULATION:
+			return output.final_result.overtime_periods == 0 and not output.possessions.is_empty()
+		OVERTIME:
+			return output.final_result.overtime_periods > 0
+		OFFENSIVE_REBOUND:
+			return _has_continued_offensive_rebound(output)
+		FOUL_FREE_THROW:
+			return _count(output, MatchDomainEvent.FREE_THROW_AWARDED) > 0
+		SUBSTITUTION_FOUL_OUT:
+			return (
+				_count(output, MatchDomainEvent.FOUL_OUT) > 0
+				and _count(output, MatchDomainEvent.CHECK_OUT) > 0
+			)
+		LATE_GAME:
+			return _count(output, MatchDomainEvent.FREE_THROW_AWARDED) > 0
+		_:
+			assert(false, "unknown golden scenario")
+	return false
+
+
+static func _count(output: MatchSimulationOutput, event_type: StringName) -> int:
+	var total: int = 0
+	for event in output.events:
+		if event.event_type == event_type:
+			total += 1
+	return total
+
+
+static func _has_continued_offensive_rebound(output: MatchSimulationOutput) -> bool:
+	for record in output.possessions:
+		if record.offensive_rebounds > 0:
+			return true
+	return false

@@ -1,0 +1,67 @@
+{
+	"order": [
+		"regulation",
+		"overtime",
+		"offensive_rebound",
+		"foul_free_throw",
+		"substitution_foul_out",
+		"late_game"
+	],
+	"scenarios": {
+		"foul_free_throw": {
+			"away_score": 17,
+			"events": 457,
+			"hash": "a5fc2e5b1ddd2ec1a67b14b8f931e2dc759967c0a6b5d1b794e34ef35e7ecd09",
+			"home_score": 11,
+			"overtime_periods": 0,
+			"possessions": 31,
+			"seed": 4242
+		},
+		"late_game": {
+			"away_score": 14,
+			"events": 443,
+			"hash": "23a7abae46eb44785afe2595dc6104ad21add7649ac72f5888b85ba69d5b7a51",
+			"home_score": 22,
+			"overtime_periods": 0,
+			"possessions": 29,
+			"seed": 8675309
+		},
+		"offensive_rebound": {
+			"away_score": 29,
+			"events": 1110,
+			"hash": "4c0983139daf6df8b9cce16bc7e84962ebb41d58b72d683e10a170b99f1c0490",
+			"home_score": 46,
+			"overtime_periods": 0,
+			"possessions": 77,
+			"seed": 7001
+		},
+		"overtime": {
+			"away_score": 18,
+			"events": 517,
+			"hash": "b94775c346efca1a28da92c3d3b5ba3b3def549125b54cca2fe6a66c5db68951",
+			"home_score": 16,
+			"overtime_periods": 1,
+			"possessions": 34,
+			"seed": 5150
+		},
+		"regulation": {
+			"away_score": 28,
+			"events": 1137,
+			"hash": "b09d1ec2db9ecd8e54cde6f433b2c6c3b8c2c2b747b06e0e9b166d73e4b03079",
+			"home_score": 34,
+			"overtime_periods": 0,
+			"possessions": 76,
+			"seed": 20260815
+		},
+		"substitution_foul_out": {
+			"away_score": 22,
+			"events": 974,
+			"hash": "b3ab5afdee0655e7ab0d2181cb1147b8f9080ad9cc5c5dfd4fcd8b0b98b39dab",
+			"home_score": 36,
+			"overtime_periods": 0,
+			"possessions": 60,
+			"seed": 31337
+		}
+	},
+	"version": "ledger-sha256-v1"
+}

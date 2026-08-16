@@ -19,7 +19,7 @@ The first vertical path is:
 
 ```text
 immutable MatchInput
-    -> deterministic possession state machine
+    -> deterministic multi-action possession state machine
     -> ordered domain events
     -> authoritative match-state reduction
     -> box-score projection
@@ -27,6 +27,21 @@ immutable MatchInput
 ```
 
 The engine uses the canonical 20 public player attributes, validates active named-player ratings from 25 through 99, receives randomness explicitly, and reproduces results from the same input and seed.
+
+## Match engine
+
+A possession is a chain of actions, not a single roll. `PossessionEngine` implements the `SIMULATION_SPEC.md` §9 state machine — inbound, advance or transition, half-court entry, action selection and execution, advantage, foul, shot, free throw, rebound, putback, and possession end — over the eleven §10.1 action families.
+
+Four contracts hold the design together:
+
+- **One reduction.** `MatchStateReducer` is the only thing that writes match state, and the possession engine folds its own events onto its working snapshot with that same function. The state it decides from and the state the ledger produces cannot diverge, so a substituted or fouled-out player cannot keep playing.
+- **Runtime lineups are authority.** `TeamMatchState` owns who is on court. Nothing reads the static starter list to decide participation.
+- **Possession identity.** Every possession emits one start and one terminal end, carries a stable id and action sequence, and an offensive rebound continues it — same id, no new start, no extra team possession, and the rule profile's own shot-clock reset. `POSSESSION_ENDED.team_id` is the offence that ended; the next team travels in its own field.
+- **One capability table.** `CapabilityCalculator` owns the §7 derived capabilities using the `BALANCE_SPEC.md` §5.2 weights held by `RatingsProfile`. No resolver re-derives a rating weight, and no capability reads an identity layer.
+
+`MatchSession` is the single stepped session behind Play, Sim, and Skip. Because each possession derives its random stream from the match identity and possession sequence rather than from the caller's consumption order, stepping and running straight through produce byte-identical ledgers.
+
+Every match-resolution constant lives in `SimulationBalanceProfile` or `CompetitionRuleProfile` as a named tunable with a unit and a safe range. Tactical role's entire numeric privilege is `RoleOpportunityTable`.
 
 The simulation domain is independent of scenes, Nodes, frame timing, rendering, persistence, autoloads, wall-clock time, global randomness, and platform services.
 
@@ -88,7 +103,19 @@ From the repository root:
 Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tests/run_all.gd
 ```
 
-The acceptance runner covers random-stream reproducibility, the canonical attribute domain, possession determinism, event/stat reconciliation, match invariants, seeded full-game reproduction, balance-configuration integrity, creation-budget exhaustion, development-value ordering, detail-promotion invariance, and body-growth determinism.
+The acceptance runner covers random-stream reproducibility, the canonical attribute domain, possession determinism, the Stage 3 possession contract, committed golden ledgers, Play/Sim parity, event/stat reconciliation, match invariants, seeded full-game reproduction, balance-configuration integrity, creation-budget exhaustion, development-value ordering, detail-promotion invariance, and body-growth determinism.
+
+Committed golden ledger hashes live in `tests/golden/match_golden_hashes.json` and cover regulation, overtime, offensive-rebound continuation, foul and free throw, substitution and foul-out, and late-game scenarios. Each scenario is verified to still exercise the behaviour it is named for, so a golden hash cannot keep passing while covering nothing. Regenerate deliberately after an intended engine or balance change:
+
+```powershell
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tools/golden_ledger_harness.gd
+```
+
+A fixed-seed smoke run reports team-level metrics and fails on invariant violations. Statistical bands are diagnostic only until the balance pass:
+
+```powershell
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tools/simulation_smoke.gd
+```
 
 Every script must also parse under the project's warnings-as-errors configuration:
 

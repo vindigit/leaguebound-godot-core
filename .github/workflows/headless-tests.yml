@@ -30,6 +30,12 @@ jobs:
       - name: Run project-owned acceptance entry point
         run: /home/runner/godot-linux/godot --headless --path . --script res://tests/run_all.gd
 
+      # Stage 3 gate item 7: a fixed-seed smoke run completes without invariant
+      # violations. The statistical bands it prints are diagnostic only until
+      # the balance pass; the tool fails on invariants, never on a band.
+      - name: Run simulation smoke diagnostics
+        run: /home/runner/godot-linux/godot --headless --path . --script res://tools/simulation_smoke.gd
+
       # Gate B1: completed builds must satisfy the owner-locked BALANCE_SPEC
       # §7.3.2 bands. The harness fails the build if they do not, so a balance
       # change that silently moves the distribution cannot merge.
