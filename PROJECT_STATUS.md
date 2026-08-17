@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** Three locked metrics are measured and failing — projected-peak coverage, projected-peak signed error, and the §8.4 rare-generational band — and two mandatory reports remain unimplemented. Both progression failures now have a measured root cause rather than an assumed one (§5.3), which is a prerequisite for fixing them and is not a fix. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
+**Stage 4 is not complete.** One locked metric remains measured and failing — the §8.4 rare-generational band — and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and now pass with interior margin on independent validation ranges (§5.7). Both progression failures now have a measured root cause rather than an assumed one (§5.3), which is a prerequisite for fixing them and is not a fix. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -125,7 +125,7 @@ Implemented evidence includes:
 - No silent rating mutation from body growth.
 - Shared user, full-detail NPC, and aggregate-executor development contracts.
 
-Open evidence includes projected-peak calibration, body-maturation report 15, full OVR truthfulness report 1, and complete large-sample development distributions.
+Open evidence includes full OVR truthfulness report 1 and complete large-sample development distributions. Projected-peak calibration is corrected and passing on independent validation ranges (§5.7), and body-maturation report 15 is implemented and measured (§5.4); neither is certified.
 
 ### 4.3 Match engine
 
@@ -219,8 +219,8 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Requirement | Current recorded status |
 | --- | --- |
 | Rare-generational peak band | **Fail:** pooled median 90 against target 92–95 (was 91 single-shard) |
-| Projected-peak coverage | **Fail:** 29.2% pooled coverage against 70–85% (was 33% single-shard) |
-| Projected-peak signed error | **Fail:** pooled median +10.0 against ±2; systematic under-prediction after progression tuning (was +9.5 single-shard) |
+| Projected-peak coverage | ~~**Fail:** 29.2% pooled~~ **Corrected (§5.7):** 0.7473 and 0.7370 on two untouched validation ranges against 70–85% |
+| Projected-peak signed error | ~~**Fail:** pooled median +10.0~~ **Corrected (§5.7):** −1.0 and 0.0 on two untouched validation ranges against ±2 |
 | Competition §14.1 bands | Substantially converged, not certified; see §5.5 for the post-correction re-measurement |
 | Assist percentage | **Fail, and confirmed unchanged by the free-throw correction:** 48.15% top domestic at 400 games against 52–72% |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
@@ -375,9 +375,10 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | **§14.2 overtime rate** | **Failed** | 0.0175 ±0.0136 against 0.04–0.08 at 400 games |
 | §14.2 home win rate | **Measured below requirement** | 0.5625 ±0.0484 against 0.53–0.56; the interval spans the band, so not an independent failure at this sample |
 | **§8.4 rare-generational band** | **Failed** | Median 90 against 92–95, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
-| **§6.3 projected-peak coverage** | **Failed** | 0.283 against 0.70–0.85, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
-| **§6.3 projected-peak signed error** | **Failed** | +10.0 against ±2, at 3,000 careers. Diagnosed (§5.3); fix incomplete |
-| §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12; passing, but only because the range is wrongly placed |
+| §6.3 projected-peak coverage | **Measured below requirement** | **Corrected (§5.7).** 0.7473 and 0.7370 against 0.70–0.85 on two untouched 3,000-career ranges; 0.7420 and 0.7360 on the production judged path. Was 0.283 |
+| §6.3 projected-peak signed error | **Measured below requirement** | **Corrected (§5.7).** −1.0 and 0.0 against ±2 on the untouched ranges. Was +10.0 |
+| §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12 on both untouched ranges, now with the range correctly placed |
+| §6.3 projected-peak subgroup honesty | **Measured below requirement** | Zero pathological subgroups across 15–16 judged creation-time groupings per range |
 | §14.2 starter and rotation minutes | **Measured below requirement** | 31.07 ±0.14 starter mean against 27–35 at 400 games |
 | §27.1 certification, every report | **Blocked** | See §6.4; the samples are not reachable on developer hardware |
 | Nightly workflow | **Blocked** | Never executed. `chickensoft-games/setup-godot@v2` remains unverified on this project's runner |
@@ -387,6 +388,182 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | Tier A/Tier B parity | **Not implemented** | — |
 
 Nothing in this table is **Certified**.
+
+### 5.7 Projected Peak model correction
+
+#### Model structure
+
+The forecast has two halves: estimate the opportunity the remaining career will receive, then convert that opportunity into Overall against the player's own caps and the §9.1 cost table. §5.3 measured them separately and found the conversion exact — given the true lifetime opportunity it reproduces the realized peak with a median error of zero and a standard deviation near half an Overall point. The correction is therefore confined to the opportunity estimate; the conversion is untouched.
+
+```text
+ExpectedHorizonAP(prospect, age)
+  = Σ over seasons from age to horizon_age[prospect] of
+        midpoint(seasonal_ap_band[phase]) × growth_availability[prospect][growth_phase]
+
+low_ap   = ExpectedHorizonAP × opportunity_low[prospect]
+high_ap  = ExpectedHorizonAP × opportunity_high[prospect]
+
+low_overall  = spend_cheapest_first(current ratings, exact caps, low_ap)
+high_overall = spend_cheapest_first(current ratings, exact caps, high_ap)
+```
+
+The result is then bounded by the §6.3 rule 4 ordering rules and the width guardrail.
+
+Two changes matter, and both were indicated by measurement rather than chosen.
+
+**The band midpoint replaces the band edges.** The previous model paired the §9.5 seasonal *minimum* with the seasonal *maximum* and discounted both by an "ordinary opportunity share" and two allocation efficiencies. That conflated the within-season spread of one season's grant, which averages out across a fifteen-season career, with the career-long spread of total opportunity received, which does not. Carrying season-scale spread as though it were career-scale uncertainty is what produced a forecast crediting a mean of 603 AP against 1,198 actually granted.
+
+**The opportunity interval is conditioned on the prospect profile.** §7.2 makes the profile the determinant of how much opportunity a career generates, and High Upside is the only profile with genuine access to the §8.4 exceptional and generational outcomes, so its honest interval is wider. A single global interval cannot express that: §5.3 established that the exhaustive global sweep reached the coverage floor only by sitting on the coverage, width, and bias limits at once, which is a fit to sampling noise.
+
+A second conditioning axis needs no parameter. The conversion saturates at Maximum Potential, so a career whose caps bind receives a narrow range automatically — more opportunity could not have helped it. That is why the measured width varies from 6 at the cap-bound end to 15 at the open-ended end while the median stays inside the guardrail.
+
+#### Inputs
+
+Creation-time only: current ratings, exact per-attribute caps, prospect profile, current age, the §9.1 cost table, the §9.5 seasonal availability bands, and the §7.2 growth-availability multipliers. The three fitted quantities are per-profile arrays of three values each — `projected_peak_opportunity_low`, `projected_peak_opportunity_high`, and `projected_peak_horizon_age` — published through `describe_tunables` with units and safe ranges as §4 requires.
+
+#### Evidence that no future information leaks
+
+- `ProjectedPeakCalculator.project` takes no `RandomSource` and no career-state argument. It cannot consult a draw it was never given, and adding one would be a signature change rather than a silent regression.
+- `test_projection_ignores_identity_and_career_state` constructs the same player under three different career seeds and player identities and asserts an identical projection.
+- The counterfactual that uses realized lifetime AP lives in the calibration layer, in `run_projected_peak_diagnostics.gd`, and is not reachable from the domain.
+- The correction is nine versioned numbers, three per prospect profile, serving every career. There is no per-seed table and no memorised outcome.
+
+#### Seed ranges
+
+Fitting, tuning, and validation use disjoint deterministic seed ranges. The validation ranges were never measured until the parameters were frozen, and were not revisited afterwards.
+
+| Purpose | Seeds | Careers | Runner |
+| --- | --- | ---: | --- |
+| Development — parameter fit | 1–600 | 600 | diagnostics |
+| Tuning — independent confirmation | 200001–202000 | 2,000 | diagnostics |
+| Validation A — untouched | 300001–303000 | 3,000 | diagnostics |
+| Validation A — untouched | 300001–302000 | 2,000 | career progression |
+| Validation B — untouched | 402001–405000 | 3,000 | diagnostics |
+| Validation B — untouched | 402001–404000 | 2,000 | career progression |
+
+The two runners sample the same untouched range at two sizes: the diagnostics runner supplies the subgroup tables, and the career-progression runner is the production judged path that also reports the §8.4 bands and executor parity. The two are never pooled, so the shared seeds are not double-counted evidence.
+
+The tuning range required **no parameter change** — the values fitted on the development range passed it as they stood. That is a stronger result than a tuning pass, and it is why no third fitting iteration was run.
+
+#### Results
+
+Headline §6.3 measures. The model is deterministic on a fixed seed, so a rerun of any range reproduces these exactly.
+
+| Range | Careers | Coverage (0.70–0.85) | Signed error (±2) | Median width (6–12) | Conversion error |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Before, pooled | 1,200 | 0.292 | +10.0 | 11 | 0.0 |
+| Development 1–600 | 600 | 0.7300 | −1.0 | 11 | 0.0 |
+| Tuning 200001–202000 | 2,000 | 0.7220 | −1.0 | 11 | 0.0 |
+| **Validation A 300001–303000** | 3,000 | **0.7473 ±0.0155** | **−1.0** | **11.0** | 0.0 |
+| **Validation B 402001–405000** | 3,000 | **0.7370 ±0.0157** | **0.0** | **11.0** | 0.0 |
+
+All three measures sit in the interior of their bands on both untouched ranges, not on an edge. The conversion error stays at zero throughout, confirming the correction went where the diagnosis said it should.
+
+**Deterministic reruns.** Both validation ranges were executed twice — once before and once after the subgroup-rule correction described below — and reproduced their headline figures exactly: validation A returned 0.7473, 11.0, and −1.0 on both runs, validation B 0.7370, 11.0, and 0.0. The model consults no `RandomSource`, so this is expected; measuring it is what turns the expectation into evidence.
+
+The same conclusion on the **production judged path**, `run_career_progression.gd`, which is the runner the certification workflows execute. Both validation ranges, 2,000 careers each, at commit `2a38f24`:
+
+| Metric | Validation A (300001–302000) | Validation B (402001–404000) | Target |
+| --- | ---: | ---: | ---: |
+| `projected_peak.coverage` | 0.7420 ±0.0192 | 0.7360 ±0.0193 | 0.70–0.85 |
+| `projected_peak.median_width` | 11.0 ±0.1458 | 11.0 ±0.1459 | 6–12 |
+| `projected_peak.median_signed_error` | −1.0 ±0.2796 | 0.0000 ±0.2841 | ±2 |
+| `parity.manual_vs_full_detail` | 0.0000 | 0.0000 | ±0.02 |
+| `parity.manual_vs_aggregate` | 0.0000 | 0.0000 | ±0.02 |
+
+Executor parity is exact, so the aggregate and full-detail executors remain consistent with the manual path under the new model. No §8.4 band moved: poor 66, ordinary 77, strong 82, exceptional 87, share above 95 at 0.0000, transition-gap share 0.0175 — every one of them identical to the pre-change measurement. The projected-peak correction is a display-side forecast change and touches no realized outcome, which is exactly what these figures confirm.
+
+That run reports two failures, both expected and neither belonging to this work: `sample.meets_certification_size`, which fails correctly because 2,000 is not the §27.1 million, and `career_peak.rare_generational.median` at 90 against 92–95, which is the pre-existing §8.4 failure recorded in §5.3 and explicitly outside the scope of the projected-peak task. Its value is unchanged from before the correction.
+
+#### Subgroup results
+
+Creation-time groupings on the two validation ranges. `marginal` means outside the population band but inside the pathology bounds; `undersampled` means below 100 careers and therefore not judged.
+
+| Grouping | Validation A | Validation B |
+| --- | --- | --- |
+| Prospect: ready_now | 0.733 in band | 0.705 in band |
+| Prospect: balanced | 0.699 marginal | 0.719 in band |
+| Prospect: high_upside | 0.791 in band | 0.773 in band |
+| Family: guard | 0.740 in band | — |
+| Family: wing | 0.744 in band | — |
+| Family: big | 0.758 in band | — |
+| Maturity: early | 0.742 in band | — |
+| Maturity: average | 0.745 in band | — |
+| Maturity: late | 0.754 in band | — |
+| Max potential 86+ | 0.744 in band | 0.731 in band |
+| Max potential below 86 | 0.713 in band | 0.698 marginal |
+| Max potential below 80 | 0.758 in band | 0.763 in band |
+| Max potential below 72 | 1.000, width-floored | 1.000, undersampled (n=98) |
+
+Position family and maturity profile are uniformly healthy — 0.740–0.758 and 0.742–0.754 — which matters because neither is an input to the opportunity interval, so a spread there would have signalled a hidden dependence the model does not model.
+
+**Starting-Overall bands are collinear with prospect profile in this population** and reproduce it exactly. The career simulator gives each profile a distinct completed-build band, so the starting-Overall grouping carries no independent information here. It is reported for completeness rather than as a second axis.
+
+**Body-profile groups are degenerate in this population.** `CareerSimulator` builds every player from `default_body_for_family`, so there are exactly three distinct bodies and the body grouping is identical to the position-family grouping. A genuine body-profile subgroup analysis needs a population with body variation, which the career harness does not currently generate. This is recorded as a gap rather than reported as a pass.
+
+**The weakest subgroup is `balanced`**, at 0.699 and 0.719 — marginal on one range, in band on the other. The cause is structural rather than a tuning miss: a Balanced prospect's outcome distribution has roughly 30% of its mass in the poorly-managed class, which lands about 11 Overall points below the median outcome. No range narrow enough to satisfy the width guardrail can reach that mass while keeping the midpoint honest, so Balanced coverage is effectively capped near its ordinary-plus-strong share. Buying those careers would cost roughly four Overall points of width and push the signed error positive.
+
+#### Mutation evidence
+
+A test that cannot fail is not evidence, so each guard was checked by breaking the model and confirming the guard fires. Every mutation was applied to the source, run, and reverted.
+
+| Mutation | Guard that fired | Failures |
+| --- | --- | ---: |
+| Opportunity interval collapsed to one global constant across profiles | `test_risk_profile_changes_the_interval_width` | 2 |
+| Maximum Potential ceiling replaced by the rating maximum | `test_bounds_and_ordering_hold_at_extremes` | 18 |
+| Career seed leaked into the opportunity scale | `test_projection_ignores_identity_and_career_state` | 3 |
+| Opportunity level reverted to the legacy discount and horizon | `test_regression_against_the_previous_pessimistic_model` | 3 |
+
+One negative result is worth recording because it bounds what the leakage test proves. A first attempt at the leakage mutation passed the career seed through the `historical_peak_overall` argument, and **no test failed** — that argument cannot influence the result for the players under test, because it only relaxes bounds the projection was already inside. The identity test detects a leak that changes the answer; it does not detect a leak that is inert on the tested inputs. The structural guarantee is the stronger one: `project` has no career-state parameter at all, so a real leak requires a signature change rather than a silent edit.
+
+GdUnit4 aborts a suite after failures, so the mutations were run against the whole basketball directory and the specific failing case identified; a mutation run against the single file can stop before reaching a later test.
+
+#### Two corrections to the subgroup check itself
+
+Both were made to the harness rather than to the model, and both are recorded here because a check that is changed after it fires needs to be auditable.
+
+**Career outcome class is not a judged subgroup.** The first version of the pathology metric judged coverage inside the realized §8.4 outcome classes, and reported three pathologies. That check was wrong. Outcome class is a realized result, not information the forecast had, and a correctly calibrated 75% interval is *supposed* to miss inside the outcome tails: it covers the central mass and fails at both ends by construction. Demanding per-outcome coverage demands a forecast that already knows its answer, which §28 forbids. Only creation-time groupings — prospect profile, position family, maturity profile, starting-Overall band, Maximum-Potential band — are judged. The outcome table is still reported, as a diagnostic of where the interval sits.
+
+**Over-coverage at the minimum width is not dishonesty.** Validation A flagged one pathology: `potential_below_72`, coverage 1.000 at a median width of 6.0 — which is exactly the §6.3 minimum width. These are cap-bound players whose Maximum Potential minus Current Overall is already at or below that minimum, so the displayed range *is* the whole legal interval and covering every realized peak is arithmetic rather than flattery. §6.3 forbids "widening the range to meaninglessness"; a range at the specification's own minimum has widened nothing. The ceiling test now applies only where the subgroup's median width exceeds the minimum, so a model that genuinely bought coverage with width is still caught.
+
+That the same group passed unflagged in validation B — at n=98, below the judging threshold, rather than n=107 — confirms the flag was a sample-size artifact of a mis-specified rule and not a property of the model.
+
+Both validation ranges were re-run after the correction so the archived artifacts reflect the rule as it now stands.
+
+#### Regression
+
+Run at commit `2a38f24` with the corrected model in place.
+
+| Check | Result |
+| --- | --- |
+| Parse check under warnings-as-errors | 188 scripts, 0 failures |
+| GdUnit4 full suite | 226 cases, 28 suites, 0 failures |
+| `tests/run_all.gd` | PASS |
+| Simulation smoke diagnostics | Invariants PASS |
+| Builder calibration harness | PASS; ordinary high water 50 OVR against the 54 ceiling |
+| Attribute sensitivity at 100,000 resolutions per point | 80 metrics, 0 failures |
+| Calibration smoke | 15 metrics, 0 failures |
+| Golden ledgers | **Unchanged** — `git diff tests/golden/` empty |
+
+The golden result is the one worth stating explicitly. §6.2 forbids any resolution path from reading Current Overall, Maximum Potential, or Projected Peak, so a change to the projected-peak model must not be able to move a match ledger. It did not, which is a direct check on that separation rather than a formality.
+
+The Builder bands are unmoved, so the §7.3.2 locked outcome bands and the creation-budget contract are unaffected by the projection change — as they must be, since the Builder consumes the projection for display only.
+
+**Shard aggregation.** Three seed-disjoint shards over seeds 1–1200 combined through the existing aggregator: all three accepted, provenance and seed intervals validated, and the estimates rebuilt from the pooled raw terms rather than averaged — coverage 0.7450, median width 11.0, signed error −1.0. The two subgroup metrics are correctly reported as un-aggregatable, which is deliberate: subgroup membership is a property of the pooled population and a per-shard count cannot be summed into it.
+
+That run exposed one harness defect, now fixed. The diagnostics runner declared no certification requirement, so a pooled diagnostic reported itself "below the required 0 complete player careers" — a sentence about nothing. It now declares the §27.1 progression sample like every other runner, so a short pooled run says how short it actually is.
+
+#### Classification
+
+| Item | Classification | Basis |
+| --- | --- | --- |
+| Determinism, ordering, cap enforcement, absence of career-state inputs | **Structural** | `tests/unit/basketball/test_projected_peak_model.gd`, 11 cases, each with mutation evidence |
+| §6.3 coverage, signed error, median width | **Measured below requirement** | Passing on two untouched 3,000-career ranges and on the production judged path at 2,000 careers each; §27.1 requires 1,000,000 |
+| Executor parity under the new model | **Measured below requirement** | 0.0000 on both validation ranges against a ±2% tolerance |
+| Subgroup honesty | **Measured below requirement** | Zero pathological subgroups across 15–16 judged creation-time groupings per range |
+| Body-profile subgroups | **Not measurable in this population** | The career harness generates one body per position family; see above |
+
+Projected Peak is **ready for certification** in the sense that matters: the model passes every §6.3 measure with interior margin on independent samples it was never fitted against, on the runner the certification workflows execute. It is **not certified**, and cannot be from a developer machine — §6.4 gives the arithmetic. Certification requires the deep-verification workflow to run the sharded million-career report.
 
 ## 6. Certification and workflow blockers
 
@@ -500,7 +677,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 1. ~~Open a pull request from `stage4-calibration` and run the fast branch gate.~~ **Done.** PR #1 is open as a draft and its gate passed at `00567d4`. It must be re-run on the pull request's current head before the draft is lifted.
 2. ~~Add deterministic aggregation for sharded competition and progression reports.~~ **Done** (§6.1). Remaining dependency: execute a nightly or deep run, which has never happened, and confirm the `chickensoft-games/setup-godot@v2` action referenced by both new workflows actually resolves on this project's runner — it was written from convention, not verified.
 3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
-4. **Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.** Everything needed to specify this work is now measured (§5.3). The conversion is exact and the whole error is the credited budget. The §6.3 bands are jointly satisfiable — the irreducible width is 8.0 against a 6–12 guardrail, reproduced on two independent seed ranges — so this is a modelling job and not an owner decision. What must change is the shape: a single global opportunity interval applied to every career tops out at 0.666 coverage, while the irreducible width varies from 6 to 16 across career groups. The interval must widen where the career's outcome is genuinely less predictable and narrow where the caps already bind, and it must do so from creation-time inputs only — §28 makes a projection that reads realized career data a release blocker.
+4. ~~Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.~~ **Done** (§5.7). The interval is now conditioned on the prospect profile, with the player's own caps supplying a second axis through conversion saturation. All three §6.3 measures pass with interior margin on two untouched validation ranges and on the production judged path. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it can be called certified.
 5. Resolve the rare-generational 92–95 peak miss. Selection pressure has moved Maximum Potential to 94 and is not sufficient alone; those careers also need roughly 280 more lifetime AP-equivalent, and §9.5's guardrails and §9.6's game-development caps both constrain how that may be supplied (§5.3).
 6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.

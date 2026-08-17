@@ -41,8 +41,8 @@ const DEFAULT_CAREERS: int = 800
 ## saturates against Maximum Potential the range stops widening while coverage
 ## keeps rising, so the coverage-versus-width trade is not monotone and a grid
 ## that stops at 1.0 would hide the part of the surface that matters.
-const MULTIPLIER_MINIMUM: float = 0.25
-const MULTIPLIER_MAXIMUM: float = 3.00
+const MULTIPLIER_MINIMUM: float = 0.35
+const MULTIPLIER_MAXIMUM: float = 1.95
 const MULTIPLIER_STEP: float = 0.05
 
 
@@ -113,7 +113,8 @@ func _run() -> void:
 	_report_peak_ages(fit, profiles)
 	_report_irreducible_width(fit)
 	if with_surface:
-		_report_surface(fit, multipliers, "FITTING")
+		_report_per_prospect_surface(fit, multipliers)
+		_report_surface(fit, multipliers, "FITTING (global, for contrast)")
 
 	if validate_base >= 0:
 		print("")
@@ -167,19 +168,12 @@ func _collect(
 	return samples
 
 
-## The opportunity the horizon is *expected* to deliver: the midpoint of each
-## season's §9.5 band, scaled by the §7.2 growth-availability multiplier. The
-## sweep multiplies this, so a multiplier of 1.0 means "this career realizes
-## exactly the expected seasonal grant for every season to its peak age".
+## The opportunity the horizon is *expected* to deliver. Delegates to the model
+## itself so the sweep can never fit against a different definition of expected
+## opportunity than the one production uses.
 func _expected_horizon_ap(prospect: int, progression: ProgressionProfile) -> float:
-	var total: float = 0.0
-	for season_age in range(BuilderService.FRESHMAN_AGE, progression.expected_peak_age[prospect]):
-		var phase: int = CareerPhase.default_phase_for_age(season_age)
-		var growth_phase: int = CareerPhase.growth_phase_of(phase)
-		var availability: float = progression.growth_availability_for(prospect, growth_phase)
-		total += (float(progression.seasonal_ap_minimum[phase])
-			+ float(progression.seasonal_ap_maximum[phase])) / 2.0 * availability
-	return total
+	return ProjectedPeakCalculator.expected_horizon_ap(
+		prospect, BuilderService.FRESHMAN_AGE, progression)
 
 
 ## Realized peak age against the model's expected peak age. The model stops
@@ -299,6 +293,81 @@ func _report_irreducible_width(samples: Array[Sample]) -> void:
 		print("     guardrail and still reach the coverage floor on this population.")
 	else:
 		print("  => reachable in principle; the gap is the model, not the requirement.")
+
+
+## Search the opportunity interval **separately for each prospect profile**.
+##
+## The global search is a strictly weaker instrument and Stage 4 established it
+## cannot succeed: one interval must serve careers whose irreducible width
+## differs by more than a factor of two, so it is forced to be simultaneously
+## too wide for the cap-bound careers and too narrow for the open-ended ones.
+##
+## Prospect profile is known when the range is displayed and §7.2 makes it the
+## determinant of how much opportunity a career generates, so conditioning on it
+## is both legal and the right axis. Because the profiles partition the
+## population, each can be searched independently: a pair that satisfies
+## coverage and bias *within* a profile contributes correctly to the global
+## figures, and searching three two-dimensional spaces separately replaces one
+## intractable six-dimensional one.
+##
+## Reporting per-profile coverage and bias also means a global pass cannot
+## conceal a profile-level pathology, which is the failure mode the previous
+## model had: 28% overall coverage hid a subgroup at 100% and three below 5%.
+func _report_per_prospect_surface(
+	samples: Array[Sample],
+	multipliers: PackedFloat64Array,
+) -> void:
+	var coverage_band: CalibrationBand = CalibrationTargets.projected_peak_coverage()
+	var width_band: CalibrationBand = CalibrationTargets.projected_peak_median_width()
+	var bias_band: CalibrationBand = CalibrationTargets.projected_peak_signed_bias()
+
+	for prospect in range(ProspectProfile.COUNT):
+		var subset: Array[Sample] = []
+		for sample in samples:
+			if sample.prospect == prospect:
+				subset.append(sample)
+		print("")
+		print("  === %s: %d careers ===" % [ProspectProfile.id_of(prospect), subset.size()])
+		if subset.size() < 50:
+			print("  too few careers to fit this profile; skipped.")
+			continue
+
+		var accepted: Array[Score] = []
+		for low_index in range(multipliers.size()):
+			for high_index in range(low_index, multipliers.size()):
+				var score: Score = _score(subset, low_index, high_index)
+				score.low = multipliers[low_index]
+				score.high = multipliers[high_index]
+				if not coverage_band.contains(score.coverage):
+					continue
+				if not bias_band.contains(score.median_bias):
+					continue
+				if not width_band.contains(score.median_width):
+					continue
+				# Interior margin: distance from the nearest band edge, each
+				# measure normalised by its own half-range so no one measure
+				# dominates. A pair on a boundary is a fit to sampling noise.
+				score.margin = minf(
+					minf(score.coverage - coverage_band.minimum,
+						coverage_band.maximum - score.coverage) / 0.075,
+					minf(
+						(bias_band.maximum - absf(score.median_bias)) / 2.0,
+						minf(score.median_width - width_band.minimum,
+							width_band.maximum - score.median_width) / 3.0))
+				accepted.append(score)
+
+		if accepted.is_empty():
+			print("  no pair satisfies coverage, width and bias for this profile.")
+			continue
+		accepted.sort_custom(func(a: Score, b: Score) -> bool: return a.margin > b.margin)
+		print("  %-6s %-6s %-9s %-8s %-8s %s" % [
+			"low", "high", "coverage", "width", "bias", "margin"])
+		for index in range(mini(10, accepted.size())):
+			var row: Score = accepted[index]
+			print("  %-6.2f %-6.2f %-9.4f %-8.2f %+-8.2f %.3f" % [
+				row.low, row.high, row.coverage, row.median_width,
+				row.median_bias, row.margin])
+		print("  %d pairs satisfy all three for this profile." % accepted.size())
 
 
 ## Score every ordered multiplier pair and print those that satisfy all three
