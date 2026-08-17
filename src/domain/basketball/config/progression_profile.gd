@@ -54,6 +54,11 @@ var cap_noise_clip: int
 const CAP_MINIMUM: int = 40
 const CAP_MAXIMUM: int = 99
 
+## The earliest age a projected-peak forecast horizon may end. A horizon at or
+## before the freshman year would credit a career no remaining opportunity at
+## all, which is not a forecast.
+const MINIMUM_FORECAST_HORIZON_AGE: int = 15
+
 ## ---------------------------------------------------------------------------
 ## Â§7.2 Growth availability multipliers by prospect profile and career phase.
 ## ---------------------------------------------------------------------------
@@ -93,20 +98,53 @@ var maximum_natural_decline_per_offseason: int
 ## ---------------------------------------------------------------------------
 ## Projected-peak model (`BALANCE_SPEC.md` Â§6.3). Provisional pending report 7.
 ## ---------------------------------------------------------------------------
-## Ordinary â€” not best-case â€” opportunity. Â§6.3 rule 5 makes honesty an
-## acceptance requirement, so the central estimate deliberately assumes an
-## ordinary career rather than a well-managed one.
-var ordinary_opportunity_share: float
-## Share of granted AP an ordinary career converts into retained rating gain
-## rather than losing to misallocation, capped attributes, and surplus.
-var ordinary_allocation_efficiency_low: float
-var ordinary_allocation_efficiency_high: float
+## The model forecasts the *opportunity* a career will receive and converts it
+## through the exact §9.1 cost table against the player's own caps. Stage 4
+## measured that split directly: given the true lifetime opportunity the
+## conversion predicts the realized peak with a median error of zero and a
+## standard deviation near half an Overall point, and the entire projected-peak
+## bias came from the opportunity estimate. The opportunity model is therefore
+## where the uncertainty lives, and it is the only part parameterised here.
+##
+## Opportunity is expressed as a share of the *expected* seasonal grant — the
+## midpoint of each §9.5 band over the forecast horizon, scaled by the §7.2
+## growth-availability multiplier. A share of 1.0 means "this career realizes
+## exactly the expected grant every season through its horizon".
+##
+## ### Why these are per prospect profile
+##
+## §7.2 makes the prospect profile the thing that "change[s] the number and
+## quality of opportunities generated", and §8.4 expects Ready Now and High
+## Upside peaks to sit differently inside the outcome bands. The *dispersion* of
+## career opportunity therefore differs by profile and not only its centre: a
+## High Upside prospect has genuine access to the exceptional and generational
+## outcomes a Ready Now prospect does not, so its honest forecast interval is
+## wider. A single global interval cannot express that, and Stage 4 measured
+## that no global setting reaches the §6.3 bands.
+##
+## The interval also narrows on its own wherever the caps bind, because the
+## conversion saturates at Maximum Potential. That is the second half of the
+## conditioning and it needs no parameter: a career with little headroom gets a
+## narrow range because more opportunity could not have helped it.
+var projected_peak_opportunity_low: Array[float]
+var projected_peak_opportunity_high: Array[float]
+## Age through which the forecast accrues opportunity, by prospect profile.
+var projected_peak_horizon_age: Array[int]
 ## Age at which an ordinary career reaches peak Overall, by prospect profile.
+## Used by the §6.3 rule 4 decline branch for a player already past his peak.
 var expected_peak_age: Array[int]
 ## Minimum width of the displayed Projected Peak range, in Overall points.
-## Â§6.3 forbids displaying Projected Peak as a single value, so the range can
+## §6.3 forbids displaying Projected Peak as a single value, so the range can
 ## never collapse to zero width.
 var projected_peak_minimum_width: int
+## Per-career upper bound on the displayed width.
+##
+## §6.3's 6–12 guardrail is stated on the **median displayed range width**, not
+## on every range. Clamping every career to 12 over-constrained the model: it
+## forced one width onto careers whose genuine uncertainty differs by more than
+## a factor of two, and Stage 4 measured the irreducible width varying from
+## about 6 to about 16 across creation-time groups. This bound exists only to
+## stop a range becoming uninformative; the median is what the report judges.
 var projected_peak_maximum_width: int
 
 var version: StringName
@@ -170,12 +208,20 @@ func _init(p_version: StringName = &"progression-v1") -> void:
 	decline_iq_maximum = [0.5, 0.5, 0.0, 0.5, 1.5]
 	maximum_natural_decline_per_offseason = 5
 
-	ordinary_opportunity_share = 0.62
-	ordinary_allocation_efficiency_low = 0.55
-	ordinary_allocation_efficiency_high = 0.86
-	expected_peak_age = [25, 27, 28]
+	# Indexed by ProspectProfile.Value: ready_now, balanced, high_upside.
+	# Fitted on seeds 1..600, tuned on seeds 200001..202000, and validated on two
+	# untouched ranges. See PROJECT_STATUS.md §5.7 for the measurements.
+	#
+	# High Upside carries a materially wider interval than the other two because
+	# it is the only profile with genuine access to the §8.4 exceptional and
+	# generational outcomes; its honest forecast is less certain, and §6.3 makes
+	# understating that a defect rather than a presentational nicety.
+	projected_peak_opportunity_low = [0.585, 0.565, 0.625]
+	projected_peak_opportunity_high = [1.140, 1.160, 1.540]
+	projected_peak_horizon_age = [29, 29, 30]
+	expected_peak_age = [29, 29, 30]
 	projected_peak_minimum_width = 6
-	projected_peak_maximum_width = 12
+	projected_peak_maximum_width = 20
 
 	_validate()
 
@@ -208,6 +254,18 @@ func _validate() -> void:
 		"projected-peak width guardrail is inverted")
 	assert(projected_peak_minimum_width > 0,
 		"Projected Peak is always a range and never a single number (Â§6.3)")
+	assert(projected_peak_opportunity_low.size() == ProspectProfile.COUNT
+		and projected_peak_opportunity_high.size() == ProspectProfile.COUNT
+		and projected_peak_horizon_age.size() == ProspectProfile.COUNT,
+		"the projected-peak opportunity model carries one row per prospect profile")
+	for prospect in range(ProspectProfile.COUNT):
+		assert(projected_peak_opportunity_low[prospect] > 0.0,
+			"a forecast cannot assume a career receives no opportunity at all")
+		assert(projected_peak_opportunity_low[prospect]
+			<= projected_peak_opportunity_high[prospect],
+			"the projected-peak opportunity interval is inverted")
+		assert(projected_peak_horizon_age[prospect] >= MINIMUM_FORECAST_HORIZON_AGE,
+			"the forecast horizon must lie beyond the freshman year")
 	for category in range(AttributeCategory.COUNT):
 		assert(growth_end_age[category] <= plateau_end_age[category],
 			"an aging curve cannot plateau before growth ends")
@@ -269,15 +327,17 @@ func describe_tunables() -> Array[BalanceTunable]:
 			&"year", float(expected_peak_age[prospect]), 20.0, 34.0))
 	tunables.append(BalanceTunable.new(
 		&"progression.cap_noise_deviation", &"rating", cap_noise_deviation, 0.0, 8.0))
-	tunables.append(BalanceTunable.new(
-		&"progression.ordinary_opportunity_share", &"share",
-		ordinary_opportunity_share, 0.0, 1.0))
-	tunables.append(BalanceTunable.new(
-		&"progression.ordinary_allocation_efficiency_low", &"share",
-		ordinary_allocation_efficiency_low, 0.0, 1.0))
-	tunables.append(BalanceTunable.new(
-		&"progression.ordinary_allocation_efficiency_high", &"share",
-		ordinary_allocation_efficiency_high, 0.0, 1.0))
+	for prospect in ProspectProfile.all():
+		var opportunity_id: StringName = ProspectProfile.id_of(prospect)
+		tunables.append(BalanceTunable.new(
+			StringName("progression.projected_peak_opportunity_low.%s" % opportunity_id),
+			&"share", projected_peak_opportunity_low[prospect], 0.05, 3.0))
+		tunables.append(BalanceTunable.new(
+			StringName("progression.projected_peak_opportunity_high.%s" % opportunity_id),
+			&"share", projected_peak_opportunity_high[prospect], 0.05, 3.0))
+		tunables.append(BalanceTunable.new(
+			StringName("progression.projected_peak_horizon_age.%s" % opportunity_id),
+			&"year", float(projected_peak_horizon_age[prospect]), 15.0, 40.0))
 	tunables.append(BalanceTunable.new(
 		&"progression.projected_peak_minimum_width", &"overall_point",
 		float(projected_peak_minimum_width), 1.0, 20.0))
