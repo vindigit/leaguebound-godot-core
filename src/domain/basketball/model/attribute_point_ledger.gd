@@ -19,14 +19,29 @@ const SCHEMA_VERSION: int = 1
 
 var _entries: Array[AttributePointEntry]
 var _balance: float
+## Running total of AP-equivalent *granted* in each career year, excluding the
+## §9.2 at-cap conversion.
+##
+## This is the §9.5 seasonal total, and it lives here because the ledger is the
+## only object that sees every entry. §9.7.2 binds every executor to the §9.5
+## seasonal bands and upper guardrails, so the guardrail has to be checkable on
+## every season of every career; a check that cost a full ledger scan would be
+## one nobody could afford to run in production, and an unaffordable rule is an
+## unenforced one.
+##
+## The at-cap conversion is excluded because §9.2 makes it a refund of progress
+## the player already earned and could not spend, not new seasonal availability.
+var _granted_by_year: Dictionary[int, float]
 
 
 func _init(p_entries: Array[AttributePointEntry] = []) -> void:
 	_entries = []
 	_balance = 0.0
+	_granted_by_year = {}
 	for entry in p_entries:
 		_entries.append(entry)
 		_balance += entry.amount
+		_index_grant(entry)
 
 
 ## Available general AP. Fractional balances are legal because game development
@@ -102,6 +117,32 @@ func spend(
 func _append(entry: AttributePointEntry) -> void:
 	_entries.append(entry)
 	_balance += entry.amount
+	_index_grant(entry)
+
+
+## Keep the §9.5 seasonal total current. Only grants count toward the seasonal
+## band: a spend moves opportunity into a rating and a decline debit removes
+## standing, and neither is availability the season delivered.
+func _index_grant(entry: AttributePointEntry) -> void:
+	if not entry.is_grant():
+		return
+	if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+		return
+	var year: int = entry.career_year
+	if _granted_by_year.has(year):
+		_granted_by_year[year] += entry.amount
+	else:
+		_granted_by_year[year] = entry.amount
+
+
+## AP-equivalent granted in one career year against the §9.5 seasonal band.
+##
+## Constant time, so §9.7.2's requirement that every executor be bound by the
+## §9.5 guardrail can actually be enforced on every season rather than sampled.
+func granted_in_year(career_year: int) -> float:
+	if not _granted_by_year.has(career_year):
+		return 0.0
+	return _granted_by_year[career_year]
 
 
 ## Total granted from one source in one career year. This is the anti-duplication

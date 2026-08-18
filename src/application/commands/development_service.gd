@@ -85,6 +85,48 @@ func grant_opportunity(
 		career_year, source, executor, amount, state.balance_version, note)
 
 
+## Grant §9.6 game-participation development, bounded by its seasonal cap.
+##
+## §9.6 sets the cap at 12 AP-equivalent in high school, 16 in college and the
+## alternative routes, and 20 in top domestic professional basketball, and
+## "played and simulated games share the same pool and formula" — so the cap is
+## per player-season, not per game and not per executor.
+##
+## Returns the amount actually credited, which is the requested amount trimmed
+## to whatever the season has left. The trim is silent by design: a season that
+## offered more development than games can carry has not committed a violation,
+## it has simply produced opportunity that has to arrive from a source that can
+## account for it. The caller decides where the remainder goes, and the ledger
+## records both halves separately so the split is inspectable.
+func grant_game_development(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+	executor: int,
+	amount: float,
+	note: String = "",
+) -> float:
+	assert(CareerPhase.is_valid(phase), "unknown career phase")
+	assert(DevelopmentExecutor.is_valid(executor), "unknown development executor")
+	assert(amount >= 0.0, "game participation cannot remove development")
+
+	var cap: float = float(_profiles.progression.game_development_cap[phase])
+	var already: float = state.point_ledger.granted_from(
+		career_year, AttributePointSource.Value.GAME)
+	var granted: float = minf(amount, maxf(0.0, cap - already))
+	if granted <= 0.0:
+		return 0.0
+	state.point_ledger.grant(
+		career_year, AttributePointSource.Value.GAME, executor, granted,
+		state.balance_version, note)
+	return granted
+
+
+## AP-equivalent granted in one career year against the §9.5 seasonal band.
+func seasonal_granted_total(state: PlayerDevelopmentState, career_year: int) -> float:
+	return state.point_ledger.granted_in_year(career_year)
+
+
 ## Whether the season's granted total has passed the §9.5 upper guardrail.
 ##
 ## "The upper guardrail is not a hard currency cap. It triggers a balance
@@ -95,12 +137,76 @@ func exceeds_seasonal_guardrail(
 	career_year: int,
 	phase: int,
 ) -> bool:
-	var granted: float = 0.0
+	return (seasonal_granted_total(state, career_year)
+		> float(_profiles.progression.seasonal_ap_guardrail[phase]))
+
+
+## Whether the source ledger explains an exceptional season (§9.5).
+##
+## The generic offseason grant explains nothing. It is what every season of that
+## phase receives and its note names only the phase, so a season that passed its
+## guardrail on the strength of the offseason phase alone would be "explained"
+## by a note that says nothing about why it was exceptional. A breach is only
+## explained when some grant that is *not* the generic offseason phase carries a
+## note naming what produced it.
+##
+## An ordinary season is vacuously explained: there is nothing to justify.
+func seasonal_guardrail_is_explained(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+) -> bool:
+	if not exceeds_seasonal_guardrail(state, career_year, phase):
+		return true
 	for entry in state.point_ledger.entries():
-		if entry.career_year == career_year and entry.is_grant() \
-				and entry.source != AttributePointSource.Value.AT_CAP_CONVERSION:
-			granted += entry.amount
-	return granted > float(_profiles.progression.seasonal_ap_guardrail[phase])
+		if entry.career_year != career_year or not entry.is_grant():
+			continue
+		if entry.source == AttributePointSource.Value.OFFSEASON:
+			continue
+		if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+			continue
+		if not entry.note.is_empty():
+			return true
+	return false
+
+
+## The §9.5 balance warning for one season, or an empty string when the season
+## was ordinary.
+##
+## §9.5 requires the guardrail to "trigger a balance warning" and the ledger to
+## "explain why the season was exceptional". Returning the explanation inside
+## the warning is what makes those one thing rather than two: a caller cannot
+## surface the warning without also surfacing what the ledger said, and a breach
+## the ledger cannot account for says so in the text rather than passing
+## silently.
+func seasonal_guardrail_warning(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+) -> String:
+	if not exceeds_seasonal_guardrail(state, career_year, phase):
+		return ""
+
+	var granted: float = seasonal_granted_total(state, career_year)
+	var guardrail: int = _profiles.progression.seasonal_ap_guardrail[phase]
+	var reasons: PackedStringArray = []
+	for entry in state.point_ledger.entries():
+		if entry.career_year != career_year or not entry.is_grant():
+			continue
+		if entry.source == AttributePointSource.Value.OFFSEASON:
+			continue
+		if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+			continue
+		if entry.note.is_empty() or reasons.has(entry.note):
+			continue
+		reasons.append("%s: %s" % [AttributePointSource.id_of(entry.source), entry.note])
+
+	var head: String = (
+		"career year %d in %s granted %.1f AP-equivalent against the §9.5 guardrail of %d"
+			% [career_year, CareerPhase.id_of(phase), granted, guardrail])
+	if reasons.is_empty():
+		return "%s with no source-ledger explanation" % head
+	return "%s: %s" % [head, "; ".join(reasons)]
 
 
 ## Spend general AP to raise one attribute by `points` whole ratings.

@@ -74,6 +74,21 @@ var seasonal_ap_maximum: Array[int]
 var seasonal_ap_guardrail: Array[int]
 
 ## ---------------------------------------------------------------------------
+## Â§9.6 Seasonal game-development caps by career phase.
+## ---------------------------------------------------------------------------
+## "Seasonal game-development caps are 12 AP-equivalent in HS, 16 in
+## college/alternatives, and 20 in top domestic professional basketball."
+##
+## This bounds a **source**, not a season. Â§9.5's band is the total the season
+## may deliver and it explicitly includes game participation, so the two bound
+## different things: the Â§9.5 guardrail bounds everything a season grants, and
+## this bounds how much of that total may be credited to games. A model that
+## books a whole high-engagement season to game participation has not granted
+## too much opportunity â€” it has attributed it to a source whose own cap forbids
+## it, which is the kind of unfalsifiable provenance Â§9.7.2 exists to prevent.
+var game_development_cap: Array[int]
+
+## ---------------------------------------------------------------------------
 ## Â§10.2 Aging curves. Indexed by `AttributeCategory.Value`.
 ## ---------------------------------------------------------------------------
 var growth_end_age: Array[int]
@@ -195,6 +210,12 @@ func _init(p_version: StringName = &"progression-v1") -> void:
 	seasonal_ap_maximum = [156, 38, 132, 115, 108, 96, 72, 53]
 	seasonal_ap_guardrail = [187, 48, 163, 144, 134, 120, 91, 72]
 
+	# Â§9.6, indexed by CareerPhase.Value: high school and summer circuit are
+	# high-school basketball, college and the two alternative professional routes
+	# are "college/alternatives", and the three top-domestic bands are top
+	# domestic professional basketball.
+	game_development_cap = [12, 12, 16, 16, 16, 20, 20, 20]
+
 	growth_end_age = [23, 25, 26, 27, 27, 31]
 	plateau_end_age = [27, 29, 31, 32, 32, 36]
 	decline_start_age = [28, 30, 32, 33, 33, 37]
@@ -249,6 +270,21 @@ func _validate() -> void:
 	assert(ceiling_center.size() == ProspectProfile.COUNT, "one ceiling centre per prospect profile")
 	assert(growth_availability.size() == ProspectProfile.COUNT,
 		"one growth-availability row per prospect profile")
+	assert(seasonal_ap_minimum.size() == CareerPhase.COUNT
+		and seasonal_ap_maximum.size() == CareerPhase.COUNT
+		and seasonal_ap_guardrail.size() == CareerPhase.COUNT,
+		"one Â§9.5 seasonal band and guardrail per career phase")
+	assert(game_development_cap.size() == CareerPhase.COUNT,
+		"one Â§9.6 game-development cap per career phase")
+	for phase in range(CareerPhase.COUNT):
+		assert(seasonal_ap_minimum[phase] <= seasonal_ap_maximum[phase],
+			"a Â§9.5 seasonal band is inverted")
+		assert(seasonal_ap_guardrail[phase] >= seasonal_ap_maximum[phase],
+			"the Â§9.5 high-engagement guardrail sits at or above the band maximum")
+		assert(game_development_cap[phase] > 0,
+			"game participation always develops something (Â§9.6)")
+		assert(float(game_development_cap[phase]) <= float(seasonal_ap_guardrail[phase]),
+			"the Â§9.6 game cap cannot exceed the whole season's Â§9.5 guardrail")
 	assert(growth_end_age.size() == AttributeCategory.COUNT, "one aging curve per category")
 	assert(projected_peak_minimum_width <= projected_peak_maximum_width,
 		"projected-peak width guardrail is inverted")

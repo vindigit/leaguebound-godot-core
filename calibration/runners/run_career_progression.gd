@@ -115,6 +115,14 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 	var ap_totals := PackedFloat64Array()
 	var cap_attainment := PackedFloat64Array()
 	var peak_ages := PackedFloat64Array()
+	# Â§9.5's upper guardrail is a balance warning rather than a currency cap, and
+	# a warning nobody counts is indistinguishable from no guardrail at all. The
+	# report therefore carries both halves of Â§9.5's sentence: how often a season
+	# was exceptional, and whether the source ledger explained why.
+	var guardrail_seasons: int = 0
+	var guardrail_unexplained: int = 0
+	var career_seasons: int = 0
+	var guardrail_excess := PackedFloat64Array()
 
 	for entry: CareerSimulator.CareerResult in results:
 		var career: CareerSimulator.CareerResult = entry
@@ -123,6 +131,10 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		widths.append(float(career.projected_peak_width()))
 		signed_errors.append(career.projected_peak_signed_error())
 		peak_ages.append(float(career.peak_age))
+		guardrail_seasons += career.guardrail_seasons
+		guardrail_unexplained += career.guardrail_unexplained_seasons
+		career_seasons += career.seasons
+		guardrail_excess.append(career.guardrail_excess)
 		ap_totals.append(career.total_ap_granted)
 		cap_attainment.append(career.cap_attainment)
 		if career.projected_peak_covers_realized():
@@ -227,6 +239,39 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		"Mean age at which peak current Overall was reached.",
 		"complete careers", CalibrationStatistics.mean(peak_ages), results.size())
 		.with_interval(CalibrationStatistics.mean_interval_half_width(peak_ages)))
+
+	# --- Â§9.5 upper-guardrail warnings --------------------------------------
+	#
+	# Â§9.5: "The upper guardrail is not a hard currency cap. It triggers a
+	# balance warning and requires the source ledger to explain why the season
+	# was exceptional." Both halves are reported, and only the second is judged:
+	# an exceptional season is permitted, an unexplained one is not. Reporting
+	# the share without judging it would let a model drift into treating the
+	# guardrail as decorative; judging the share itself would turn a warning
+	# into the hard cap Â§9.5 says it is not.
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.guardrail_season_share",
+		"Share of career-seasons whose granted total passed the Â§9.5 "
+		+ "high-engagement upper guardrail for the phase.",
+		"career seasons",
+		float(guardrail_seasons) / float(maxi(1, career_seasons)), career_seasons))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_guardrail_excess_ap",
+		"Mean AP-equivalent granted above the Â§9.5 guardrail across a complete "
+		+ "career, summed over the seasons that passed it.",
+		"complete careers", CalibrationStatistics.mean(guardrail_excess), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(guardrail_excess)))
+	report.add_metric(CalibrationMetric.banded(
+		&"progression.guardrail_warnings_explained",
+		"Share of guardrail-passing seasons whose source ledger names a grant, "
+		+ "other than the generic offseason phase, explaining the excess.",
+		"guardrail seasons",
+		1.0 if guardrail_seasons == 0
+			else float(guardrail_seasons - guardrail_unexplained) / float(guardrail_seasons),
+		CalibrationBand.new(1.0, 1.0, "BALANCE_SPEC.md Â§9.5"),
+		guardrail_seasons)
+		.with_aggregation(MetricAggregation.proportion(
+			guardrail_seasons - guardrail_unexplained, maxi(1, guardrail_seasons))))
 
 
 ## Â§9.7 / Â§27.2: the manual path and the NPC executors receive identical
