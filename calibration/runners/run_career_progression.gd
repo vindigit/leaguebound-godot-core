@@ -254,13 +254,16 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		"Share of career-seasons whose granted total passed the Â§9.5 "
 		+ "high-engagement upper guardrail for the phase.",
 		"career seasons",
-		float(guardrail_seasons) / float(maxi(1, career_seasons)), career_seasons))
+		float(guardrail_seasons) / float(maxi(1, career_seasons)), career_seasons)
+		.with_aggregation(MetricAggregation.proportion(
+			guardrail_seasons, maxi(1, career_seasons))))
 	report.add_metric(CalibrationMetric.raw(
 		&"progression.mean_guardrail_excess_ap",
 		"Mean AP-equivalent granted above the Â§9.5 guardrail across a complete "
 		+ "career, summed over the seasons that passed it.",
 		"complete careers", CalibrationStatistics.mean(guardrail_excess), results.size())
-		.with_interval(CalibrationStatistics.mean_interval_half_width(guardrail_excess)))
+		.with_interval(CalibrationStatistics.mean_interval_half_width(guardrail_excess))
+		.with_aggregation(MetricAggregation.mean_of(guardrail_excess)))
 	report.add_metric(CalibrationMetric.banded(
 		&"progression.guardrail_warnings_explained",
 		"Share of guardrail-passing seasons whose source ledger names a grant, "

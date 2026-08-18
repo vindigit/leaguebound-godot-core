@@ -514,6 +514,7 @@ func test_no_ordinary_career_reaches_the_generational_band() -> void:
 ## rules, so on one seed they must produce one career.
 func test_every_executor_produces_the_same_generational_career() -> void:
 	var simulator := CareerSimulator.new(_profiles)
+	simulator.capture_diagnostics = true
 	for offset in range(4):
 		var seed_value: int = 740000 + offset
 		var manual: CareerSimulator.CareerResult = simulator.simulate(
@@ -525,10 +526,17 @@ func test_every_executor_produces_the_same_generational_career() -> void:
 		var aggregate: CareerSimulator.CareerResult = simulator.simulate(
 			seed_value, DevelopmentExecutor.Value.AGGREGATE,
 			CareerSimulator.Path.GENERATIONAL)
-		assert_int(full.peak_overall).is_equal(manual.peak_overall)
-		assert_int(aggregate.peak_overall).is_equal(manual.peak_overall)
-		assert_float(full.total_ap_granted)\
-			.is_equal_approx(manual.total_ap_granted, 0.0001)
+		# Peak Overall alone is a weak comparison: it is one rounded number and
+		# two careers can share it while differing everywhere underneath. The
+		# opportunity each executor was granted and the twenty ratings it ended
+		# with are the actual §9.7.1 claim.
+		for other: CareerSimulator.CareerResult in [full, aggregate]:
+			assert_float(other.total_ap_granted)\
+				.is_equal_approx(manual.total_ap_granted, 0.0001)
+			assert_int(other.peak_overall).is_equal(manual.peak_overall)
+			assert_int(other.final_overall).is_equal(manual.final_overall)
+			assert_str(other.final_state.attributes.signature())\
+				.is_equal(manual.final_state.attributes.signature())
 
 
 ## The diagnostic path override exists so the two-percent tail can be measured
@@ -590,3 +598,44 @@ func test_the_outcome_label_never_reaches_the_projected_peak() -> void:
 		# §6.3 rule 4 ordering survives the correction at the top of the range.
 		assert_int(entry.projected_peak_high).is_less_equal(entry.maximum_potential)
 		assert_int(entry.projected_peak_low).is_greater_equal(entry.starting_overall)
+
+
+## §9.1: "Caps are checked before currency is consumed." The allocator checks
+## the cap itself before it asks, so the service's own check is never exercised
+## through a career and a mutation that deletes it survives every end-to-end
+## case in this suite. §9.7.2 binds the *service*, not the caller, so the
+## service is asked directly here: given more AP than the cap has room for, it
+## must stop at the cap and leave the rest of the wallet alone.
+func test_a_spend_stops_at_the_cap_even_when_asked_to_pass_it() -> void:
+	var player: PlayerDevelopmentState = _player(7401)
+	var attribute: int = AttributeKey.Key.THREE_POINT
+	var cap: int = player.caps.cap_for(attribute)
+	_development.grant_opportunity(
+		player, 1, AttributePointSource.Value.OFFSEASON,
+		DevelopmentExecutor.Value.MANUAL, 5000.0, "phase=high_school")
+
+	var applied: int = _development.spend_general_ap(
+		player, attribute, 90, 1, DevelopmentExecutor.Value.MANUAL)
+
+	assert_int(player.attributes.get_rating(attribute)).is_equal(cap)
+	assert_int(applied).is_less_equal(cap)
+	assert_float(player.point_ledger.balance()).is_greater(0.0)
+	# A second attempt on an attribute already at its cap buys nothing and costs
+	# nothing, which is what "checked before currency is consumed" means.
+	var balance: float = player.point_ledger.balance()
+	assert_int(_development.spend_general_ap(
+		player, attribute, 5, 1, DevelopmentExecutor.Value.MANUAL)).is_equal(0)
+	assert_float(player.point_ledger.balance()).is_equal_approx(balance, 0.0001)
+
+
+## §8.4's last reading rule: profiles "may shift within these bands" but "no
+## profile may relocate the top of the distribution". The cohort below the
+## corrected one may therefore move inside 86-91 and must never appear inside
+## 92-95, which is a sharper statement than its median staying in band and is
+## what catches a correction applied one cohort too widely.
+func test_no_exceptional_career_reaches_the_generational_band() -> void:
+	var floor_value: float = CalibrationTargets.career_peak_overall(
+		CalibrationTargets.CareerOutcome.GENERATIONAL).minimum
+	for entry: CareerSimulator.CareerResult in _cohort(
+			CareerSimulator.Path.EXCEPTIONAL):
+		assert_float(float(entry.peak_overall)).is_less(floor_value)
