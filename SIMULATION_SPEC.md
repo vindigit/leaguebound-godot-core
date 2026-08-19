@@ -1465,6 +1465,8 @@ Also completed since that list was written:
 - [x] Replace the unconstrained `TacticalRole` string and its `balanced` default with the stable ID set.
 - [x] Replace the `RotationRole` enumeration that mixed usage intent with availability facts.
 - [x] Extend `BodyProfile` with standing reach, and add the career-domain maturity, projected-range, and growth-ledger state.
+- [x] Implement §18.2's **score and time** rotation pressure. `RotationResolver.game_is_decided` gates a `decided_game` substitution reason on the *absolute* margin inside a share of the final regulation period, so the leading and the trailing bench empty on identical terms and no probability moves. Six of §18.2's eight pressures are now implemented; performance-within-tolerance and coach trust remain outstanding because no career domain supplies them.
+- [x] Order substitution planning by force rather than by lineup position. §5.1's mandatory departures — foul-out, ejection, medical unavailability — claim the bench before any discretionary substitution does. The previous single pass could hand the last eligible bench player to a coaching preference and leave a fouled-out player with no legal replacement; that was unreachable while every discretionary reason required a completed stint, and became reachable the moment the settled-game rule could move four players at once.
 
 Outstanding:
 

@@ -64,7 +64,12 @@ static func seed_for(scenario: StringName) -> int:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			return 126704
+			# Moved from 126704 by the `simulation-v3-margin` ruleset. The
+			# settled-game rotation and the two possession-rate corrections
+			# change every ledger, and at the old seed this fixture stopped
+			# reaching overtime — which is the one thing it exists to cover.
+			# `find_scenario_seeds.gd` derived the replacement.
+			return 31676
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

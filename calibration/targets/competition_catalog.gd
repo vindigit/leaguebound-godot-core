@@ -12,7 +12,31 @@ extends RefCounted
 ## Every roster is a deterministic function of a competition and a seed. No
 ## randomness escapes; two runs at the same seed build byte-identical inputs.
 
-const VERSION: StringName = &"competition-catalog-v1"
+const VERSION: StringName = &"competition-catalog-v2"
+
+## Half-width of the deterministic team-strength tilt, in rating points.
+##
+## `team_for` walks a 13-step ladder from `-TEAM_LEVEL_TILT` to
+## `+TEAM_LEVEL_TILT`, so this constant is the whole of the between-team spread
+## the calibration population contains. Two independently tilted rosters differ
+## in mean rating with a standard deviation of `TEAM_LEVEL_TILT * 0.882`.
+##
+## **v2 lowered it from 3.0 to 2.1, and the runners stopped adding a second
+## tilt of their own.** The v1 population put 66% of its games in the
+## large-mismatch band and only 11% in the near-even band, and the pregame
+## strength gap explained 28.8% of final-margin variance — a spread no §14
+## target asks for and one that produced blowouts by construction. At 2.1 the
+## pregame gap carries an expected-margin standard deviation of about 6.5
+## points, which is the between-team spread a settled top-level league shows.
+## `PROJECT_STATUS.md` §5.10 carries the measurement and the derivation.
+##
+## Safe range: 0.0-4.0 rating points. Zero is a league of identical teams, which
+## is a diagnostic fixture (`mirrored_match_for`) and not a population.
+const TEAM_LEVEL_TILT: float = 2.1
+
+## The ladder the tilt walks. Thirteen steps keeps the population from
+## collapsing onto a handful of distinct team strengths.
+const TEAM_LEVEL_STEPS: int = 13
 
 ## Alias so runners can spell the competition enum through one type.
 const Profile := CalibrationTargets.Competition
@@ -147,6 +171,38 @@ static func match_for(
 		home_environment)
 
 
+## A match between two identical rosters at one competition.
+##
+## Both teams are built from the same `variation`, so every rating, body,
+## tactical role, rotation role, and game plan is the same on both benches and
+## the pregame strength gap is exactly zero. That makes it the only way to
+## observe the engine's own dispersion with the population's spread removed: any
+## margin a mirror match produces was invented during the game.
+##
+## It is a diagnostic fixture, not a population sample. A game-shape band must
+## never be judged against mirror matches — a league of identical teams is not
+## the league §14.2 describes — so the runners that use it report it beside the
+## population result and never in place of it.
+static func mirrored_match_for(
+	competition: int,
+	variation: int = 0,
+	home_environment: float = 0.5,
+) -> MatchInput:
+	var balance: SimulationBalanceProfile = balance_profile()
+	var home: TeamMatchProfile = team_for(competition, &"home", variation * 2, balance, 0.0)
+	var away: TeamMatchProfile = team_for(competition, &"away", variation * 2, balance, 0.0)
+	return MatchInput.new(
+		StringName("mirror_%s_%d" % [CalibrationTargets.competition_id(competition), variation]),
+		StringName("mirror_game_%d" % variation),
+		rules_for(competition),
+		balance,
+		home,
+		away,
+		home.team_id,
+		ratings_profile(),
+		home_environment)
+
+
 ## One roster. `variation` walks the population deterministically: it tilts the
 ## team level and the per-player noise without ever consuming a random source,
 ## so the same variation always rebuilds the same team.
@@ -160,9 +216,13 @@ static func team_for(
 	var profile_balance: SimulationBalanceProfile = (
 		balance if balance != null else balance_profile())
 	var centre: float = _TEAM_RATING_CENTRE[competition] + level_offset
-	# A deterministic team-strength tilt of roughly Â±3 rating points, so a
-	# population contains strong and weak teams rather than one repeated club.
-	centre += float((variation * 37) % 13 - 6) * 0.5
+	# The deterministic team-strength tilt, so a population contains strong and
+	# weak teams rather than one repeated club. This is the *only* place a team
+	# level moves: a caller that adds a second tilt of its own is stacking two
+	# spreads and gets a mismatch distribution nobody chose.
+	var step: float = 2.0 * TEAM_LEVEL_TILT / float(TEAM_LEVEL_STEPS - 1)
+	centre += float(
+		(variation * 37) % TEAM_LEVEL_STEPS - (TEAM_LEVEL_STEPS - 1) / 2) * step
 	var spread: float = _TEAM_RATING_SPREAD[competition]
 
 	var players: Array[PlayerMatchProfile] = []

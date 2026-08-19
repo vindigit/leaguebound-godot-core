@@ -122,8 +122,21 @@ var catch_quality_floor: float = 0.70
 ## not the share of turnovers that happen to be steals. The opportunity itself
 ## therefore has its own rate, driven by coverage pressure and the defender's
 ## Disciplined â†” Gamble slider.
-var steal_opportunity_on_ball: float = 0.175
-var steal_opportunity_pass: float = 0.14
+##
+## **Raised in ruleset `simulation-v3-margin` from 0.175 and 0.14.** The §14.1
+## points-per-possession overshoot decomposes to field-goal attempts per
+## possession: 0.967 measured against roughly 0.90 for a league at the band's
+## midpoint. Only two processes remove an attempt from a possession without
+## adding points — a turnover and a shorter possession — and `turnover_base` is
+## not one of them in practice: it feeds the *unforced* mistake only, which is
+## about half a turnover per hundred possessions, so moving it from 0.050 to
+## 0.058 changed the measured rate by 0.03 per hundred and was reverted. The
+## disruption opportunity is the term that actually sets the rate.
+##
+## Units: share of ball-handling actions (respectively completed passes) that
+## produce a valid strip or interception attempt. Safe range 0.05-0.40.
+var steal_opportunity_on_ball: float = 0.200
+var steal_opportunity_pass: float = 0.160
 
 # --- Â§14.3 opposed event curves --------------------------------------------
 ## An ordinary ten-point capability edge changes a qualifying-event probability
@@ -160,7 +173,13 @@ var advantage_ceiling: float = 0.70
 var assist_base: float = 0.94
 var assist_floor: float = 0.55
 var assist_ceiling: float = 0.95
-var offensive_rebound_base: float = 0.28
+## Lowered from 0.28 to 0.25 in ruleset v2, toward the centre of the §14.1
+## top-domestic offensive-rebound band (0.20-0.31) rather than its upper half.
+## At 0.28 the engine turned 15.6 misses per 100 possessions into second
+## chances against a real-basketball 10-11, and those continuations were the
+## largest single term in the points-per-possession overshoot. Safe range
+## 0.12-0.48.
+var offensive_rebound_base: float = 0.25
 var offensive_rebound_floor: float = 0.12
 var offensive_rebound_ceiling: float = 0.48
 var putback_base: float = 0.23
@@ -316,6 +335,31 @@ var foul_trouble_margin: int = 1
 ## starter in the closing period).
 var foul_protection_final_period_relief: int = 1
 
+## §18.2 score and time: the absolute margin at which the outcome is settled and
+## both coaches start resting the players they need for the next game.
+##
+## The rule reads the *absolute* margin, so the leading and the trailing bench
+## empty on exactly the same condition. It is not a comeback mechanism and it
+## touches no probability: it moves who is on the floor, which §10.6.1 lists as
+## the whole of a rotation role's privilege. Before this existed the engine
+## played its starters through decided games, which §18.2 has always required it
+## not to do.
+##
+## Units: points. Safe range 10-40. Below ten a one-possession game would empty
+## the bench; above forty the rule never fires.
+var decided_game_margin: int = 20
+## How much of the final regulation period has to be gone before the rule can
+## apply. A coach does not concede a game with a period still to play.
+##
+## Expressed as a share of that period's own length rather than as a fixed
+## number of minutes, because the competition rule profiles do not agree on how
+## long a period is: five minutes is most of a school period and a third of a
+## college half. 0.42 is the last five minutes of a twelve-minute professional
+## period.
+##
+## Units: share of the final period's length. Safe range 0.0-0.75.
+var decided_game_clock_share: float = 0.42
+
 # --- Â§9.4 time consumption --------------------------------------------------
 var inbound_seconds_min: int = 2
 var inbound_seconds_max: int = 4
@@ -382,7 +426,7 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v2-calibrated",
+	p_version: StringName = &"simulation-v3-margin",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -743,6 +787,8 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"rotation.substitution_rest_seconds", &"seconds", float(substitution_rest_seconds), 30.0, 600.0)
 	_add(tunables, &"rotation.fatigue_substitution_threshold", &"fatigue_points", fatigue_substitution_threshold, 30.0, 95.0)
 	_add(tunables, &"rotation.foul_trouble_margin", &"fouls", float(foul_trouble_margin), 0.0, 3.0)
+	_add(tunables, &"rotation.decided_game_margin", &"points", float(decided_game_margin), 10.0, 40.0)
+	_add(tunables, &"rotation.decided_game_clock_share", &"share", decided_game_clock_share, 0.0, 0.75)
 	_add(tunables, &"time.inbound_seconds_min", &"seconds", float(inbound_seconds_min), 1.0, 8.0)
 	_add(tunables, &"time.inbound_seconds_max", &"seconds", float(inbound_seconds_max), 1.0, 10.0)
 	_add(tunables, &"time.advance_seconds_min", &"seconds", float(advance_seconds_min), 1.0, 10.0)

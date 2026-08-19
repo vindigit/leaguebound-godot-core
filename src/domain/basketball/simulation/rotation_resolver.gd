@@ -24,6 +24,13 @@ func _init(p_balance: SimulationBalanceProfile) -> void:
 
 
 ## The substitutions this team needs right now, mandatory ones first.
+##
+## "Mandatory first" is an ordering over *bench claims*, not a comment. §5.1
+## forbids a fouled-out, ejected, or medically unavailable player from staying
+## on the floor at all, so those departures take the bench before any coaching
+## preference does. Planning them in on-court order instead was latent until the
+## §18.2 settled-game rule arrived: that rule can move four players at once, and
+## it emptied the bench in front of a foul-out that then had nobody to check in.
 func plan(
 	state: MatchSnapshot,
 	input: MatchInput,
@@ -33,12 +40,29 @@ func plan(
 	var team_state: TeamMatchState = state.state_for(team_id)
 	var orders: Array[SubstitutionOrder] = []
 	var claimed: Array[StringName] = []
-	var leaving: Array[StringName] = []
+	_plan_departures(state, input, profile, team_state, orders, claimed, true)
+	_plan_departures(state, input, profile, team_state, orders, claimed, false)
+	return orders
 
+
+## One pass over the lineup, taking either the mandatory departures or the
+## discretionary ones. `claimed` carries between passes, so the second pass can
+## only offer bench players the first did not need.
+func _plan_departures(
+	state: MatchSnapshot,
+	input: MatchInput,
+	profile: TeamMatchProfile,
+	team_state: TeamMatchState,
+	orders: Array[SubstitutionOrder],
+	claimed: Array[StringName],
+	mandatory: bool,
+) -> void:
 	for player_id in team_state.on_court_ids():
 		var runtime: PlayerMatchRuntime = team_state.runtime_by_id(player_id)
 		var reason: int = _departure_reason(state, input, profile, team_state, runtime)
 		if reason < 0:
+			continue
+		if _is_mandatory_reason(reason) != mandatory:
 			continue
 		var incoming_id: StringName = _select_incoming(
 			state, input, profile, team_state, claimed, reason)
@@ -46,16 +70,18 @@ func plan(
 			# No legal replacement exists. A mandatory departure still has to
 			# happen — the lineup validity assertion will surface a roster that
 			# upstream services should never have supplied.
-			assert(
-				reason != SubstitutionOrder.Reason.FOULED_OUT
-				and reason != SubstitutionOrder.Reason.UNAVAILABLE,
-				"no eligible replacement exists for a mandatory substitution"
-			)
+			assert(not mandatory,
+				"no eligible replacement exists for a mandatory substitution")
 			continue
 		claimed.append(incoming_id)
-		leaving.append(player_id)
 		orders.append(SubstitutionOrder.new(player_id, incoming_id, reason))
-	return orders
+
+
+func _is_mandatory_reason(reason: int) -> bool:
+	return (
+		reason == SubstitutionOrder.Reason.FOULED_OUT
+		or reason == SubstitutionOrder.Reason.UNAVAILABLE
+	)
 
 
 ## Validates the §5.1 lineup invariants after the orders have been applied.
@@ -115,11 +141,60 @@ func _departure_reason(
 		and runtime.stint_ms >= _balance.substitution_stint_seconds * 1000
 	):
 		return SubstitutionOrder.Reason.FATIGUE
+	# §18.2 score and time. Once the outcome is settled, both coaches rest the
+	# players they need for the next game. The condition is the *absolute*
+	# margin, so the two benches empty on identical terms — this is a rotation
+	# decision, not a comeback mechanism, and it changes no probability.
+	if (
+		game_is_decided(state, input)
+		and _has_deeper_bench(profile, team_state, runtime.player_id)
+	):
+		return SubstitutionOrder.Reason.DECIDED_GAME
 	# §18.1 planned minutes: a stint that has run past plan yields to the bench.
 	if runtime.stint_ms >= _balance.substitution_stint_seconds * 1000:
 		if _minute_pressure(state, input, profile, runtime) > 1.0:
 			return SubstitutionOrder.Reason.PLANNED_MINUTES
 	return -1
+
+
+## §18.2 score and time: the outcome is settled and there is still enough clock
+## left for resting anyone to be worth doing.
+##
+## Public because the rotation contract is worth asserting directly: a test that
+## can only observe this through a whole simulated game cannot tell "the rule
+## did not fire" from "the game never got there".
+func game_is_decided(state: MatchSnapshot, input: MatchInput) -> bool:
+	var rules: CompetitionRuleProfile = input.rule_profile
+	if state.period != rules.regulation_periods:
+		# Never before the final period, and never in overtime: a game that
+		# reached overtime is by definition not decided.
+		return false
+	var window_ms: int = int(roundf(
+		float(rules.period_length_ms(state.period)) * _balance.decided_game_clock_share))
+	if state.clock_ms > window_ms:
+		return false
+	return absi(state.margin_for(input.home.team_id)) >= _balance.decided_game_margin
+
+
+## Whether a settled game still has someone deeper to give these minutes to.
+##
+## The rule is "rest the players you need next game", so it fires only while a
+## *less* used player is available to replace this one. Testing planned share
+## against a fixed threshold instead looked equivalent and was not: a lineup can
+## be required to keep one starter-tier player on the floor when the bench runs
+## out, and a threshold kept ordering him off on every possession, which
+## produced fourteen settled-game check-ins a game and churned minutes that no
+## coach moved.
+func _has_deeper_bench(
+	profile: TeamMatchProfile,
+	team_state: TeamMatchState,
+	player_id: StringName,
+) -> bool:
+	var own_share: float = profile.rotation_plan.share_for(player_id)
+	for bench_id in team_state.available_bench_ids():
+		if profile.rotation_plan.share_for(bench_id) < own_share - 0.000001:
+			return true
+	return false
 
 
 ## Realized share divided by planned share. Above one means the player has
@@ -176,7 +251,15 @@ func _select_incoming(
 		var elapsed_ms: int = _elapsed_ms(state, input)
 		var realized: float = (
 			0.0 if elapsed_ms <= 0 else float(runtime.played_ms) / float(elapsed_ms))
-		var score: float = (planned - realized) * 2.0
+		# A settled game empties the bench from the bottom: the coach is looking
+		# for the player with the *smallest* plan, not the one furthest behind
+		# it. Ranking by the deficit here would send the eighth man in for the
+		# seventh and leave the end of the roster where it started.
+		var score: float = (
+			-planned * 2.0
+			if reason == SubstitutionOrder.Reason.DECIDED_GAME
+			else (planned - realized) * 2.0
+		)
 		score += clampf(float(runtime.rest_ms) / float(
 			maxi(_balance.substitution_rest_seconds * 1000, 1)), 0.0, 1.0) * 0.5
 		var priority: int = order.find(player_id)
@@ -206,6 +289,10 @@ func _select_incoming(
 func _is_closing_time(state: MatchSnapshot, input: MatchInput) -> bool:
 	if state.period > input.rule_profile.regulation_periods:
 		return true
+	# A settled game has no closing lineup. Preferring the best five into a
+	# twenty-point game would undo the substitution that just took them off.
+	if game_is_decided(state, input):
+		return false
 	return (
 		state.period == input.rule_profile.regulation_periods
 		and state.clock_ms <= input.rule_profile.period_length_ms(state.period) / 4

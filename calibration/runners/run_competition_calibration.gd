@@ -154,12 +154,17 @@ func _run_competition(competition: int, games: int, shard: int) -> MatchMetricAc
 	for index in range(games):
 		var variation: int = base + index
 		# Home and away are drawn from the same population, so the measured home
-		# win rate is the environment effect and nothing else. Alternating the
-		# level offset keeps some games mismatched, which is what produces a
-		# credible blowout share.
-		var tilt: float = float((variation % 5) - 2) * 1.5
-		var input: MatchInput = CompetitionCatalog.match_for(
-			competition, variation, 0.5, 0.0, tilt)
+		# win rate is the environment effect and nothing else.
+		#
+		# This used to add a level offset of its own, alternating on a five-game
+		# cycle and applied to the away roster only. It was meant to keep some
+		# games mismatched. What it actually did was stack a second team-strength
+		# spread on top of the one `CompetitionCatalog.team_for` already applies,
+		# on one bench and not the other, which left 66% of the sample in the
+		# large-mismatch band, 11% near-even, and a blowout share of 36.4% built
+		# by construction rather than by basketball. The catalog owns the spread
+		# now (`TEAM_LEVEL_TILT`), and it applies it to both rosters.
+		var input: MatchInput = CompetitionCatalog.match_for(competition, variation, 0.5)
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(variation + 1))
 		accumulator.accumulate(input, output)
