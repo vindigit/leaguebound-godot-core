@@ -64,12 +64,18 @@ static func seed_for(scenario: StringName) -> int:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			# Moved from 126704 by the `simulation-v3-margin` ruleset. The
-			# settled-game rotation and the two possession-rate corrections
-			# change every ledger, and at the old seed this fixture stopped
-			# reaching overtime — which is the one thing it exists to cover.
+			# Moved from 31676 by the `simulation-v4-management` ruleset, and
+			# from 126704 by `simulation-v3-margin` before that. Score-and-clock
+			# management changes the clock and the action mix of every game that
+			# reaches a managed score state, and a game that finishes level is by
+			# definition one of those — so this seed stopped reaching overtime,
+			# which is the one thing the fixture exists to cover.
 			# `find_scenario_seeds.gd` derived the replacement.
-			return 31676
+			#
+			# That this is the *only* seed that moved is the blast-radius
+			# evidence: the other five scenarios still exercise their named
+			# behaviour at the seeds they always had.
+			return 39595
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

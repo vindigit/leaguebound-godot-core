@@ -28,6 +28,11 @@ var _projector: BoxScoreProjector
 var _possessions: Array[PossessionRecord]
 var _live_start: bool
 var _opened: bool
+## §4/§5 timeouts: the team currently on a scoring run and how many unanswered
+## points it has. Read from the possession records as they are appended, so the
+## trigger is a function of the committed ledger like everything else.
+var _run_team_id: StringName
+var _run_points: int
 
 const MAX_POSSESSIONS: int = 2000
 
@@ -47,6 +52,8 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_possessions = []
 	_live_start = false
 	_opened = false
+	_run_team_id = &""
+	_run_points = 0
 
 
 func snapshot() -> MatchSnapshot:
@@ -96,6 +103,7 @@ func advance_possession() -> PossessionResult:
 			return null
 	assert(_snapshot.possession_sequence < MAX_POSSESSIONS,
 		"match exceeded the possession safety bound")
+	_consider_timeout()
 	_apply_substitutions()
 	_rotation.validate(_snapshot, _input)
 
@@ -109,6 +117,7 @@ func advance_possession() -> PossessionResult:
 	_snapshot = _reducer.apply_events(_snapshot, possession.events)
 	_possessions.append(possession.record)
 	_live_start = possession.record.live_transfer
+	_record_run(possession.record)
 	return possession
 
 
@@ -187,6 +196,47 @@ func _advance_period() -> void:
 	# A new period starts from a dead ball, so the next possession is never a
 	# transition opportunity.
 	_live_start = false
+
+
+## §18.2 contextual adjustment, the timeout half: a coach stops the other side's
+## run.
+##
+## The rule is symmetric and reads only public state — who is on a run, how many
+## points it has reached, how many timeouts the team has left, and how much
+## regulation is still to play. Either coach calls it on exactly the same
+## condition, and its whole effect is the rest `MatchStateReducer` applies to
+## everybody on the floor. It changes no probability and moves no possession.
+func _consider_timeout() -> void:
+	var team_id: StringName = _snapshot.possession_team_id
+	if team_id.is_empty() or _run_team_id.is_empty() or _run_team_id == team_id:
+		return
+	var balance: SimulationBalanceProfile = _input.balance_profile
+	if _run_points < balance.timeout_run_points:
+		return
+	if _snapshot.state_for(team_id).timeouts_remaining <= 0:
+		return
+	if GameManagement.remaining_ms(_snapshot, _input.rule_profile) < balance.timeout_run_reserve_ms:
+		return
+	var writer := _writer()
+	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"run", &"", 0, _run_points)
+	_commit(writer)
+	# The run is answered whether or not the next possession scores: a coach who
+	# has spent a timeout on it does not spend a second one on the same run.
+	_run_points = 0
+	_run_team_id = &""
+	# A timeout is a dead ball, so the possession that follows it is never a
+	# transition opportunity.
+	_live_start = false
+
+
+func _record_run(record: PossessionRecord) -> void:
+	if record.points_scored <= 0:
+		return
+	if record.offense_team_id == _run_team_id:
+		_run_points += record.points_scored
+		return
+	_run_team_id = record.offense_team_id
+	_run_points = record.points_scored
 
 
 func _apply_substitutions() -> void:

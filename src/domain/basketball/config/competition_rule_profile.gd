@@ -58,6 +58,14 @@ var pace_environment_id: StringName
 var pace_multiplier: float
 var officiating_profile_id: StringName
 var roster_rule_profile_id: StringName
+## §4 `timeoutRule`: charged timeouts each team may call in the match.
+##
+## The Simulation Specification has always listed a timeout rule among the
+## things a competition profile configures; nothing read it, and the engine had
+## no timeout at all. Overtime does not grant more here — a coach who has spent
+## them has spent them, which is what makes the allowance a decision rather
+## than an unlimited privilege.
+var timeouts_per_team: int
 
 
 func _init(
@@ -83,7 +91,10 @@ func _init(
 	p_officiating_profile_id: StringName = &"standard_officiating",
 	p_roster_rule_profile_id: StringName = &"standard_roster",
 	p_pace_multiplier: float = 1.0,
+	p_timeouts_per_team: int = 6,
 ) -> void:
+	assert(p_timeouts_per_team >= 0 and p_timeouts_per_team <= 12,
+		"a timeout allowance must be a small non-negative count")
 	assert(p_pace_multiplier >= 0.60 and p_pace_multiplier <= 1.60,
 		"the pace environment multiplier stays inside a credible competition band")
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
@@ -128,6 +139,7 @@ func _init(
 	pace_multiplier = p_pace_multiplier
 	officiating_profile_id = p_officiating_profile_id
 	roster_rule_profile_id = p_roster_rule_profile_id
+	timeouts_per_team = p_timeouts_per_team
 
 
 func period_length_ms(period: int) -> int:
@@ -214,7 +226,7 @@ static func high_school_profile() -> CompetitionRuleProfile:
 		&"high_school", &"competition-v1", 4, 480, 240, 30, 5, 20, 10,
 		7, BonusKind.ONE_AND_ONE, 10, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"school_pace",
-		&"standard_officiating", &"standard_roster", 0.80)
+		&"standard_officiating", &"standard_roster", 0.80, 5)
 
 
 ## College: twenty-minute halves (40 minutes), 30-second shot clock, two shots
@@ -225,7 +237,7 @@ static func college_profile() -> CompetitionRuleProfile:
 		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"college_pace",
-		&"standard_officiating", &"standard_roster", 1.00)
+		&"standard_officiating", &"standard_roster", 1.00, 4)
 
 
 ## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
@@ -237,7 +249,7 @@ static func development_profile() -> CompetitionRuleProfile:
 		&"domestic_development", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"development_pace",
-		&"standard_officiating", &"standard_roster", 0.915)
+		&"standard_officiating", &"standard_roster", 0.915, 7)
 
 
 ## Overseas: ten-minute quarters (40 minutes), 24-second shot clock, two shots
@@ -248,7 +260,7 @@ static func overseas_profile() -> CompetitionRuleProfile:
 		&"overseas", &"competition-v1", 4, 600, 300, 24, 5, 14, 8,
 		4, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"overseas_pace",
-		&"standard_officiating", &"standard_roster", 0.985)
+		&"standard_officiating", &"standard_roster", 0.985, 5)
 
 
 ## Top domestic professional: twelve-minute quarters (48 minutes), 24-second
@@ -260,4 +272,4 @@ static func top_domestic_profile() -> CompetitionRuleProfile:
 		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"top_domestic_pace",
-		&"standard_officiating", &"standard_roster", 0.855)
+		&"standard_officiating", &"standard_roster", 0.855, 7)

@@ -89,6 +89,13 @@ func dead_ball_ms() -> int:
 
 
 ## A pace multiplier around 1.0: below one is quicker, above one is slower.
+##
+## Three separable terms, each bounded on its own: the competition's pace
+## environment, the tempo the coach and the ball handler prefer, and §18.2's
+## score-and-clock management. Keeping the third outside the second's clamp is
+## deliberate — a coach protecting a lead is not expressing a tempo preference,
+## he is managing a scoreboard, and a report that wanted to attribute the two
+## separately could not if they shared a bound.
 func _pace(context: PossessionContext) -> float:
 	var coach: float = _balance.opposing_tendency_multiplier(
 		context.offense.game_plan.tempo_instruction)
@@ -97,10 +104,11 @@ func _pace(context: PossessionContext) -> float:
 		var handler: PlayerMatchProfile = context.offense_profile(context.ball_handler_id)
 		player = _balance.tendency_multiplier(
 			handler.tendencies.at(TendencySlider.Value.PUSH_TRANSITION_CONTROL_TEMPO))
-	return _pace_multiplier * clampf(
+	var tempo: float = clampf(
 		pow(coach, _balance.coach_preference_share) * pow(player, _balance.player_preference_share),
 		0.70,
 		1.40)
+	return _pace_multiplier * tempo * GameManagement.pace_multiplier(context, _balance)
 
 
 func _draw(

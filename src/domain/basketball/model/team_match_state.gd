@@ -18,6 +18,8 @@ var period_scores: Array[int]
 ## Terminal possession records this team has completed (§24.2 engine
 ## possessions). Counted from possession termination, never estimated.
 var possessions: int
+## §5 `TimeoutState`: charged timeouts this team has left.
+var timeouts_remaining: int
 var runtimes: Array[PlayerMatchRuntime]
 var _index: Dictionary
 
@@ -29,6 +31,7 @@ func _init(profile: TeamMatchProfile = null) -> void:
 	total_team_fouls = 0
 	period_scores = [0]
 	possessions = 0
+	timeouts_remaining = 0
 	runtimes = []
 	_index = {}
 	if profile == null:
@@ -49,6 +52,7 @@ func copy() -> TeamMatchState:
 	result.total_team_fouls = total_team_fouls
 	result.period_scores = period_scores.duplicate()
 	result.possessions = possessions
+	result.timeouts_remaining = timeouts_remaining
 	result.runtimes = []
 	result._index = {}
 	for runtime in runtimes:

@@ -406,6 +406,77 @@ var chemistry_help_bonus_max: float = 0.04
 var home_environment_shot_bonus: float = 0.006
 var home_environment_foul_bonus: float = 0.010
 
+# --- §10.2/§10.3/§18.2 score-and-clock game management -----------------------
+## How much of a deficit a trailing team takes back in one pair of possessions
+## it wins outright: it scores about one and a sixth, and stopping the other
+## side is worth about as much again.
+##
+## This is the denominator that turns a margin into "how many possessions do I
+## need", which is the quantity a coach actually manages against. It is not a
+## probability and it never reaches a resolver.
+##
+## Units: points per possession pair. Safe range 1.0-6.0.
+var management_swing_points: float = 2.4
+## The share of the remaining game a deficit has to consume before either coach
+## changes anything.
+##
+## This floor is what keeps ordinary basketball ordinary. A ten-point margin
+## with a half to play needs about a tenth of the remaining possessions and sits
+## far below it, so the §14.1 possession, efficiency and shot-mix bands are
+## measured on exactly the basketball they were measured on before this existed.
+##
+## Units: share of remaining possession pairs. Safe range 0.0-0.60.
+var management_pressure_floor: float = 0.20
+## Extra clock a team protecting a lead consumes per possession, at full
+## pressure. Units: share of the possession's time draw. Safe range 0.0-0.40.
+var protect_pace_gain: float = 0.22
+## Clock a chasing team saves per possession, at full pressure. Smaller than the
+## protecting gain because a possession has a physical floor.
+## Units: share of the possession's time draw. Safe range 0.0-0.30.
+var chase_pace_relief: float = 0.12
+## Weight a protecting team adds to a reset, at full pressure.
+## Units: share of the §10.3 score-and-clock factor. Safe range 0.0-0.60.
+var protect_reset_gain: float = 0.35
+## Weight a protecting team takes off a three, at full pressure.
+## Units: share of the §10.3 score-and-clock factor. Safe range 0.0-0.50.
+var protect_three_relief: float = 0.25
+## Weight a chasing team adds to a three and takes off a reset, at full
+## pressure. Units: share of the §10.3 score-and-clock factor. Safe range
+## 0.0-0.60.
+var chase_three_gain: float = 0.30
+## How much of its offensive-glass crashing a team protecting a lead gives up,
+## at full pressure, in exchange for transition defence.
+## Units: share of the crash rate. Safe range 0.0-0.60.
+var protect_crash_relief: float = 0.45
+## How much more a chasing team crashes, at full pressure. Smaller than the
+## protecting relief: there are only so many players to send.
+## Units: share of the crash rate. Safe range 0.0-0.60.
+var chase_crash_gain: float = 0.25
+## How much regulation has to be left for the last-possession rule to apply.
+## About one possession plus the stop that would follow it.
+## Units: milliseconds of regulation remaining. Safe range 8000-60000.
+var endgame_possession_ms: int = 32000
+## Weight added to the shot value that levels the game on the last possession of
+## regulation. Units: share of the §10.3 score-and-clock factor. Safe range
+## 0.0-0.80.
+var endgame_tie_gain: float = 0.40
+## Weight taken off the shot value that does not level it.
+## Units: share of the §10.3 score-and-clock factor. Safe range 0.0-0.70.
+var endgame_tie_relief: float = 0.35
+
+# --- §4/§5 coaching timeouts -------------------------------------------------
+## Unanswered points by the opponent at which a coach stops the run.
+## Units: points. Safe range 4-15.
+var timeout_run_points: int = 8
+## Acute fatigue every player on the floor recovers over a timeout, both teams.
+## A timeout is a rest, which is the whole of its effect here; it grants no
+## probability to anybody. Units: fatigue points. Safe range 0-20.
+var timeout_recovery_points: float = 6.0
+## Below this much regulation time a coach holds his remaining timeouts for the
+## endgame rather than spending one to stop a run.
+## Units: milliseconds of regulation remaining. Safe range 0-180000.
+var timeout_run_reserve_ms: int = 90000
+
 # --- deliberate late-game fouling (Â§13.1 "deliberate late-game strategy") ---
 var intentional_foul_max_margin: int = 6
 var intentional_foul_clock_ms: int = 40000
@@ -426,7 +497,7 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v3-margin",
+	p_version: StringName = &"simulation-v4-management",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -814,6 +885,21 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"chemistry.help_bonus_max", &"probability", chemistry_help_bonus_max, 0.0, 0.10)
 	_add(tunables, &"home.shot_bonus", &"probability", home_environment_shot_bonus, 0.0, 0.03)
 	_add(tunables, &"home.foul_bonus", &"probability", home_environment_foul_bonus, 0.0, 0.05)
+	_add(tunables, &"management.swing_points", &"points", management_swing_points, 1.0, 6.0)
+	_add(tunables, &"management.pressure_floor", &"share", management_pressure_floor, 0.0, 0.60)
+	_add(tunables, &"management.protect_pace_gain", &"share", protect_pace_gain, 0.0, 0.40)
+	_add(tunables, &"management.chase_pace_relief", &"share", chase_pace_relief, 0.0, 0.30)
+	_add(tunables, &"management.protect_reset_gain", &"share", protect_reset_gain, 0.0, 0.60)
+	_add(tunables, &"management.protect_three_relief", &"share", protect_three_relief, 0.0, 0.50)
+	_add(tunables, &"management.chase_three_gain", &"share", chase_three_gain, 0.0, 0.60)
+	_add(tunables, &"management.protect_crash_relief", &"share", protect_crash_relief, 0.0, 0.60)
+	_add(tunables, &"management.chase_crash_gain", &"share", chase_crash_gain, 0.0, 0.60)
+	_add(tunables, &"management.endgame_possession_ms", &"milliseconds", float(endgame_possession_ms), 8000.0, 60000.0)
+	_add(tunables, &"management.endgame_tie_gain", &"share", endgame_tie_gain, 0.0, 0.80)
+	_add(tunables, &"management.endgame_tie_relief", &"share", endgame_tie_relief, 0.0, 0.70)
+	_add(tunables, &"timeout.run_points", &"points", float(timeout_run_points), 4.0, 15.0)
+	_add(tunables, &"timeout.recovery_points", &"fatigue_points", timeout_recovery_points, 0.0, 20.0)
+	_add(tunables, &"timeout.run_reserve_ms", &"milliseconds", float(timeout_run_reserve_ms), 0.0, 180000.0)
 	_add(tunables, &"late_game.intentional_foul_max_margin", &"points", float(intentional_foul_max_margin), 1.0, 15.0)
 	_add(tunables, &"late_game.intentional_foul_clock_ms", &"milliseconds", float(intentional_foul_clock_ms), 5000.0, 120000.0)
 	_add(tunables, &"late_game.intentional_foul_share", &"probability", intentional_foul_share, 0.0, 1.0)

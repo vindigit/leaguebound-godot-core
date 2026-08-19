@@ -71,6 +71,8 @@ func apply_event(state: MatchSnapshot, event: MatchDomainEvent) -> void:
 			state.possession_team_id = event.next_team_id
 		MatchDomainEvent.SHOT_CLOCK_RESET:
 			state.shot_clock_ms = mini(event.amount, state.clock_ms)
+		MatchDomainEvent.TIMEOUT:
+			_apply_timeout(state, event)
 		MatchDomainEvent.PASS_COMPLETED:
 			if not event.secondary_player_id.is_empty():
 				state.state_for(event.team_id).runtime_by_id(event.secondary_player_id).touches += 1
@@ -115,6 +117,21 @@ func _apply_period_started(state: MatchSnapshot, event: MatchDomainEvent) -> voi
 	if _rules.team_fouls_reset_each_period:
 		state.home.team_fouls = 0
 		state.away.team_fouls = 0
+
+
+## §4/§5 timeouts. The team that called it spends one; everybody on the floor
+## rests, on both sides, because a timeout stops the game rather than one team's
+## half of it. It is a rest and nothing else: no rating, no probability, and no
+## possession changes hands because of it.
+func _apply_timeout(state: MatchSnapshot, event: MatchDomainEvent) -> void:
+	var calling: TeamMatchState = state.state_for(event.team_id)
+	assert(calling.timeouts_remaining > 0, "a team without a timeout cannot call one")
+	calling.timeouts_remaining -= 1
+	var recovery: float = _input.balance_profile.timeout_recovery_points
+	for team_state: TeamMatchState in [state.home, state.away]:
+		for runtime in team_state.runtimes:
+			if runtime.on_court:
+				runtime.acute_fatigue = clampf(runtime.acute_fatigue - recovery, 0.0, 100.0)
 
 
 func _apply_foul(state: MatchSnapshot, event: MatchDomainEvent) -> void:

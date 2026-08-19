@@ -180,16 +180,28 @@ func test_no_clamp_bounds_the_final_margin() -> void:
 	assert_int(at_largest).is_less(margins.size() / 4)
 
 
-## Nothing in resolution reads the score. Two possessions identical in every
-## respect except that one team is thirty points ahead resolve to the identical
-## events.
+## Nothing in resolution reads the score *while the game is still being played*.
+## Two possessions identical in every respect except that one team is thirty
+## points ahead resolve to the identical events, in the body of a game.
 ##
-## This is the direct test for a rubber band. It is stronger than an aggregate
-## check: it holds the random stream, the lineups, the clock, and the possession
-## identity fixed and moves only the scoreboard.
-func test_resolution_ignores_the_score_outside_late_game() -> void:
-	var input: MatchInput = MatchFixtureFactory.standard_match()
-	var base: MatchSnapshot = _final_period_snapshot(input)
+## The comparison is made in the *first* period on purpose, and the reason is
+## the whole shape of the `simulation-v4-management` correction. Until it
+## existed the engine ignored the score everywhere except the last forty seconds
+## of the final period, and this test could be run anywhere. It cannot any
+## more, because §18.2 score-and-clock management is a real mechanism and this
+## fixture would be measuring it rather than a rubber band. What the test still
+## proves — and what a comeback script would still fail — is that the score
+## reaches nothing outside the window the mechanism declares: it is off in the
+## body of a game, so a modifier hiding in ordinary basketball is caught here.
+##
+## Inside the window, the property that replaces this one is *symmetry*, and it
+## is proven directly against the mechanism in `TestGameManagement`, together
+## with the fact that no shot probability moves at any score.
+func test_resolution_ignores_the_score_in_the_body_of_the_game() -> void:
+	var input: MatchInput = _mirror_match(3, 0.0)
+	var base: MatchSnapshot = _unmanaged_snapshot(input)
+	assert_float(GameManagement.pressure_for(
+		base, input, input.home.team_id, input.balance_profile)).is_equal(0.0)
 	var level: String = _possession_signature(input, base, 0, 0)
 	var leading: String = _possession_signature(input, base, 30, 0)
 	var trailing: String = _possession_signature(input, base, 0, 30)
@@ -201,11 +213,37 @@ func test_resolution_ignores_the_score_outside_late_game() -> void:
 ## comparison is between symmetric deficits, so any modifier keyed on "behind"
 ## would have to break the symmetry to exist.
 func test_no_trailing_or_leading_modifier_exists() -> void:
-	var input: MatchInput = MatchFixtureFactory.standard_match()
-	var base: MatchSnapshot = _final_period_snapshot(input)
+	var input: MatchInput = _mirror_match(3, 0.0)
+	var base: MatchSnapshot = _unmanaged_snapshot(input)
+	assert_float(GameManagement.pressure_for(
+		base, input, base.possession_team_id, input.balance_profile)).is_equal(0.0)
 	var ahead: String = _possession_signature(input, base, 18, 0)
 	var behind: String = _possession_signature(input, base, 0, 18)
 	assert_str(ahead).is_equal(behind)
+
+
+## The one thing the score is never allowed to reach, stated where the score is
+## read the most: inside the managed window, a possession played by a team
+## thirty points ahead and one played by a team thirty points behind are
+## resolved from the same probabilities. What differs is which action each coach
+## selects, which is exactly what §10.3 puts the score in the weight product to
+## do.
+func test_the_managed_window_changes_selection_and_not_resolution() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var base: MatchSnapshot = _final_period_snapshot(input)
+	var ahead: MatchSnapshot = base.copy()
+	ahead.home.score = 100
+	ahead.away.score = 70
+	var behind: MatchSnapshot = base.copy()
+	behind.home.score = 70
+	behind.away.score = 100
+	var offense: StringName = base.possession_team_id
+	assert_float(GameManagement.pressure_for(
+		ahead, input, offense, input.balance_profile)).is_greater(0.0)
+	assert_float(GameManagement.pressure_for(ahead, input, offense, input.balance_profile))\
+		.is_equal(GameManagement.pressure_for(behind, input, offense, input.balance_profile))
+	assert_float(_managed_shot_probability(input, ahead, offense))\
+		.is_equal(_managed_shot_probability(input, behind, offense))
 
 
 # --- late game --------------------------------------------------------------
@@ -547,6 +585,46 @@ func _possession_signature(
 		parts.append("%s|%s|%s|%d" % [
 			event.event_type, event.team_id, event.primary_player_id, event.points])
 	return "\n".join(parts)
+
+
+## A snapshot early enough that §18.2 score-and-clock management is off at any
+## score, so the comparison above measures the absence of a hidden modifier
+## rather than the presence of a declared one.
+##
+## It runs on a full-length competition fixture rather than on
+## `MatchFixtureFactory.standard_match()`, whose periods are deliberately short:
+## eight possessions into a two-and-a-half-minute period is most of a game, and
+## a thirty-point margin there is a genuine endgame that the mechanism is
+## supposed to notice. The point of this test is the *body* of a real game.
+func _unmanaged_snapshot(input: MatchInput) -> MatchSnapshot:
+	var session := MatchSession.new(input, SeededRandomSource.new(SETTLED_MARGIN_FIXTURE_SEED))
+	session.open()
+	for step in range(8):
+		session.advance_possession()
+	return session.snapshot()
+
+
+## The resolved make probability for a fixed shooter, defender and zone at a
+## stated scoreboard.
+func _managed_shot_probability(
+	input: MatchInput,
+	snapshot: MatchSnapshot,
+	offense_team_id: StringName,
+) -> float:
+	var offense: TeamMatchProfile = input.team_profile(offense_team_id)
+	var defense: TeamMatchProfile = input.team_profile(
+		input.opposing_team_id(offense_team_id))
+	var context := PossessionContext.new(
+		input, snapshot, offense_team_id, MatchupState.new({}), 1)
+	var capability := CapabilityCalculator.new(input.ratings_profile, input.balance_profile)
+	var resolver := ShotResolver.new(
+		capability, BodyEffects.new(input.balance_profile), input.balance_profile)
+	var contest := ShotContest.new(
+		ContestBand.Value.OPEN, defense.starters()[0], &"", false, false, 0.2, 0.0)
+	var outcome: ShotOutcome = resolver.resolve(
+		context, offense.starters()[0], ShotZone.Value.MIDRANGE, false, contest,
+		AdvantageResult.new(), 1.0, 0.0, SeededRandomSource.new(4242))
+	return outcome.probability
 
 
 func _late_game(input: MatchInput, snapshot: MatchSnapshot) -> bool:

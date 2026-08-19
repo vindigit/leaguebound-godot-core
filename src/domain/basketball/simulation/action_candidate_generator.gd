@@ -112,6 +112,10 @@ var _participants: ParticipantSelector
 ## inside `_build` made both O(lineup) per candidate and turned candidate
 ## generation into the slowest part of the engine by an order of magnitude.
 var _frame_spacing: float = 0.5
+## §18.2 score-and-clock pressure for this call. Every candidate in one
+## `generate` is weighted from one state, so this is resolved once beside the
+## spacing rather than once per candidate.
+var _frame_pressure: float = 0.0
 var _frame_usage: Dictionary = {}
 var _frame_on_court: Array[StringName] = []
 ## Pooled actor scratch, keyed by player id and reused across actions.
@@ -187,6 +191,7 @@ func _begin_frame(context: PossessionContext) -> void:
 	_frame_on_court = context.offense_on_court()
 	_frame_usage = _participants.usage_damping_table(context)
 	_frame_live.clear()
+	_frame_pressure = GameManagement.pressure(context)
 	if _frame_on_court.is_empty():
 		_frame_spacing = 0.5
 		return
@@ -591,6 +596,14 @@ func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
 		0.0,
 		1.0)
 	var late: bool = context.is_late_clock()
+	# §18.2 score and time. `GameManagement` owns the whole of the score half of
+	# this factor; the branches around it own the shot-clock half. Before it
+	# existed the score reached the weight product only inside the last forty
+	# seconds of the final period, through two hard-coded constants, so a team
+	# twenty-five points ahead in the fourth quarter selected exactly the same
+	# actions as a team in a tie game.
+	var management: float = GameManagement.action_multiplier_at(
+		context, _balance, family, zone, _frame_pressure)
 	if late:
 		if ActionFamily.is_direct_shot(family) or family == ActionFamily.Value.DRIVE:
 			value = lerpf(_balance.late_clock_max, 1.0, shot_clock_share)
@@ -598,22 +611,14 @@ func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
 			value = _balance.late_clock_min
 		else:
 			value = lerpf(0.85, 1.0, shot_clock_share)
-		return clampf(value, _balance.late_clock_min, _balance.late_clock_max)
+		return clampf(value * management, _balance.late_clock_min, _balance.late_clock_max)
 
 	if family == ActionFamily.Value.RESET:
 		value = lerpf(0.75, 1.25, shot_clock_share)
 	elif ActionFamily.is_direct_shot(family):
 		value = lerpf(1.20, 0.85, shot_clock_share)
 
-	# Late-game score context: a trailing team hunts threes, a leading team
-	# takes time. §20.3 keeps this a decision effect and never a make bonus.
-	if context.is_late_game():
-		var margin: int = context.offense_margin()
-		if margin < 0 and zone >= 0 and ShotZone.is_three(zone):
-			value *= 1.25
-		elif margin > 0 and family == ActionFamily.Value.RESET:
-			value *= 1.20
-	return clampf(value, _balance.score_clock_min, _balance.score_clock_max)
+	return clampf(value * management, _balance.score_clock_min, _balance.score_clock_max)
 
 
 ## §10.3 capability confidence: a player attempts what he can actually do a
