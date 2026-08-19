@@ -31,8 +31,29 @@ jobs:
           paths: "res://tests"
           warnings-as-errors: true
 
+      # The parse gate needs the global class cache: without it every reference
+      # to a `class_name` reports as a compile failure. The import pass builds
+      # it, and running it as its own step means a failure here is legible as an
+      # import problem rather than as 150 phantom parse errors.
+      - name: Build the global class cache
+        run: /home/runner/godot-linux/godot --headless --path . --import
+
+      # The gate exits 0 when every script compiles, 1 when one does not, and 2
+      # when it cannot prove it is working. The step asserts the status
+      # explicitly rather than relying on the printed count: this gate once
+      # reported "0 failure(s)" while walking straight past a syntax error, and
+      # a count is exactly the thing that lied.
       - name: Parse-check every script under warnings-as-errors
-        run: /home/runner/godot-linux/godot --headless --path . --script res://tools/parse_check.gd
+        run: |
+          set +e
+          /home/runner/godot-linux/godot --headless --path . \
+            --script res://tools/parse_check.gd
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            echo "::error::parse_check exited ${status} (1 = a script did not compile, 2 = the gate could not verify itself)"
+            exit "$status"
+          fi
 
       # Structural invariants, reconciliation, determinism, and the committed
       # golden fixtures. A golden change requires an explicit engine or balance
