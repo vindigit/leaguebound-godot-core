@@ -44,6 +44,12 @@ var career_year: int
 var career_seed: int
 var balance_version: String
 var detail_level: int
+## §9.5 owner ruling: the persistent condition that says why this career's
+## seasons are permitted to be exceptional. A stored career fact, fixed for the
+## whole career, and part of the §9.7.4 invariant — a promoted player must carry
+## the same permission the aggregate row did, or promotion would change what the
+## career is allowed to receive.
+var opportunity_condition: int
 
 
 func _init(
@@ -67,6 +73,7 @@ func _init(
 	p_receipts: CareerYearReceipts = null,
 	p_detail_level: int = SimulationDetailLevel.Value.FULL,
 	p_decline_debt: AttributeProgress = null,
+	p_opportunity_condition: int = CareerOpportunityCondition.Value.ORDINARY,
 ) -> void:
 	assert(not p_player_id.is_empty(), "player identity is required")
 	assert(p_attributes != null and p_caps != null and p_body_state != null,
@@ -75,6 +82,8 @@ func _init(
 	assert(PositionFamily.is_valid(p_position_family), "unknown position family")
 	assert(RotationRole.is_valid(p_rotation_role), "unknown rotation role")
 	assert(SimulationDetailLevel.is_valid(p_detail_level), "unknown simulation detail level")
+	assert(CareerOpportunityCondition.is_valid(p_opportunity_condition),
+		"unknown career opportunity condition")
 	assert(not p_balance_version.is_empty(), "a career is pinned to a balance-profile version")
 	assert(p_career_year > 0, "career years are one-based")
 
@@ -91,6 +100,7 @@ func _init(
 	progress = p_progress if p_progress != null else AttributeProgress.new()
 	decline_debt = p_decline_debt if p_decline_debt != null else AttributeProgress.new()
 	detail_level = p_detail_level
+	opportunity_condition = p_opportunity_condition
 	rotation_role = p_rotation_role
 	tactical_role = p_tactical_role if p_tactical_role != null else TacticalRole.new()
 	tendencies = p_tendencies if p_tendencies != null else PlayerTendencies.new()
@@ -123,6 +133,7 @@ func invariant_signature() -> String:
 	parts.append("rotation=%s" % RotationRole.id_of(rotation_role))
 	parts.append("tactical=%s" % tactical_role.id())
 	parts.append("receipts[%s]" % receipts.signature())
+	parts.append("condition=%s" % CareerOpportunityCondition.id_of(opportunity_condition))
 	var progress_parts: PackedStringArray = []
 	for attribute in AttributeKey.all():
 		progress_parts.append("%.6f" % progress.units_for(attribute))
@@ -158,5 +169,6 @@ func duplicate_state() -> PlayerDevelopmentState:
 		cap_ledger.duplicate_ledger(),
 		receipts.duplicate_receipts(),
 		detail_level,
-		decline_debt.duplicate_progress()
+		decline_debt.duplicate_progress(),
+		opportunity_condition
 	)

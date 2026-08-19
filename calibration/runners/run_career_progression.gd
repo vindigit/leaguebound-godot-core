@@ -23,6 +23,10 @@
 
 const DEFAULT_CAREERS: int = 20000
 
+## Float slack for the career-level AP identity. Grants are fractional, so the
+## residual is rounding rather than a real leak below this.
+const AP_RECONCILIATION_TOLERANCE: float = 0.001
+
 
 func _init() -> void:
 	call_deferred("_run")
@@ -113,6 +117,14 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 	var above_95: int = 0
 	var in_transition_gap: int = 0
 	var ap_totals := PackedFloat64Array()
+	# Â§9.1 prices a rating increase by its destination, so "AP spent" and "rating
+	# points gained" are different quantities that diverge further the higher a
+	# career climbs. Both are carried, and the identity that ties them to the
+	# grant is judged rather than assumed.
+	var ap_spent := PackedFloat64Array()
+	var ap_unspent := PackedFloat64Array()
+	var rating_points := PackedFloat64Array()
+	var unreconciled: int = 0
 	var cap_attainment := PackedFloat64Array()
 	var peak_ages := PackedFloat64Array()
 	# Â§9.5's upper guardrail is a balance warning rather than a currency cap, and
@@ -123,6 +135,12 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 	var guardrail_unexplained: int = 0
 	var career_seasons: int = 0
 	var guardrail_excess := PackedFloat64Array()
+	# Â§9.5 owner ruling 2026-08. An exceptional season is a warning; a career
+	# whose whole pattern of them is not permitted is a defect, and that is what
+	# is judged.
+	var guardrail_overage := PackedFloat64Array()
+	var opportunity_violations: int = 0
+	var violation_examples: PackedStringArray = []
 
 	for entry: CareerSimulator.CareerResult in results:
 		var career: CareerSimulator.CareerResult = entry
@@ -135,7 +153,20 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		guardrail_unexplained += career.guardrail_unexplained_seasons
 		career_seasons += career.seasons
 		guardrail_excess.append(career.guardrail_excess)
+		guardrail_overage.append(career.guardrail_overage_share)
+		if not career.opportunity_violation.is_empty():
+			opportunity_violations += 1
+			if violation_examples.size() < 3:
+				violation_examples.append("seed %d: %s"
+					% [career.seed_value, career.opportunity_violation])
 		ap_totals.append(career.total_ap_granted)
+		ap_spent.append(career.total_ap_spent)
+		ap_unspent.append(career.total_ap_unspent)
+		rating_points.append(float(career.total_rating_points_gained))
+		if absf(career.total_ap_granted - career.total_ap_spent
+				- career.total_ap_debited_without_purchase
+				- career.total_ap_unspent) > AP_RECONCILIATION_TOLERANCE:
+			unreconciled += 1
 		cap_attainment.append(career.cap_attainment)
 		if career.projected_peak_covers_realized():
 			coverage_hits += 1
@@ -224,7 +255,39 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		"Mean AP-equivalent granted across a complete career. Â§9.5 records this "
 		+ "conversion as unmeasured; this is the measurement.",
 		"complete careers", CalibrationStatistics.mean(ap_totals), results.size())
-		.with_interval(CalibrationStatistics.mean_interval_half_width(ap_totals)))
+		.with_interval(CalibrationStatistics.mean_interval_half_width(ap_totals))
+		.with_aggregation(MetricAggregation.mean_of(ap_totals)))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_lifetime_ap_spent",
+		"Mean AP-equivalent a complete career consumed buying ratings, summed "
+		+ "from the Â§9.1 costs the cost table charged.",
+		"complete careers", CalibrationStatistics.mean(ap_spent), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(ap_spent))
+		.with_aggregation(MetricAggregation.mean_of(ap_spent)))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_lifetime_ap_unspent",
+		"Mean AP-equivalent still in the wallet when a career ended: opportunity "
+		+ "granted, ledgered, and never converted into a rating point.",
+		"complete careers", CalibrationStatistics.mean(ap_unspent), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(ap_unspent))
+		.with_aggregation(MetricAggregation.mean_of(ap_unspent)))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_rating_points_gained",
+		"Mean whole rating points a complete career gained. Reported beside AP "
+		+ "spent because Â§9.1 prices a point by its destination, so the two "
+		+ "diverge as a career climbs and neither substitutes for the other.",
+		"complete careers", CalibrationStatistics.mean(rating_points), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(rating_points))
+		.with_aggregation(MetricAggregation.mean_of(rating_points)))
+	report.add_metric(CalibrationMetric.banded(
+		&"progression.ap_reconciliation_failures",
+		"Share of careers whose ledger does not satisfy granted - spent - "
+		+ "non-purchase debits = unspent. Any failure means AP-equivalent "
+		+ "entered or left the wallet without an entry to account for it.",
+		"complete careers",
+		float(unreconciled) / float(maxi(1, results.size())),
+		CalibrationBand.new(0.0, 0.0, "BALANCE_SPEC.md Â§9.7.2"), results.size())
+		.with_aggregation(MetricAggregation.proportion(unreconciled, results.size())))
 	report.add_metric(CalibrationMetric.raw(
 		&"progression.mean_peak_overall",
 		"Mean peak current Overall across the whole population.",
@@ -275,6 +338,30 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		guardrail_seasons)
 		.with_aggregation(MetricAggregation.proportion(
 			guardrail_seasons - guardrail_unexplained, maxi(1, guardrail_seasons))))
+	report.add_metric(CalibrationMetric.raw(
+		&"progression.mean_guardrail_overage_share",
+		"Mean share by which a career's lifetime grant exceeded the sum of its "
+		+ "own Â§9.5 seasonal guardrails. Negative means the career stayed inside "
+		+ "them; the Â§9.5 owner ruling bounds this at 20% and only for a career "
+		+ "carrying the elite-opportunity condition.",
+		"complete careers",
+		CalibrationStatistics.mean(guardrail_overage), results.size())
+		.with_interval(CalibrationStatistics.mean_interval_half_width(guardrail_overage))
+		.with_aggregation(MetricAggregation.mean_of(guardrail_overage)))
+	for example in violation_examples:
+		report.context.notes.append("opportunity violation: %s" % example)
+	report.add_metric(CalibrationMetric.banded(
+		&"progression.opportunity_ruling_violations",
+		"Share of careers whose pattern of exceptional seasons the Â§9.5 owner "
+		+ "ruling does not permit: an excess without the elite-opportunity "
+		+ "condition, an excess beyond the bounded share, or an exceptional "
+		+ "season the source ledger never explained.",
+		"complete careers",
+		float(opportunity_violations) / float(maxi(1, results.size())),
+		CalibrationBand.new(0.0, 0.0, "BALANCE_SPEC.md Â§9.5 (owner ruling 2026-08)"),
+		results.size())
+		.with_aggregation(MetricAggregation.proportion(
+			opportunity_violations, results.size())))
 
 
 ## Â§9.7 / Â§27.2: the manual path and the NPC executors receive identical

@@ -89,6 +89,31 @@ var seasonal_ap_guardrail: Array[int]
 var game_development_cap: Array[int]
 
 ## ---------------------------------------------------------------------------
+## Â§9.5 owner ruling (2026-08): the bounded elite-opportunity exception.
+## ---------------------------------------------------------------------------
+## "Rare-generational careers may exceed the Â§9.5 high-engagement upper
+## guardrail by up to 20% when caused by ledgered elite opportunity, while
+## emitting the required balance warning."
+##
+## The share is stated against the quantity the ruling was made on. Stage 4
+## measured the rare-generational cohort receiving 16.5% more lifetime
+## opportunity than the sum of its own seasonal guardrails, and the owner set
+## the ceiling at 20% of that same sum. So this bounds the **career against its
+## summed seasonal guardrails**, not any single season: a career may be shaped
+## so that some seasons sit further above their guardrail than others, and what
+## it may not do is receive more across the whole career than the ruling allows.
+##
+## Per-season overage is still reported, and at the current settings runs higher
+## than this share in the college and early professional phases. That is
+## recorded in `PROJECT_STATUS.md` Â§5.8 rather than smoothed away, because a
+## stricter per-season reading of the ruling is available to the owner and this
+## implementation does not pre-empt it.
+##
+## The exception is a permission and never a grant. It changes no Â§9.1 cost, no
+## Â§9.6 cap, no population share, and no seasonal draw.
+var elite_opportunity_guardrail_allowance: float
+
+## ---------------------------------------------------------------------------
 ## Â§10.2 Aging curves. Indexed by `AttributeCategory.Value`.
 ## ---------------------------------------------------------------------------
 var growth_end_age: Array[int]
@@ -216,6 +241,9 @@ func _init(p_version: StringName = &"progression-v1") -> void:
 	# domestic professional basketball.
 	game_development_cap = [12, 12, 16, 16, 16, 20, 20, 20]
 
+	# Â§9.5 owner ruling 2026-08. Measured overage at the ruling was 16.5%.
+	elite_opportunity_guardrail_allowance = 0.20
+
 	growth_end_age = [23, 25, 26, 27, 27, 31]
 	plateau_end_age = [27, 29, 31, 32, 32, 36]
 	decline_start_age = [28, 30, 32, 33, 33, 37]
@@ -274,6 +302,10 @@ func _validate() -> void:
 		and seasonal_ap_maximum.size() == CareerPhase.COUNT
 		and seasonal_ap_guardrail.size() == CareerPhase.COUNT,
 		"one Â§9.5 seasonal band and guardrail per career phase")
+	assert(elite_opportunity_guardrail_allowance >= 0.0,
+		"the Â§9.5 elite-opportunity exception cannot be negative")
+	assert(elite_opportunity_guardrail_allowance <= 0.5,
+		"an exception larger than half the guardrail is not an exception")
 	assert(game_development_cap.size() == CareerPhase.COUNT,
 		"one Â§9.6 game-development cap per career phase")
 	for phase in range(CareerPhase.COUNT):
@@ -350,6 +382,9 @@ func describe_tunables() -> Array[BalanceTunable]:
 	tunables.append(BalanceTunable.new(
 		&"progression.at_cap_conversion_efficiency", &"share",
 		at_cap_conversion_efficiency, 0.0, 1.0))
+	tunables.append(BalanceTunable.new(
+		&"progression.elite_opportunity_guardrail_allowance", &"share",
+		elite_opportunity_guardrail_allowance, 0.0, 0.5))
 	for prospect in ProspectProfile.all():
 		var prospect_id: StringName = ProspectProfile.id_of(prospect)
 		tunables.append(BalanceTunable.new(

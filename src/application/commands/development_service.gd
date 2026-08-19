@@ -327,3 +327,87 @@ func advance_age(state: PlayerDevelopmentState, career_year: int) -> bool:
 		return false
 	state.age += 1
 	return true
+
+
+## The §9.5 seasonal guardrail for one phase.
+func seasonal_guardrail_for(phase: int) -> float:
+	assert(CareerPhase.is_valid(phase), "unknown career phase")
+	return float(_profiles.progression.seasonal_ap_guardrail[phase])
+
+
+## The most lifetime opportunity a career may legitimately receive against the
+## sum of its own seasonal guardrails (§9.5, owner ruling 2026-08).
+##
+## A career without the elite-opportunity condition is bounded by the guardrails
+## themselves. One carrying it may pass them by the profile's bounded share,
+## which is what makes the exception a permission attached to a named career
+## condition rather than a licence any cohort could claim.
+func career_opportunity_allowance(
+	state: PlayerDevelopmentState,
+	guardrail_total: float,
+) -> float:
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return guardrail_total
+	return guardrail_total * (
+		1.0 + _profiles.progression.elite_opportunity_guardrail_allowance)
+
+
+## Why a career's lifetime opportunity is not permitted, or an empty string when
+## it is.
+##
+## §9.5 makes an individual exceptional season a *warning*. This is the separate
+## question the owner ruling answers: whether the pattern of exceptional seasons
+## across a whole career is one the model is allowed to produce. Three ways it is
+## not — a career exceeding its guardrails without the condition that permits it,
+## a career exceeding the bounded share even with the condition, and a career
+## whose exceptional seasons the source ledger never explained. All three are
+## reported here so a report judges one number rather than three.
+func career_opportunity_violation(
+	state: PlayerDevelopmentState,
+	granted_total: float,
+	guardrail_total: float,
+	unexplained_seasons: int,
+) -> String:
+	if unexplained_seasons > 0:
+		return ("%d exceptional season(s) carry no source-ledger explanation"
+			% unexplained_seasons)
+	if guardrail_total <= 0.0 or granted_total <= guardrail_total:
+		return ""
+
+	var overage: float = (granted_total - guardrail_total) / guardrail_total
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return ("a career with condition %s exceeded its summed §9.5 guardrails by "
+			+ "%.1f%%; only the elite-opportunity condition permits any excess") % [
+				CareerOpportunityCondition.id_of(state.opportunity_condition),
+				overage * 100.0]
+
+	var permitted: float = _profiles.progression.elite_opportunity_guardrail_allowance
+	if overage > permitted + 0.000001:
+		return ("elite opportunity exceeded the permitted %.0f%% by reaching %.1f%% "
+			+ "above the summed §9.5 guardrails") % [permitted * 100.0, overage * 100.0]
+	return ""
+
+
+## The most AP-equivalent one season of this career may be granted (§9.5, owner
+## ruling 2026-08), or a negative value when the season is not bounded.
+##
+## §9.5's guardrail is a warning rather than a cap for every ordinary career, and
+## that stays true: a career without the elite-opportunity condition is not
+## trimmed here, because §9.5 already governs it through the warning and the
+## source-ledger explanation, and bounding it would change outcome bands the
+## ruling explicitly may not touch.
+##
+## A career that *carries* the condition is bounded, because the ruling that
+## grants it the exception is also what limits it. Enforcing the limit as the
+## season is granted makes compliance structural: the model cannot produce a
+## career past the ruling and then be tuned until such careers become rare. The
+## opportunity that is trimmed was never granted and never ledgered, so nothing
+## is taken back from a wallet.
+func seasonal_opportunity_ceiling(state: PlayerDevelopmentState, phase: int) -> float:
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return -1.0
+	return seasonal_guardrail_for(phase) * (
+		1.0 + _profiles.progression.elite_opportunity_guardrail_allowance)

@@ -88,6 +88,8 @@ func _measure_cell(
 	var at_cap: float = 0.0
 	var guardrail: float = 0.0
 	var above_95: int = 0
+	var max_overage: float = -1.0
+	var violations: int = 0
 	for index in range(careers):
 		var career: CareerSimulator.CareerResult = simulator.simulate(
 			base + index + 1, DevelopmentExecutor.Value.MANUAL, path)
@@ -96,6 +98,9 @@ func _measure_cell(
 		attainment += career.peak_cap_attainment
 		at_cap += float(career.attributes_at_cap_at_peak)
 		guardrail += float(career.guardrail_seasons)
+		max_overage = maxf(max_overage, career.guardrail_overage_share)
+		if not career.opportunity_violation.is_empty():
+			violations += 1
 		if career.peak_overall > 95:
 			above_95 += 1
 
@@ -112,6 +117,8 @@ func _measure_cell(
 		attainment / sample,
 		at_cap / sample,
 		guardrail / sample])
+	print("      max guardrail overage %.3f  ruling violations %d"
+		% [max_overage, violations])
 	print("      peak histogram 86..96: %s" % _histogram(peaks, 86, 96))
 
 
