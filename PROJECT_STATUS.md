@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8), and that correction records a measured tension between the Locked §8.4 band and the Baseline §9.5 guardrails which is the owner's to resolve. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
+**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -88,6 +88,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The body maturation report (§31 report 15) and its nightly and deep workflow jobs.
 - Projected-peak and career-peak diagnostic runners, and §8.1 ceiling selection pressure.
 - The rare-generational root-cause and two-lever sweep runners, §9.6 game-development cap enforcement, and §9.5 upper-guardrail warnings (§5.8).
+- The §9.5 elite-opportunity ruling as a persistent career condition with a structurally enforced bound, corrected Attribute-Point accounting, and a parse/compile gate that can fail (§5.9).
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -377,9 +378,12 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | **§14.2 close-game share** | **Failed** | 0.1925 ±0.0386 against 0.22–0.34 at 400 games |
 | **§14.2 overtime rate** | **Failed** | 0.0175 ±0.0136 against 0.04–0.08 at 400 games |
 | §14.2 home win rate | **Measured below requirement** | 0.5625 ±0.0484 against 0.53–0.56; the interval spans the band, so not an independent failure at this sample |
-| §8.4 rare-generational band | **Measured below requirement** | **Corrected (§5.8).** Median 93 against 92–95 at 3,000 careers and on two untouched 2,000-career validation ranges. Was 90 |
-| §9.5 upper-guardrail warnings | **Measured below requirement** | Every guardrail-passing season carries a source-ledger explanation, 1.0000 on all three ranges; the rare-generational cohort runs 16.5% above the guardrail totals and §5.8 records that as an open Baseline-versus-Locked tension |
+| §8.4 rare-generational band | **Measured below requirement** | **Corrected (§5.8), closed (§5.9).** Median 93 against 92–95 at 3,000 careers and on two untouched 2,000-career validation ranges. Was 90 |
+| §9.5 upper-guardrail warnings | **Measured below requirement** | Every guardrail-passing season carries a source-ledger explanation, 1.0000 on all three ranges |
+| §9.5 elite-opportunity ruling | **Structural** | Bounded at 20% per the owner ruling of 2026-08, enforced as each season is granted so the lifetime total cannot exceed it at any setting; zero violations on all three ranges and through three-shard aggregation |
 | §9.6 seasonal game-development caps | **Structural** | Enforced by `DevelopmentService.grant_game_development`; no career-season credits game participation beyond 12/16/20 |
+| AP ledger reconciliation | **Structural** | `granted − attribute spend − non-purchase debits = unspent` judged on every career; zero failures on all three ranges |
+| Parse/compile gate | **Structural** | Repaired (§5.9). Exits 1 on a script that does not compile in any configured root, 2 when it cannot verify itself, and self-tests its detector on every run |
 | §6.3 projected-peak coverage | **Measured below requirement** | **Corrected (§5.7).** 0.7473 and 0.7370 against 0.70–0.85 on two untouched 3,000-career ranges; 0.7420 and 0.7360 on the production judged path. Was 0.283 |
 | §6.3 projected-peak signed error | **Measured below requirement** | **Corrected (§5.7).** −1.0 and 0.0 against ±2 on the untouched ranges. Was +10.0 |
 | §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12 on both untouched ranges, now with the range correctly placed |
@@ -622,33 +626,35 @@ Measured on 200 rare-generational careers over seeds 1–200 at the pre-change c
 
 Two model changes and two provenance corrections.
 
-1. **`PATH_OPPORTUNITY[rare_generational]` 1.42 → 1.70**, the measured ×1.20.
+1. **`PATH_OPPORTUNITY[rare_generational]` 1.42 → 1.85.** The conversion curve asked for ×1.20 of the original budget, which is where this landed at first (1.70). §5.9 re-measured it against the §9.5 owner ruling once that ruling was enforced as a bound rather than checked afterwards, and 1.70 no longer reached the band: read the number and the reasoning there rather than here.
 2. **`PATH_CEILING_SELECTION_POOL[rare_generational]` 2 → 3.** §8.1's selection pressure is an order statistic over the profile's own distribution, so every ceiling it yields was already reachable and §8.2's prohibition on silently increasing a cap holds. Measured at a fixed opportunity multiplier on the tuning range, the pool change lifted the cohort's tenth percentile from 88.9 to 90.0 and left the median at 91 — it repairs the tail it was chosen for and leaves the centre alone, which is the signature of a lever acting on the right defect. A pool of 4 was measured, tightens the tail slightly further, and presses the drawn ceiling against the profile's own 99 maximum often enough to pile the distribution on its clip; 3 is the smaller change.
 3. **§9.6 game-development caps are now enforced.** The seasonal uplift was booked in its entirety to game participation — around 33 AP a season against a §9.6 cap of 12 in high school, 16 in college, and 20 in professional basketball. `ProgressionProfile.game_development_cap` carries the §9.6 row and `DevelopmentService.grant_game_development` trims to it, returning what it credited so the caller can place the remainder; the remainder is §9.3 training, which §9.5 names as part of the same seasonal total. **The amounts are unchanged and no measured result moves.** Verified directly: realized peak, lifetime AP granted, guardrail seasons, and guardrail excess were identical on the same 60 seeds before and after the split. What changes is that the ledger can account for them.
 4. **§9.5 upper-guardrail warnings are emitted, explained, and counted.** The previous model already exceeded the guardrails — 9.7 seasons of 23 per generational career, by 181 AP — silently, while still missing the band. §9.5 makes an exceptional season a balance warning the source ledger must explain rather than a hard currency cap, so `DevelopmentService` now exposes `seasonal_guardrail_warning`, `seasonal_guardrail_is_explained`, and `seasonal_granted_total`. The generic offseason note is deliberately not accepted as an explanation: every season of a phase carries one, so a guardrail it could satisfy is a guardrail nothing could ever trip. `AttributePointLedger` indexes its per-career-year grant totals as entries arrive, because §9.7.2 binds every executor to the §9.5 guardrail and a check costing a full ledger scan is one no production path could afford to run.
 
 #### AP source, grant, spend, and cap attainment
 
-Every unit the cohort receives is granted through `DevelopmentService`, lands in the shared source ledger with its source, career year, executor, and balance-profile version, and — outside the generic offseason phase — carries a note naming what produced it. Mean per career over 400 rare-generational careers on the development range:
+Every unit the cohort receives is granted through `DevelopmentService`, lands in the shared source ledger with its source, career year, executor, and balance-profile version, and — outside the generic offseason phase — carries a note naming what produced it. Mean per career over 400 rare-generational careers on the development range, at the final settings:
 
 | Source | Before | After | Bound |
 | --- | ---: | ---: | --- |
 | `offseason` (§9.5 generic phase) | 1,837 | 1,837 | One per career year, receipt-enforced |
 | `game` (§9.6 participation) | 774 | 395 | §9.6 seasonal cap: 12 / 16 / 20 by phase |
-| `training` (§9.3) | 0 | 376 | Inside the §9.5 seasonal total |
-| **Total granted** | **2,610** | **3,141** | — |
+| `training` (§9.3) | 0 | 812 | Inside the §9.5 seasonal total and the §9.5 ruling ceiling |
+| **Total granted** | **2,610** | **3,044** | — |
 
 The `game` column falls because §9.6 now bounds it, not because the career received less; the difference moved to `training`, which is where §9.5 says the rest of a high-engagement season comes from.
 
-Grant, spend, and attainment before and after, same cohort:
+Grant, spend, and attainment before and after, same cohort. **The "AP spent" row is the corrected figure throughout** — §5.9 explains why the field that used to carry it held rating points instead, and both quantities are now reported separately:
 
 | Quantity | Before | After |
 | --- | ---: | ---: |
-| Lifetime AP granted, mean | 2,610 | 3,141 |
-| Rating points bought, mean | 913 | 978 |
-| AP unspent at career end, mean | 177 | 184 |
+| Lifetime AP granted, mean | 2,610 | 3,044 |
+| Lifetime AP spent, mean | 2,415 | 2,868 |
+| Rating points gained, mean | 913 | 972 |
+| AP unspent at career end, mean | 177 | 159 |
+| AP unspent at career end, median | 0 | 0.6 |
 | AP removed by decline, mean | 17 | 17 |
-| Cap attainment at peak, median | 0.97 | 0.97 |
+| Cap attainment at peak, median | 0.97 | 0.96 |
 | Attributes at cap at peak, mean | 7.4 | 7.2 |
 | Maximum Potential Overall, median | 93 | 96 |
 | Headroom, MaxPot − peak, mean | 3.4 | 2.4 |
@@ -677,7 +683,7 @@ The population runs carry only 39–60 rare-generational careers each, because t
 
 #### Before and after: the full §8.4 table
 
-`run_career_progression.gd`, the runner the certification workflows execute. Before at commit `0cf18ef`, after at `ac5affe`.
+`run_career_progression.gd`, the runner the certification workflows execute. Before at commit `0cf18ef`, after at `2ece230` — that is, after the §9.5 owner ruling of §5.9 was enforced and the opportunity multiplier re-measured against it.
 
 | Metric | Dev 1–3000 before | Dev after | Val A 700001–702000 before | Val A after | Val B 900001–902000 before | Val B after | Target |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
@@ -693,23 +699,31 @@ The population runs carry only 39–60 rare-generational careers each, because t
 | Projected-peak signed error | −1.0 | −1.0 | 0.0 | 0.0 | −1.0 | −1.0 | ±2 |
 | Parity, manual vs full detail | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | ±2% |
 | Parity, manual vs aggregate | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | ±2% |
-| Guardrail season share | not reported | 0.0520 | not reported | 0.0540 | not reported | 0.0507 | informational |
-| Guardrail excess AP per career | not reported | 14.1 | not reported | 15.4 | not reported | 15.2 | informational |
+| Mean lifetime AP granted | 1,197.7 | 1,204.9 | 1,195.4 | 1,203.6 | 1,189.0 | 1,198.1 | informational |
+| Mean lifetime AP spent | not reported | 1,144.0 | not reported | 1,137.9 | not reported | 1,138.6 | informational |
+| Mean lifetime AP unspent | not reported | 58.0 | not reported | 62.7 | not reported | 56.6 | informational |
+| Mean rating points gained | not reported | 607.7 | not reported | 604.4 | not reported | 604.8 | informational |
+| AP reconciliation failures | not reported | 0.0000 | not reported | 0.0000 | not reported | 0.0000 | exactly 0 |
+| Guardrail season share | not reported | 0.0543 | not reported | 0.0569 | not reported | 0.0537 | informational |
+| Guardrail excess AP per career | not reported | 12.0 | not reported | 12.7 | not reported | 12.4 | informational |
 | Guardrail warnings explained | not reported | 1.0000 | not reported | 1.0000 | not reported | 1.0000 | exactly 1.0 |
+| §9.5 ruling violations | not reported | 0.0000 | not reported | 0.0000 | not reported | 0.0000 | exactly 0 |
 
-Every adjacent band is byte-identical before and after, as is the transition-gap share, because nothing outside the rare-generational path changed. The three shards over seeds 1–1200 pooled to the same figures through the real aggregator and it correctly refused to certify at 1,200 careers.
+Every adjacent band is byte-identical before and after, as is the transition-gap share, because nothing outside the rare-generational path changed. Three shards over seeds 1–1200 pooled through the real aggregator to the same figures — poor 66, ordinary 77, strong 82, exceptional 87, rare generational 93, zero reconciliation failures, zero ruling violations — and it correctly refused to certify at 1,200 careers.
 
 #### Distribution shape, and why it is tight
 
-The 400-career forced-path cohorts on the two untouched ranges:
+The 400-career forced-path cohorts, at the final settings:
 
-| Range | n | p10 | p50 | p90 | Max | Above 95 | Lifetime AP |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Development 1–400 | 400 | 88 | **93** | 94 | 94 | 0 | 3,141 |
-| Validation A 700001–700400 | 400 | 89 | **93** | 94 | 95 | 0 | 3,137 |
-| Validation B 900001–900400 | 400 | 89 | **93** | 94 | 95 | 0 | 3,134 |
+| Range | n | p10 | p50 | p90 | Max | Above 95 | AP granted | Max overage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Development 1–400 | 400 | 88 | **93** | 93 | 93 | 0 | 3,044 | 18.1% |
+| Validation A 700001–700400 | 400 | 89 | **93** | 93 | 94 | 0 | 3,045 | 18.1% |
+| Validation B 900001–900400 | 400 | 89 | **93** | 93 | 94 | 0 | 3,043 | 17.8% |
 
-The tuning-range histogram at the chosen settings, 300 careers: 86:6 87:8 88:6 89:7 90:11 91:12 92:28 93:137 94:70 95:5, and nothing at 96 or above. Eighty percent of the cohort lands inside 92–95 and twenty percent below it; the sub-band tail is the careers whose drawn ceiling does not permit the band, which is a legitimate outcome for a cohort defined by career management rather than by talent alone.
+The tuning-range histogram at the chosen settings, 300 careers: 86:6 87:8 88:6 89:7 90:11 91:12 92:44 93:194 94:2, and nothing at 95 or above. Eighty percent of the cohort lands inside 92–95 and twenty percent below it; the sub-band tail is the careers whose drawn ceiling does not permit the band, which is a legitimate outcome for a cohort defined by career management rather than by talent alone, and it is unchanged by opportunity because those careers are ceiling-bound.
+
+The distribution is narrow at the top, and it is narrower than it was before the §9.5 ruling was enforced. Two reasons, both explained rather than incidental. §8.4 asks for a median inside 92–95 *and* for 96+ to be practically nonexistent, which at a population share of 0.0001 permits roughly one career in two hundred of this cohort to pass 95, so a cohort satisfying both cannot be wide. And the ruling's per-season ceiling binds in three of the five career phases, which clips the high draws and removes variance along with the excess. Nothing clamps a realized peak: the shape comes from the §9.1 cost curve, which prices the last Overall points at 8 and 12 AP each, from the caps, which saturate the conversion, and now from a bound on opportunity that the owner set.
 
 The distribution is deliberately narrow at the top, and that is a consequence of the locked requirements rather than a clamp. §8.4 asks for a median inside 92–95 *and* for 96+ to be practically nonexistent, which at a population share of 0.0001 permits roughly one career in two hundred of this cohort to pass 95. A cohort satisfying both cannot be wide. Nothing clamps a realized peak: the shape comes from the §9.1 cost curve, which prices the last Overall points at 8 and 12 AP each, and from the caps, which saturate the conversion. The mode at 93 is where an opportunity-bound cohort with low career-level variance in lifetime AP lands, and the sharp fall from 94 to 95 is Maximum Potential binding, not a bound being applied.
 
@@ -738,17 +752,17 @@ The §8.4 cohorts are **structural**, not measured. `CareerSimulator` draws the 
 
 The structural choice is faithful to §8.4, whose reading rules describe the bands as "career management quality and opportunity" — inputs, not outcomes. It is also a limitation worth stating: the report cannot presently answer the complementary question of what share of generationally-managed careers actually reach 92–95 except by reading the cohort's own distribution, which is why that distribution is reported above rather than only its median.
 
-#### The honest cost: the §9.5 guardrail
+#### The cost: the §9.5 guardrail, and its owner ruling
 
-This is the part of the correction that is reported rather than resolved, and it is the one thing in this section an owner may want to overturn.
+This was the one open question §5.8 left for the owner, and it has since been ruled on. **§5.9 carries the ruling, its enforcement, and the measurements that go with it.** What follows is the position as §5.8 left it, kept because the ruling is only legible against the problem it answers.
 
-Summed across the twenty-three seasons of this career shape, the §9.5 high-engagement guardrails permit **2,695 AP-equivalent** — 4 × 187 in high school, 3 × 163 in college, then 4 × 120, 6 × 91 and 6 × 72 across the three professional bands. The measured requirement for a median peak of 93 is about **3,140**. The cohort therefore runs **16.5% above the guardrail in aggregate**. Measured per season rather than in aggregate: 17.0 seasons of 23 pass their guardrail, by a summed 525–528 AP-equivalent per career, concentrated in the college and early professional seasons where the multiplier most exceeds the band.
+Summed across the twenty-three seasons of this career shape, the §9.5 high-engagement guardrails permit **2,695 AP-equivalent** — 4 × 187 in high school, 3 × 163 in college, then 4 × 120, 6 × 91 and 6 × 72 across the three professional bands. The measured requirement for a median peak of 93 was about **3,140**, so the cohort ran **16.5% above the guardrails in aggregate**, passing its guardrail in 17 seasons of 23.
 
 Reaching the band inside the guardrails is not possible with this career shape and this cost table. At 2,695 AP and perfect conversion the cohort's median peak is about 91, and the ×1.10 row of the conversion table above is already past the guardrail total.
 
 The resolution follows the document's own authority rules. §8.4 is **Locked** (OD-A). The §9.5 bands are **Baselines**; §9.5 records them as provisional, as "not yet ship-approved", and as measured against a 400-career sample in which "one §8.4 band (rare generational) still misses". §8.4's verification note names seasonal AP availability as the first correction and forbids only relabelling the bands. A Locked target does not move to accommodate a Baseline tunable.
 
-What that leaves is a live tension for the owner rather than a settled question. Either the §9.5 professional bands are low by roughly 15% for this population, or the rare-generational career shape should be longer or differently phased, or the §8.4 band is reachable only through seasons §9.5 would classify as exceptional. Stage 4 delivers the Locked target, makes every one of those seasons warn and explain itself through the mechanism §9.5 provides for exactly this case, and records the conflict. It does not decide it.
+The owner ruling of 2026-08 settles it at 20% of that summed-guardrail figure, bounded to the rare-generational path and to ledgered elite opportunity. Enforcing it changed the model: see §5.9.
 
 #### Tests and mutation evidence
 
@@ -771,6 +785,164 @@ What that leaves is a live tension for the owner rather than a settled question.
 | Projected-peak per-profile conditioning collapsed | `test_projected_peak_model.gd` interval-width case |
 
 Three of the twelve original mutations survived the first pass, which is the reason for running them. Each survivor named a real hole: the service's own cap check was never exercised end to end because every executor checks first; peak Overall alone is one rounded number two different careers can share; and raising the exceptional cohort's *opportunity* alone does not pull it into 92–95 because that cohort keeps a selection pool of one and is cap-bound well below the band. All three were fixed by strengthening the tests, and all three mutations are detected on re-run.
+
+### 5.9 Closing the rare-generational milestone
+
+Status: **Structurally closed and measured. Not certified** — the §27.1 million-career run remains later work (§6.4).
+
+§5.8 delivered the §8.4 rare-generational band and left three things open: the §9.5 guardrail tension was recorded as an owner decision rather than settled, the parse/compile gate was known to be unreliable, and one reported AP figure was known to be misnamed. All three are closed here, and closing the second and third changed the first.
+
+#### The owner ruling
+
+**Ruling (authoritative, 2026-08).** *Rare-generational careers may exceed the §9.5 high-engagement upper guardrail by up to 20% when caused by ledgered elite opportunity, while emitting the required balance warning. This exception applies only to the rare-generational path and cannot alter AP costs, game-development caps, population shares, or adjacent outcome bands.*
+
+The measurement it was made against is §5.8's: the cohort received about 3,140 AP-equivalent against a summed seasonal-guardrail allowance of **2,695**, a **16.5% overage**, passing its guardrail in 17 seasons of 23. The ruling caps that at **20%** of the same summed figure.
+
+**It is modelled as a persistent career condition, not as a property of the outcome label.** `CareerOpportunityCondition.ELITE_OPPORTUNITY` is set once, before any season resolves, and is a stored career fact inside the §9.7.4 invariant signature — so a promoted player carries the same permission the aggregate row did. Seventeen exceptional seasons in one career are one condition rather than seventeen unrelated anomalies, which is what the ruling asks for, and a permission attached to a *condition* cannot be claimed by another cohort simply by being handed more opportunity.
+
+**The bound is structural, not tuned.** `DevelopmentService.seasonal_opportunity_ceiling` applies it as each season is granted, so the lifetime total cannot exceed 1.20× the summed guardrails at *any* opportunity setting. The tuning sweep confirms it: at a multiplier of 2.20 the cohort reports an overage of exactly 0.200 and no violation. A later retune cannot walk the cohort past the ruling by accident, and the opportunity that is trimmed is never granted and never ledgered, so nothing is taken back from a wallet.
+
+Careers without the condition are deliberately not trimmed. §9.5 already governs them through the balance warning and the source-ledger explanation, and bounding them would move outcome bands the ruling explicitly may not touch. What they may not do is run a career-long surplus: `career_opportunity_violation` fails any career whose lifetime grant exceeds its own summed guardrails without the condition, whatever band it belongs to.
+
+**Enforcing it exposed a real defect in the previous constant.** At `PATH_OPPORTUNITY[rare_generational] = 1.70` the cohort *mean* overage was compliant at 16.5% while individual careers reached **26%**: measured on 400 careers, lifetime grants ran from 2,769 to 3,397 against a permitted ceiling of 3,234, putting roughly a fifth of the cohort outside the ruling behind a compliant average. **A cohort average is not a bound.** With the bound enforced, 1.70 dropped the median peak to 92 — inside the band but on its floor with no margin — so the multiplier was re-measured against the enforced ceiling and moved to **1.85**, where the median returns to 93 and the worst career reaches 17.9% against the permitted 20%.
+
+1.85 was chosen over the other settings that also reach 93 because it leans on the clamp least. At 2.00 the worst career sits at 19.6%, and at 2.20 the clamp is doing all the work. The cohort should be inside the ruling on its own, with the clamp as a safety property rather than as the thing producing the result.
+
+| Setting | Median peak | Max overage | Ruling violations | Peak histogram 91–95 |
+| --- | ---: | ---: | ---: | --- |
+| 1.70 | 92 | 0.142 | 0 | 91:20 92:180 93:52 94:0 95:0 |
+| **1.85** | **93** | **0.179** | **0** | 91:12 92:44 93:194 94:2 95:0 |
+| 2.00 | 93 | 0.196 | 0 | 91:12 92:16 93:201 94:23 95:0 |
+| 2.20 | 93 | 0.200 | 0 | 91:12 92:14 93:125 94:101 95:0 |
+
+Tuning range 300001–300300, 300 careers per cell, selection pool 3.
+
+**What the exception does not touch**, each pinned by a test: §9.1 costs are identical for a career carrying the condition and one that is not; the §9.6 seasonal game-development cap is unmoved; the §8.4 population shares are unchanged and still sum to one; and the adjacent bands do not move, because nothing outside the rare-generational path changed.
+
+**A consequence worth naming.** The per-season ceiling binds in three of the five phases, and clipping the high draws removes variance as well as excess. The cohort's realized peaks are correspondingly tighter than before: the mode sits at 93 with about two thirds of the cohort on it. That is explained rather than unexplained — it is an opportunity-bound cohort whose opportunity is now bounded — but it is a narrowing, and it is the reason the §8.4 distribution is reported as a histogram here rather than as a median alone.
+
+#### The parse/compile gate could not fail
+
+Diagnosed directly rather than from the earlier guess. The gate decided whether a script compiled with `load(path) == null`, and that condition never holds: measured on Godot 4.7.1, the GDScript resource format loader prints `Failed to load script ... with error "Parse error"` and **returns the failed script object anyway**. A file with a syntax error was walked, reported by the engine, and counted as a pass — 192 scripts, "0 failure(s)", exit status 0.
+
+The import cache was **not** the mechanism, which the earlier note assumed. `ResourceLoader.load` with `CACHE_MODE_IGNORE` returns the same non-null broken object, so re-reading from disk would not have rescued the old predicate.
+
+`Script.can_instantiate()` replaces it: measured false for a syntax error, for a warning configured as an error, and for a type error, and true for all 191 other scripts in the tree. An abstract script is legitimately non-instantiable and is exempted only when the file on disk actually declares `@abstract`, so a script that failed to compile can never claim the exemption.
+
+Two further silent-pass routes are closed alongside it:
+
+- The gate **self-tests before it walks anything**, compiling one script that works and one that does not, and reports failure rather than an unearned pass if it cannot tell them apart. A future engine change to the predicate therefore cannot quietly turn the gate back into a no-op.
+- Every configured root must contain scripts, so a renamed or moved root fails instead of being skipped in silence.
+
+The repair surfaced a third problem in the opposite direction. On a checkout with no `.godot`, the global class cache is empty and every reference to a `class_name` reports as a compile failure — measured at 154 of 193 scripts. That is as useless as a false pass, so it is refused explicitly with exit status 2, and the workflow now builds the cache in its own step first. The gate resolves its own helper by path rather than by global class name for the same reason.
+
+| Gate state | Exit status | Reported |
+| --- | ---: | --- |
+| Clean tree, class cache present | 0 | 196 scripts checked, 0 failures |
+| Malformed script in `src`, `tools`, `tests`, or `calibration` | 1 | the file, named, with the reason |
+| No global class cache | 2 | refuses to run, names the fix |
+
+The workflow step asserts the exit status explicitly rather than trusting the printed count, because a count is exactly the thing that lied.
+
+#### AP accounting counted the wrong thing
+
+`CareerResult.total_ap_spent` held the number of whole rating points a career gained. §9.1 prices a point by its destination — 1 AP below 60, rising to 12 at 95 and above — so the two quantities diverge further the higher a career climbs.
+
+| Quantity | Old field | Corrected |
+| --- | ---: | ---: |
+| Rare-generational rating points gained | 972 | 972, as `total_rating_points_gained` |
+| Rare-generational AP spent | reported as 972 | **2,868**, from the ledger |
+
+The corrected figure comes off the shared ledger, which recorded each §9.1 cost as the cost table charged it, so there is one calculation of it rather than a second that could drift. `AttributePointEntry.is_attribute_spend()` is the single rule for what counts: §9.1 spends and §9.2 direct-progress resolutions both buy rating points, while §10.3 decline names an attribute but removes standing, and an unrealized-opportunity debit names no attribute at all.
+
+**The diagnosis in §5.8 was not built on the broken field.** Its conversion figures came from `ap_spent_by_phase`, which was already ledger-derived and already genuine AP. The misnamed field appeared in one printed diagnostic line and in no report, no serializer, and no aggregator — verified by inspecting every stored report artefact. The only `ap_spent` in any committed report is `creation_ap_spent` in the Builder harness, which is the §7.1 creation budget and a different quantity, correctly named.
+
+**Schema.** No stored field changes meaning, so `leaguebound.calibration.report/1` is unchanged. Four metrics are added — `mean_lifetime_ap_spent`, `mean_lifetime_ap_unspent`, `mean_rating_points_gained`, `ap_reconciliation_failures` — which is additive within the schema, and the aggregator buckets by metric id and rejects a shard set with mismatched metrics loudly rather than pooling it silently. Readers of older reports are unaffected; a new aggregator reading an old shard set reports the missing metric rather than inventing one.
+
+**Reconciliation is now judged rather than assumed.** `progression.ap_reconciliation_failures` fails the report if any career breaks
+
+> `granted (by ledger) − attribute spend − non-purchase debits = unspent`
+
+and it caught a real defect on its first run: 88% of the population failed while the rare-generational diagnostics showed a residual of exactly zero. The identity had been stated on `total_ap_granted`, which is the opportunity a career *realized* — and a path that realizes less than the season offered books the shortfall as a debit, because the ledger rejects a negative grant, so subtracting that debit again double-counts it. The rare-generational path never showed it because its adjustment is always positive and the two figures coincide. Both quantities are now kept and named separately, and the reconciliation test runs every outcome path rather than only the one the correction was measured against.
+
+#### Revalidating the §5.8 diagnosis against real AP
+
+Each prior claim, re-checked with genuine AP accounting on the development range, 400 forced rare-generational careers over seeds 1–400.
+
+| §5.8 claim | Verdict | Corrected evidence |
+| --- | --- | --- |
+| The cohort spends its available AP | **Confirmed, with the tail qualified** | Median unspent 0.6 AP of 3,046 granted; mean 159 because the top decile is cap-bound and strands up to 1,917. §5.8 already stated this as "the median career is opportunity-bound; only its upper ceiling tail is cap-bound", and real AP sharpens rather than contradicts it |
+| The gap was opportunity-bound, not allocation-bound | **Confirmed** | Overall-maximising bound still beats the realized career by about 0.5 Overall; the conversion curve still separates capped from uncapped only above ×1.10 |
+| `PATH_OPPORTUNITY = 1.70` is supported | **Not supported; corrected to 1.85** | Not because of AP accounting but because the ruling's bound, once enforced, cost the cohort about 220 AP and dropped the median to 92 |
+| Ceiling selection pool 3 is supported | **Confirmed** | Maximum Potential median 96, p10 88; the cohort's sub-band tail is unchanged at about 20%, and remains ceiling-bound rather than opportunity-bound |
+| §9.6 caps redirect the excess to training without changing the result | **Confirmed** | Game 12/16/20 per season honoured on every career-season; the redirect moves the ledger source and no measured outcome |
+| The corrected cohort stays inside 92–95 without clamping | **Confirmed** | Median 93 on three ranges, maximum 93–94, nothing above 95. No realized peak is clamped; the shape comes from the §9.1 cost curve and the caps |
+| Adjacent §8.4 bands do not move | **Confirmed** | 66 / 77 / 82 / 87 on every range, byte-identical to §5.8 |
+| Projected Peak remains calibrated | **Confirmed** | Coverage, width, and bias unchanged and inside their bands on both untouched ranges |
+| Executor parity remains exact | **Confirmed** | 0.0000 on all three ranges, and the three executors now also agree on granted, spent, unspent, and rating points |
+
+#### Measured result
+
+`run_career_progression.gd` at commit `2ece230`, the runner the certification workflows execute. Development range 1–3000; validation ranges 700001–702000 and 900001–902000, neither touched during tuning.
+
+| Metric | Dev, 3,000 | Val A, 2,000 | Val B, 2,000 | Target |
+| --- | ---: | ---: | ---: | --- |
+| Poor / injury-hit | 66 | 66 | 66 | below 72 |
+| Ordinary successful | 77 | 77 | 77 | 74–79 |
+| Strong, well managed | 82 | 82 | 82 | 80–85 |
+| Exceptional | 87 | 87 | 87 | 86–91 |
+| **Rare generational** | **93** ±0.86 | **93** ±0.74 | **93** ±0.71 | **92–95** |
+| Share above 95 | 0.0000 | 0.0000 | 0.0000 | ≤ 0.0001 |
+| Transition-gap share | 0.0170 | 0.0155 | 0.0140 | 0.01–0.20 |
+| Projected-peak coverage | 0.7430 | 0.7380 | 0.7320 | 0.70–0.85 |
+| Projected-peak median width | 11.0 | 11.0 | 11.0 | 6–12 |
+| Projected-peak signed error | −1.0 | 0.0 | −1.0 | ±2 |
+| Parity, manual vs full detail | 0.0000 | 0.0000 | 0.0000 | ±2% |
+| Parity, manual vs aggregate | 0.0000 | 0.0000 | 0.0000 | ±2% |
+| **AP reconciliation failures** | **0.0000** | **0.0000** | **0.0000** | **exactly 0** |
+| **§9.5 ruling violations** | **0.0000** | **0.0000** | **0.0000** | **exactly 0** |
+| Guardrail warnings explained | 1.0000 | 1.0000 | 1.0000 | exactly 1.0 |
+| Mean lifetime AP granted | 1,204.9 | 1,203.6 | 1,198.1 | informational |
+| Mean lifetime AP spent | 1,144.0 | 1,137.9 | 1,138.6 | informational |
+| Mean lifetime AP unspent | 58.0 | 62.7 | 56.6 | informational |
+| Mean rating points gained | 607.7 | 604.4 | 604.8 | informational |
+| Mean guardrail overage share | −0.4646 | −0.4655 | −0.4671 | informational |
+
+The population-level overage share is negative because most careers never approach their guardrails; the ruling's bound applies to the rare-generational cohort, measured separately below.
+
+The rare-generational cohort itself, 400 forced-path careers per range:
+
+| Range | p10 | p50 | p90 | Max | Above 95 | AP granted | Mean overage | Max overage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Development 1–400 | 88 | **93** | 93 | 93 | 0 | 3,044 | 13.0% | 18.1% |
+| Validation A 700001–700400 | 89 | **93** | 93 | 94 | 0 | 3,045 | 13.0% | 18.1% |
+| Validation B 900001–900400 | 89 | **93** | 93 | 94 | 0 | 3,043 | 12.9% | 17.8% |
+
+Both validation ranges reproduce the development range exactly on the median, and every career on all three is inside the ruling with margin.
+
+**Reconciled AP.** `granted (by ledger) − attribute spend − non-purchase debits = unspent` closes to zero on every career of every outcome path, on all three ranges and through three-shard aggregation. On the rare-generational cohort the components are: 3,044 granted, 2,868 spent buying 972 rating points, 17 removed by decline, and 159 left unspent — the last concentrated in the ceiling-bound top decile, whose median career leaves 0.6.
+
+#### Regression and mutation evidence
+
+Full battery at `2ece230`: parse gate 196 scripts / 0 failures / exit 0; GdUnit4 292 cases, 0 failures across 31 suites; `tests/run_all.gd` PASS; simulation invariants PASS; Builder calibration PASS; attribute sensitivity 80/80 judged at 100,000 resolutions per point; calibration smoke 15/15; career progression on three ranges; Projected Peak diagnostics on both untouched ranges, 0 pathological subgroups; three-shard aggregation pooling the new metrics and correctly refusing to certify at 1,200 careers; golden match ledgers regenerated byte-identical.
+
+Seven mutations, each applied to the committed implementation, run against the suites, and restored — `git status` clean and `HEAD` unchanged after every one.
+
+| Mutation | Detected by |
+| --- | --- |
+| The 20% ceiling stops being enforced as the grant is made | 3 cases, including the end-to-end no-career-violates check |
+| The 20% ceiling stops being detected after the fact | the beyond-the-permitted-share case |
+| The exception is handed to a second path | the only-the-generational-path case |
+| The ledger explanation for an exceptional season disappears | 4 cases across provenance, explanation, and the ruling |
+| §9.6 game-development caps are bypassed | 6 cases, including the exception-does-not-lift-the-cap case |
+| Rating points are reported as AP spent | the two-quantities case and the every-path reconciliation case |
+| The parse gate returns to the predicate that could never fire | the malformed-fixture case and the count-agrees-with-exit case |
+
+The malformed-fixture case runs the committed gate in its own Godot process against a deliberately broken script written into `res://calibration`, asserts exit status 1 and the file named in the output, removes the fixture, and runs the gate again to require a pass. No invalid `.gd` file is committed, and the working tree was verified clean after every run.
+
+#### Status of this milestone
+
+**Structurally closed and measured; not certified.** The model is complete, the ruling is enforced by construction rather than by tuning, the accounting reconciles, and the gate that guards all of it can fail. What remains is sample size: §27.1 requires 1,000,000 careers and §6.4 gives the arithmetic for why no developer machine produces that. Nothing here may be described as certified.
 
 
 ## 6. Certification and workflow blockers
@@ -886,7 +1058,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 2. ~~Add deterministic aggregation for sharded competition and progression reports.~~ **Done** (§6.1). Remaining dependency: execute a nightly or deep run, which has never happened, and confirm the `chickensoft-games/setup-godot@v2` action referenced by both new workflows actually resolves on this project's runner — it was written from convention, not verified.
 3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
 4. ~~Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.~~ **Done** (§5.7). The interval is now conditioned on the prospect profile, with the player's own caps supplying a second axis through conversion saturation. All three §6.3 measures pass with interior margin on two untouched validation ranges and on the production judged path. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it can be called certified.
-5. ~~Resolve the rare-generational 92–95 peak miss.~~ **Done** (§5.8). The band reads 93 on the development range and on two untouched validation ranges, with every adjacent band, the share above 95, the transition gap, executor parity, and all §6.3 measures unmoved. Remaining dependencies: the deep-verification workflow must run the sharded million-career report before any of it is certified, and the owner must decide the §9.5 tension §5.8 records — the cohort reaches its Locked §8.4 band only by running 16.5% above the Baseline §9.5 high-engagement guardrails, with every such season warned and explained in the source ledger.
+5. ~~Resolve the rare-generational 92–95 peak miss.~~ **Done** (§5.8), and **closed** (§5.9). The band reads 93 on the development range and on two untouched validation ranges. The §9.5 tension §5.8 left open is settled by the owner ruling of 2026-08, which permits a bounded 20% exception for the rare-generational path only; enforcing it as a per-season bound made compliance structural and moved the opportunity multiplier from 1.70 to 1.85. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it is certified.
 6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
 8. Complete the required game-shape and parity reports at usable samples.
