@@ -189,7 +189,7 @@ func _report_path(
 		spent.append(career.total_ap_spent)
 		rating_points.append(float(career.total_rating_points_gained))
 		unspent.append(career.total_ap_unspent)
-		reconciliation.append(career.total_ap_granted - career.total_ap_spent
+		reconciliation.append(career.total_ap_granted_by_ledger - career.total_ap_spent
 			- career.total_ap_debited_without_purchase - career.total_ap_unspent)
 		declined.append(career.ap_debited_by_source[AttributePointSource.Value.DECLINE])
 		unrealized.append(career.ap_debited_by_source[AttributePointSource.Value.GAME])

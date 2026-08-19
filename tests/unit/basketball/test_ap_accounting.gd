@@ -228,19 +228,41 @@ func test_a_career_reports_ap_spent_and_rating_points_separately() -> void:
 		.is_greater(float(career.total_rating_points_gained) * 2.0)
 
 
-## And the career-level identity must close, on a full career rather than on a
-## constructed ledger.
-func test_a_complete_career_reconciles_its_ledger() -> void:
+## And the career-level identity must close on every outcome path, not only on
+## the one the correction was measured against.
+##
+## The distinction this pins was a real defect: `total_ap_granted` is the
+## opportunity a career *realized*, and a path that realizes less than the
+## season offered books the shortfall as a debit because the ledger will not
+## accept a negative grant. Stating the identity on the realized figure closed
+## for the rare-generational path, whose adjustment is always positive, and
+## failed for 88% of the population. It has to be stated on the ledger's own
+## grant total.
+func test_every_outcome_path_reconciles_its_ledger() -> void:
 	var simulator := CareerSimulator.new(_profiles)
-	for offset in range(4):
-		var career: CareerSimulator.CareerResult = simulator.simulate(
-			920100 + offset, DevelopmentExecutor.Value.MANUAL,
-			CareerSimulator.Path.GENERATIONAL)
-		var residual: float = (career.total_ap_granted
-			- career.total_ap_spent
-			- career.total_ap_debited_without_purchase
-			- career.total_ap_unspent)
-		assert_float(residual).is_equal_approx(0.0, 0.001)
+	for path in range(CareerSimulator.PATH_COUNT):
+		for offset in range(3):
+			var career: CareerSimulator.CareerResult = simulator.simulate(
+				920100 + offset, DevelopmentExecutor.Value.MANUAL, path)
+			var residual: float = (career.total_ap_granted_by_ledger
+				- career.total_ap_spent
+				- career.total_ap_debited_without_purchase
+				- career.total_ap_unspent)
+			assert_float(residual)\
+				.override_failure_message("path %s did not reconcile"
+					% CareerSimulator.path_id(path))\
+				.is_equal_approx(0.0, 0.001)
+
+
+## The two grant figures are genuinely different for a path that leaves
+## opportunity unrealized, so the case above is not two names for one number.
+func test_realized_and_ledger_grants_differ_when_opportunity_is_unrealized() -> void:
+	var simulator := CareerSimulator.new(_profiles)
+	var career: CareerSimulator.CareerResult = simulator.simulate(
+		920300, DevelopmentExecutor.Value.MANUAL, CareerSimulator.Path.POOR)
+
+	assert_float(career.total_ap_granted_by_ledger)\
+		.is_greater(career.total_ap_granted)
 
 
 ## §9.7.1: detail level changes how the contract is executed, never what it

@@ -163,6 +163,15 @@ class CareerResult extends RefCounted:
 	var final_overall: int
 	var seasons: int
 	var total_ap_granted: float
+	## AP-equivalent the ledger recorded as *granted*.
+	##
+	## Deliberately distinct from `total_ap_granted`, which is the opportunity the
+	## career realized. A path that realizes less than the season offered records
+	## the shortfall as a debit, because the ledger rejects a negative grant, so
+	## for those careers the realized figure is the ledger's grants minus that
+	## debit. Modelling questions want the realized figure; the wallet identity
+	## has to be stated on the ledger's own, or it does not close.
+	var total_ap_granted_by_ledger: float
 	## AP-equivalent the career actually consumed buying ratings, summed from the
 	## Â§9.1 costs the cost table charged, and read back off the shared ledger
 	## rather than recounted here.
@@ -504,6 +513,7 @@ func _run_seasons(
 	# recorded the Â§9.1 cost of every point as the cost table charged it, so it
 	# is the one place that already knows the answer; a second running total kept
 	# here would be a second source of truth for the same quantity.
+	result.total_ap_granted_by_ledger = state.point_ledger.total_granted()
 	result.total_ap_spent = state.point_ledger.total_attribute_spend()
 	result.total_ap_unspent = state.point_ledger.balance()
 	result.total_ap_debited_without_purchase = (

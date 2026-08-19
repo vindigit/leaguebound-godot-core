@@ -163,7 +163,7 @@ func _judge_population(report: CalibrationReport, results: Array, careers: int) 
 		ap_spent.append(career.total_ap_spent)
 		ap_unspent.append(career.total_ap_unspent)
 		rating_points.append(float(career.total_rating_points_gained))
-		if absf(career.total_ap_granted - career.total_ap_spent
+		if absf(career.total_ap_granted_by_ledger - career.total_ap_spent
 				- career.total_ap_debited_without_purchase
 				- career.total_ap_unspent) > AP_RECONCILIATION_TOLERANCE:
 			unreconciled += 1
