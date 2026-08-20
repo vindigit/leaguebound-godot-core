@@ -67,6 +67,22 @@ var roster_rule_profile_id: StringName
 ## than an unlimited privilege.
 var timeouts_per_team: int
 
+## §11.3: "Assist attribution follows configurable competition/stat rules."
+##
+## `assist_rule_id` names the scoring rule and `credited_assist_families` is
+## that rule's content: the shot families whose attempt a delivery is credited
+## for, as opposed to the ones the shooter creates for himself.
+##
+## All five version 1.0 competitions share `delivered-shot-v1`, because no §4
+## or §14 requirement asks any of them to score an assist differently, and the
+## Stage 4 brief is explicit that shared basketball mechanics are preferred over
+## per-competition rules. The fields exist so that a competition which does need
+## a different rule is a configuration change rather than an engine change, and
+## so a calibration report can name the rule it measured rather than implying
+## one.
+var assist_rule_id: StringName = &"delivered-shot-v1"
+var credited_assist_families: PackedInt32Array = PassCreation.DELIVERED_FAMILIES
+
 
 func _init(
 	p_profile_id: StringName = &"five_on_five_baseline",

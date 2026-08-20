@@ -301,7 +301,8 @@ func _record_completed_pass(
 	var rotated_defender_id: StringName = _context.defender_of(receiver_id)
 	var creation := PassCreation.new(
 		passer_id, receiver_id, advantage.level,
-		_delivered_catch_quality(passer_id), rotated_defender_id)
+		_delivered_catch_quality(passer_id), rotated_defender_id,
+		_rules.credited_assist_families)
 	_emit(
 		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, passer_id,
 		receiver_id, rotated_defender_id, action_id, advantage.level_id(), &"", 0,

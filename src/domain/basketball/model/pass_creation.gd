@@ -55,6 +55,9 @@ var catch_quality: float
 ## The defender the delivery moved, recorded so §11.3's "defensive rotation
 ## caused" is in the ledger rather than implied.
 var rotated_defender_id: StringName
+## The competition's own §11.3 credited-assist rule, carried on the record so
+## the engine cannot apply a rule the rule profile did not give it.
+var credited_families: PackedInt32Array
 
 
 func _init(
@@ -63,6 +66,7 @@ func _init(
 	p_advantage_level: int = AdvantageLevel.Value.NONE,
 	p_catch_quality: float = 1.0,
 	p_rotated_defender_id: StringName = &"",
+	p_credited_families: PackedInt32Array = DELIVERED_FAMILIES,
 ) -> void:
 	live = not p_passer_id.is_empty()
 	passer_id = p_passer_id
@@ -70,6 +74,7 @@ func _init(
 	advantage_level = p_advantage_level
 	catch_quality = p_catch_quality
 	rotated_defender_id = p_rotated_defender_id
+	credited_families = p_credited_families
 
 
 static func none() -> PassCreation:
@@ -93,7 +98,7 @@ func reaches(shooter_id: StringName) -> bool:
 
 ## Whether this delivery directly created the attempt about to be taken.
 func creates_shot_for(shooter_id: StringName, action_family: int) -> bool:
-	return reaches(shooter_id) and DELIVERED_FAMILIES.has(action_family)
+	return reaches(shooter_id) and credited_families.has(action_family)
 
 
 ## §12.1 `ShotIntent.assistedState`.
