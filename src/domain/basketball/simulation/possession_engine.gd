@@ -250,12 +250,12 @@ func _resolve_action(candidate: ActionCandidate, action_stream: RandomSource) ->
 		ActionFamily.Value.SCREEN:
 			_resolve_screen(candidate, advantage, action_stream)
 		ActionFamily.Value.RELOCATION:
-			_emit(
-				MatchDomainEvent.OFF_BALL_ACTION, _context.offense.team_id, candidate.actor_id,
-				candidate.target_id, &"", candidate.action_id(), advantage.level_id())
+			_resolve_relocation(candidate, advantage, action_stream)
 		ActionFamily.Value.RESET:
+			# A reset is the offence starting again: whatever the last delivery
+			# had created is over.
 			_context.advantage = AdvantageResult.new()
-			_context.last_passer_id = &""
+			_context.clear_pass_creation()
 		_:
 			assert(false, "unhandled action family")
 
@@ -272,12 +272,69 @@ func _resolve_pass(
 	if turnover.occurred:
 		_terminate_turnover(turnover)
 		return
+	_record_completed_pass(candidate.actor_id, candidate.target_id, advantage, candidate.action_id())
+
+	# §11.3 pass continuation. A delivery that beat the denial and the help left
+	# the receiver open, and an open receiver shoots — he does not wait for the
+	# next independent action draw, by which time the rotation has recovered.
+	# This is the branch every other creating family already had, and its
+	# absence is why the openness a pass created was computed and thrown away.
+	if (
+		not _context.is_late_clock()
+		and action_stream.derive(&"catch_and_shoot").next_float()
+			< _balance.pass_catch_and_shoot_share * advantage.quality_share()
+	):
+		_resolve_catch_and_shoot(candidate.target_id, advantage, action_stream)
+
+
+## Records a completed delivery and everything §11.3 requires it to carry:
+## passer, receiver, risk family, the openness it produced, the catch quality
+## the passer's execution earned, and the defender it moved. The record is the
+## live passer-to-shot relationship; whether it *directly created* the eventual
+## shot is settled when a shot resolves, by `PassCreation`.
+func _record_completed_pass(
+	passer_id: StringName,
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	action_id: StringName,
+) -> void:
+	var rotated_defender_id: StringName = _context.defender_of(receiver_id)
+	var creation := PassCreation.new(
+		passer_id, receiver_id, advantage.level,
+		_delivered_catch_quality(passer_id), rotated_defender_id)
 	_emit(
-		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, candidate.actor_id,
-		candidate.target_id, &"", candidate.action_id(), advantage.level_id())
-	_context.last_passer_id = candidate.actor_id
-	_context.last_pass_created_advantage = advantage.is_material()
-	_context.ball_handler_id = candidate.target_id
+		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, passer_id,
+		receiver_id, rotated_defender_id, action_id, advantage.level_id(), &"", 0,
+		int(roundf(creation.catch_quality * 100.0)))
+	_context.pass_creation = creation
+	_context.ball_handler_id = receiver_id
+
+
+## The catch-and-shoot the delivery created. The receiver shoots the zone his
+## own capability supports, which is what makes this the shooter's shot and the
+## passer's creation rather than a shot the passer chose.
+func _resolve_catch_and_shoot(
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> void:
+	# §9.4: the catch and the release are their own state transition and consume
+	# their own time. Resolving them for free would have let an offence reach a
+	# shot in fewer seconds than it takes to take one, which shortens every
+	# possession the branch touches and raises pace by the rate the branch
+	# fires.
+	var menu: Array[ActionCandidate] = _generator.catch_and_shoot_candidates(
+		_context, receiver_id)
+	if menu.is_empty():
+		return
+	_consume(_clock.action_ms(
+		_context, ActionFamily.Value.PULL_UP, action_stream.derive(&"catch_time")))
+	if _terminated:
+		return
+	var shot: ActionCandidate = _selector.select(menu, action_stream.derive(&"catch_zone"))
+	_resolve_shot(
+		receiver_id, shot.zone, false, ActionFamily.Value.PULL_UP,
+		advantage.after_closeout(), action_stream.derive(&"catch_shot"))
 
 
 func _resolve_attack(
@@ -336,7 +393,9 @@ func _resolve_attack(
 		or action_stream.derive(&"finish").next_float() < finish_share
 	)
 	if not finishes:
-		_context.last_passer_id = &""
+		# The attack fizzled and the ball is back out front. Whatever delivery
+		# preceded it created a touch, not this possession's shot.
+		_context.clear_pass_creation()
 		return
 
 	var zone: int = _attack_zone(candidate, advantage)
@@ -407,12 +466,7 @@ func _deliver_advantage_pass(
 	if turnover.occurred:
 		_terminate_turnover(turnover)
 		return false
-	_emit(
-		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, passer_id,
-		receiver_id, &"", pass_candidate.action_id(), advantage.level_id())
-	_context.last_passer_id = passer_id
-	_context.last_pass_created_advantage = true
-	_context.ball_handler_id = receiver_id
+	_record_completed_pass(passer_id, receiver_id, advantage, pass_candidate.action_id())
 	return true
 
 
@@ -482,17 +536,53 @@ func _resolve_cut(
 	if turnover.occurred:
 		_terminate_turnover(turnover)
 		return
-	_emit(
-		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, feed.actor_id,
-		candidate.actor_id, &"", feed.action_id(), advantage.level_id())
-	_context.last_passer_id = feed.actor_id
-	_context.last_pass_created_advantage = true
-	_context.ball_handler_id = candidate.actor_id
+	_record_completed_pass(feed.actor_id, candidate.actor_id, advantage, feed.action_id())
 	var cutter: PlayerMatchProfile = _context.offense_profile(candidate.actor_id)
 	var dunk: bool = _body.dunk_is_available(cutter.body, cutter.attributes.vertical)
 	_resolve_shot(
 		candidate.actor_id, ShotZone.Value.RESTRICTED_RIM, dunk,
 		ActionFamily.Value.OFF_BALL_CUT, advantage, action_stream)
+
+
+## The spot-up. §10.1 names the family "Relocation or spot-up", and a spot-up
+## exists to become a catch-and-shoot: the shooter relocates into space the
+## defence has left, the ball finds him, and he shoots it.
+##
+## This family previously emitted an off-ball event and changed nothing at all —
+## it could not produce a shot, a pass, or an advantage anyone consumed, so a
+## quarter of every possession's off-ball work was inert. That is the other half
+## of the missing creation: `OFF_BALL_CUT` had its feed-and-finish and
+## `RELOCATION` had nothing, so the only catch-and-shoot the engine could build
+## was one the ball handler happened to select a pass into.
+##
+## The feed is a real pass. It can be turned over, and it is the creator of the
+## shot if it arrives.
+func _resolve_relocation(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> void:
+	_emit(
+		MatchDomainEvent.OFF_BALL_ACTION, _context.offense.team_id, candidate.actor_id,
+		candidate.target_id, &"", candidate.action_id(), advantage.level_id())
+	if _context.is_late_clock():
+		return
+	if (
+		action_stream.derive(&"spot_up").next_float()
+		>= _balance.relocation_spot_up_share * advantage.quality_share()
+	):
+		return
+	var feed := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, _context.ball_handler_id, 1.0, candidate.actor_id)
+	if feed.actor_id.is_empty() or feed.actor_id == candidate.actor_id:
+		return
+	var turnover: TurnoverOutcome = _turnover_resolver.resolve_pass(
+		_context, feed, advantage, action_stream.derive(&"spot_up_turnover"))
+	if turnover.occurred:
+		_terminate_turnover(turnover)
+		return
+	_record_completed_pass(feed.actor_id, candidate.actor_id, advantage, feed.action_id())
+	_resolve_catch_and_shoot(candidate.actor_id, advantage, action_stream)
 
 
 func _resolve_screen(
@@ -527,13 +617,24 @@ func _resolve_shot(
 ) -> void:
 	var shot_stream: RandomSource = action_stream.derive(&"shot")
 	var contest: ShotContest = _shot_resolver.build_contest(_context, shooter_id, zone, advantage)
-	var assisted_state: StringName = _assisted_state(shooter_id, action_family)
+	# The creation relationship is settled *before* the shot resolves and is
+	# carried on the attempt, not invented after the ball goes in. §12.1 makes
+	# the assisted state part of the shot intent, so the ledger records it on
+	# the attempt; a made basket then carries the same creator, and the assist
+	# is a function of that recorded evidence rather than of the outcome.
+	var creation: PassCreation = _context.pass_creation
+	var assisted_state: StringName = creation.assisted_state(shooter_id, action_family)
+	var creator_id: StringName = creation.creator_for(shooter_id, action_family)
+	var catch_quality: float = creation.catch_quality if creation.reaches(shooter_id) else 1.0
 	var defender_id: StringName = contest.primary_defender_id
 
 	_emit(
 		MatchDomainEvent.FIELD_GOAL_ATTEMPT, _context.offense.team_id, shooter_id,
-		defender_id, &"", ActionFamily.id_of(action_family), contest.band_id(),
+		defender_id, creator_id, ActionFamily.id_of(action_family), contest.band_id(),
 		ShotZone.id_of(zone), 0, 1 if dunk else 0)
+	# A shot consumes the delivery that produced it, whatever it does next. The
+	# same pass cannot create two attempts.
+	_context.clear_pass_creation()
 
 	var blocker_id: StringName = _shot_resolver.resolve_block(
 		_context, shooter_id, zone, dunk, contest, advantage, shot_stream.derive(&"block"))
@@ -552,16 +653,17 @@ func _resolve_shot(
 		_context, shooter_id, zone, contest, shot_stream.derive(&"shooting_foul"))
 	var outcome: ShotOutcome = _shot_resolver.resolve(
 		_context, shooter_id, zone, dunk, contest, advantage,
-		_catch_quality(shooter_id), _movement_load(action_family),
+		catch_quality, _movement_load(action_family),
 		shot_stream.derive(&"make"))
 
 	if outcome.made:
 		_points_scored += outcome.points
 		_emit(
 			MatchDomainEvent.FIELD_GOAL_MADE, _context.offense.team_id, shooter_id,
-			defender_id, &"", ActionFamily.id_of(action_family), assisted_state,
+			defender_id, creator_id, ActionFamily.id_of(action_family), assisted_state,
 			ShotZone.id_of(zone), outcome.points, 1 if dunk else 0)
-		_credit_assist(shooter_id, action_family, zone, shot_stream.derive(&"assist"))
+		_credit_assist(
+			creator_id, shooter_id, action_family, zone, shot_stream.derive(&"assist"))
 		if foul.occurred:
 			# And-one: the basket counts and one free throw follows (§13).
 			if _record_foul(foul, _context.defense.team_id):
@@ -584,58 +686,51 @@ func _resolve_shot(
 	_resolve_rebound(shooter_id, zone, false, action_stream)
 
 
-## §11.3 assist attribution. The pass must have been the delivery that created
-## this attempt; a receiver who then created his own shot is unassisted.
+## §11.3 assist attribution.
+##
+## The eligibility decision is already made and already in the ledger: the
+## attempt carried a creator, or it did not. Nothing here inspects the score,
+## the target band, the shooter's team-mates, or how the shot went in — only
+## whether this basket has a recorded creator and whether the passer's
+## execution converts it under the §14.3 curve.
+##
+## §8 assigns "assist conversion support" to Passing and "open-target
+## recognition" to Vision, and §11.3 puts execution on Passing. Vision has
+## already been spent earning the opportunity, in the advantage roll that made
+## the delivery a creating pass at all; Passing decides whether the delivery is
+## what the basket is credited to.
 func _credit_assist(
+	creator_id: StringName,
 	shooter_id: StringName,
 	action_family: int,
 	zone: int,
 	random_source: RandomSource,
 ) -> void:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
+	if creator_id.is_empty():
 		return
-	if not _pass_created_shot(action_family):
-		return
-	var passer: PlayerMatchProfile = _context.offense_profile(_context.last_passer_id)
-	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(_context.last_passer_id)
-	var read: float = _capability.capability_of(
-		CapabilityKey.Value.PASS_READ_QUALITY, passer, passer_runtime)
-	var units: float = _capability.differential_units(read, 0.5)
+	assert(creator_id != shooter_id, "a player cannot assist his own basket")
+	var passer: PlayerMatchProfile = _context.offense_profile(creator_id)
+	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(creator_id)
+	var accuracy: float = _capability.capability_of(
+		CapabilityKey.Value.PASS_ACCURACY, passer, passer_runtime)
+	var units: float = _capability.differential_units(accuracy, 0.5)
 	var probability: float = _balance.opposed_probability(
 		_balance.assist_base, units, _balance.assist_floor, _balance.assist_ceiling)
 	if random_source.next_float() >= probability:
 		return
 	_emit(
-		MatchDomainEvent.ASSIST, _context.offense.team_id, _context.last_passer_id,
+		MatchDomainEvent.ASSIST, _context.offense.team_id, creator_id,
 		shooter_id, &"", ActionFamily.id_of(action_family), &"", ShotZone.id_of(zone))
-	_context.last_passer_id = &""
 
 
-func _pass_created_shot(action_family: int) -> bool:
-	return (
-		action_family == ActionFamily.Value.PULL_UP
-		or action_family == ActionFamily.Value.OFF_BALL_CUT
-		or action_family == ActionFamily.Value.POST_ACTION
-	)
-
-
-func _assisted_state(shooter_id: StringName, action_family: int) -> StringName:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
-		return &"unassisted"
-	if _pass_created_shot(action_family):
-		return &"catch_and_shoot"
-	return &"created"
-
-
-func _catch_quality(shooter_id: StringName) -> float:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
-		return 1.0
-	var passer: PlayerMatchProfile = _context.offense_profile(_context.last_passer_id)
-	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(_context.last_passer_id)
+## §12.2 catch/pass quality, settled at delivery rather than at the shot. A pass
+## that was completed at all is mostly a clean catch; the passer's accuracy
+## moves the remainder, and §19.1 lets chemistry add a modest bounded amount.
+func _delivered_catch_quality(passer_id: StringName) -> float:
+	var passer: PlayerMatchProfile = _context.offense_profile(passer_id)
+	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(passer_id)
 	var accuracy: float = _capability.capability_of(
 		CapabilityKey.Value.PASS_ACCURACY, passer, passer_runtime)
-	# A pass that was completed at all is mostly a clean catch; accuracy moves
-	# the remainder. §19.1 lets chemistry add a modest bounded amount on top.
 	var floor_share: float = _balance.catch_quality_floor
 	return clampf(
 		floor_share
@@ -699,6 +794,9 @@ func _resolve_free_throws(
 	random_source: RandomSource,
 ) -> void:
 	assert(attempts > 0, "a free-throw sequence needs at least one attempt")
+	# §11.3 / §14.1: free throws are not field goals and never carry an assist.
+	# A whistle ends the play the delivery had created.
+	_context.clear_pass_creation()
 	var on_court: Array[StringName] = _context.offense_on_court()
 	if shooter_id.is_empty() or not _context.offense_state().is_on_court(shooter_id):
 		# The fouled player left the floor on the same whistle. The rules give
@@ -803,7 +901,9 @@ func _resolve_rebound(
 	# extra team possession, and the rule profile's own shot-clock reset.
 	_context.offensive_rebounds += 1
 	_context.ball_handler_id = outcome.rebounder_id
-	_context.last_passer_id = &""
+	# §14.4: a second chance is a new scoring action. Nothing from before the
+	# miss creates the shot that follows it.
+	_context.clear_pass_creation()
 	_context.in_transition = false
 	_emit(
 		MatchDomainEvent.SHOT_CLOCK_RESET, _context.offense.team_id, outcome.rebounder_id,
@@ -850,6 +950,7 @@ func _emit_turnover(turnover: TurnoverOutcome) -> void:
 
 
 func _terminate_turnover(turnover: TurnoverOutcome) -> void:
+	_context.clear_pass_creation()
 	_emit_turnover(turnover)
 	_terminate(
 		PossessionEndReason.Value.TURNOVER, _context.defense.team_id, turnover.credits_steal())

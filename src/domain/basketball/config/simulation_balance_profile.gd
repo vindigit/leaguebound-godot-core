@@ -170,7 +170,21 @@ var foul_conversion_ceiling: float = 0.58
 var advantage_base: float = 0.24
 var advantage_floor: float = 0.05
 var advantage_ceiling: float = 0.70
-var assist_base: float = 0.94
+## The §14.3 conditional "Qualifying pass becomes credited assist if shot
+## scores": baseline 74%, floor 55%, ceiling 95%.
+##
+## **Restored to the locked baseline.** `fbc8b63` raised it from 0.74 to 0.94,
+## which converted very nearly every qualifying delivery and held assist
+## percentage near 48% by crediting harder rather than by creating shots. The
+## §14.3 row is locked, the engine is not allowed to disagree with it, and the
+## deficit it was covering was a creation defect: the openness a pass produced
+## was computed and discarded, so a pass could not create a shot at all.
+##
+## Driven by Pass Accuracy, because §8 assigns "assist conversion support" to
+## Passing and "open-target recognition" to Vision, and §11.3 puts execution on
+## Passing. Vision earns the opportunity; Passing is what turns the opportunity
+## into the basket's credited creator.
+var assist_base: float = 0.74
 var assist_floor: float = 0.55
 var assist_ceiling: float = 0.95
 ## Lowered from 0.28 to 0.25 in ruleset v2, toward the centre of the §14.1
@@ -212,7 +226,30 @@ var candidate_weight_max: float = 3.50
 ## it attacks â€” and are the primary lever for pace and shot mix.
 var base_weight_pass_swing: float = 1.20
 var base_weight_drive: float = 0.72
-var base_weight_pull_up: float = 0.86
+## **Lowered from 0.86 to 0.50 in ruleset v6.**
+##
+## The constant above says it is the rate at which a *family* is considered.
+## The pull-up family is not enumerated once: `ActionCandidateGenerator`
+## produces one candidate per legal shot zone, so a stated 0.86 reached the
+## candidate pool as 2.6-3.4 and the zone enumeration, not the stated rate,
+## set the shot mix. Measured at `7b1bfe3`, pull-up jump shots were 77% of every
+## field-goal attempt and 41% of all attempts followed no completed pass at all,
+## which is a ceiling on assist percentage no attribution rule can lift.
+##
+## 0.50 across three ordinarily-legal zones is a realised family rate of about
+## 1.5, beside `base_weight_pass_swing`'s 1.20 — an offence that moves the ball
+## about as often as it rises into a jumper, rather than twice as often the
+## other way. This is the §14.1 assist band's creation half; the attribution
+## half is `assist_base` and the §11.3 event chain.
+##
+## It is also what pays for the two §11.3 continuations: a catch-and-shoot ends
+## a possession in the action the pass arrives, which shortens possessions and
+## raises pace. Restoring the ball-movement share puts the actions back.
+## Measured together on the tuning range, pace returns to 101.9 from 107.7 and
+## turnovers to 14.5 per 100 from 11.3.
+##
+## Safe range 0.05-3.0 (Gate B0).
+var base_weight_pull_up: float = 0.50
 var base_weight_post_action: float = 0.30
 var base_weight_pick_action: float = 0.60
 var base_weight_handoff: float = 0.22
@@ -253,6 +290,47 @@ var roll_finish_share: float = 0.80
 ## A kicked-out pass only exists if someone is actually spaced for it; a
 ## team-mate below this three-point capability is not a kick-out target.
 var kick_out_spacer_threshold: float = 0.30
+
+## §11.3 pass continuation, catch-and-shoot branch.
+##
+## The share of completed passes the receiver shoots off the catch rather than
+## holding for a separate action, **scaled by the openness the delivery
+## produced**. A catch-and-shoot jumper does not need the defence broken down
+## the way a cut finish or a drive kick-out does; it needs a beat of space, and
+## the §11.1 advantage quality is exactly how much space the delivery bought. A
+## pass that created nothing is never shot off the catch, and a breakdown almost
+## always is.
+##
+## Every other creating family in the engine already has its continuation: the
+## drive kicks out, the pick action rolls, the post kicks out, the cut is fed
+## and finished. The pass, which is the most frequent action in basketball, had
+## none — a delivery that broke the defence down simply handed the ball over,
+## and the opening it created was gone by the next independent action draw.
+## That is why half of every pull-up in the engine followed no pass at all and
+## why assist percentage sat flat near 48% at every competition while the §14.1
+## bands rise with level.
+##
+## This is the branch that makes the catch-and-shoot a play rather than a
+## coincidence, and it is what §12.1's `CATCH_AND_SHOOT` assisted state was
+## always describing. It fires only on a material advantage, so it is earned by
+## the passer's Vision against the defence rather than granted; it is not
+## reachable late in the shot clock, where the offence has no time to relocate
+## into the catch.
+##
+## Safe range 0.0-0.85. At zero the engine is the pre-fix engine.
+var pass_catch_and_shoot_share: float = 0.85
+
+## §10.1 relocation continuation, spot-up branch.
+##
+## The share of relocations the ball finds, scaled by the separation the
+## relocation actually produced. §10.1 names the family "Relocation or spot-up", and a
+## spot-up whose ball never arrives is not a basketball action. This family
+## emitted an event and changed no state at all, which is why a quarter of the
+## engine's off-ball work could not produce a shot and why so many possessions
+## reached a shot without a single completed pass.
+##
+## Safe range 0.0-0.85. At zero the family is inert again.
+var relocation_spot_up_share: float = 0.80
 
 # --- Â§10.2 candidate validity thresholds ------------------------------------
 ## "An impossible action receives no weight." These are the capability and
@@ -589,7 +667,7 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v5-garbage-time",
+	p_version: StringName = &"simulation-v6-pass-creation",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -873,6 +951,10 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"opposed.foul_conversion_base", &"probability", foul_conversion_base, 0.03, 0.58)
 	_add(tunables, &"opposed.advantage_base", &"probability", advantage_base, 0.05, 0.70)
 	_add(tunables, &"opposed.assist_base", &"probability", assist_base, 0.55, 0.95)
+	_add(tunables, &"continuation.pass_catch_and_shoot_share", &"share",
+		pass_catch_and_shoot_share, 0.0, 0.85)
+	_add(tunables, &"continuation.relocation_spot_up_share", &"share",
+		relocation_spot_up_share, 0.0, 0.85)
 	_add(tunables, &"opposed.offensive_rebound_base", &"probability", offensive_rebound_base, 0.12, 0.48)
 	_add(tunables, &"opposed.putback_base", &"probability", putback_base, 0.08, 0.48)
 	_add(tunables, &"weight.role_opportunity_min", &"multiplier", role_opportunity_min, 0.35, 1.0)

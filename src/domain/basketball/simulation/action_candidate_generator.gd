@@ -241,6 +241,37 @@ func _usage_of(player_id: StringName) -> float:
 	return damping
 
 
+## The shot menu for a player who has just caught the ball open (§11.3
+## continuation, §10.2).
+##
+## Deliberately the *same* candidate construction the ordinary pull-up uses, so
+## an open catch is weighted by the shooter's own capability, his
+## Perimeter/Interior slider, the coach's shot-profile instruction, spacing, and
+## his matchup — not by a rule written beside it. A hand-written "take the
+## highest expected points" choice made every competition shoot the same share
+## of threes, because expected points does not know that a high-school offence
+## and a professional one are shaped differently; the §10.3 factors do.
+##
+## Returns the zones an open catch can reach. A shooter who cannot reach any of
+## them has no catch-and-shoot, and the caller falls through.
+func catch_and_shoot_candidates(
+	context: PossessionContext,
+	receiver_id: StringName,
+) -> Array[ActionCandidate]:
+	_begin_frame(context)
+	var receiver: PlayerMatchProfile = context.offense_profile(receiver_id)
+	var runtime: PlayerMatchRuntime = context.offense_runtime(receiver_id)
+	var candidates: Array[ActionCandidate] = []
+	for zone in ShotZone.all():
+		if zone == ShotZone.Value.DEEP_THREE:
+			# A spot-up is taken from the shooter's spot, not from thirty feet.
+			continue
+		if not _shot_zone_is_valid(context, receiver, runtime, zone):
+			continue
+		candidates.append(_shot_candidate(context, receiver_id, zone))
+	return candidates
+
+
 ## The putback branch after an offensive rebound is a one-player decision, so it
 ## is generated separately from the ordinary half-court candidate set (§14.4).
 func putback_candidate(context: PossessionContext, rebounder_id: StringName) -> ActionCandidate:

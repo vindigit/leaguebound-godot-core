@@ -21,8 +21,11 @@ var matchups: MatchupState
 var possession_id: int
 ## Ball location and possession-history facts the action families read.
 var ball_handler_id: StringName
-var last_passer_id: StringName
-var last_pass_created_advantage: bool
+## §11.3: the live passer-to-shot relationship. Replaces the bare
+## `last_passer_id` and the `last_pass_created_advantage` flag that was written
+## on every completed pass and read by nothing — the openness a pass created was
+## computed and discarded, so a pass could never create a shot.
+var pass_creation: PassCreation
 var in_transition: bool
 var offensive_rebounds: int
 var action_count: int
@@ -45,8 +48,7 @@ func _init(
 	matchups = p_matchups
 	possession_id = p_possession_id
 	ball_handler_id = &""
-	last_passer_id = &""
-	last_pass_created_advantage = false
+	pass_creation = PassCreation.none()
 	in_transition = false
 	offensive_rebounds = 0
 	action_count = 0
@@ -95,6 +97,13 @@ func defender_of(offense_player_id: StringName) -> StringName:
 	var on_court: Array[StringName] = defense_on_court()
 	assert(not on_court.is_empty(), "a live possession requires defenders on court")
 	return on_court[0]
+
+
+## Ends the live creation relationship. Every caller names why, because "when
+## does pass context stop being true" is the contract this record exists to
+## make explicit rather than incidental.
+func clear_pass_creation() -> void:
+	pass_creation = PassCreation.none()
 
 
 func is_late_clock() -> bool:

@@ -64,18 +64,22 @@ static func seed_for(scenario: StringName) -> int:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			# Moved from 31676 by the `simulation-v4-management` ruleset, and
-			# from 126704 by `simulation-v3-margin` before that. Score-and-clock
-			# management changes the clock and the action mix of every game that
-			# reaches a managed score state, and a game that finishes level is by
-			# definition one of those — so this seed stopped reaching overtime,
+			# Moved from 39595 by the `simulation-v6-pass-creation` ruleset,
+			# from 31676 by `simulation-v4-management` before that, and from
+			# 126704 by `simulation-v3-margin` before that. Every ruleset that
+			# changes the action mix changes which fixed seeds finish level, and
+			# a game that finishes level is by definition one that reached a
+			# managed score state — so this seed stopped reaching overtime,
 			# which is the one thing the fixture exists to cover.
-			# `find_scenario_seeds.gd` derived the replacement.
+			# `find_scenario_seeds.gd` derived the replacement over a 4,000-seed
+			# search.
 			#
 			# That this is the *only* seed that moved is the blast-radius
 			# evidence: the other five scenarios still exercise their named
-			# behaviour at the seeds they always had.
-			return 39595
+			# behaviour at the seeds they always had, including the
+			# offensive-rebound continuation and the foul-out substitution that
+			# the §11.3 event-chain change runs straight through.
+			return 190056
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

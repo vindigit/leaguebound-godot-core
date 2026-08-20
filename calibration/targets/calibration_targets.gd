@@ -334,6 +334,23 @@ static func twenty_five_point_edge_relative_change() -> CalibrationBand:
 	return CalibrationBand.new(0.40, 0.70, _SECTION_14_3)
 
 
+## The §14.3 conditional-event row "Qualifying pass becomes credited assist if
+## shot scores": baseline 74%, floor 55%, ceiling 95%.
+##
+## The row states a *conditional* rate after a valid opportunity, so the band
+## judged here is the curve's floor-to-ceiling envelope rather than its
+## baseline. A population contains better and worse passers and the baseline is
+## the rate at an even capability matchup, so a population mean sitting exactly
+## on 74% would be evidence the capability term had stopped working.
+const ASSIST_CREDIT_BASELINE: float = 0.74
+const ASSIST_CREDIT_FLOOR: float = 0.55
+const ASSIST_CREDIT_CEILING: float = 0.95
+
+
+static func assist_credit_conversion() -> CalibrationBand:
+	return CalibrationBand.new(ASSIST_CREDIT_FLOOR, ASSIST_CREDIT_CEILING, _SECTION_14_3)
+
+
 # --- attribute sensitivity ---------------------------------------------------
 
 const _SECTION_27_2: String = "BALANCE_SPEC.md §27.2"
