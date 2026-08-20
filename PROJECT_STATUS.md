@@ -2720,6 +2720,31 @@ And one fixture was asking for a roster nobody can legally supply. `_mismatched_
 
 `run_performance_profile.gd` at the reference game: candidate generation remains the dominant cost at 44.9% of a game, unchanged in shape. The two continuations add one shot resolution to the possessions where they fire and the shot-mix correction adds actions to the rest, so the cost moves with the action count rather than with any new per-action work. Reported rather than optimised; §32.1's finding that the §27.1 sample is not reachable in GDScript for this engine design is unaffected.
 
+#### The gate at the final commit
+
+| Step | Result |
+| --- | --- |
+| Import / class-cache preparation | exit 0 |
+| Parse check under warnings-as-errors | 216 scripts, 0 failures, exit 0 |
+| Full GdUnit4 suite | 410 cases, 39 suites, 0 errors, 0 failures |
+| `tests/run_all.gd` acceptance | PASS |
+| Simulation smoke and invariants | Invariants PASS |
+| Builder calibration | PASS, 810 builds in their locked bands |
+| Attribute sensitivity at the locked sample | 80/80 PASS at 100,000 resolutions per point |
+| Calibration smoke | 15/15 PASS |
+| Five-level competition calibration | Two untouched validation ranges; §14.1 assist passes at all five levels on both |
+| Career progression | 17 judged, 1 failure — `sample.meets_certification_size`, which fails correctly at 400 careers |
+| Projected Peak diagnostics | 3 judged, 0 failures |
+| Stakes regression | 54 metrics, 0 judged, 0 failures; the matched diagnostic is deliberately unjudged |
+| Determinism | Byte-identical reproduction across all six goldens |
+| Executor parity | Play, Sim and Skip byte-identical |
+| Ledger reconciliation | Zero failures at every level, plus the new assists-versus-created-makes invariant |
+| Shard aggregation | Ten synthetic cases plus mutation testing, unchanged |
+| Golden-ledger verification | Six scenarios, regenerated once under an explicit ruleset bump, all verifying |
+| Performance comparison | Candidate generation 44.9% of a game, shape unchanged |
+
+Nothing here reaches a §27.1 certification sample and nothing here claims to.
+
 #### What this is, and what it is not
 
 | Claim | Status |
