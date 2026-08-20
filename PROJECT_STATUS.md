@@ -92,6 +92,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The score-margin decomposition runner and its mirror fixture, the §18.2 settled-game rotation, mandatory-first substitution ordering, three possession-rate corrections, and the `simulation-v3-margin` ruleset the regenerated golden ledgers belong to (§5.10).
 - The score-margin covariance runner, its permutation control and its two replay models, `GameManagement`'s score-and-clock coaching, the end-of-regulation possession strategy, §4/§5 coaching timeouts, and the `simulation-v4-management` ruleset the regenerated golden ledgers belong to (§5.11).
 - `GarbageTimeRule`'s possession-based settled-rotation safety, its asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20, the `GARBAGE_TIME` ledger event and `TeamMatchState.settled_mode`, and the `simulation-v5-garbage-time` ruleset (§5.12). The §14.2 amendment in §5.13 is a **proposal awaiting owner decision**, not accepted work.
+- The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -149,6 +150,7 @@ Implemented evidence includes:
 - Structural rotation, fatigue, foul, free-throw, rebound, turnover, shot, assist, steal, and block paths.
 - Event-ledger and box-score reconciliation.
 - Play/Sim/Skip structural parity through one match session.
+- A three-tier `GameStakes` context on the match input, defaulted to `REGULAR`, read by exactly four coaching decisions and by no resolver (§5.14).
 
 This status does not certify all competition distributions, player-role distributions, attribute-to-game sensitivity, Tier A/Tier B parity, manual perfect-window behavior, injury output, badge behavior, or large-sample performance.
 
@@ -197,6 +199,7 @@ The active branch contains:
 - Raw aggregation terms on every poolable metric, so a sharded run recombines exactly instead of averaging shard estimates.
 - A deterministic shard combiner with provenance, completeness, and seed-disjointness validation (§6.1).
 - Separate fast, nightly, and deep workflow layers, with aggregation jobs in the latter two.
+- A matched game-stakes diagnostic that plays identical fixtures at identical seeds under all three stakes tiers, in population and mirror fixture modes, and judges no band (§5.14).
 
 The harness is real foundation work. It does not become certification until the required samples are completed, combined correctly, archived, and judged by the owning tolerances. Combining correctly is now implemented; completing the required samples is not.
 
@@ -2052,6 +2055,358 @@ Cost: the project loses its only external anchor on game shape, and a future reg
 
 This recommendation is not enacted. §14.2 is unchanged in `BALANCE_SPEC.md`, every report in this document is still judged against the current bands, and the failures are still recorded as failures.
 
+### 5.14 The engine learns what a game is worth, and nothing else about the occasion
+
+Status: **A minimal game-stakes contract is implemented, tested, mutation-checked, and measured at two levels on matched fixtures. `REGULAR` is the default and every committed golden ledger is byte-identical. The directional overtime hypothesis is reported honestly against what was measured; nothing was tuned to produce it. Full five-level stakes calibration remains deferred until real schedules and postseason matchups exist.**
+
+This is a domain-and-behaviour task, not a calibration phase. No §14.1 or §14.2 number moved, no band was widened, and no tunable outside the five new ones was touched.
+
+#### The contract
+
+`GameStakes` is three tiers and nothing else:
+
+| Tier | Meaning |
+| --- | --- |
+| `REGULAR` | an ordinary regular-season game |
+| `POSTSEASON` | a playoff or tournament game that is not itself a championship or a win-or-go-home game |
+| `CHAMPIONSHIP_OR_ELIMINATION` | Finals games, championship games, Final Four games, and any other win-or-go-home contest |
+
+`MatchInput.stakes` carries it as the last constructor argument, defaulted to `REGULAR`. Three deliberately absent things define the contract as much as the three present ones:
+
+- **No competition, round, league, team, or rivalry appears anywhere in it.** The engine is handed a tier and learns nothing else about the occasion — not that it is game 7, not which series, not who is playing.
+- **No fourth tier and no numeric "importance" scale.** A scale invites interpolation and interpolation invites a per-tournament exception.
+- **No scheduling dependency.** There is no schedule, bracket, postseason, or career layer in this repository, and this does not wait for one.
+
+**Mapping real game metadata onto a tier is the future scheduling layer's responsibility, not the engine's.** When a schedule exists it will know that a fixture is a conference final and will hand the engine `CHAMPIONSHIP_OR_ELIMINATION`; the engine will still know nothing else. That boundary is the reason the enum is coarse: a tier the engine cannot decompose is a tier that cannot acquire special cases.
+
+#### The default is load-bearing, and "byte-identical" is the evidence
+
+Every stakes effect has the same shape:
+
+```text
+effect = base * (1 + step * tier)
+```
+
+`tier` is 0, 1, or 2. `StakesPolicy.factor` returns literal `1.0` on the `tier <= 0` branch rather than computing `1 + step * 0`, so a regular-season game is not approximately unchanged — it executes the same floating-point arithmetic in the same order it executed before this input existed.
+
+The check that matters: **all six committed golden ledgers hash identically after the change**, and `tools/golden_ledger_harness.gd` rewrote `tests/golden/match_golden_hashes.json` to a byte-identical file. No hash was regenerated, and none needed to be.
+
+| Scenario | Hash | Score |
+| --- | --- | --- |
+| `regulation` | `2e2f34ade6426bbe…4706145b` | 40-34 |
+| `overtime` | `6bb5a1e491a33e4f…eef8200e` | 17-23 |
+| `offensive_rebound` | `af56368b06a8dd42…e702442c8` | 41-28 |
+| `foul_free_throw` | `da4fd07e710b82aa…42c5f461` | 18-14 |
+| `substitution_foul_out` | `e3e19f4079ec3f9b…c391aa71` | 32-25 |
+| `late_game` | `649c38d8fc775659…7e001e8070` | 22-12 |
+
+#### What a tier is allowed to change, and what it actually changes
+
+`StakesPolicy` is the only place a tier becomes a number, and four coaching decisions read it. They are the four the owner's list names, and the list of authorised effects is deliberately *not* exhausted: pace and clock strategy, intentional-foul strategy, and the garbage-time release threshold were all authorised and all left alone, because the smallest coherent set that establishes the contract is smaller than the set that is permitted.
+
+| # | Decision | Existing system extended | Tunable | Regular | Postseason | Championship |
+| --- | --- | --- | --- | ---: | ---: | ---: |
+| 1 | Rotation tightness and bench depth | `RotationResolver._departure_reason`, the §18.1 planned-minutes branch | `stakes_rotation_tightness_step` = 0.10 | ×1.00 | ×1.10 | ×1.20 |
+| 2 | Timeout reservation | `MatchSession._consider_timeout`, the §4/§5 run-stopping branch | `stakes_timeout_reserve_step` = 0.35 | 90.0 s | 121.5 s | 153.0 s |
+| 3 | Settled-rotation patience | `GarbageTimeRule.entry_threshold` | `stakes_settled_patience_step` = 0.15 | 2.60 / 4.20 σ | 2.99 / 4.83 σ | 3.38 / 5.46 σ |
+| 4a | Final-possession window | `GameManagement.endgame_multiplier` | `stakes_endgame_window_step` = 0.50 | 32 s | 48 s | 64 s |
+| 4b | Final-possession conviction | `GameManagement.endgame_multiplier` | `stakes_endgame_conviction_step` = 0.25 | ×1.00 | ×1.25 | ×1.50 |
+
+Every one of the five is a Gate B0 tunable with a unit and a safe range, and every product is clamped twice — once by `StakesPolicy.MAXIMUM_FACTOR` (2.0) and again by the bound the base value already lived under. A profile that set every step to a thousand produces a bounded, playable, wrong game rather than an unbounded one, and `test_no_step_can_push_a_factor_past_the_declared_maximum` asserts it.
+
+#### What a tier may never do
+
+The forbidden list, and how each prohibition is enforced rather than promised:
+
+| Forbidden | How it is structurally impossible | Where it is proven |
+| --- | --- | --- |
+| Change ratings or derived capabilities | `CapabilityCalculator` has no stakes parameter; `RatingsProfile` is not reachable from `StakesPolicy` | `test_no_rating_or_capability_moves_with_the_stakes` — all 24 capabilities, both rosters, at rest and fatigued, in and out of the settled rotation |
+| Change shot accuracy | No resolver reads a tier; a search of `src/` enforces it | `test_the_same_shot_resolves_identically_at_every_tier`, `test_only_the_declared_consumers_read_a_stakes_tier` |
+| Change turnover, foul or rebound probability without a selected action | Same | `test_turnover_foul_and_rebound_resolution_are_identical_at_every_tier` |
+| Improve the trailing team / weaken the leading team | A tier is a property of the *match*, applied identically to both sides; it has no team parameter to discriminate through | `test_reversing_the_scoreboard_reverses_the_policy_at_every_tier` |
+| Clamp the score or margin | Nothing in the change touches `MatchStateReducer`'s scoring path | `test_championship_games_still_blow_out_and_still_reach_garbage_time` |
+| Force a make, miss, turnover, foul, tie or overtime | Nothing reaches a resolver's outcome; the four outputs are two thresholds, one duration and two multipliers on a candidate weight | The three probability rows above |
+| Reroll an outcome | No tier is read after a draw; determinism holds at every tier and across all three executors | `test_every_tier_reproduces_byte_for_byte_and_across_executors` |
+| Read the eventual winner or the final result | The policy's inputs are a balance profile and an integer | `test_strength_identity_and_the_expected_winner_do_not_reach_the_policy` — both rosters moved ±30 rating points, decisions unchanged |
+| Favour a team identity | Same; and the mirrored fixture swaps the shirts | `test_mirroring_home_and_away_mirrors_the_whole_game` |
+| Add a momentum, clutch, comeback, excitement or drama multiplier | None exists anywhere in `src/`; see the audit below | Audit §"no drama engine exists" |
+| Guarantee a championship stays close | Championship blowouts and championship garbage time both occur, measured | `test_championship_games_still_blow_out_and_still_reach_garbage_time` |
+
+The principle, stated once: **script the circumstances, never the result.**
+
+#### Garbage time keeps its guards
+
+The accepted asymmetric settled-rotation system of §5.12 is retained unchanged. A tier scales *how much of the same evidence a coach demands*; it does not change the evidence, remove a guard, or create an exemption.
+
+| Constraint | Status | Where |
+| --- | --- | --- |
+| Mathematical safety remains part of entry | `safety()` is untouched — same formula, same inputs, shared by both teams | `GarbageTimeRule.safety` |
+| Truly decided championship games still reach garbage time | Safety grows without bound as the clock runs out; the multiplier is finite and clamped at 2.0 | `test_high_stakes_settle_later_but_still_settle` (a 40-point championship game settles) |
+| High stakes cannot keep starters active indefinitely | Same; plus the coaching floor and the one-pair guard are untouched | `test_the_settled_guards_survive_the_highest_tier` |
+| Reversing the scoreboard reverses behaviour | `role_for` is untouched; both thresholds scale by the same factor so the roles keep their gap | `test_reversing_the_scoreboard_reverses_the_policy_at_every_tier`, `test_a_settled_championship_coach_is_released_when_the_lead_is_cut` |
+| Equal states treat home and away identically | Stakes live on the match, not on a team | `test_mirroring_home_and_away_mirrors_the_whole_game` |
+| Stakes cannot alter possession resolution | No resolver reads a tier | the search test |
+
+##### The "false positive within six points" metric, defined exactly
+
+The metric `garbage.false_positive_two_possession` has been quoted since §5.12 without its denominator being written down. It is:
+
+```text
+false_positive_share(6.0) = |{ activated games with |final margin| <= 6 }| / |{ activated games }|
+```
+
+- **Denominator — "activated games".** A game in which **either** coach entered the settled rotation at least once, read from `GARBAGE_TIME` events carrying `detail_id == "entered"`. Games that never activated are not in the denominator at all, so the metric is conditional on activation and is *not* a share of all games. `ScoringCovariance.activated_rows()` is the filter.
+- **Numerator — what makes an activation "false".** The **final** absolute margin of the completed game, including overtime, is six points or fewer. Six is one two-possession swing: the smallest margin that a single trip and a stop can erase, and therefore the smallest final margin at which the claim "this game was over" is retrospectively false.
+- **Unit of counting is the game, not the activation.** A game with four entries and three releases counts once.
+- **It is a retrospective test, not a decision test.** The rule cannot see the final margin; the metric can. A non-zero value is not automatically a defect — a genuine comeback the trailing team earned makes a correct activation look false — but a large one means the state is being entered on games that were not over. The ten-point variant (`garbage.false_positive_ten_points`) is the same construction at a wider threshold.
+- **It is measured, never judged.** Both variants are `CalibrationMetric.raw`; neither carries a band.
+
+
+#### Focused scripted-drama audit
+
+Every production mechanism in `src/` that reads score, margin, clock, period, run length, home/away status, an expected winner, a team or player identity, a stakes tier, or a realized outcome. The audit is deliberately narrow: it is a search for hidden outcome correction in the match engine, not a career or progression review.
+
+Two columns matter more than the classification. **"Reads"** is what the mechanism is allowed to see. **"Changes"** distinguishes a *decision* — which legal action a coach or player selects, or who is on the floor — from an *execution probability* — the chance a selected action succeeds. A mechanism that reads the scoreboard and changes a decision is coaching. A mechanism that reads the scoreboard and changes an execution probability is the thing this audit exists to find.
+
+| Mechanism | Reads | Changes | Classification |
+| --- | --- | --- | --- |
+| `GameManagement.pressure` / `pressure_for` | own signed margin, clock, period, realized pace, rules | nothing directly; produces one intensity in [0,1] | **1. Legitimate basketball strategy** |
+| `GameManagement.pace_multiplier` | pressure, sign of own margin | **decision** — how much clock a possession consumes | **1. Legitimate.** No probability. The protect/chase gains differ in size because a possession has a physical floor |
+| `GameManagement.action_multiplier_at` | pressure, sign of own margin, action family, zone | **decision** — one candidate's §10.3 score-and-clock weight | **1. Legitimate** |
+| `GameManagement.crash_multiplier` | pressure, sign of own margin | **decision, sampled** — the share of players sent to the offensive glass | **1. Legitimate.** The only place a coaching decision is expressed as a sampled share rather than a candidate weight, so it is worth being exact: it changes *how often a player crashes*, and changes nothing about whether a player who crashed wins the ball. The rebound contest itself never sees it |
+| `GameManagement.endgame_multiplier` (tie-seeking) | period, regulation remaining, own deficit, zone, stakes | **decision** — prefers the shot value that levels the game | **1. Legitimate.** Symmetric: the deficit selects the shot value and either team can hold it |
+| `GarbageTimeRule.safety` | absolute margin, realized pace, rules | nothing directly; one number shared by both teams | **1. Legitimate** |
+| `GarbageTimeRule.entry_threshold` / `should_enter` / `should_leave` | own signed margin, safety, clock, rules, stakes | **decision** — the settled `Mode` | **1. Legitimate.** Asymmetric by *role*, never by team. Swap the rosters and the behaviours swap |
+| `RotationResolver._departure_reason`, settled branch | `TeamMatchState.settled_mode` (reduced from the ledger), bench depth | **decision** — who comes off | **1. Legitimate** |
+| `RotationResolver._departure_reason`, planned-minutes branch | realized vs planned minute share, stint, stakes | **decision** — who comes off | **1. Legitimate** |
+| `RotationResolver._is_closing_time` | period, clock, settled mode | **decision** — closing-lineup preference on a check-in | **1. Legitimate** |
+| `MatchSession._consider_timeout` | opponent run length, timeouts remaining, regulation remaining, stakes | **decision** — whether a timeout is called | **1. Legitimate.** Its effect is rest, applied to **everybody on the floor on both teams** (`MatchStateReducer._apply_timeout`), so it cannot be an advantage for the side that called it |
+| `FoulResolver.resolve_intentional_foul` | period, game clock, defence's own deficit (1–6 points) | **decision** — selects the deliberate foul as the action | **1. Legitimate.** It does raise the foul rate in that window, and that is the explicitly-selected-action carve-out working as intended: a coach chose to foul. It is available only to the trailing side because only the trailing side has a reason, which is basketball rather than assistance — the foul stops the clock and gives the *leading* team free throws |
+| `FreeThrowResolver.probability`, §20.1 pressure | `is_late_game()` and \|own margin\| ≤ 5 | **execution probability** — subtracts up to `clock_desperation_penalty_max × 0.35 × (1 − composure)` | **1. Legitimate, and the one to look at hardest.** It is the only score-and-clock read in the engine that moves an execution probability. Three properties keep it honest: it is **symmetric in the sign of the margin** (a late close game, not a late deficit), it only ever **reduces** the probability, and it is scaled by the shooter's **own Offensive IQ** so it is a property of the player rather than of the situation's desired outcome. It cannot help a trailing team and it cannot hurt a leading one specifically |
+| `ShotResolver._clock_desperation` | the **shot** clock only | **execution probability** — a rushed shot is worse | **1. Legitimate.** Reads no score, no game clock, no period |
+| `ShotResolver` home bonus | `input.is_home(offense)`, `home_environment` | **execution probability** — up to +0.006 | **1. Legitimate (§19.4).** Keyed on the shirt, not on a team identity; bounded; never conditioned on score |
+| `FreeThrowResolver` home penalty | same | **execution probability** — up to −0.006 for the away side | **1. Legitimate (§19.4)** |
+| `FoulResolver._contact_probability` home term | same | **execution probability** — ±1% multiplicative on the contact base | **1. Legitimate (§19.4)** |
+| `MatchStateReducer` | events only | state | **1. Legitimate.** No score-conditioned branch exists; the only score comparison in the whole scoring path is `PeriodController.match_is_complete`, which is the overtime rule |
+| `PeriodController.match_is_complete` | clock, period, whether the score is level | **decision** — whether another period is played | **1. Legitimate.** This is the rulebook |
+| `StakesPolicy` (new) | a balance profile and an integer tier | **decision** — four thresholds | **1. Legitimate** |
+
+##### Findings
+
+**No mechanism was classified 2, 3, 4, or 5.** There is no presentation-only behaviour in `src/` — the repository has no presentation layer at all. There is no calibration-fixture behaviour in production code — the fixtures live in `calibration/` and `tests/` and nothing in `src/` knows they exist. Nothing was classified suspicious, and **no hidden rubber-banding was found.**
+
+**No drama engine exists.** A case-insensitive search of `src/` for *momentum*, *clutch*, *comeback*, *excitement*, *drama*, *upset*, *rubber*, *hot hand*, and *streak* returns four hits and all four are inert:
+
+- `GameManagement`'s class comment, arguing that it is *not* rubber-banding;
+- `GameManagement.endgame_multiplier`'s comment, citing §20.2 clutch behaviour as the source of the tie-seeking rule;
+- `TendencySlider.Value.DEFER_SEEK_CLUTCH` — a declared per-player tendency slider that **no production code reads**. It is a name in an enum and nothing consumes it. Recorded here because a slider called "clutch" is exactly what an audit should chase down, and the answer is that it is unimplemented;
+- the run-length counter in `MatchSession`, which feeds the timeout decision and nothing else.
+
+`ScoringCovariance`'s *comeback* and *streak* references are all in `calibration/` — they are measurements of the engine, not inputs to it.
+
+**Expected winner and team strength are structurally unreachable from the match engine.** `TeamStrengthIndex` — the only thing in the repository that computes a pregame expectation — lives in `calibration/harness/` and has **zero references** from `src/` or `tests/`. No resolver, no coaching rule, and no rotation reads a rating aggregate, a seed, or a favourite.
+
+**Rare-generational treatment does not reach the simulation.** It appears in `career_opportunity_condition.gd` and `progression_profile.gd` only — career progression and its configuration. No file under `src/domain/basketball/simulation/` references it, and nothing in it reacts to an in-progress game or a realized result. Per the task's instruction it is mentioned only to record that finding; the career audit is out of scope and was not performed.
+
+**One asymmetry between the two shirts is real, authorised, and worth stating plainly:** §19.4 home environment changes three execution probabilities. It is bounded (≤0.006 on a shot, ≤1% multiplicative on contact), keyed on the home/away *slot* rather than on any team identity, and never conditioned on the score. It is also the reason a mirrored fixture is not exactly symmetric unless `home_environment` is set to zero — which cost one iteration of the stakes mirror test to discover, and is recorded above.
+
+
+#### Tests
+
+`tests/simulation/test_game_stakes.gd` — 22 cases. The thirteen required proofs and their homes:
+
+| # | Required proof | Case |
+| --- | --- | --- |
+| 1 | Missing context defaults to `REGULAR` | `test_a_match_built_without_stakes_is_a_regular_season_game` (constructor default, fixture factory, calibration catalog, and all six golden scenarios) |
+| 2 | Regular-season behaviour is backward compatible | `test_the_regular_tier_multiplies_every_effect_by_exactly_one`, `test_the_default_and_an_explicit_regular_tier_are_the_same_game` |
+| 3 | Identical context, inputs and seed stay deterministic | `test_every_tier_reproduces_byte_for_byte_and_across_executors` (all three tiers, plus Play/Sim/Skip parity at the highest) |
+| 4 | Stakes affect only authorised coaching decisions | `test_the_four_authorized_thresholds_move_and_stay_bounded`, `test_only_the_declared_consumers_read_a_stakes_tier` (searches every `.gd` under `src/` and fails on an eighth reader) |
+| 5 | Shot probability and resolution identical across tiers | `test_the_same_shot_resolves_identically_at_every_tier` (probability, outcome, and draws consumed), `test_turnover_foul_and_rebound_resolution_are_identical_at_every_tier` |
+| 6 | Capability resolution identical across tiers | `test_no_rating_or_capability_moves_with_the_stakes` (24 capabilities × 20 players × fatigued × settled) |
+| 7 | Reversing the scoreboard reverses leading/trailing policy | `test_reversing_the_scoreboard_reverses_the_policy_at_every_tier` |
+| 8 | Mirroring home and away mirrors behaviour | `test_mirroring_home_and_away_mirrors_the_whole_game` (three seeds × three tiers, asserted possession-by-possession) |
+| 9 | Team identity and expected winner do not reach the policy | `test_strength_identity_and_the_expected_winner_do_not_reach_the_policy` (both rosters ±30 rating points) |
+| 10 | Championship games still blow out and still reach garbage time | `test_championship_games_still_blow_out_and_still_reach_garbage_time` |
+| 11 | Regular-season games still reach overtime | `test_regular_season_games_still_reach_overtime`, plus the standing `overtime` golden scenario |
+| 12 | High-stakes entry is later but mathematically bounded | `test_high_stakes_settle_later_but_still_settle`, `test_the_settled_guards_survive_the_highest_tier`, `test_a_settled_championship_coach_is_released_when_the_lead_is_cut` |
+| 13 | State transitions stay reducer-owned and ledger-explained | `test_state_transitions_stay_reducer_owned_at_the_highest_tier` |
+
+Two further cases exist because a mutation asked for them: `test_no_step_can_push_a_factor_past_the_declared_maximum` and `test_the_endgame_window_changes_selection_and_never_resolution`.
+
+#### Mutation battery
+
+Eight mutations. Each was applied over a byte-exact backup **in an isolated git worktree at the committed implementation**, checked against `tests/run_all.gd` (which carries the six golden ledgers, determinism and Play/Sim parity) and three GdUnit4 guard suites — `test_game_stakes`, `test_garbage_time`, `test_score_margin` — then restored. `git status --porcelain` and `HEAD` were compared before and after every one, and every one restored byte-clean with `HEAD` unchanged.
+
+| # | Mutation | Detected by |
+| --- | --- | --- |
+| 1 | Direct high-stakes accuracy boost — a tier added to the make probability | `test_the_same_shot_resolves_identically_at_every_tier`, `test_only_the_declared_consumers_read_a_stakes_tier` |
+| 2 | Trailing-team capability boost — the side behind shoots better | `test_the_same_shot_keeps_its_probability_in_and_out_of_garbage_time`, `test_the_managed_window_changes_selection_and_not_resolution`, `test_identical_rosters_receive_the_same_rotation` |
+| 3 | Forced late tie — a levelling shot inside 30 s cannot miss | **first pass: `run_all.gd` only.** After the test it named was written: `test_the_endgame_window_changes_selection_and_never_resolution` as well |
+| 4 | Team-identity exception — one named roster is never settled on | 7 cases across two suites, including `test_reversing_the_scoreboard_reverses_the_policy_at_every_tier` and `test_the_leading_coach_settles_before_the_trailing_one` |
+| 5 | Broken default-to-regular — a stakes-free match becomes a playoff | `run_all.gd` (golden ledgers) plus `test_a_match_built_without_stakes_is_a_regular_season_game` and three more |
+| 6 | Home/away asymmetry — the home shirt settles on half the evidence | 8 cases, including `test_mirroring_home_and_away_mirrors_the_whole_game` |
+| 7 | Removal of the stakes coaching distinction — every tier is a Tuesday | `test_the_four_authorized_thresholds_move_and_stay_bounded`, `test_higher_stakes_widen_and_sharpen_the_tie_seeking_window_only`, `test_high_stakes_settle_later_but_still_settle` |
+| 8 | Bypass of garbage-time safety — the 18-point coaching floor removed | `run_all.gd` plus `test_the_settled_guards_survive_the_highest_tier`, `test_garbage_time_cannot_activate_in_a_close_game` and two more |
+
+**Mutation 3 is the one worth recording.** It was detected on the first pass only by the committed golden ledgers. That is a real detection, and it is also the weaker kind: a golden hash says *something moved*, not that an execution probability was scripted. Nothing in the behavioural suite distinguished "the coach hunts the tying shot harder" from "the tying shot cannot miss", which is precisely the distinction this whole task is about. `test_the_endgame_window_changes_selection_and_never_resolution` was written to say the second thing — two boards differing only in regulation remaining, with shooter, defender, zone, contest, fatigue, shot clock and stream pinned, resolving to the identical probability, the identical outcome and the identical draw count — and the mutation was re-run against it and is now detected behaviourally.
+
+#### Bounded diagnostic measurement
+
+**BELOW CERTIFICATION REQUIREMENT.** `BALANCE_SPEC.md` §27.1 requires far larger samples. Nothing below certifies a band, nothing below is judged against one, and every metric the runner emits is `CalibrationMetric.raw`. Two levels only — College and Top Domestic — as scoped; the full five-level stakes calibration is deferred.
+
+The design is **matched**: within one sample, the three tiers play the *identical* fixtures at the *identical* seeds. The three columns are one sample played three ways, so a column difference is the stakes tier rather than roster noise.
+
+##### Seed ranges
+
+New, and disjoint from every range in §5.7 through §5.13.
+
+| Purpose | Variations | RNG seeds | Games per tier |
+| --- | --- | --- | ---: |
+| **Development** — the range the implementation was looked at on | 470,000-470,299 | 470,001-470,300 | 300 |
+| **Validation — untouched** | 480,000-480,299 | 480,001-480,300 | 300 |
+| **Mirror, zero pregame gap** | 480,000-480,249 | 480,001-480,250 | 250 |
+
+No tuning range was needed, and none was used: the five step tunables were chosen from coaching plausibility before any range was run and **were not changed afterwards**. Nothing was fitted to the validation range or to the hypothesis.
+
+##### College, matched
+
+| Metric | Development: regular / postseason / championship | Validation: regular / postseason / championship |
+| --- | --- | --- |
+| Overtime rate | 0.0367 / 0.0167 / 0.0200 | 0.0333 / 0.0400 / 0.0333 |
+| Close-game rate (≤5) | 0.3033 / 0.3033 / **0.2400** | 0.3000 / 0.3167 / **0.2333** |
+| Blowout rate (≥20) | 0.1267 / 0.1333 / 0.1367 | 0.1433 / 0.1633 / 0.1633 |
+| Margin SD | 13.093 / 13.185 / 13.676 | 13.114 / 14.064 / 14.812 |
+| Points per possession | 1.0435 / 1.0469 / 1.0451 | 1.0446 / 1.0522 / 1.0524 |
+| Possessions per team-game | 70.52 / 70.45 / 70.68 | 70.93 / 71.03 / 71.12 |
+| Timeouts per game | 2.600 / 2.620 / 2.510 | 2.537 / 2.493 / 2.437 |
+| Starter minute share | 0.6259 / 0.6343 / **0.7055** | 0.6231 / 0.6292 / **0.7022** |
+| Top-player minutes | 27.94 / 28.63 / **33.42** | 28.04 / 28.66 / **33.40** |
+| Garbage-time activation rate | 0.3333 / 0.3267 / 0.3267 | 0.3567 / 0.3433 / 0.3300 |
+| Garbage-time releases per game | 0.3167 / 0.2433 / **0.2067** | 0.3200 / 0.2333 / **0.1400** |
+| Comebacks after activation | 0.0000 / 0.0000 / 0.0000 | 0.0280 / 0.0000 / 0.0000 |
+| Tie-seeking opportunities per game | 0.2467 / 0.2167 / 0.2167 | 0.2100 / 0.2233 / 0.1800 |
+| Tie-seeking levelling share | 0.5405 / 0.4308 / 0.3846 | 0.4921 / 0.4328 / 0.5000 |
+| Intentional fouls per game | 0.4700 / 0.4300 / 0.4533 | 0.5067 / 0.4667 / 0.4067 |
+
+##### Top Domestic, matched
+
+| Metric | Development: regular / postseason / championship | Validation: regular / postseason / championship |
+| --- | --- | --- |
+| Overtime rate | 0.0133 / 0.0367 / 0.0133 | 0.0300 / 0.0167 / 0.0300 |
+| Close-game rate (≤5) | 0.2367 / 0.2267 / 0.2167 | 0.2133 / 0.1600 / 0.1967 |
+| Blowout rate (≥20) | 0.2533 / 0.1867 / 0.2400 | 0.1867 / 0.2167 / 0.2800 |
+| Margin SD | 17.066 / 15.433 / 16.849 | 15.613 / 16.201 / 17.935 |
+| Points per possession | 1.1728 / 1.1762 / 1.1755 | 1.1782 / 1.1743 / 1.1735 |
+| Possessions per team-game | 100.39 / 100.85 / 100.82 | 100.92 / 100.98 / 100.98 |
+| Timeouts per game | 4.117 / 4.097 / 3.980 | 4.057 / 3.907 / 3.973 |
+| Starter minute share | 0.6065 / 0.6436 / 0.6396 | 0.6122 / 0.6418 / 0.6387 |
+| Top-player minutes | 33.13 / 35.52 / **40.57** | 33.25 / 35.30 / **40.43** |
+| Garbage-time activation rate | 0.5000 / 0.4200 / **0.4100** | 0.4467 / 0.4333 / 0.4567 |
+| Garbage-time releases per game | 0.4933 / 0.2933 / **0.2233** | 0.4400 / 0.3400 / **0.2000** |
+| Comebacks after activation | 0.0000 / 0.0000 / 0.0000 | 0.0299 / 0.0000 / 0.0073 |
+| Tie-seeking opportunities per game | 0.2167 / 0.2467 / 0.1933 | 0.2133 / 0.2267 / 0.1333 |
+| Tie-seeking levelling share | 0.3538 / 0.5270 / 0.4655 | 0.4688 / 0.5147 / 0.5000 |
+| Intentional fouls per game | 0.5133 / 0.5300 / 0.5100 | 0.6133 / 0.4967 / 0.4667 |
+
+##### Pooled
+
+Population is the four matched ranges above, 1,200 games per tier. Mirror is the two zero-pregame-gap ranges, 500 games per tier.
+
+| Metric | Population reg / post / champ | Mirror reg / post / champ |
+| --- | --- | --- |
+| Overtime rate | 0.0283 / 0.0275 / 0.0242 | 0.0300 / 0.0380 / **0.0420** |
+| Close-game rate | 0.2633 / 0.2517 / **0.2217** | 0.2980 / 0.2860 / 0.2900 |
+| Blowout rate | 0.1775 / 0.1750 / 0.2050 | 0.1540 / 0.1520 / 0.1780 |
+| Margin SD | 14.722 / 14.721 / 15.818 | 13.540 / 13.759 / 14.277 |
+| Points per possession | 1.1098 / 1.1124 / 1.1116 | 1.1153 / 1.1116 / 1.1093 |
+| Possessions per team-game | 85.69 / 85.83 / 85.90 | 85.84 / 86.06 / 86.23 |
+| Starter minute share | 0.6169 / 0.6372 / 0.6715 | 0.6183 / 0.6392 / 0.6729 |
+| Top-player minutes | 30.59 / 32.03 / 36.95 | 30.66 / 32.22 / 37.47 |
+| Timeouts per game | 3.328 / 3.279 / 3.225 | 3.262 / 3.232 / 3.228 |
+| Garbage activation rate | 0.4092 / 0.3808 / 0.3808 | 0.3660 / 0.3460 / 0.3420 |
+| Garbage releases per game | 0.3925 / 0.2775 / 0.1925 | 0.3360 / 0.2580 / 0.1820 |
+| Intentional fouls per game | 0.5258 / 0.4808 / 0.4592 | 0.4700 / 0.5480 / 0.5020 |
+
+#### Did overtime increase? No, and the reason is worth having
+
+**In the four matched population samples the hypothesised ordering does not appear, in any of them, and the pooled point estimate runs slightly the wrong way: 0.0283 → 0.0275 → 0.0242.** In the two matched mirror samples the ordering does appear pooled — 0.0300 → 0.0380 → 0.0420, monotone — and appears strictly in one of the two individually.
+
+Neither result is statistically distinguishable from no effect. At an overtime rate near 3%, 1,200 games per tier carry a standard error near ±0.5 percentage points on each cell and 500 games near ±0.8; the pooled population difference is 0.6 standard errors and the pooled mirror difference is 1.0. **This sample cannot resolve a one-point difference in overtime rate, and no claim in either direction is made from it.**
+
+Assigning the result to the four candidate explanations, in order of how much of it each carries:
+
+1. **The coaching differences are real and large — but not on the quantity the hypothesis is about.** The four thresholds do exactly what they were built to do, consistently across all six samples and far outside noise: top-player minutes move +6.4 (population) and +6.8 (mirror) from regular to championship, starter minute share moves +5.5 points, garbage-time releases fall by half, timeouts fall about 3%. None of those is a mechanism for producing a tie. The set was chosen to be minimal and coherent, and the price of minimality is that its largest effect is on *minutes*.
+
+2. **In a real league, the largest effect actively works against the hypothesis.** Tightening the rotation puts the better players on the floor longer *for both teams*. Where a pregame strength gap exists it is amplified: pooled population close-game share falls 4.2 points (−2.4 standard errors, the most significant movement in the whole diagnostic), blowout share rises 2.8, and margin SD rises 1.10. The mirror fixtures, which have no gap to amplify, show close-game share flat (−0.8 points) and margin SD rising only 0.74. **That contrast is the amplification, measured.** It is a legitimate consequence of a legitimate coaching decision, not a defect, and it is the reason the population and mirror samples point in opposite directions.
+
+3. **Sample noise carries the rest.** See the standard errors above.
+
+4. **The scoring model's end-of-regulation repertoire is the real ceiling, and §5.13 already said so.** That section found the overtime band unreachable because "the probability of an exactly level regulation score is the margin distribution's density at zero", and noted that "a league with a fuller end-of-regulation repertoire concentrates extra mass at exactly level, and that repertoire is a system this engine does not yet have". Nothing in this task changed that. The engine still has no advance-the-ball timeout, no two-for-one, no deliberate foul while *leading*, no intentional miss on a last free throw, and no end-of-period possession planning. The tie-seeking rule this task widened and sharpened is the *only* end-of-regulation repertoire that exists, it fires on roughly 0.2 possessions a game, and widening its window from 32 to 64 seconds cannot move a 3% rate by a measurable amount when there are a fifth of a possession per game to work with.
+
+**Nothing was tuned toward the ordering.** The five step tunables were fixed before the first range was run and were not touched afterwards. The runner emits no band and cannot fail on the hypothesis. The result is reported as measured.
+
+One measurement is reported with a caveat rather than a conclusion. The **tie-seeking levelling share** moves inconsistently — down at College development, flat at College validation, up at Top Domestic development. It is confounded by construction: the matched design pairs *fixtures*, not *game states*, so once behaviour diverges the set of down-two-or-three situations diverges too, and the samples are 40-75 attempts. The policy itself is asserted directly by unit test at a fixed state, where it does widen and sharpen monotonically; the aggregate share is not evidence about it either way.
+
+#### §14.1 and PPP regression
+
+Nothing moved, and most of it could not have.
+
+| Check | Result |
+| --- | --- |
+| Six committed golden ledgers | byte-identical hashes; the harness rewrote the hash file to identical bytes |
+| `tools/simulation_smoke.gd` | every reported figure identical to the pre-change run; the only difference in the whole output is the wall-clock line |
+| Attribute sensitivity, 100,000 resolutions × 80 metrics | every estimate identical to the pre-change run; 80/80 PASS |
+| Calibration smoke, 6 games × 15 metrics | every estimate identical to the pre-change run; 15/15 PASS |
+| Regular-season PPP, College | 1.0435 / 1.0446 against §5.13's recorded 1.0453 |
+| Regular-season PPP, Top Domestic | 1.1728 / 1.1782 against §5.13's recorded 1.1809 |
+| Regular-season possessions, College | 70.52 / 70.93 against §5.13's recorded 70.38 |
+| Regular-season possessions, Top Domestic | 100.39 / 100.92 against §5.13's recorded 100.31 |
+
+The regular-season column *is* the pre-change engine, bit for bit, so any difference from §5.13 above is that section's seed range against this one and nothing else.
+
+The higher tiers move PPP by at most +0.4% and possessions by at most +0.25% — a consequence of better players being on the floor for longer, not of any change to shooting. **No §14.1 or §14.2 target, band, or tolerance was modified, and none is judged against a non-regular tier.**
+
+#### Regression and performance
+
+| Gate | Result |
+| --- | --- |
+| Import / global class cache | built, exit 0 |
+| `tools/parse_check.gd` under warnings-as-errors | 212 scripts, 0 failures, **exit 0 asserted** |
+| GdUnit4, `res://tests` | 38 suites, **388 cases, 0 failures, 0 errors, 0 orphans** (366 before this change) |
+| `tests/run_all.gd` | PASS — golden ledgers, determinism, possession contract, Play/Sim/Skip parity, event/stat reconciliation, aggregation |
+| `tools/simulation_smoke.gd` | PASS, invariants clean |
+| `tools/builder_calibration_harness.gd` | PASS, 810 builds in locked bands |
+| Attribute sensitivity | 80/80 PASS |
+| Calibration smoke | 15/15 PASS |
+| Career progression, 2,000 careers | 16/17 judged PASS; the single FAIL is `sample.meets_certification_size` (2,000 against §27.1's 1,000,000), the standing §6.4 blocker and not a behaviour result. Career progression does not simulate matches |
+| Projected Peak diagnostics, 1,200 careers | PASS, coverage 0.7383, median width 11, 0 pathological subgroups |
+| Executor parity | `parity.manual_vs_full_detail` and `parity.manual_vs_aggregate` both 0.0000 against ±0.02 |
+| Determinism | `test_full_game_determinism`, `test_possession_determinism`, and per-tier reproduction across all three executors |
+| Ledger reconciliation | `test_event_stat_reconciliation` plus the box-score assertions inside `MatchSession.build_output` |
+| Golden-ledger verification | all six unchanged |
+
+Neither million-scale certification nor a five-level calibration campaign was run.
+
+**Performance**, `run_performance_profile.gd` at 40 games, editor-debug build with asserts active, two passes each on an otherwise idle machine:
+
+| | Pass 1 | Pass 2 | Possessions/second |
+| --- | ---: | ---: | ---: |
+| Before (`6bd54d9`) | 1305.7 ms/game | 1308.8 ms/game | 155 / 154 |
+| After | 1318.8 ms/game | 1325.2 ms/game | 153 / 152 |
+
+**+1.2%**, and the two distributions do not overlap, so it is a real cost rather than noise. It is four extra static calls per decision point, each of which returns a literal on the regular-season branch. Reported rather than explained away.
+
+#### Deferred
+
+Explicitly out of scope here and not started:
+
+- **Full five-level stakes calibration.** Deferred until real schedules and postseason matchups exist. Running it now would calibrate against fixtures that assign a tier arbitrarily, which is not the population any future band would describe.
+- **The scheduling and career mapping.** No schedule, bracket, series, or postseason exists. Mapping real game metadata onto a tier is that layer's responsibility; the engine's side of the contract is complete and needs no further change to receive it.
+- **Late-game timeout *usage*.** Stakes reserve timeouts; they do not spend them differently, because there is no advance-the-ball or set-play timeout mechanism to spend them on. Adding one is an engine feature, not a stakes feature.
+- **The remaining authorised effects.** Pace and clock strategy, intentional-foul strategy, and the garbage-time *release* threshold are all authorised for stakes and were all deliberately left alone. The smallest coherent set was the brief.
+- **A fuller end-of-regulation repertoire** — two-for-one, advance-the-ball, deliberate fouling while leading, intentional last-free-throw misses, end-of-period possession planning. §5.13 identified this as the reason the §14.2 overtime band is unreachable, and this task's measurement is further evidence for it. It is the single change most likely to make the stakes/overtime hypothesis testable at all.
+- **Postseason scheduling, brackets, Finals series, narrative, career consequences, presentation, and content.** Out of scope by instruction, and none was added.
+
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation
@@ -2172,6 +2527,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.
 10. Merge Stage 4 only when its reports and CI evidence support every claim made at merge time.
 11. After simulation readiness, resume the remaining Godot Foundation Gate work: SQLite, three slots, minimal application flow, transition harness, and Android/iOS proof.
+12. Leave the **full five-level game-stakes calibration deferred** until real schedules and postseason matchups exist (§5.14). The contract, its tests, its mutation battery, and a two-level matched diagnostic are done; what is missing is a population in which a tier means something, and calibrating against fixtures that assign a tier arbitrarily would certify a band for a league that does not exist. The measurement most likely to make the stakes/overtime question answerable at all is a fuller end-of-regulation repertoire, which §5.13 already identifies as the reason the §14.2 overtime band is unreachable.
 
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 

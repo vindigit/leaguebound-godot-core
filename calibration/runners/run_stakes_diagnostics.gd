@@ -27,9 +27,26 @@ extends SceneTree
 ## Run:
 ##   godot --headless --path . --script res://calibration/runners/run_stakes_diagnostics.gd -- \
 ##       [--games=N] [--competition=college|top_domestic_pro] [--range=development|validation]
-##       [--label=NAME]
+##       [--mode=population|mirror] [--label=NAME]
 
 const DEFAULT_GAMES: int = 300
+
+## Fixture modes.
+##
+## `population` is the calibration population, with its §5.10 between-team tilt:
+## the league the §14 bands describe. `mirror` plays two identical rosters, so
+## the pregame strength gap is exactly zero and any margin the game produces was
+## invented during it.
+##
+## The pair answers a question a population sample alone cannot. A coaching
+## change that tightens rotations puts the *better* players on the floor for
+## longer on both sides — and in a population with a real strength spread, that
+## amplifies the spread. Mirror fixtures have no spread to amplify, so a widening
+## that appears in one and not the other is amplification rather than variance
+## the rule invented. A mirror league is not the league §14.2 describes and no
+## game-shape band may ever be judged against it.
+const MODE_POPULATION: String = "population"
+const MODE_MIRROR: String = "mirror"
 
 ## The two seed ranges this section owns. Neither appears in §5.7 through §5.12.
 ##
@@ -64,6 +81,10 @@ func _run() -> void:
 	var games: int = CalibrationCli.int_option(options, &"games", DEFAULT_GAMES)
 	var selection: String = CalibrationCli.string_option(options, &"competition", "college")
 	var range_name: String = CalibrationCli.string_option(options, &"range", "development")
+	var mode: String = CalibrationCli.string_option(options, &"mode", MODE_POPULATION)
+	if mode != MODE_POPULATION and mode != MODE_MIRROR:
+		printerr("unknown mode '%s'; using %s" % [mode, MODE_POPULATION])
+		mode = MODE_POPULATION
 	var label: String = CalibrationCli.string_option(options, &"label", "stakes")
 	var competition: int = _competition(selection)
 	var base: int = VALIDATION_BASE if range_name == "validation" else DEVELOPMENT_BASE
@@ -93,12 +114,18 @@ func _run() -> void:
 	context.notes.append(
 		"The overtime ordering is a product hypothesis under measurement, not a "
 		+ "target. No metric here is judged against it and no tunable was fitted to it.")
+	context.notes.append("Fixture mode: %s." % mode)
+	if mode == MODE_MIRROR:
+		context.notes.append(
+			"Mirror matches are played between two identical rosters. §14.2 describes a "
+			+ "real league and is not a target for this mode; the mode exists to separate "
+			+ "a widened margin from an amplified pregame gap.")
 
 	var report := CalibrationReport.new(context)
 	var samples: Array[TierSample] = []
 	var rows: Array[Dictionary] = []
 	for stakes in GameStakes.all():
-		var sample: TierSample = _simulate(competition, games, base, stakes)
+		var sample: TierSample = _simulate(competition, games, base, stakes, mode)
 		samples.append(sample)
 		rows.append(sample.to_dictionary())
 		_report_tier(report, sample)
@@ -224,14 +251,24 @@ class TierSample:
 		return total / float(margins.size())
 
 
-func _simulate(competition: int, games: int, base: int, stakes: int) -> TierSample:
+func _simulate(
+	competition: int,
+	games: int,
+	base: int,
+	stakes: int,
+	mode: String,
+) -> TierSample:
 	var sample := TierSample.new()
 	sample.stakes = stakes
 	sample.games = games
 	for index in range(games):
 		var variation: int = base + index
-		var input: MatchInput = CompetitionCatalog.match_for(
-			competition, variation, 0.5).with_stakes(stakes)
+		var fixture: MatchInput = (
+			CompetitionCatalog.mirrored_match_for(competition, variation, 0.5)
+			if mode == MODE_MIRROR
+			else CompetitionCatalog.match_for(competition, variation, 0.5)
+		)
+		var input: MatchInput = fixture.with_stakes(stakes)
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(variation + 1))
 		_accumulate(sample, input, output)
