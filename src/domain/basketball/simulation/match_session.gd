@@ -103,6 +103,7 @@ func advance_possession() -> PossessionResult:
 			return null
 	assert(_snapshot.possession_sequence < MAX_POSSESSIONS,
 		"match exceeded the possession safety bound")
+	_consider_garbage_time()
 	_consider_timeout()
 	_apply_substitutions()
 	_rotation.validate(_snapshot, _input)
@@ -196,6 +197,36 @@ func _advance_period() -> void:
 	# A new period starts from a dead ball, so the next possession is never a
 	# transition opportunity.
 	_live_start = false
+
+
+## §18.2 score and time: each coach decides, from the shared scoreboard, whether
+## he is still playing the game.
+##
+## Emitted before substitutions so a rotation reads the state the ledger has
+## already explained, and emitted per team because the two coaches reach the
+## decision at different moments — which is the whole of the correction. The
+## event carries the mode and that team's own signed margin, so a reader can see
+## which side of the scoreboard the decision was made from and at what score,
+## without recomputing anything.
+func _consider_garbage_time() -> void:
+	var writer := _writer()
+	var balance: SimulationBalanceProfile = _input.balance_profile
+	for team_profile: TeamMatchProfile in [_input.home, _input.away]:
+		var team_id: StringName = team_profile.team_id
+		var team_state: TeamMatchState = _snapshot.state_for(team_id)
+		var resolved: int = GarbageTimeRule.resolved_mode(
+			_snapshot, _input, balance, team_id)
+		if resolved == team_state.settled_mode:
+			continue
+		var transition: StringName = (
+			&"resumed" if resolved == GarbageTimeRule.Mode.NONE else &"entered")
+		writer.emit(
+			MatchDomainEvent.GARBAGE_TIME, team_id, &"", &"", &"",
+			GarbageTimeRule.mode_id(resolved), transition, &"", 0,
+			_snapshot.margin_for(team_id))
+	if writer.events.is_empty():
+		return
+	_commit(writer)
 
 
 ## §18.2 contextual adjustment, the timeout half: a coach stops the other side's

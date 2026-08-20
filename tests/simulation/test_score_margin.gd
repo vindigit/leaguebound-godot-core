@@ -28,7 +28,14 @@ const SETTLED_MARGIN_FIXTURE_SEED: int = 4242
 ## sampling error, a slope against a bound wide enough to survive calibration
 ## and narrow enough to fail a duplicated influence.
 const MIRROR_SAMPLE: int = 40
-const EDGE_SAMPLE: int = 8
+## Raised from eight when `simulation-v5-garbage-time` narrowed the margin
+## distribution. At eight games the overlap statistic below was a boundary: the
+## edged fixture's minimum and the neutral fixture's maximum landed on the same
+## integer, which says nothing about whether an edge decides a game. At
+## twenty-four the same fixture shows the edged side *losing three of them*,
+## which is the property the docstring always wanted and the sample could not
+## previously afford.
+const EDGE_SAMPLE: int = 24
 
 ## The largest home-minus-away mean margin this suite will accept from mirror
 ## games with the home environment switched off.
@@ -130,15 +137,21 @@ func test_capability_edge_moves_the_margin_monotonically_and_boundedly() -> void
 ## Strength is not destiny. An edge that always decided the game would make the
 ## §14.2 close-game and overtime bands unreachable by construction.
 ##
-## Stated as an overlap rather than as an upset count. "At least one upset in
-## eight games" is a coin flip at any honest slope and would make this suite
-## flaky by construction; that the two margin distributions still overlap is the
-## property that actually distinguishes a stochastic engine from a lookup of
-## which roster is better.
+## Stated twice, because one statement is robust and the other is decisive.
+## The distributions still overlap — the edged fixture's worst result sits below
+## the neutral fixture's best — and the edged side actually loses games. An
+## upset count needs a sample to mean anything, which is why `EDGE_SAMPLE` is
+## what it is.
 func test_a_capability_edge_does_not_decide_every_game() -> void:
 	var neutral: PackedFloat64Array = _edge_margins(0.0)
 	var large: PackedFloat64Array = _edge_margins(5.0)
 	assert_float(_minimum(large)).is_less(_maximum(neutral))
+	var upsets: int = 0
+	for margin in large:
+		if margin < 0.0:
+			upsets += 1
+	assert_int(upsets).override_failure_message(
+		"a five-point capability edge won all %d games" % large.size()).is_greater(0)
 
 
 ## Two identical teams still produce a spread of results. A mirror fixture whose
@@ -297,49 +310,43 @@ func test_intentional_fouling_activates_only_under_valid_conditions() -> void:
 	assert_bool(_intentional_foul_is_available(input, snapshot)).is_false()
 
 
-## §18.2 score and time. The settled-game rotation fires on the absolute margin,
-## so it treats the leading and the trailing bench identically, and it does not
-## fire before the final period, outside its clock window, or in overtime.
-func test_settled_game_rotation_is_symmetric_and_bounded() -> void:
+## §18.2 score and time. `RotationResolver` reads a settled mode off team state
+## and never recomputes it, which is what keeps the decision in one place and
+## the substitution loop free of policy. The policy itself is proven in
+## `TestGarbageTime`; what this proves is the wiring: the reader agrees with the
+## state, and a team not in a settled mode gets its ordinary rotation.
+func test_the_rotation_reads_the_settled_mode_and_does_not_recompute_it() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
-	var balance: SimulationBalanceProfile = input.balance_profile
-	var resolver := RotationResolver.new(balance)
-	var rules: CompetitionRuleProfile = input.rule_profile
-	var final_period: int = rules.regulation_periods
-	var window_ms: int = int(roundf(
-		float(rules.period_length_ms(final_period)) * balance.decided_game_clock_share))
-
+	var resolver := RotationResolver.new(input.balance_profile)
 	var snapshot := MatchSnapshot.new(input)
-	snapshot.period = final_period
-	snapshot.clock_ms = window_ms - 1000
 
-	# Home ahead by the threshold, and away ahead by the threshold, are the same
-	# decision. This is what makes the rule a rotation and not a comeback.
-	snapshot.home.score = balance.decided_game_margin
+	assert_bool(resolver.is_settled(snapshot.home)).is_false()
+	assert_bool(resolver.is_settled(snapshot.away)).is_false()
+
+	# A thirty-point scoreboard on its own settles nobody: the mode is state,
+	# written by the reducer from a `GARBAGE_TIME` event, and this snapshot has
+	# never seen one.
+	snapshot.home.score = 30
 	snapshot.away.score = 0
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_true()
-	snapshot.home.score = 0
-	snapshot.away.score = balance.decided_game_margin
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_true()
+	assert_bool(resolver.is_settled(snapshot.home)).is_false()
+	var orders: Array[SubstitutionOrder] = resolver.plan(snapshot, input, input.home.team_id)
+	for order in orders:
+		assert_int(order.reason).is_not_equal(SubstitutionOrder.Reason.DECIDED_GAME)
 
-	# One point short of the threshold is not a settled game.
-	snapshot.home.score = balance.decided_game_margin - 1
-	snapshot.away.score = 0
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_false()
-
-	# A settled margin with the period still to play is not settled.
-	snapshot.home.score = balance.decided_game_margin + 10
-	snapshot.clock_ms = window_ms + 1000
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_false()
-
-	# Not before the final period.
-	snapshot.clock_ms = window_ms - 1000
-	snapshot.period = final_period - 1
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_false()
-
-	# Not in overtime: a game that reached overtime was tied.
-	snapshot.period = final_period + 1
-	assert_bool(resolver.game_is_decided(snapshot, input)).is_false()
+	# With the mode set, and only then, the settled rotation applies — and it
+	# applies to whichever team carries it.
+	for team_state: TeamMatchState in [snapshot.home, snapshot.away]:
+		team_state.settled_mode = GarbageTimeRule.Mode.LEADING
+		assert_bool(resolver.is_settled(team_state)).is_true()
+		var settled_orders: Array[SubstitutionOrder] = resolver.plan(
+			snapshot, input, team_state.team_id)
+		var found: bool = false
+		for order in settled_orders:
+			if order.reason == SubstitutionOrder.Reason.DECIDED_GAME:
+				found = true
+		assert_bool(found).override_failure_message(
+			"a settled team planned no settled-game substitution").is_true()
+		team_state.settled_mode = GarbageTimeRule.Mode.NONE
 
 
 ## The settled-game rotation empties the bench from the bottom and then stops.
@@ -352,11 +359,10 @@ func test_settled_game_rotation_converges() -> void:
 	var rules: CompetitionRuleProfile = input.rule_profile
 	var snapshot := MatchSnapshot.new(input)
 	snapshot.period = rules.regulation_periods
-	snapshot.clock_ms = int(roundf(
-		float(rules.period_length_ms(snapshot.period))
-		* input.balance_profile.decided_game_clock_share)) - 1000
+	snapshot.clock_ms = rules.period_length_ms(snapshot.period) / 4
 	snapshot.home.score = 40
 	snapshot.away.score = 0
+	snapshot.home.settled_mode = GarbageTimeRule.Mode.LEADING
 
 	var settled: int = 0
 	for _step in range(40):
@@ -540,7 +546,7 @@ func _edge_margins(edge: float) -> PackedFloat64Array:
 
 ## A snapshot in the final regulation period with enough clock left that neither
 ## score-aware window is open: not the §13.1 intentional-foul window, and not the
-## §18.2 settled-game window.
+## §13.1 intentional-foul window.
 ##
 ## The final period is where a score-dependent modifier would be least
 ## conspicuous and most tempting, so it is where the comparison is worth making.
@@ -549,10 +555,9 @@ func _edge_margins(edge: float) -> PackedFloat64Array:
 func _final_period_snapshot(input: MatchInput) -> MatchSnapshot:
 	var rules: CompetitionRuleProfile = input.rule_profile
 	var balance: SimulationBalanceProfile = input.balance_profile
-	var floor_ms: int = maxi(
-		balance.intentional_foul_clock_ms,
-		int(roundf(float(rules.period_length_ms(rules.regulation_periods))
-			* balance.decided_game_clock_share)))
+	# Late enough in the final period for §18.2's score-and-clock management to be
+	# on, and early enough that the §13.1 intentional-foul window is still shut.
+	var floor_ms: int = balance.intentional_foul_clock_ms
 	var session := MatchSession.new(input, SeededRandomSource.new(SETTLED_MARGIN_FIXTURE_SEED))
 	session.open()
 	while not session.is_complete():

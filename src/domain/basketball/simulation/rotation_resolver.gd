@@ -141,12 +141,14 @@ func _departure_reason(
 		and runtime.stint_ms >= _balance.substitution_stint_seconds * 1000
 	):
 		return SubstitutionOrder.Reason.FATIGUE
-	# §18.2 score and time. Once the outcome is settled, both coaches rest the
-	# players they need for the next game. The condition is the *absolute*
-	# margin, so the two benches empty on identical terms — this is a rotation
-	# decision, not a comeback mechanism, and it changes no probability.
+	# §18.2 score and time. The settled mode is `GarbageTimeRule`'s decision,
+	# reduced onto this team's state from a `GARBAGE_TIME` event, so a rotation
+	# reads exactly what the ledger explains. Which of the two coaches reaches it
+	# first is the whole of the asymmetry, and it is an asymmetry of situation:
+	# put this roster on the other side of the same scoreboard and it gets the
+	# other threshold.
 	if (
-		game_is_decided(state, input)
+		team_state.settled_mode != GarbageTimeRule.Mode.NONE
 		and _has_deeper_bench(profile, team_state, runtime.player_id)
 	):
 		return SubstitutionOrder.Reason.DECIDED_GAME
@@ -157,23 +159,15 @@ func _departure_reason(
 	return -1
 
 
-## §18.2 score and time: the outcome is settled and there is still enough clock
-## left for resting anyone to be worth doing.
+## Whether this team is in its settled rotation right now.
 ##
 ## Public because the rotation contract is worth asserting directly: a test that
 ## can only observe this through a whole simulated game cannot tell "the rule
-## did not fire" from "the game never got there".
-func game_is_decided(state: MatchSnapshot, input: MatchInput) -> bool:
-	var rules: CompetitionRuleProfile = input.rule_profile
-	if state.period != rules.regulation_periods:
-		# Never before the final period, and never in overtime: a game that
-		# reached overtime is by definition not decided.
-		return false
-	var window_ms: int = int(roundf(
-		float(rules.period_length_ms(state.period)) * _balance.decided_game_clock_share))
-	if state.clock_ms > window_ms:
-		return false
-	return absi(state.margin_for(input.home.team_id)) >= _balance.decided_game_margin
+## did not fire" from "the game never got there". The *decision* lives in
+## `GarbageTimeRule` and the *state* lives on `TeamMatchState`; this is only the
+## reader, which is what keeps the rule out of the substitution loop.
+func is_settled(team_state: TeamMatchState) -> bool:
+	return team_state.settled_mode != GarbageTimeRule.Mode.NONE
 
 
 ## Whether a settled game still has someone deeper to give these minutes to.
@@ -237,7 +231,7 @@ func _select_incoming(
 	claimed: Array[StringName],
 	reason: int,
 ) -> StringName:
-	var closing: bool = _is_closing_time(state, input)
+	var closing: bool = _is_closing_time(state, input, team_state)
 	var best_id: StringName = &""
 	var best_score: float = -INF
 	var order: Array[StringName] = profile.rotation_plan.substitution_order
@@ -286,13 +280,19 @@ func _select_incoming(
 
 ## §18.2 score and time: the closing stretch of the final period, or any
 ## overtime.
-func _is_closing_time(state: MatchSnapshot, input: MatchInput) -> bool:
-	if state.period > input.rule_profile.regulation_periods:
-		return true
+func _is_closing_time(
+	state: MatchSnapshot,
+	input: MatchInput,
+	team_state: TeamMatchState,
+) -> bool:
 	# A settled game has no closing lineup. Preferring the best five into a
 	# twenty-point game would undo the substitution that just took them off.
-	if game_is_decided(state, input):
+	# Checked before the overtime branch: a team that has conceded does not want
+	# its closers back on the floor because the period changed.
+	if is_settled(team_state):
 		return false
+	if state.period > input.rule_profile.regulation_periods:
+		return true
 	return (
 		state.period == input.rule_profile.regulation_periods
 		and state.clock_ms <= input.rule_profile.period_length_ms(state.period) / 4

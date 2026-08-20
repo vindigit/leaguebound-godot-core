@@ -135,6 +135,25 @@ class GameRow extends RefCounted:
 	var away_points_after_settled: float
 	var possessions_after_settled: float
 
+	## §18.2 garbage time, read from the `GARBAGE_TIME` events in the ledger.
+	var garbage_activations: int
+	var garbage_resumptions: int
+	var leading_activated: bool
+	var trailing_activated: bool
+	## State at the *first* activation of the game, which is the one the
+	## comeback and false-positive questions are asked about.
+	var activation_margin: float
+	var activation_remaining_share: float
+	var activation_home_leading: bool
+	## Player-time on court, split at that first activation, so a coach who rests
+	## his starters earlier shows up as a number rather than as a story.
+	var starter_ms_before: float
+	var bench_ms_before: float
+	var leading_starter_ms_after: float
+	var leading_bench_ms_after: float
+	var trailing_starter_ms_after: float
+	var trailing_bench_ms_after: float
+
 	var lead_changes: int
 	var ties: int
 	var largest_lead: int
@@ -193,6 +212,13 @@ class GameRow extends RefCounted:
 		trailing_state_threes = _zeros(STATE_COUNT)
 		leading_state_field_goals = _zeros(STATE_COUNT)
 		trailing_state_field_goals = _zeros(STATE_COUNT)
+		garbage_activations = 0
+		garbage_resumptions = 0
+		leading_activated = false
+		trailing_activated = false
+		activation_margin = 0.0
+		activation_remaining_share = 0.0
+		activation_home_leading = false
 		state_seconds = _zeros(STATE_COUNT)
 		state_actions = _zeros(STATE_COUNT)
 		state_substitutions = _zeros(STATE_COUNT)
@@ -631,6 +657,80 @@ func covariance_before_settled() -> float:
 	return covariance(
 		column(func(row: GameRow) -> float: return row.home_points_before_settled),
 		column(func(row: GameRow) -> float: return row.away_points_before_settled))
+
+
+# --- §18.2 garbage time -------------------------------------------------------
+
+func activated_rows() -> ScoringCovariance:
+	var subset := ScoringCovariance.new()
+	for row in rows:
+		if row.garbage_activations > 0:
+			subset.add(row)
+	return subset
+
+
+func activation_share() -> float:
+	return _share_where(func(row: GameRow) -> bool: return row.garbage_activations > 0)
+
+
+func leading_activation_share() -> float:
+	return _share_where(func(row: GameRow) -> bool: return row.leading_activated)
+
+
+func trailing_activation_share() -> float:
+	return _share_where(func(row: GameRow) -> bool: return row.trailing_activated)
+
+
+func both_settled_share() -> float:
+	return _share_where(func(row: GameRow) -> bool:
+		return row.leading_activated and row.trailing_activated)
+
+
+func resumption_share() -> float:
+	return _share_where(func(row: GameRow) -> bool: return row.garbage_resumptions > 0)
+
+
+## Activated games whose final margin says the state was called too early. The
+## strict form is a game that finished inside one two-possession swing.
+func false_positive_share(threshold: float) -> float:
+	var activated: ScoringCovariance = activated_rows()
+	if activated.size() <= 0:
+		return 0.0
+	return activated._share_where(func(row: GameRow) -> bool:
+		return row.absolute_margin() <= threshold)
+
+
+## Activated games won by the side that was behind when the state began. A
+## non-zero figure is not a defect — a comeback the trailing team earned is a
+## comeback — but a large one means the state is being entered before the game
+## is over.
+func comeback_share() -> float:
+	var activated: ScoringCovariance = activated_rows()
+	if activated.size() <= 0:
+		return 0.0
+	return activated._share_where(func(row: GameRow) -> bool:
+		return (row.margin() > 0.0) != row.activation_home_leading and row.margin() != 0.0)
+
+
+## Share of on-court player-time taken by starters, pooled over activated games.
+func starter_share_before() -> float:
+	return _pooled(
+		func(row: GameRow) -> float: return row.starter_ms_before,
+		func(row: GameRow) -> float: return row.starter_ms_before + row.bench_ms_before)
+
+
+func leading_starter_share_after() -> float:
+	return _pooled(
+		func(row: GameRow) -> float: return row.leading_starter_ms_after,
+		func(row: GameRow) -> float:
+			return row.leading_starter_ms_after + row.leading_bench_ms_after)
+
+
+func trailing_starter_share_after() -> float:
+	return _pooled(
+		func(row: GameRow) -> float: return row.trailing_starter_ms_after,
+		func(row: GameRow) -> float:
+			return row.trailing_starter_ms_after + row.trailing_bench_ms_after)
 
 
 func covariance_after_settled() -> float:

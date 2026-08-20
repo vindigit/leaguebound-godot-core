@@ -125,6 +125,7 @@ func _run() -> void:
 	_report_path(report, sample)
 	_report_states(report, sample)
 	_report_behaviour(report, sample)
+	_report_garbage_time(report, sample)
 	_report_independence(report, sample)
 	_report_feasibility(report, sample)
 	report.add_section(&"gap_bands", _gap_band_rows(sample))
@@ -209,7 +210,108 @@ func _row(
 
 	_fill_path(row, input, output)
 	_fill_events(row, input, output)
+	_fill_garbage_time(row, input, output)
 	return row
+
+
+## Walks the ledger once more with a running clock, splitting every player's
+## on-court time at the first `GARBAGE_TIME` activation of the game.
+##
+## Minutes are the only thing this rule is allowed to move, so minutes are what
+## the report has to be able to see. Splitting them at the activation, and
+## splitting the second half by which side of the scoreboard each team was on
+## when it happened, is the direct measurement of the asymmetry: a leading bench
+## on the floor against a trailing rotation.
+func _fill_garbage_time(
+	row: ScoringCovariance.GameRow,
+	input: MatchInput,
+	output: MatchSimulationOutput,
+) -> void:
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var regulation_ms: float = 0.0
+	for period in range(1, rules.regulation_periods + 1):
+		regulation_ms += float(rules.period_length_ms(period))
+
+	var starters: Dictionary = {}
+	for team: TeamMatchProfile in [input.home, input.away]:
+		for starter_id in team.starters():
+			starters[starter_id] = true
+	var on_court: Dictionary = {}
+	var period: int = 1
+	var clock_ms: int = rules.period_length_ms(1)
+	var margin: int = 0
+	var activated: bool = false
+
+	for event: MatchDomainEvent in output.events:
+		if event.period != period:
+			# Close the old period out at zero before opening the new one.
+			_charge_minutes(row, on_court, starters, input, float(clock_ms), activated)
+			period = event.period
+			clock_ms = rules.period_length_ms(period)
+		if event.clock_ms < clock_ms:
+			_charge_minutes(
+				row, on_court, starters, input, float(clock_ms - event.clock_ms), activated)
+			clock_ms = event.clock_ms
+		match event.event_type:
+			MatchDomainEvent.CHECK_IN:
+				on_court[event.primary_player_id] = event.team_id
+			MatchDomainEvent.CHECK_OUT:
+				on_court.erase(event.primary_player_id)
+			MatchDomainEvent.FIELD_GOAL_MADE:
+				margin += event.points if event.team_id == input.home.team_id else -event.points
+			MatchDomainEvent.FREE_THROW_MADE:
+				margin += 1 if event.team_id == input.home.team_id else -1
+			MatchDomainEvent.GARBAGE_TIME:
+				if event.detail_id == &"resumed":
+					row.garbage_resumptions += 1
+					continue
+				row.garbage_activations += 1
+				if event.action_id == GarbageTimeRule.mode_id(GarbageTimeRule.Mode.LEADING):
+					row.leading_activated = true
+				else:
+					row.trailing_activated = true
+				if activated:
+					continue
+				activated = true
+				row.activation_margin = absf(float(margin))
+				row.activation_home_leading = margin > 0
+				var remaining: float = float(GarbageTimeRule.remaining_regulation_ms(
+					period, event.clock_ms, rules))
+				row.activation_remaining_share = (
+					remaining / regulation_ms if regulation_ms > 0.0 else 0.0)
+
+
+## Adds `elapsed` milliseconds to every player currently on court, in the right
+## bucket.
+func _charge_minutes(
+	row: ScoringCovariance.GameRow,
+	on_court: Dictionary,
+	starters: Dictionary,
+	input: MatchInput,
+	elapsed: float,
+	activated: bool,
+) -> void:
+	if elapsed <= 0.0:
+		return
+	for player_id: Variant in on_court:
+		var team_id: StringName = on_court[player_id]
+		var starter: bool = starters.has(player_id)
+		if not activated:
+			if starter:
+				row.starter_ms_before += elapsed
+			else:
+				row.bench_ms_before += elapsed
+			continue
+		var home: bool = team_id == input.home.team_id
+		if home == row.activation_home_leading:
+			if starter:
+				row.leading_starter_ms_after += elapsed
+			else:
+				row.leading_bench_ms_after += elapsed
+		elif starter:
+			row.trailing_starter_ms_after += elapsed
+		else:
+			row.trailing_bench_ms_after += elapsed
 
 
 func _regulation_score(line: TeamStatLine, regulation_periods: int) -> int:
@@ -771,6 +873,65 @@ func _report_behaviour(report: CalibrationReport, sample: ScoringCovariance) -> 
 	report.add_metric(CalibrationMetric.raw(&"covariance.after_settled",
 		"Cov of the two teams' points scored after the settled-game window opened",
 		"games", settled.covariance_after_settled(), settled.size()))
+
+
+## §18.2 garbage time: when the state began, why, who it moved, and whether the
+## game it was called on was actually over.
+func _report_garbage_time(report: CalibrationReport, sample: ScoringCovariance) -> void:
+	var games: int = sample.size()
+	var activated: ScoringCovariance = sample.activated_rows()
+	report.add_metric(CalibrationMetric.raw(&"garbage.activation_share",
+		"Games in which either coach entered the settled rotation", "games",
+		sample.activation_share(), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.leading_activation_share",
+		"Games in which the leading coach entered it", "games",
+		sample.leading_activation_share(), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.trailing_activation_share",
+		"Games in which the trailing coach conceded", "games",
+		sample.trailing_activation_share(), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.both_settled_share",
+		"Games in which both coaches settled", "games",
+		sample.both_settled_share(), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.resumption_share",
+		"Games in which a coach returned to his competitive rotation", "games",
+		sample.resumption_share(), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.activations_per_game",
+		"Entries into the settled rotation, both teams", "games",
+		sample.mean_of(func(row: ScoringCovariance.GameRow) -> float:
+			return float(row.garbage_activations)), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.resumptions_per_game",
+		"Returns to the competitive rotation, both teams", "games",
+		sample.mean_of(func(row: ScoringCovariance.GameRow) -> float:
+			return float(row.garbage_resumptions)), games))
+	report.add_metric(CalibrationMetric.raw(&"garbage.mean_activation_margin",
+		"Absolute margin when the state first began", "activated games",
+		activated.mean_of(func(row: ScoringCovariance.GameRow) -> float:
+			return row.activation_margin), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.mean_activation_remaining_share",
+		"Share of regulation still to play when the state first began",
+		"activated games",
+		activated.mean_of(func(row: ScoringCovariance.GameRow) -> float:
+			return row.activation_remaining_share), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.false_positive_two_possession",
+		"Activated games that finished inside six points: the state was called on "
+		+ "a game that was not over", "activated games",
+		sample.false_positive_share(6.0), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.false_positive_ten_points",
+		"Activated games that finished inside ten points", "activated games",
+		sample.false_positive_share(10.0), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.comeback_share",
+		"Activated games won by the side that was behind when the state began",
+		"activated games", sample.comeback_share(), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.starter_minute_share_before",
+		"Share of on-court player-time taken by starters before the state began",
+		"activated games", sample.starter_share_before(), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.leading_starter_share_after",
+		"The same for the leading team after it began", "activated games",
+		sample.leading_starter_share_after(), activated.size()))
+	report.add_metric(CalibrationMetric.raw(&"garbage.trailing_starter_share_after",
+		"The same for the trailing team. The gap between this and the line above "
+		+ "is the asymmetry the owner authorised, measured.", "activated games",
+		sample.trailing_starter_share_after(), activated.size()))
 
 
 ## The measured margin distribution against the one independent possessions

@@ -73,6 +73,9 @@ func apply_event(state: MatchSnapshot, event: MatchDomainEvent) -> void:
 			state.shot_clock_ms = mini(event.amount, state.clock_ms)
 		MatchDomainEvent.TIMEOUT:
 			_apply_timeout(state, event)
+		MatchDomainEvent.GARBAGE_TIME:
+			state.state_for(event.team_id).settled_mode = GarbageTimeRule.mode_from_id(
+				event.action_id)
 		MatchDomainEvent.PASS_COMPLETED:
 			if not event.secondary_player_id.is_empty():
 				state.state_for(event.team_id).runtime_by_id(event.secondary_player_id).touches += 1

@@ -95,10 +95,7 @@ static func possession_pairs_left(state: MatchSnapshot, input: MatchInput) -> fl
 ## is over. An overtime period is its own game as far as this is concerned:
 ## nobody manages the clock against a period that may not be played.
 static func remaining_ms(state: MatchSnapshot, rules: CompetitionRuleProfile) -> int:
-	var total: int = state.clock_ms
-	for period in range(state.period + 1, rules.regulation_periods + 1):
-		total += rules.period_length_ms(period)
-	return total
+	return GarbageTimeRule.remaining_regulation_ms(state.period, state.clock_ms, rules)
 
 
 static func elapsed_ms(state: MatchSnapshot, rules: CompetitionRuleProfile) -> int:

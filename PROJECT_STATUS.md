@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. The remaining blowout and overtime gaps are quantified against a ledger-faithful replay model, shown to need more than the authorised mechanisms can supply, and put to the owner with three costed options. No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
+**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -91,6 +91,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The §9.5 elite-opportunity ruling as a persistent career condition with a structurally enforced bound, corrected Attribute-Point accounting, and a parse/compile gate that can fail (§5.9).
 - The score-margin decomposition runner and its mirror fixture, the §18.2 settled-game rotation, mandatory-first substitution ordering, three possession-rate corrections, and the `simulation-v3-margin` ruleset the regenerated golden ledgers belong to (§5.10).
 - The score-margin covariance runner, its permutation control and its two replay models, `GameManagement`'s score-and-clock coaching, the end-of-regulation possession strategy, §4/§5 coaching timeouts, and the `simulation-v4-management` ruleset the regenerated golden ledgers belong to (§5.11).
+- `GarbageTimeRule`'s possession-based settled-rotation safety, its asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20, the `GARBAGE_TIME` ledger event and `TeamMatchState.settled_mode`, and the `simulation-v5-garbage-time` ruleset (§5.12). The §14.2 amendment in §5.13 is a **proposal awaiting owner decision**, not accepted work.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -353,33 +354,33 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 
 | Gate | Classification | Evidence |
 | --- | --- | --- |
-| GdUnit4 suite | **Structural** | 344 cases, 36 suites, 0 failures |
+| GdUnit4 suite | **Structural** | 366 cases, 37 suites, 0 failures |
 | `tests/run_all.gd` acceptance | **Structural** | PASS |
-| Parse check under warnings-as-errors | **Structural** | 206 scripts, 0 failures |
-| Simulation smoke diagnostics | **Structural** | Invariants PASS under the `simulation-v4-management` ruleset |
-| Golden ledgers and determinism | **Structural** | Six scenarios. All six regenerated under the `simulation-v4-management` ruleset (§5.11); the overtime scenario needed a new seed again, and it is the only one that did — the blast radius was proved by diffing every scenario's event stream |
+| Parse check under warnings-as-errors | **Structural** | 208 scripts, 0 failures |
+| Simulation smoke diagnostics | **Structural** | Invariants PASS under the `simulation-v5-garbage-time` ruleset |
+| Golden ledgers and determinism | **Structural** | Six scenarios. **Unchanged by `simulation-v5-garbage-time` (§5.12):** no hash and no seed moved, because the six fixtures finish at four to thirteen points and the settled rotation needs eighteen before it can fire. Regenerated once under `simulation-v4-management` (§5.11), where the blast radius was proved by diffing every scenario's event stream |
 | Event/stat reconciliation | **Structural** | In the acceptance suite |
 | Play/Sim/Skip parity | **Structural** | Byte-identical ledgers. The §27.1 50,000-triplet distributional report is **not run** |
 | Detail-promotion invariance | **Structural** | `PlayerDevelopmentState.invariant_signature` |
 | Creation-budget exhaustion | **Structural** | Builder suite |
 | Overall-exclusion dependency check | **Structural** | Dependency test |
 | Shard aggregation and provenance validation | **Structural** | Ten synthetic cases plus mutation testing; verified on real body-maturation shards |
-| Attribute sensitivity | **Measured at requirement** | 100,000 resolutions per test point; 80/80 pass, re-run under `simulation-v4-management`. Not aggregated into a certification report |
+| Attribute sensitivity | **Measured at requirement** | 100,000 resolutions per test point; 80/80 pass, re-run under `simulation-v5-garbage-time`. Not aggregated into a certification report |
 | Builder completed-build bands | **Measured below requirement** | 810 builds at fixed seeds |
 | Body maturation (report 15) | **Measured below requirement** | 2,000 triples; all 13 invariants at 1.0000, timing separation 0.4797 |
 | Career progression, all five §8.4 bands | **Measured below requirement** | 3,000 careers; poor 66, ordinary 77, strong 82, exceptional 87, rare generational 93 (§5.8) |
 | Population share peaking above 95 OVR | **Measured below requirement** | 0.0000 at 3,000 careers |
 | §8.4 continuity across the 72–74 gap | **Measured below requirement** | 0.017 share at 3,000 careers, against a 0.01–0.20 band |
 | Executor parity (manual / full-detail / aggregate) | **Measured below requirement** | Relative peak difference 0.0000 at 3,000 careers |
-| Performance profile | **Measured below requirement** | 1,355.9 ms/game debug against a same-machine before of 1,336.8 (§5.11); no release-template measurement |
+| Performance profile | **Measured below requirement** | 1,157.7 ms/game debug against a same-machine before of 1,149.4, +0.7% (§5.12); no release-template measurement |
 | Competition §14.1 bands, top domestic | **Measured below requirement** | Re-measured at 400 games on the untouched range 60,000-60,399 (§5.11). **Ten of eleven pass**, unchanged by the score-and-clock correction; assist percentage is the only §14.1 failure |
 | Competition §14.1 bands, other four | **Measured below requirement** | Re-measured again at 400 games each on the same untouched range under `simulation-v4-management` (§5.11). High school 10/10, college 8/10, development 9/10, overseas 9/10 — identical to §5.10 |
-| **§14.1 top-domestic assist percentage** | **Failed** | 0.4854 against 0.52-0.72 at 400 games on the same range, against 0.4831 before (§5.11). Measurement only; no assist parameter has ever been tuned. It also fails at college, development and overseas |
-| §14.1 top-domestic points per possession | **Measured below requirement** | **Corrected (§5.10), held (§5.11).** 1.1691 against 1.08-1.18 on the judged 400-game range, from 1.1680 before the score-and-clock correction and 1.2084 before §5.10. No aggregate tuning was done to keep it there |
-| **§14.2 blowout share** | **Failed at three of five levels** | **Improved (§5.11).** High school 0.1400 ✓ and college 0.1750 ✓ now pass; overseas 0.1950, development 0.2550 and top domestic 0.2450 do not. 0.2660 and 0.2840 on two untouched 500-game validation ranges. The replay model puts the ceiling at a leading-team penalty near 0.12 points a possession against a measured 0.008-0.020 |
-| **§14.2 close-game share** | **Passes at all five competition levels** | **Corrected (§5.11).** 0.2825 / 0.2700 / 0.2200 / 0.3000 / 0.2225 against 0.22-0.34, against three of five before. The two 500-game population validation ranges sit at 0.1880 and 0.2040, so the pass is marginal and is reported as marginal |
-| **§14.2 overtime rate** | **Failed at four of five levels** | High school 0.0450 ✓; college 0.0250, development 0.0275, overseas 0.0375, top domestic 0.0225. **Proven unreachable by any dispersion mechanism (§5.11):** the replay model's tie rate never reaches 0.04 even at a margin standard deviation of 9.9, because the probability of an exactly level score is the margin density at zero |
-| **§14.2 home win rate** | **Failed at four of five levels** | 0.5225 / 0.5200 / 0.5525 / 0.4950 / 0.5025 against 0.53-0.56 at 400 games, and inside the band on all three 500-game population ranges (0.5300 / 0.5500 / 0.5380). The cause §5.10 measured is unchanged: the home environment is worth about 0.3 points a game where the band needs about 2.1 |
+| **§14.1 top-domestic assist percentage** | **Failed** | 0.4820 against 0.52-0.72 at 400 games on the untouched range 350,000-350,399, against 0.4817 for the same games before the settled rotation (§5.12). Measurement only; no assist parameter has ever been tuned. It also fails at development and overseas |
+| §14.1 top-domestic points per possession | **Measured below requirement; on its ceiling** | 1.1691 on 60,000-60,399 (§5.11) and **1.1809 on 350,000-350,399** against a 1.18 ceiling — where the same games measure 1.1844 *before* the settled rotation, which moved it down (§5.12). The range-to-range spread straddles the ceiling and no aggregate tuning was done in either direction |
+| **§14.2 blowout share** | **Failed at two of five levels** | **Improved again (§5.12).** High school 0.1300 ✓, college 0.1700 ✓ and overseas 0.1550 ✓ pass; development 0.2450 and top domestic 0.2725 do not. 0.2320 and 0.2120 on two untouched 500-game validation ranges, and 0.1883 pooled over 600 even-team games. §5.13 proposes competition-specific bands and does not enact them |
+| **§14.2 close-game share** | **Passes at all five competition levels** | 0.2700 / 0.2700 / 0.2200 / 0.2700 / 0.2475 against 0.22-0.34 on the untouched range 350,000-350,399 (§5.12). The two 500-game population validation ranges sit at 0.2220 and 0.2060, so the pass is marginal and is reported as marginal |
+| **§14.2 overtime rate** | **Failed at four of five levels** | High school 0.0425 ✓; college 0.0100, development 0.0225, overseas 0.0250, top domestic 0.0175. Unmoved by the settled rotation, as expected. **Unreachable by any dispersion mechanism under the current possession/scoring model (§5.11, §5.13):** the replay model's tie rate never reaches 0.04 even at a margin standard deviation of 9.9. §5.13 classifies this narrowly and proposes a band |
+| **§14.2 home win rate** | **Failed at four of five levels** | 0.5450 / 0.5250 / 0.5200 / 0.5275 / 0.5325 against 0.53-0.56 at 400 games (§5.12), and inside the band on both 500-game population validation ranges. **Untouched by this work and explicitly out of its scope.** The cause §5.10 measured is unchanged: the home environment is worth about 0.3 points a game where the band needs about 2.1 |
 | §8.4 rare-generational band | **Measured below requirement** | **Corrected (§5.8), closed (§5.9).** Median 93 against 92–95 at 3,000 careers and on two untouched 2,000-career validation ranges. Was 90 |
 | §9.5 upper-guardrail warnings | **Measured below requirement** | Every guardrail-passing season carries a source-ledger explanation, 1.0000 on all three ranges |
 | §9.5 elite-opportunity ruling | **Structural** | Bounded at 20% per the owner ruling of 2026-08, enforced as each season is granted so the lifetime total cannot exceed it at any setting; zero violations on all three ranges and through three-shard aggregation |
@@ -390,11 +391,11 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | §6.3 projected-peak signed error | **Measured below requirement** | **Corrected (§5.7).** −1.0 and 0.0 against ±2 on the untouched ranges. Was +10.0 |
 | §6.3 projected-peak median width | **Measured below requirement** | 11.0 against 6–12 on both untouched ranges, now with the range correctly placed |
 | §6.3 projected-peak subgroup honesty | **Measured below requirement** | Zero pathological subgroups across 15–16 judged creation-time groupings per range |
-| §14.2 starter and rotation minutes | **Measured below requirement** | 30.23 ±0.14 starter mean against 27-35 at 400 games |
+| §14.2 starter and rotation minutes | **Measured below requirement** | 28.84 starter mean against 27-35 at 400 games, from 30.05 before the settled rotation (§5.12) |
 | Score-margin decomposition identity and classification | **Structural** | The six-term identity reconstructs every game's margin to within a thousandth of a point on every range run; both §14.2 boundaries tested from both sides on synthetic rows |
 | Home/away and team-A/team-B symmetry | **Structural** | Mean pregame strength difference 0.0000 on the mirror fixture; identical rosters reproduce byte-identical ledgers; no resolution path reads the score outside the documented late-game windows |
 | No score clamp, no rubber band | **Structural** | In the body of a game, two possessions identical except for a thirty-point scoreboard swing resolve to identical events. Inside the §18.2 managed window, where the score is now read, they resolve from the identical *probabilities* and differ only in which action the coach selects (§5.11). Margins reach past 25 without piling on a bound |
-| §18.2 settled-game rotation | **Structural** | Fires on the absolute margin only, inside the final period only, never in overtime, and converges after at most five substitutions a side |
+| §18.2 settled-game rotation | **Structural** | **Rebuilt (§5.12).** A possession-based safety measure with asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20. Cannot fire below eighteen points, cannot fire early, releases with hysteresis when the game becomes competitive again, scales across all five game lengths by a square-root law, and is explained in the ledger by a `GARBAGE_TIME` event per transition |
 | Mandatory-first substitution ordering | **Structural** | §5.1 departures claim the bench before any coaching preference; a latent starvation bug is fixed (§5.10) |
 | Possession, score and points-per-possession reconciliation | **Structural** | Possession records sum to the box score on every golden scenario |
 | Over-dispersion ratio | **Measured below requirement** | 1.01-1.09 on the population ranges, 1.03 on the mirror fixture. The estimator is validated against synthetic independent and synthetic correlated data |
@@ -1660,6 +1661,396 @@ It does not change the §6.4 arithmetic: at roughly 1.36 seconds a game the §27
 - **Measured below requirement:** every §14.2 and §14.1 figure above. 300-500 games per range against §27.1's 100,000 per competition.
 - **Failed:** §14.2 blowout share at three of five competition levels and overtime rate at four of five; §14.2 home win rate at four of five. §14.1 assist percentage at four of five and college field-goal percentage, both unchanged and both pre-existing.
 - **Certified:** nothing.
+
+### 5.12 Garbage time is a coaching decision, and the two coaches reach it at different moments
+
+Status: **The owner authorised an asymmetric settled-rotation threshold on 2026-08-20 and it is implemented, validated on four untouched ranges, and measured across all five competitions. Blowout share falls by five to six percentage points everywhere and passes at three of five levels. The remaining §14.2 incompatibility is now quantified per competition and is put to the owner as a proposed amendment, which this section does not enact.**
+
+§5.11 measured the score margin's covariance, found it zero, and traced that to three authorised mechanisms the engine did not have. It implemented them and stopped at a boundary it could not cross alone: the leading team's efficiency drop in a decided game measured 0.008–0.020 points per possession against the 0.12 the blowout ceiling needs, and the largest remaining lever — a coach resting his starters *earlier* than his opposite number concedes — was a design decision rather than a calibration one. The owner has now made it.
+
+#### The rule
+
+`GarbageTimeRule` replaces one universal raw margin inside a share of the final period with a possession-based safety measure:
+
+```text
+safety = |margin| / (settled_swing_points_per_pair * sqrt(possession_pairs_left))
+```
+
+The margin of the game still to be played is a sum over the remaining possession pairs, so its standard deviation grows with the **square root** of them. That is the whole reason one constant covers a thirty-two-minute school game and a forty-eight-minute professional one without a per-competition table, and why twenty points with nine minutes left and thirty points with twenty minutes left are the same decision. `possession_pairs_left` is read from the pace the game has actually played at, so a slow competition buys fewer pairs from the same clock and reaches a given safety sooner.
+
+Two thresholds read that one shared number:
+
+| Role | Threshold | Approximate win probability | What it means |
+| --- | ---: | ---: | --- |
+| Leading | `settled_leading_safety` = 2.6 | ≈ 99.5% | The coach who is ahead has won and starts protecting people |
+| Trailing | `settled_trailing_safety` = 4.2 | ≈ 99.998% | The coach who is behind concedes, late and reluctantly |
+
+Three guards keep it away from competitive basketball: a margin below `settled_minimum_margin` (18 points) never qualifies whatever the arithmetic says; a game with fewer than `settled_minimum_pairs_left` (one pair) remaining cannot newly enter, because there is no rest left to give; and the state releases — on both the safety and the margin floor, each with a `settled_release_share` of 0.85 hysteresis — when the trailing team actually closes the gap.
+
+The state lives on `TeamMatchState.settled_mode`, is written **only** by `MatchStateReducer` from a `GARBAGE_TIME` event carrying the mode and the signed margin it was taken at, and is read by `RotationResolver` without being recomputed. No policy lives in the substitution loop, and no rotation exists that the ledger cannot explain.
+
+#### Why this is coaching and not a rubber band
+
+The owner's ruling set eight conditions. Each is a property, and each is asserted:
+
+| Condition | How it is enforced | Where it is proven |
+| --- | --- | --- |
+| Changes lineup and rotation decisions only | The only consumer is `RotationResolver._departure_reason` and the closing-lineup preference | `test_the_rotation_reads_the_settled_mode_and_does_not_recompute_it` |
+| Does not modify ratings | Capability resolution for the same player is identical at +30, 0, −30 and in either settled mode | `test_the_trailing_team_receives_no_rating_or_capability_bonus` |
+| Does not modify shot, turnover, rebound or foul probability | The same shot, shooter, defender, zone, contest, lineup, clock and random stream resolve to the identical make probability in and out of the state | `test_the_same_shot_keeps_its_probability_in_and_out_of_garbage_time` |
+| Forces no make, miss, turnover, tie, overtime or comeback | Nothing in the class reaches a resolver; its whole output is a `Mode` | The two rows above, plus the measured comeback share of 0.000–0.014 |
+| Cannot inspect the intended winner or target final margin | Its inputs are the margin, the clock, the period, the rules and the realized pace. Replacing both rosters with much stronger ones changes nothing | `test_the_rule_cannot_read_strength_or_an_intended_winner` |
+| Uses only observable score, clock, period, timeout and lineup state | Same | Same |
+| Bounded, deterministic, versioned, ledger-explained | Six named tunables inside Gate B0 safe ranges; a `GARBAGE_TIME` event per transition; byte-identical ledgers on repeated seeds | `test_every_settled_substitution_is_explained_by_a_ledger_entry`, `test_play_sim_and_skip_agree_with_the_settled_state` |
+| Does not activate during genuinely competitive games | An eighteen-point coaching floor beneath a 2.6-standard-deviation safety | `test_garbage_time_cannot_activate_in_a_close_game`, `test_garbage_time_cannot_activate_too_early` |
+
+**The policy is symmetric and the roles are not, and the difference is testable.** Put the same roster on the other side of the same scoreboard and its behaviour reverses exactly: home at +m behaves as away does at −m, at every margin tested. The asymmetry is between *situations*, not between teams — which is what makes it coaching. A rubber band would key on identity, on strength, or on an intended outcome, and three separate tests show it keys on none of them.
+
+#### Changed parameters
+
+`decided_game_margin` and `decided_game_clock_share` are **removed**: they were the entire previous rule and are replaced, not adjusted. Everything below is new.
+
+| Parameter | Value | Unit | Safe range | Provenance |
+| --- | ---: | --- | --- | --- |
+| `settled_minimum_margin` | 18 | points | 8-40 | The coaching floor. Twelve points with ninety seconds left is arithmetically safe and no coach empties a bench into it; eighteen is the smallest margin at which resting people is a recognisable decision rather than a forfeit |
+| `settled_swing_points_per_pair` | 1.77 | points per √possession pair | 1.0-3.0 | **Measured, not chosen.** The pooled within-team-game variance of one possession's points is about 1.57 across the five competitions, and two possessions per pair gives `sqrt(2 × 1.57) = 1.77` |
+| `settled_leading_safety` | 2.6 | standard deviations | 1.5-6.0 | ≈ 99.5% win probability. The lower of the two thresholds; the gap to the row below is the authorised asymmetry |
+| `settled_trailing_safety` | 4.2 | standard deviations | 2.0-10.0 | ≈ 99.998%. Trailing coaches concede late and reluctantly |
+| `settled_release_share` | 0.85 | share of the entry threshold | 0.50-1.00 | Hysteresis, applied to both the safety and the margin floor. Without it a game trading baskets at eighteen points alternates rotations every possession |
+| `settled_minimum_pairs_left` | 1.0 | possession pairs | 0.0-6.0 | Below one pair there is no rest left to give and a substitution is churn |
+| `CompetitionRuleProfile` | unchanged | — | — | No competition profile needed a threshold of its own: the square-root law does the scaling |
+
+**One defect was found by measurement and fixed before the implementation was frozen.** The first cut applied hysteresis to the safety number but released on the raw eighteen-point floor, so a settled game trading baskets around that boundary re-entered and released repeatedly: 1.47 activations and 0.90 resumptions a game. Giving the floor the same release share cut those to 0.94 and 0.43 with no other change.
+
+**No threshold was moved after the first measurement.** The implementation was frozen before any validation range was touched, and the two thresholds are the values above.
+
+#### Seed-range separation
+
+Every range in this section is new. None appears in §5.7 through §5.11.
+
+| Purpose | Variations | RNG seeds | Games |
+| --- | --- | --- | ---: |
+| Development probe | 2,000,000-2,000,249 | 2,000,001-2,000,250 | 250 |
+| Tuning | — | — | not required |
+| **Validation A — untouched** | 310,000-310,499 | 310,001-310,500 | 500 |
+| **Validation B — untouched** | 320,000-320,499 | 320,001-320,500 | 500 |
+| **Mirror validation A — untouched** | 330,000-330,299 | 330,001-330,300 | 300 |
+| **Mirror validation B — untouched** | 345,000-345,299 | 345,001-345,300 | 300 |
+| Five-level paired measurement | 350,000-350,399 | 350,001-350,400 | 400 each |
+
+Every range was run on **both** the frozen implementation and a worktree checked out at `8e1c72b`, so every before/after pair below is the same games played by two engines. The before tree carries the same diagnostic harness and runner — a copy, not a rebuild — with the two references to the new class replaced by literals, so the instrument is identical and only the engine differs.
+
+No tuning range was needed: the thresholds were derived from win probability and the measured possession variance, not fitted.
+
+#### Even-team fixtures first
+
+Mirror fixtures, where the pregame gap is exactly zero and only the engine's own dispersion remains. 300 games each.
+
+| Metric | Mirror A before | **Mirror A after** | Mirror B before | **Mirror B after** |
+| --- | ---: | ---: | ---: | ---: |
+| Blowout share | 0.2433 | **0.1833** | 0.2500 | **0.1933** |
+| Close-game share | 0.1800 | 0.1867 | 0.2200 | 0.2267 |
+| Overtime rate | 0.0233 | 0.0233 | 0.0067 | 0.0067 |
+| Margin standard deviation | 17.346 | **15.559** | 17.327 | **15.533** |
+| `Var(margin)` | 300.88 | **242.07** | 300.23 | **241.28** |
+| `Cov(home, away)` | +20.25 | **+37.10** | +11.61 | **+31.26** |
+| Mean absolute margin | 13.89 | 12.65 | — | — |
+| Points per possession | 1.1808 | 1.1795 | 1.1802 | — |
+| Possessions per team-game | 100.85 | 100.84 | 100.49 | — |
+| Substitutions per game | 73.22 | 80.12 | — | — |
+
+Pooled over 600 even-team games the blowout share moves from **0.2467 to 0.1883** and the margin's variance falls by **19.6%**, of which the covariance term is the larger part.
+
+#### Population fixtures
+
+| Metric | Validation A before | **Validation A after** | Validation B before | **Validation B after** | Target |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Blowout share | 0.2840 ±0.0394 | **0.2320 ±0.0369** | 0.2520 ±0.0380 | **0.2120 ±0.0358** | 0.08-0.18 |
+| Close-game share | 0.2260 ±0.0366 | 0.2220 ±0.0364 | 0.2020 ±0.0351 | 0.2060 ±0.0354 | 0.22-0.34 |
+| Overtime rate | 0.0280 ±0.0148 | 0.0300 ±0.0153 | 0.0120 ±0.0102 | 0.0120 ±0.0102 | 0.04-0.08 |
+| Home win rate | 0.5320 ±0.0436 | 0.5320 ✓ | 0.5560 ±0.0434 | 0.5540 ✓ | 0.53-0.56 |
+| Margin standard deviation | 18.605 | **16.571** | 17.340 | **16.108** | — |
+| Mean absolute margin | 14.86 | 13.52 | 14.09 | 13.10 | — |
+| Median absolute margin | 12.0 | 11.0 | 11.5 | 11.0 | — |
+| One-possession rate (≤3) | 0.1220 | 0.1200 | 0.1080 | 0.1120 | — |
+| Two-possession rate (≤6) | 0.2680 | 0.2740 | 0.2720 | 0.2720 | — |
+| Lead changes per game | 6.638 | 6.638 | 6.874 | 6.884 | — |
+| Ties per game | 9.116 | 9.100 | 8.840 | 8.852 | — |
+| Largest lead, mean | 22.46 | 21.56 | 21.91 | 21.37 | — |
+| `Var(margin)` | 346.16 | **274.60** | 300.67 | **259.45** | — |
+| `Cov(home, away)` | −2.40 | **+19.13** | +6.75 | **+22.96** | — |
+| Residual covariance | −5.28 | **+13.59** | +7.26 | **+21.01** | — |
+| Points per possession | 1.1836 | 1.1806 | 1.1807 | 1.1768 | 1.08-1.18 |
+| Possessions per team-game | 100.71 | 100.67 | 100.73 | 100.69 | 96-103 |
+| Substitutions per game | 72.37 | 79.85 | — | 79.75 | — |
+
+**The earlier 21-23% estimate is confirmed and was very slightly optimistic.** Pooled over the two 500-game validation ranges and the 400-game top-domestic level run — 1,400 population games — the blowout share measures **0.2364 ±0.0223**. The 21-23% interval sits inside that at its lower edge.
+
+#### Garbage-time activation, re-entry and minutes
+
+| Measure | Mirror A | Mirror B | Validation A | Validation B | Top domestic |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Games where either coach settled | 0.4800 | 0.4700 | 0.5020 | 0.4800 | 0.4975 |
+| Games where the leading coach settled | 0.4800 | 0.4700 | 0.5020 | 0.4800 | 0.4975 |
+| Games where the trailing coach conceded | 0.3200 | 0.3467 | 0.3700 | 0.3340 | 0.3900 |
+| Games where a coach returned to his rotation | 0.3033 | 0.2933 | 0.3040 | 0.2880 | 0.2625 |
+| Activations per game | 0.940 | — | 1.088 | 0.986 | 1.085 |
+| Resumptions per game | 0.433 | 0.447 | 0.484 | 0.470 | 0.400 |
+| Absolute margin at first activation | 22.68 | — | 23.45 | 23.04 | 23.69 |
+| Share of regulation left at first activation | 0.2097 | — | 0.2335 | 0.2208 | 0.2419 |
+| **False positive**: activated, finished inside six | 0.0486 | 0.0426 | 0.0478 | 0.0458 | 0.0402 |
+| **False positive**: activated, finished inside ten | 0.1944 | 0.1560 | 0.1514 | 0.1625 | 0.1156 |
+| **Comeback**: won by the side behind at activation | 0.0139 | 0.0000 | 0.0000 | 0.0042 | 0.0050 |
+| Starter share of on-court time **before** activation | 0.6454 | 0.6481 | 0.6465 | 0.6481 | 0.6454 |
+| **Leading** starter share **after** activation | **0.1652** | **0.1610** | **0.1359** | **0.1298** | **0.1179** |
+| **Trailing** starter share **after** activation | **0.4664** | **0.4626** | **0.4731** | **0.4505** | **0.4286** |
+
+**The two rows at the bottom are the correction, measured.** Before activation the two benches are interchangeable at 65% starter time. After it the leading team's starters hold 12-17% of its minutes and the trailing team's hold 43-47% — a leading bench playing a trailing rotation, which is what garbage time is. The leading coach reaches the decision in about half of all games and the trailing coach in about a third, and the gap between those two shares is the window.
+
+**The state is not a latch and it is not a trap.** A coach returns to his competitive rotation in about 29% of games, and the comeback share — activated games won by the side that was behind when it began — is **0.000 to 0.014**. That is not zero because the trailing team occasionally does come back, and when it does the state releases first: the release is a *consequence* of points the trailing team scored, never a cause of them.
+
+Activation is called on a game that finishes inside six points about **4.5%** of the time. That is the rule's honest error rate at a mean activation margin of 23 points with a fifth of regulation left, and it is reported rather than tuned away.
+
+#### The five competition levels
+
+400 games each on the untouched range 350,000-350,399, the same games played by both engines. §14.2 game shape first.
+
+| §14.2 metric | High school | College | Development | Overseas | Top domestic |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Blowout, before | 0.1625 ✓ | 0.1950 ✗ | 0.2875 ✗ | 0.1950 ✗ | 0.2925 ✗ |
+| **Blowout, after** | **0.1300 ✓** | **0.1700 ✓** | 0.2450 ✗ | **0.1550 ✓** | 0.2725 ✗ |
+| Close, before | 0.2550 ✓ | 0.2675 ✓ | 0.2200 ✓ | 0.2650 ✓ | 0.2425 ✓ |
+| **Close, after** | **0.2700 ✓** | **0.2700 ✓** | **0.2200 ✓** | **0.2700 ✓** | **0.2475 ✓** |
+| Overtime, before | 0.0425 ✓ | 0.0125 ✗ | 0.0225 ✗ | 0.0250 ✗ | 0.0150 ✗ |
+| **Overtime, after** | **0.0425 ✓** | 0.0100 ✗ | 0.0225 ✗ | 0.0250 ✗ | 0.0175 ✗ |
+| Home win, before | 0.5475 ✗ | 0.5225 ✗ | 0.5200 ✗ | 0.5300 ✓ | 0.5300 ✓ |
+| Home win, after | 0.5450 ✗ | 0.5250 ✗ | 0.5200 ✗ | 0.5275 ✗ | 0.5325 ✓ |
+| Margin standard deviation, before | 14.53 | 14.92 | 19.02 | 14.65 | 18.45 |
+| **Margin standard deviation, after** | **13.40** | **14.00** | **17.92** | **13.41** | **17.73** |
+| `Cov(home, away)`, before | +1.60 | −6.64 | −15.34 | +11.61 | −3.78 |
+| **`Cov(home, away)`, after** | **+10.08** | **+2.56** | **−1.77** | **+21.33** | **+2.62** |
+| Garbage-time activation | 0.3375 | 0.3575 | 0.4850 | 0.3750 | 0.4975 |
+| Leading starter share after | 0.1392 | 0.1510 | 0.1466 | 0.1585 | 0.1179 |
+| Trailing starter share after | 0.4719 | 0.4582 | 0.4438 | 0.4458 | 0.4286 |
+
+**Blowout share improves at all five levels and now passes at three.** Overseas moves inside the band; college moves inside; high school moves further inside. The two levels still outside are the two that play the most possessions at the highest efficiency, which is the same ordering §5.10 and §5.11 found and the same one the arithmetic predicts.
+
+**High school passes every one of the fifteen judged metrics**, §14.1 and §14.2 together, for the first time.
+
+#### §14.1 regression: nothing moved
+
+Same games, same range, both engines. The rule touches minutes, so §14.1 rates move in the fourth decimal and nowhere else.
+
+| §14.1 metric | High school | College | Development | Overseas | Top domestic |
+| --- | --- | --- | --- | --- | --- |
+| Possessions per team-game | 68.72 → 68.60 ✓ | 70.43 → 70.38 ✓ | 94.48 → 94.31 ✓ | 74.34 → 74.34 ✓ | 100.37 → 100.31 ✓ |
+| Points per possession | 0.9603 → 0.9581 ✓ | 1.0462 → 1.0453 ✓ | 1.1090 → 1.1078 ✓ | 1.1119 → 1.1108 ✓ | 1.1844 → **1.1809** ✗ |
+| Field-goal % | 0.3970 → 0.3960 ✓ | 0.4144 → 0.4146 ✗ | 0.4363 → 0.4360 ✓ | 0.4366 → 0.4362 ✓ | 0.4601 → 0.4596 ✓ |
+| Three-point % | 0.3153 → 0.3140 ✓ | 0.3289 → 0.3295 ✓ | 0.3472 → 0.3468 ✓ | 0.3523 → 0.3519 ✓ | 0.3699 → 0.3690 ✓ |
+| Three-point attempt rate | 0.3422 → 0.3409 ✓ | 0.3743 → 0.3739 ✓ | 0.3917 → 0.3905 ✓ | 0.3945 → 0.3935 ✓ | 0.4108 → 0.4099 ✓ |
+| Free-throw % | 0.6717 → 0.6695 ✓ | 0.7142 → 0.7138 ✓ | 0.7564 → 0.7549 ✓ | 0.7629 → 0.7614 ✓ | 0.8036 → 0.8018 ✓ |
+| Free-throw attempt rate | 0.1944 → 0.1958 ✓ | 0.2497 → 0.2488 ✓ | 0.2129 → 0.2141 ✓ | 0.2182 → 0.2192 ✓ | 0.2192 → 0.2202 ✓ |
+| Turnovers per 100 | 17.71 → 17.72 ✓ | 16.65 → 16.71 ✓ | 14.70 → 14.78 ✓ | 14.19 → 14.16 ✓ | 14.01 → 14.12 ✓ |
+| Offensive rebound % | 0.2535 → 0.2536 ✓ | 0.2553 → 0.2561 ✓ | 0.2535 → 0.2545 ✓ | 0.2523 → 0.2519 ✓ | 0.2564 → 0.2559 ✓ |
+| **Assist %** | 0.4768 → 0.4772 ✓ | 0.4851 → 0.4840 ✓ | 0.4731 → 0.4740 ✗ | 0.4701 → 0.4712 ✗ | 0.4817 → 0.4820 ✗ |
+| Starter mean minutes | 20.36 → 19.71 | 25.08 → 24.79 | 30.40 → 29.16 | 25.03 → 24.38 | 30.05 → **28.84 ✓** |
+
+**Every pass/fail verdict is identical before and after, at every level.** The only §14.1 metric that changes verdict is none of them.
+
+**Points per possession, without tuning.** Top domestic reads 1.1809 on this range and fails the 1.18 ceiling — and it fails *before* the change too, at 1.1844. The range is hot: the same engine measured 1.1691 on 60,000-60,399 in §5.11 and 1.1768-1.1806 on the two validation ranges here. The garbage-time rule moved it **down** by 0.0035, toward the band, because a bench plays the last six minutes of half the games. Nothing was tuned to achieve that and nothing was tuned to hide it: the honest statement is that points per possession sits on its ceiling and its range-to-range spread straddles it.
+
+**Assist percentage, home advantage and college field-goal percentage are untouched measurements.** Assist moves by at most 0.0011 at any level and no assist parameter exists in this diff. Home win rate moves by at most 0.0025 and the §5.11 cause — the home environment is worth about 0.3 points a game where the band needs about 2.1 — is unchanged. College field-goal percentage moves from 0.4144 to 0.4146 against a 0.42 floor. All three were explicitly out of scope and all three are reported exactly as measured.
+
+#### Tests
+
+`tests/simulation/test_garbage_time.gd` — 22 cases against the rule directly.
+
+- The safety number is one shared property of the game: both teams read the same value, a level game has none, and it grows with the margin and with the clock running out.
+- **The safety obeys the square-root law it is built on**: doubling the margin is exactly equivalent to quadrupling the possessions left, and halving the margin halves the safety. This is the property that lets one constant serve five competitions, and the property a rule dividing by the possessions would break while still ordering the extremes correctly.
+- Reversing the scoreboard swaps the two roles exactly, at every margin tested.
+- The policy is blind to who the players are: replacing both rosters with much stronger ones leaves the safety and the decision identical.
+- The leading coach settles before the trailing one; the trailing coach never concedes first; and both settle once the game is decided enough.
+- Garbage time cannot activate in a close game at any clock, cannot activate early at any margin, and cannot begin with less than a possession pair left.
+- Returning to the competitive rotation is rule-based and symmetric; the state has hysteresis, on a state found by search rather than asserted from a literal; a lead changing hands ends it.
+- **The same shot keeps its make probability** in and out of the state, at +30, 0 and −30, with the random stream held fixed; and capability resolution for the same player is identical at every margin and in either mode.
+- Intentional fouling and the settled state cannot overlap — the two windows are disjoint by construction at every margin from one to twenty-three.
+- Timeouts stay valid through the settled state: the allowance is spent, never replenished, never over-spent.
+- **Every settled-game substitution is preceded by a live `GARBAGE_TIME` entry for the same team**, each entry names a valid mode, carries a margin at or beyond the coaching floor, and agrees in sign with the mode it declares.
+- Minutes and lineup participation reconcile: five per team on court throughout, every check-out matched by a live check-in, team minutes within one per cent of five times the game.
+- Play, Sim and Skip agree; the same seed reproduces the ledger byte for byte; the state does not leak between games.
+- The thresholds scale across all five competitions' game lengths.
+
+`tests/simulation/test_score_margin.gd` gains a raised sample and a stronger assertion. `EDGE_SAMPLE` moves from 8 to 24 because at eight games the edge-overlap statistic had become a boundary — the edged fixture's minimum and the neutral fixture's maximum landed on the same integer, which says nothing. At twenty-four the same fixture shows a five-point capability edge **losing three of its games**, and the test now asserts that directly as well as the overlap. Its settled-game cases are restated against the new contract: the rotation *reads* a mode it never recomputes, and a thirty-point scoreboard alone settles nobody.
+
+#### Mutation evidence
+
+Each mutation was applied to a byte-exact backup, the detector run, and the file restored. `git status --porcelain` was captured before and after the whole battery and compared: **identical**.
+
+| # | Mutation | Detector | What it reported |
+| --- | --- | --- | --- |
+| 1 | The eighteen-point coaching floor removed | `test_garbage_time_cannot_activate_in_a_close_game` | Ten assertion failures; games settled at margins of one to eleven points |
+| 2 | Only the home side receives the policy | `test_reversing_the_scoreboard_swaps_the_two_roles` | Six failures; home at `+m` no longer behaved as away at `−m` |
+| 3 | The trailing team's field-goal probability raised by 0.05 | `test_the_same_shot_keeps_its_probability_in_and_out_of_garbage_time` | The probability at −30 differed from the probability at 0 |
+| 4 | The reducer clamps any lead above twenty-five points | `MatchSession`'s box-score reconciliation assertion | Four errors across the suite. A score clamp is structurally unreachable: scores are reduced from events and reconciled against the ledger |
+| 5 | The leading coach never settles | `test_the_leading_coach_settles_before_the_trailing_one` | Six failures: the trailing coach conceded first, and no leading-only window existed |
+| 6 | The trailing coach never concedes | `test_the_leading_coach_settles_before_the_trailing_one` | Both coaches never settle, however decided the game becomes |
+| 7 | Entries dropped from the ledger, leaving only the resumptions | `test_every_settled_substitution_is_explained_by_a_ledger_entry` | A settled-game check-in with no live garbage-time entry |
+| 8 | The settled state never releases | `test_returning_to_the_competitive_rotation_is_rule_based_and_symmetric` | Three failures; a twelve-point game stayed settled |
+| 9 | Safety scales with the possessions left rather than their square root | `test_safety_obeys_the_square_root_law` | **Not detected on the first attempt.** See below |
+| 10 | A settled-game substitution checks a player in without checking anyone out | `RotationResolver.validate` | `exactly five eligible players per team must be on court`, immediately, followed by a cascade of lineup and matchup failures |
+
+**Mutation 9 is the one worth keeping in the record.** Replacing `sqrt(pairs)` with `pairs / 6` — a rule that scales with the possessions left rather than with their square root, and therefore reads a thirty-two-minute game and a forty-eight-minute one differently — passed the whole suite. The scaling test asserted the *extremes*: a settled margin settles everywhere, a competitive one settles nowhere, and nothing settles in the first period. A linear rule satisfies all three, because the coaching floor masks the middle and the extremes still order correctly. What it cannot satisfy is the law the rule is built on, and the suite did not assert it. `test_safety_obeys_the_square_root_law` now does — doubling the margin must equal quadrupling the possessions left — and the restated mutation fails it in 13 ms. A test that checks the ends of a curve is not checking its shape.
+
+#### Golden-ledger impact
+
+**No committed hash moved, and no scenario seed moved.** All six golden ledgers reproduce exactly, `tests/run_all.gd` passes against the hashes committed under `simulation-v4-management`, and `tests/fixtures/golden_scenarios.gd` is untouched.
+
+The reason is legible rather than lucky: the six fixtures finish at margins of four to thirteen points, and the rule needs eighteen before it can fire at all. The blast radius of a rule that only acts on decided games is exactly the set of games that become decided, and none of the committed scenarios does.
+
+The simulation ruleset version still moves, from `simulation-v4-management` to **`simulation-v5-garbage-time`**, because the balance profile's tunables and the engine's rotation behaviour both changed. The version records why hashes *would* have been allowed to move; that none did is the evidence, not the exemption.
+
+#### Regression
+
+| Check | Result |
+| --- | --- |
+| Parse/compile gate under warnings-as-errors | 208 scripts, 0 failures |
+| GdUnit4 full suite | **366 cases, 0 failures**, against 344 before |
+| `tests/run_all.gd` acceptance | PASS |
+| Simulation smoke and invariants | Invariants PASS |
+| All six golden scenarios | Reproduce exactly; no hash or seed changed |
+| Builder calibration | PASS |
+| Attribute sensitivity at 100,000 resolutions per point | 80 metrics, 80 judged, **0 failures** |
+| Calibration smoke | 15 metrics, 15 judged, **0 failures** |
+| Career progression, three shards of 1,000 careers | All five §8.4 bands pass on all three shards; share above 95 OVR 0.0000; §8.4 transition-gap share 0.0160; AP reconciliation failures 0.0000; §9.5 opportunity-ruling violations 0.0000. The only failure on each shard is `sample.meets_certification_size` at 1,000 careers against §27.1's 1,000,000 |
+| AP reconciliation | 0.0000 failures on all three shards |
+| Executor parity | Manual vs full-detail and manual vs aggregate relative peak difference both exactly 0.0000, Cohen's *d* 0.000, on all three shards |
+| Projected Peak regression | Coverage 0.7440 ±0.0191, median width 11.0, zero pathological subgroups. 3 judged metrics, 0 failures |
+| Rare-generational regression | 400 forced-path careers reproduce §5.8's allocation bound and phase accounting unchanged |
+| Real shard aggregation | Three seed-disjoint top-domestic shards of 120 games pooled end to end; all accepted, provenance and seed-disjointness validated; refuses to certify at `certification.sample_reached` 0.0000 |
+| Five-level competition reports | The tables above, before and after, on one untouched range |
+
+Every §5.7, §5.8, §5.9 and §5.11 figure reproduces. Nothing in this correction touches the development domain, and the career runs are the regression check on that separation rather than a re-derivation.
+
+#### Performance
+
+| | Before (`8e1c72b`) | After | Change |
+| --- | ---: | ---: | ---: |
+| Milliseconds per complete reference game | 1149.4 | 1157.7 | **+0.7%** |
+
+Measured with the same runner at 20 games, on the same quiet machine, with the before figure taken from a worktree checked out at the before commit rather than by stashing. The cost is one safety evaluation per team between possessions — two square roots a possession pair — and it is inside the noise of a measurement that moves by more than this between otherwise identical runs.
+
+#### Classification
+
+- **Structural:** the safety number's square-root law and its symmetry; the policy's blindness to ratings, strength and any intended winner; the coaching floor, the early-game guard and the no-time-left guard; the asymmetric ordering of the two thresholds and the existence of a leading-only window; release with hysteresis and on a lead changing hands; the absence of any score or settled-state effect on shot probability or capability; the disjointness of intentional fouling and the settled state; the ledger explaining every settled substitution; minute and lineup reconciliation; Play/Sim/Skip equality; cross-game isolation; and the golden ledgers reproducing unchanged. All proven by deterministic tests.
+- **Measured below requirement:** every §14.2 and §14.1 figure above. 300-500 games per range against §27.1's 100,000 per competition.
+- **Failed:** §14.2 blowout share at development and top domestic; overtime rate at four of five levels; home win rate at four of five. §14.1 assist percentage at three of five, college field-goal percentage, and top-domestic points per possession on this range — all three unchanged by this work and all three explicitly out of its scope.
+- **Certified:** nothing.
+
+### 5.13 Proposed §14.2 amendment — for owner decision, not enacted
+
+Status: **A proposal. Nothing in `BALANCE_SPEC.md` §14.2 has been changed, and nothing below is approved. The current targets remain the targets against which every report in this document is judged, and every failure against them is still reported as a failure.**
+
+§14.2 states four game-shape targets as one universal band each, for all five competitions. Three tasks of measurement now say that two of those four cannot be universal, and one of them cannot be met at all under the current possession and scoring model. This section sets out what would have to change, what it would cost, and what the owner would be accepting.
+
+#### What is measured, and what kind of problem each target is
+
+The task's five categories, assigned:
+
+| Target | Category | Why |
+| --- | --- | --- |
+| **Overtime 4-8%** | **Mathematically impossible under the current legal possession/scoring model** | The probability of an exactly level regulation score is the margin distribution's density at zero. Under §14.1's possession economy — 68-101 possessions worth 0, 1, 2 or 3 points at the measured rates — a ledger-faithful replay model reaches a tie rate of only 0.0334 at a margin standard deviation of **9.90**, a league whose games are decided by ten points on average. Every legal dispersion is worse. This is a property of *this* scoring model, **not a law of basketball**: a league with a fuller end-of-regulation repertoire concentrates extra mass at exactly level, and that repertoire is a system this engine does not yet have |
+| **Blowout 8-18%, top domestic and development** | **Possible through legitimate behaviour but outside current safe ranges** | The replay model puts the ceiling at a leading-team penalty near 0.12 points per possession. The authorised rotation asymmetry delivers a measured 0.03-0.05 at coaching-plausible thresholds and reaches 0.212-0.273. Lowering `settled_minimum_margin` toward 12, or `settled_leading_safety` toward 1.8, would close more of it — and both would put the rule inside genuinely competitive games, which the owner ruling forbids |
+| **Blowout 8-18%, the other three levels** | **Met** | High school 0.1300, college 0.1700, overseas 0.1550 |
+| **Games decided by five or fewer, 22-34%** | **Met at all five levels** | 0.2200-0.2700. It is marginal on the two 500-game population ranges (0.2060, 0.2220) and is reported as marginal |
+| **Even-team home win rate 53-56%** | **Currently failing because implementation is incomplete** | `home_environment_shot_bonus` is 0.006 against an environment of 0.5, worth about 0.3 points a game where the band needs about 2.1. §5.11 measured the cause; raising it is a one-line change inside an existing safe range and was out of scope for both that task and this one |
+
+No target is classified "possible but requires prohibited rubber-banding", and none is classified "target itself is unsupported" — the bands are all defensible descriptions of *some* league; the question is which league, and at what possession economy.
+
+#### The proposed amendment
+
+Every figure in the "achievable" column is a measurement on the untouched range 350,000-350,399 at 400 games, with the two 500-game validation ranges quoted for top domestic. Every proposed band is **simulation-derived**.
+
+| Target | Current band | Level | Measured, after | Achievable range | **Proposed band** |
+| --- | --- | --- | ---: | --- | --- |
+| Overtime | 4-8%, universal | High school | 0.0425 | 0.03-0.05 | **3-6%** |
+| | | College | 0.0100 | 0.01-0.03 | **1-4%** |
+| | | Development | 0.0225 | 0.01-0.04 | **1-4%** |
+| | | Overseas | 0.0250 | 0.01-0.04 | **1-4%** |
+| | | Top domestic | 0.0175 | 0.012-0.030 | **1-4%** |
+| Decided by ≤5 | 22-34%, universal | all five | 0.2200-0.2700 | 0.19-0.30 | **20-34%, universal (unchanged band, widened floor)** |
+| Decided by ≥20 | 8-18%, competition-dependent | High school | 0.1300 | 0.11-0.16 | **8-18%** (unchanged) |
+| | | College | 0.1700 | 0.14-0.20 | **10-22%** |
+| | | Overseas | 0.1550 | 0.13-0.19 | **10-22%** |
+| | | Development | 0.2450 | 0.21-0.28 | **16-30%** |
+| | | Top domestic | 0.2725 | 0.212-0.273 | **16-30%** |
+| Even-team home win | 53-56% | all five | 0.5200-0.5540 | not measured under a corrected home environment | **unchanged**; the failure is an unfinished implementation, not an unsupported target |
+
+#### Why the bands separate by competition, in the engine's own arithmetic
+
+§14.2's blowout band is already labelled "competition-dependent" and has never been given competition-dependent numbers. The dependence is not a preference; it is `sigma_margin = sqrt(2 · n · sigma_possession^2)` and it is measured:
+
+| Level | Possessions per team-game | Points per possession | Margin SD, after | Blowout share, after |
+| --- | ---: | ---: | ---: | ---: |
+| High school | 68.60 | 0.9581 | 13.40 | 0.1300 |
+| College | 70.38 | 1.0453 | 14.00 | 0.1700 |
+| Overseas | 74.34 | 1.1108 | 13.41 | 0.1550 |
+| Development | 94.31 | 1.1078 | 17.92 | 0.2450 |
+| Top domestic | 100.31 | 1.1809 | 17.73 | 0.2725 |
+
+A game with half again as many possessions, each worth a fifth more, has a margin distribution about a third wider. §14.1 *sets* those possession counts and those efficiencies, per competition, and locks them. A universal §14.2 blowout band therefore asks five different leagues to produce the same tail from deliberately different economies. The two bands are describing incompatible things, and the incompatibility is in the specification rather than in the engine.
+
+The overtime band is a separate argument and a stronger one. The probability of an exactly level score is bounded above by the margin density at zero, which no legitimate mechanism raises without collapsing the dispersion to a value no basketball league has. §5.11's replay model, extended here, reaches 0.0334 at a margin standard deviation of 9.90. **4% is not reachable at any dispersion this scoring model can produce.**
+
+#### External benchmarks
+
+**None were consulted, and the proposal is therefore labelled simulation-derived and provisional.**
+
+This is a deliberate refusal rather than an omission. This environment has no access to an authoritative primary source for league game-shape statistics — an official league statistics service, or a published dataset with a stated methodology — and a figure recalled from training or taken from an unverifiable secondary source is exactly the invented external benchmark the brief forbids. Quoting one would make the proposal look better sourced than it is.
+
+To convert this proposal from provisional to benchmarked, an owner would need, for each comparable competition and a stated span of seasons:
+
+1. **Overtime rate** — games reaching at least one overtime period, divided by games played. Definition must state whether abandoned and forfeited games are excluded.
+2. **Margin distribution** — the share of games decided by five or fewer and by twenty or more, on final score including overtime, with the same tie-handling this engine uses.
+3. **Possessions per team-game and points per possession**, on a stated possession definition, so the benchmark can be read against §14.1 rather than beside it.
+4. **Home win rate** for evenly matched teams, or a rating-adjusted equivalent, since a raw home win rate confounds home advantage with schedule strength.
+
+Without items 3 and 4 a benchmark cannot be compared to this engine at all: a league's blowout rate is a function of its possession economy and its competitive balance, and quoting one without the other two is how a target gets set to a number no engine with these §14.1 bands could ever produce.
+
+#### Three quantified options
+
+**Option 1 — Preserve the current targets and build the additional authorised system they require.**
+
+What it needs: a fuller end-of-regulation model. The overtime band is unreachable because too few games arrive at the final possession within one score, and those that do resolve with too little structure. The missing system is the deliberate endgame: two-for-one possession management, fouling while ahead by three, timeout-to-advance, and designed last-possession plays. All four are legitimate coaching, all four are in `SIMULATION_SPEC.md`'s scope, and none exists.
+
+Quantified: the engine's one-possession rate (≤3 points) is 0.100-0.144 and its tie rate is 0.012-0.030. To reach a 4% tie rate the endgame would have to convert roughly **30% of one-score finishes into exact ties**, against a current conversion near 20%. That is a large but not absurd target for a system built for it. Blowout share would additionally need the leading-team penalty raised from 0.03-0.05 to 0.12 by some mechanism not yet identified.
+
+Cost: a substantial new subsystem, its own calibration, its own no-comeback-script suite, and Stage 4 stays open for it. Benefit: no locked target moves.
+
+**Option 2 — Adopt competition-specific §14.2 bands.**
+
+What it needs: the table above, written into §14.2, and a note that the blowout and overtime bands are functions of §14.1's possession economy.
+
+Quantified: with the proposed bands, all five competitions pass blowout, close-game and overtime immediately on the measured evidence, and the only remaining §14.2 failure is the home win rate, whose cause is already measured and whose fix is one line. §14.1 is unaffected.
+
+Cost: two locked targets move, and they move to fit a measurement — which is the thing this project's rules exist to prevent. The defence is that §14.2 already says "competition-dependent" for the blowout band and has never had competition-dependent numbers, and that the overtime band is not reachable by any legal engine rather than merely unreached by this one. Benefit: the specification stops asking five economies for one tail.
+
+**Option 3 — Accept a deliberately different LeagueBound game-shape identity.**
+
+What it needs: a ruling that LeagueBound's basketball is higher-variance than the leagues §14.2 was written from, and that its game shape is a design property rather than a fidelity target. §14.2's blowout and overtime bands become *informational* — measured and published every run, judged against nothing — while §14.1 stays locked and judged.
+
+Quantified: nothing changes in the engine. Every §14.2 figure in this document stands as the identity: blowouts 13-27% by level, overtime 1-4%, close games 22-27%.
+
+Cost: the project loses its only external anchor on game shape, and a future regression that widened the margin further would have nothing to fail against. Benefit: no new subsystem, no moved target, and honest labelling.
+
+#### Recommendation
+
+**Option 2 for overtime, unconditionally.** The 4-8% band is not reachable by any mechanism this engine could legitimately contain under §14.1's scoring model, and no amount of further work changes that; keeping it costs a permanent known failure that carries no information. The proposed 1-4% and 3-6% bands are what the possession economy supports.
+
+**Option 2 for the blowout band as well, but only as far as the arithmetic requires** — 16-30% for the two high-possession competitions, 10-22% for the two middle ones, unchanged at high school. Option 1's endgame system is worth building for its own sake and would improve the overtime rate, but it should be commissioned as basketball rather than as a way of hitting a number, and it will not close the blowout gap at all.
+
+**Option 3 is not recommended.** Making the bands informational removes the only thing that would catch a future regression in game shape, and the measurements in this document exist precisely because the bands were judged.
+
+This recommendation is not enacted. §14.2 is unchanged in `BALANCE_SPEC.md`, every report in this document is still judged against the current bands, and the failures are still recorded as failures.
 
 ## 6. Certification and workflow blockers
 
