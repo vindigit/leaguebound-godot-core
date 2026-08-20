@@ -296,6 +296,78 @@ func test_turnover_foul_and_rebound_resolution_are_identical_at_every_tier() -> 
 			"a stakes tier changed rebound resolution").is_equal(rebounds[0])
 
 
+## The end-of-regulation rule selects a shot and never resolves one.
+##
+## Two boards that differ *only* in how much regulation is left — one inside the
+## tie-seeking window, one far outside it — with the shooter, the defender, the
+## zone, the contest, the fatigue, the shot clock and the random stream all held
+## fixed. The resolved make probability, the resolved outcome, and the number of
+## draws consumed are identical, at every tier.
+##
+## **This test exists because a mutation survived without it.** A forced late
+## tie — "a levelling shot inside the last thirty seconds cannot miss" — was
+## caught only by the committed golden ledgers, which is a real detector but a
+## structural one: it says *something* moved, not that an execution probability
+## was scripted. This says the second thing.
+func test_the_endgame_window_changes_selection_and_never_resolution() -> void:
+	var base: MatchInput = _match()
+	for stakes in GameStakes.all():
+		var input: MatchInput = base.with_stakes(stakes)
+		var rules: CompetitionRuleProfile = input.rule_profile
+		var window: int = StakesPolicy.endgame_window_ms(input.balance_profile, stakes)
+		var reference_probability: float = -1.0
+		var reference_made: bool = false
+		var reference_draws: int = -1
+		# Well inside the window, and well outside it, in the same period.
+		for clock_ms: int in [maxi(window / 2, 4000), rules.period_length_ms(
+			rules.regulation_periods) - 1000]:
+			var snapshot: MatchSnapshot = _snapshot_at(
+				input, rules.regulation_periods, clock_ms, -3)
+			# The shot clock is a real execution input — a rushed shot is a worse
+			# shot — so it is pinned rather than derived from the game clock.
+			snapshot.shot_clock_ms = rules.shot_clock_seconds * 1000
+			var counters: Dictionary = CountingRandomSource.counters()
+			var counter := CountingRandomSource.new(SeededRandomSource.new(7331), counters)
+			var context := PossessionContext.new(
+				input, snapshot, input.home.team_id, MatchupState.new({}), 1)
+			var capability := CapabilityCalculator.new(
+				input.ratings_profile, input.balance_profile)
+			var resolver := ShotResolver.new(
+				capability, BodyEffects.new(input.balance_profile), input.balance_profile)
+			var contest := ShotContest.new(
+				ContestBand.Value.OPEN, input.away.starters()[0], &"", false, false, 0.2, 0.0)
+			var outcome: ShotOutcome = resolver.resolve(
+				context, input.home.starters()[0], ShotZone.Value.STANDARD_THREE, false,
+				contest, AdvantageResult.new(), 1.0, 0.0, counter)
+			var draws: int = counters[&"next_float"]
+			if reference_probability < 0.0:
+				reference_probability = outcome.probability
+				reference_made = outcome.made
+				reference_draws = draws
+				continue
+			assert_float(outcome.probability).override_failure_message(
+				"the end-of-regulation window moved a make probability at tier %s"
+					% GameStakes.id_of(stakes))\
+				.is_equal(reference_probability)
+			assert_bool(outcome.made).override_failure_message(
+				"the end-of-regulation window forced a shot outcome at tier %s"
+					% GameStakes.id_of(stakes))\
+				.is_equal(reference_made)
+			assert_int(draws).is_equal(reference_draws)
+		# And the *selection* really does differ across that same boundary, so the
+		# test above is not passing because the window is inert.
+		var inside: float = _endgame_multiplier(
+			input, stakes, rules.regulation_periods, maxi(window / 2, 4000), -3,
+			ShotZone.Value.STANDARD_THREE)
+		var outside: float = _endgame_multiplier(
+			input, stakes, rules.regulation_periods,
+			rules.period_length_ms(rules.regulation_periods) - 1000, -3,
+			ShotZone.Value.STANDARD_THREE)
+		assert_float(inside).override_failure_message(
+			"the tie-seeking window is inert at tier %s" % GameStakes.id_of(stakes))\
+			.is_greater(outside)
+
+
 ## **Requirement 6: capability resolution is identical across tiers.**
 ##
 ## All twenty-four capabilities for every player on both rosters, at rest and
