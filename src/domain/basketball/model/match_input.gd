@@ -22,6 +22,15 @@ var initial_possession_team_id: StringName
 ## communication, composure, and familiarity effects only; it never guarantees
 ## an outcome.
 var home_environment: float
+## §18.2 what this game is worth: `GameStakes.Value`.
+##
+## A property of the occasion, not of a side — both teams play the same
+## contest — and the last argument rather than a new required one, so every
+## existing caller keeps the regular-season game it already had. The scheduling
+## and career layers do not exist yet; when they do, mapping a real fixture onto
+## a tier is *their* responsibility. The engine is handed the tier and learns
+## nothing else about the occasion.
+var stakes: int
 
 
 func _init(
@@ -34,6 +43,7 @@ func _init(
 	p_initial_possession_team_id: StringName = &"",
 	p_ratings_profile: RatingsProfile = null,
 	p_home_environment: float = 0.5,
+	p_stakes: int = GameStakes.DEFAULT,
 ) -> void:
 	assert(not p_match_id.is_empty() and not p_game_id.is_empty(),
 		"match and game identity are required")
@@ -48,6 +58,7 @@ func _init(
 	)
 	assert(p_home_environment >= 0.0 and p_home_environment <= 1.0,
 		"home environment strength must be normalized")
+	assert(GameStakes.is_valid(p_stakes), "game stakes must be a declared tier")
 	match_id = p_match_id
 	game_id = p_game_id
 	rule_profile = p_rule_profile
@@ -57,6 +68,7 @@ func _init(
 	away = p_away
 	initial_possession_team_id = p_initial_possession_team_id
 	home_environment = p_home_environment
+	stakes = p_stakes
 
 
 func team_profile(team_id: StringName) -> TeamMatchProfile:
@@ -75,3 +87,14 @@ func opposing_team_id(team_id: StringName) -> StringName:
 
 func is_home(team_id: StringName) -> bool:
 	return team_id == home.team_id
+
+
+## The same match played for different stakes.
+##
+## Everything else is shared by reference, which is what makes a matched
+## diagnostic honest: the two inputs are not two similar games, they are one
+## game with one field changed.
+func with_stakes(p_stakes: int) -> MatchInput:
+	return MatchInput.new(
+		match_id, game_id, rule_profile, balance_profile, home, away,
+		initial_possession_team_id, ratings_profile, home_environment, p_stakes)

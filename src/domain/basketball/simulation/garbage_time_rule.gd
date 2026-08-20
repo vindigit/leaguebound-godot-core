@@ -127,11 +127,24 @@ static func role_for(state: MatchSnapshot, team_id: StringName) -> int:
 ## The leading threshold is the lower of the two, and that asymmetry is the
 ## whole of the correction: a coach who has won the game rests people before a
 ## coach who has lost it gives up on winning.
-static func entry_threshold(balance: SimulationBalanceProfile, role: int) -> float:
+##
+## §18.2 stakes scale both thresholds by the same factor. What a Final buys is
+## *patience* — a coach demands more of the same evidence before he acts on it —
+## and not a different rule: the safety number is unchanged, the eighteen-point
+## coaching floor is unchanged, the one-possession-pair guard is unchanged, and
+## the two roles keep their gap. A regular-season game multiplies by exactly
+## one.
+static func entry_threshold(
+	balance: SimulationBalanceProfile,
+	role: int,
+	stakes: int = GameStakes.DEFAULT,
+) -> float:
 	if role == Mode.LEADING:
-		return maxf(balance.settled_leading_safety, 0.0)
+		return StakesPolicy.settled_entry_threshold(
+			balance, maxf(balance.settled_leading_safety, 0.0), stakes)
 	if role == Mode.TRAILING:
-		return maxf(balance.settled_trailing_safety, 0.0)
+		return StakesPolicy.settled_entry_threshold(
+			balance, maxf(balance.settled_trailing_safety, 0.0), stakes)
 	return INF
 
 
@@ -150,7 +163,7 @@ static func should_enter(
 	# With less than a possession pair to play there is no rest left to give.
 	if GameManagement.possession_pairs_left(state, input) < balance.settled_minimum_pairs_left:
 		return false
-	return safety(state, input, balance) >= entry_threshold(balance, role)
+	return safety(state, input, balance) >= entry_threshold(balance, role, input.stakes)
 
 
 ## Whether a team already in the settled rotation should return to its
@@ -177,7 +190,7 @@ static func should_leave(
 		# The lead changed hands. Whatever this coach was doing, he is not doing
 		# it any more.
 		return true
-	var release: float = entry_threshold(balance, mode) * clampf(
+	var release: float = entry_threshold(balance, mode, input.stakes) * clampf(
 		balance.settled_release_share, 0.0, 1.0)
 	return safety(state, input, balance) < release
 

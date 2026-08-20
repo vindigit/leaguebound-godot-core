@@ -153,8 +153,14 @@ func _departure_reason(
 	):
 		return SubstitutionOrder.Reason.DECIDED_GAME
 	# §18.1 planned minutes: a stint that has run past plan yields to the bench.
+	# §18.2 stakes raise how far past plan a coach lets it run, which is the whole
+	# of "a tighter rotation": the same players, asked for more of the game. Every
+	# reason above this one — foul-out, unavailability, foul trouble, acute
+	# fatigue, the settled rotation — is checked first and none of them moves.
 	if runtime.stint_ms >= _balance.substitution_stint_seconds * 1000:
-		if _minute_pressure(state, input, profile, runtime) > 1.0:
+		if _minute_pressure(state, input, profile, runtime) > StakesPolicy.minute_tolerance(
+			_balance, input.stakes
+		):
 			return SubstitutionOrder.Reason.PLANNED_MINUTES
 	return -1
 

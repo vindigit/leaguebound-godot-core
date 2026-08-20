@@ -521,6 +521,59 @@ var intentional_foul_max_margin: int = 6
 var intentional_foul_clock_ms: int = 40000
 var intentional_foul_share: float = 0.55
 
+# --- §18.2 game stakes ------------------------------------------------------
+## How much further past his planned share a coach lets a player run, per stakes
+## tier above regular season.
+##
+## Two tiers at 0.10 is a twenty per cent tolerance: a starter planned for 34
+## minutes of a 40-minute game rides to about 41% of it before the bench takes
+## the minutes back. That is a tighter rotation, not a different roster, and
+## foul trouble, fatigue, injury and the settled rotation all still take
+## precedence over it.
+##
+## Units: share of the planned minute share, per tier. Safe range 0.0-0.35.
+var stakes_rotation_tightness_step: float = 0.10
+## How much earlier a coach starts holding his timeouts for the endgame, per
+## stakes tier.
+##
+## Two tiers at 0.35 turns a 90-second reserve into 153 seconds: a championship
+## coach stops spending timeouts on the opponent's run about a minute sooner
+## than a regular-season one, and arrives at the last possession holding more of
+## them.
+##
+## Units: share of `timeout_run_reserve_ms`, per tier. Safe range 0.0-0.60.
+var stakes_timeout_reserve_step: float = 0.35
+## How many more standard deviations of safety a coach demands before entering
+## the settled rotation, per stakes tier.
+##
+## Two tiers at 0.15 raises the leading threshold from 2.6 to 3.38 and the
+## trailing one from 4.2 to 5.46. Both remain finite, and the safety number they
+## are compared against grows without bound as the clock runs out, so a
+## genuinely decided championship game still reaches garbage time — later, and
+## still with the eighteen-point coaching floor and the one-possession-pair
+## guard underneath it.
+##
+## Units: share of the entry threshold, per tier. Safe range 0.0-0.30.
+var stakes_settled_patience_step: float = 0.15
+## How much earlier the end-of-regulation tie-seeking window opens, per stakes
+## tier.
+##
+## Two tiers at 0.50 opens it at 64 seconds rather than 32. It is the largest
+## step here because it is the one whose unit is time rather than preference:
+## the rule itself is unchanged, it simply applies to the last two possessions
+## of a Final instead of the last one.
+##
+## Units: share of `endgame_possession_ms`, per tier. Safe range 0.0-1.00.
+var stakes_endgame_window_step: float = 0.50
+## How much more firmly the tie-seeking preference is held, per stakes tier.
+##
+## Two tiers at 0.25 takes the levelling-shot gain from 0.40 to 0.60 and the
+## relief on the other shot from 0.35 to 0.525, both still inside the clamps the
+## base values already lived under.
+##
+## Units: share of the tie-seeking weights, per tier. Safe range 0.0-0.50.
+var stakes_endgame_conviction_step: float = 0.25
+
 # --- Â§24.2 possessions estimate --------------------------------------------
 ## The classic estimator's free-throw weight. Engine possessions come from
 ## terminal possession records; this is only the published estimate beside them.
@@ -946,6 +999,11 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"late_game.intentional_foul_max_margin", &"points", float(intentional_foul_max_margin), 1.0, 15.0)
 	_add(tunables, &"late_game.intentional_foul_clock_ms", &"milliseconds", float(intentional_foul_clock_ms), 5000.0, 120000.0)
 	_add(tunables, &"late_game.intentional_foul_share", &"probability", intentional_foul_share, 0.0, 1.0)
+	_add(tunables, &"stakes.rotation_tightness_step", &"share", stakes_rotation_tightness_step, 0.0, 0.35)
+	_add(tunables, &"stakes.timeout_reserve_step", &"share", stakes_timeout_reserve_step, 0.0, 0.60)
+	_add(tunables, &"stakes.settled_patience_step", &"share", stakes_settled_patience_step, 0.0, 0.30)
+	_add(tunables, &"stakes.endgame_window_step", &"share", stakes_endgame_window_step, 0.0, 1.0)
+	_add(tunables, &"stakes.endgame_conviction_step", &"share", stakes_endgame_conviction_step, 0.0, 0.50)
 	_add(tunables, &"statistics.possession_estimate_free_throw_weight", &"weight", possession_estimate_free_throw_weight, 0.30, 0.60)
 	_add(tunables, &"safety.max_actions_per_possession", &"actions", float(max_actions_per_possession), 4.0, 64.0)
 	return tunables

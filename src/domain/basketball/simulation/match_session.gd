@@ -246,7 +246,13 @@ func _consider_timeout() -> void:
 		return
 	if _snapshot.state_for(team_id).timeouts_remaining <= 0:
 		return
-	if GameManagement.remaining_ms(_snapshot, _input.rule_profile) < balance.timeout_run_reserve_ms:
+	# §18.2 stakes: a coach in a Final starts holding his timeouts for the endgame
+	# earlier than one in a regular-season game. It is the same timeout and the
+	# same effect — rest for everybody on the floor, both teams — moved to the
+	# moment it is worth more.
+	if GameManagement.remaining_ms(_snapshot, _input.rule_profile) < StakesPolicy.timeout_reserve_ms(
+		balance, _input.stakes
+	):
 		return
 	var writer := _writer()
 	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"run", &"", 0, _run_points)

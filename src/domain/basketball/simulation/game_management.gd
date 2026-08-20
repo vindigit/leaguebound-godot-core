@@ -210,6 +210,13 @@ static func crash_multiplier(
 ## preference. It changes which shot is attempted and nothing about whether it
 ## goes in, and it is symmetric: it is the deficit that selects the shot value,
 ## and either team can hold it.
+##
+## §18.2 stakes move two things about it and neither is the rule. The *window*
+## opens earlier, so a Final's ending is played as an ending rather than as
+## ordinary basketball that happens to be running out; and the *conviction* is
+## higher, so the preference between the two legal shots is held more firmly.
+## Both products stay inside the clamps the base weights already lived under,
+## and a regular-season game multiplies by exactly one.
 static func endgame_multiplier(
 	context: PossessionContext,
 	balance: SimulationBalanceProfile,
@@ -220,16 +227,20 @@ static func endgame_multiplier(
 		return 1.0
 	if context.state.period < context.input.rule_profile.regulation_periods:
 		return 1.0
-	if remaining_ms(context.state, context.input.rule_profile) > balance.endgame_possession_ms:
+	var stakes: int = context.input.stakes
+	if remaining_ms(context.state, context.input.rule_profile) > StakesPolicy.endgame_window_ms(
+		balance, stakes
+	):
 		return 1.0
 	var deficit: int = -context.offense_margin()
 	if deficit < TIE_SEEKING_MINIMUM_DEFICIT or deficit > TIE_SEEKING_MAXIMUM_DEFICIT:
 		return 1.0
 	var three: bool = ShotZone.is_three(zone)
 	var tying_shot_is_a_three: bool = deficit == TIE_SEEKING_MAXIMUM_DEFICIT
+	var conviction: float = StakesPolicy.endgame_conviction(balance, stakes)
 	if three == tying_shot_is_a_three:
-		return 1.0 + clampf(balance.endgame_tie_gain, 0.0, 0.80)
-	return 1.0 - clampf(balance.endgame_tie_relief, 0.0, 0.70)
+		return 1.0 + clampf(balance.endgame_tie_gain * conviction, 0.0, 0.80)
+	return 1.0 - clampf(balance.endgame_tie_relief * conviction, 0.0, 0.70)
 
 
 ## The deficits a single shot can level. Down one, every made shot wins and none
