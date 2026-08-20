@@ -433,6 +433,54 @@ func test_no_target_or_aggregate_reaches_the_attribution_decision() -> void:
 	assert_float(balance.assist_ceiling).is_equal(CalibrationTargets.ASSIST_CREDIT_CEILING)
 
 
+## §14.3 and §8, in production rather than in arithmetic. The conditional that
+## turns a qualifying delivery into a credited assist is the *passer's*
+## execution, so an offence of better passers converts a larger share of the
+## baskets its deliveries created — with the shooters, the defence, the rules,
+## and the seeds all held fixed.
+##
+## Measured from the ledger as credited assists over made field goals carrying a
+## recorded creator, which is the §14.3 row's own denominator.
+func test_passing_drives_the_conditional_credit_rate_in_production() -> void:
+	var poor: float = _conversion_for(40)
+	var strong: float = _conversion_for(95)
+	assert_float(poor).is_greater(0.0)
+	assert_float(strong).override_failure_message(
+		"a better passing offence converted no more of its own creations "
+		+ "(poor %.4f, strong %.4f)" % [poor, strong]
+	).is_greater(poor)
+	# The population rate is judged against the locked §14.3 envelope by
+	# `run_assist_diagnostics.gd` at a sample that can carry the claim. A
+	# handful of fixture games cannot, so this asserts the direction only.
+
+
+## The share of creator-carrying makes that were credited, over four games
+## played by an offence whose only distinguishing attribute is Passing.
+func _conversion_for(passing: int) -> float:
+	var credited: int = 0
+	var created: int = 0
+	for variation in range(6):
+		var input: MatchInput = MatchFixtureFactory.match_between(
+			MatchFixtureFactory.uniform_team(&"home", 70, {AttributeKey.Key.PASSING: passing}),
+			MatchFixtureFactory.uniform_team(&"away", 70),
+			MatchFixtureFactory.standard_match().rule_profile)
+		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
+			input, SeededRandomSource.new(90210 + variation))
+		for event in output.events:
+			if event.team_id != input.home.team_id:
+				continue
+			if event.event_type == MatchDomainEvent.ASSIST:
+				credited += 1
+			elif (
+				event.event_type == MatchDomainEvent.FIELD_GOAL_MADE
+				and not event.tertiary_player_id.is_empty()
+			):
+				created += 1
+	assert_int(created).override_failure_message(
+		"too few created baskets to measure a conversion rate").is_greater(40)
+	return float(credited) / float(created)
+
+
 # --- executor parity and game stakes ----------------------------------------
 
 ## 18. Play, Sim, and Skip produce identical assist results and identical ledger

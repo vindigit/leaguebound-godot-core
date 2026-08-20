@@ -97,6 +97,19 @@ func test_vision_changes_open_target_recognition_and_creation() -> void:
 		AttributeKey.Key.VISION, CapabilityKey.Value.PASS_READ_QUALITY)
 	assert_float(_pass_advantage_rate(HIGH_RATING)).is_greater(
 		_pass_advantage_rate(LOW_RATING))
+	# And Vision *leads* the creation roll. Pass Accuracy is in it too — §11.1
+	# names both — but the roll is recognition, so removing Read Quality from it
+	# and leaning on accuracy instead would invert this.
+	var recognition_by_vision: float = (
+		_pass_advantage_rate_for({AttributeKey.Key.VISION: HIGH_RATING})
+		- _pass_advantage_rate_for({AttributeKey.Key.VISION: LOW_RATING}))
+	var recognition_by_passing: float = (
+		_pass_advantage_rate_for({AttributeKey.Key.PASSING: HIGH_RATING})
+		- _pass_advantage_rate_for({AttributeKey.Key.PASSING: LOW_RATING}))
+	assert_float(recognition_by_vision).override_failure_message(
+		"Passing created more open targets than Vision did (vision %.4f, passing %.4f)"
+			% [recognition_by_vision, recognition_by_passing]
+	).is_greater(recognition_by_passing)
 	# Assist conversion is Passing's observable, not Vision's. Vision reaches it
 	# only through the 15% share the §5.2 Pass Accuracy row gives it, which is
 	# well inside the §27.2 amplifier limit — an attribute that moved conversion
@@ -470,33 +483,42 @@ func _pass_turnover_rate_for(overrides: Dictionary) -> float:
 ## the pass. The pass-quality term is a bounded context penalty on the delivery,
 ## never a shooting rating.
 func _assert_passing_does_not_move_the_shot() -> void:
-	var calculator: CapabilityCalculator = _capability()
-	var balance: SimulationBalanceProfile = _balance()
-	var body := BodyEffects.new(balance)
-	var resolver := ShotResolver.new(calculator, body, balance)
 	var advantage := AdvantageResult.new()
 	var probabilities: PackedFloat64Array = PackedFloat64Array()
+	var capabilities: PackedFloat64Array = PackedFloat64Array()
+	var bands: PackedInt32Array = PackedInt32Array()
 	for rating: int in [LOW_RATING, HIGH_RATING]:
-		# The *passer* carries the rating; the shooter is a different player and
-		# is identical in both arms.
+		# A fresh calculator per arm. `CapabilityCalculator` memoizes by player
+		# id and is documented as living for exactly one `MatchInput`; two
+		# fixtures that share player ids are two matches, and reusing one
+		# calculator across them silently answers the second arm with the
+		# first arm's ratings.
 		var context: PossessionContext = _context({AttributeKey.Key.PASSING: rating})
+		var calculator := CapabilityCalculator.new(
+			context.input.ratings_profile, context.input.balance_profile)
+		var body := BodyEffects.new(context.input.balance_profile)
+		var resolver := ShotResolver.new(calculator, body, context.input.balance_profile)
+		# The shooter is a team-mate of the player whose Passing is being moved,
+		# and his own shooting attributes are identical in both arms.
 		var shooter_id: StringName = context.offense_on_court()[1]
 		var shooter: PlayerMatchProfile = context.offense_profile(shooter_id)
 		var runtime: PlayerMatchRuntime = context.offense_runtime(shooter_id)
-		var capability: float = calculator.shot_capability(
-			shooter, runtime, ShotZone.Value.STANDARD_THREE)
 		var contest: ShotContest = resolver.build_contest(
 			context, shooter_id, ShotZone.Value.STANDARD_THREE, advantage)
 		var outcome: ShotOutcome = resolver.resolve(
 			context, shooter_id, ShotZone.Value.STANDARD_THREE, false, contest, advantage,
 			1.0, 0.0, SeededRandomSource.new(7))
-		assert_float(capability).is_equal_approx(
-			calculator.shot_capability(shooter, runtime, ShotZone.Value.STANDARD_THREE),
-			0.000001)
-		assert_int(contest.band).is_equal(contest.band)
+		capabilities.append(calculator.shot_capability(
+			shooter, runtime, ShotZone.Value.STANDARD_THREE))
+		bands.append(contest.band)
 		probabilities.append(outcome.probability)
+	assert_float(capabilities[0]).override_failure_message(
+		"Passing moved the shooter's own shot capability").is_equal_approx(
+		capabilities[1], 0.000001)
+	assert_int(bands[0]).override_failure_message(
+		"Passing moved the contest the shooter faced").is_equal(bands[1])
 	assert_float(probabilities[0]).override_failure_message(
-		"the passer's Passing rating moved the shooter's own make probability"
+		"Passing moved the shooter's own make probability"
 	).is_equal_approx(probabilities[1], 0.000001)
 
 
