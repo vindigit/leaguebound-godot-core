@@ -93,6 +93,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The score-margin covariance runner, its permutation control and its two replay models, `GameManagement`'s score-and-clock coaching, the end-of-regulation possession strategy, §4/§5 coaching timeouts, and the `simulation-v4-management` ruleset the regenerated golden ledgers belong to (§5.11).
 - `GarbageTimeRule`'s possession-based settled-rotation safety, its asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20, the `GARBAGE_TIME` ledger event and `TeamMatchState.settled_mode`, and the `simulation-v5-garbage-time` ruleset (§5.12). The §14.2 amendment in §5.13 is a **proposal awaiting owner decision**, not accepted work.
 - The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
+- The §11.3 passer-to-shot event chain: `PassCreation`, the corrected pass beneficiary, the creator stamped on every shot attempt and make, the catch-and-shoot and spot-up continuations, the competition-scoped credited-assist rule, the restored §14.3 conditional baseline, the assist-chain audit and its diagnostics runner, and the `simulation-v6-pass-creation` ruleset the regenerated golden ledgers belong to (§5.15).
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -230,7 +231,7 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Projected-peak coverage | ~~**Fail:** 29.2% pooled~~ **Corrected (§5.7):** 0.7473 and 0.7370 on two untouched validation ranges against 70–85% |
 | Projected-peak signed error | ~~**Fail:** pooled median +10.0~~ **Corrected (§5.7):** −1.0 and 0.0 on two untouched validation ranges against ±2 |
 | Competition §14.1 bands | Substantially converged, not certified; see §5.5 for the post-correction re-measurement |
-| Assist percentage | **Fail, and confirmed unchanged by the free-throw correction:** 48.15% top domestic at 400 games against 52–72% |
+| Assist percentage | ~~**Fail:** 48.15% top domestic at 400 games against 52–72%~~ **Corrected (§5.15):** 58.9% and 58.2% top domestic on two untouched 100-game validation ranges, and inside the band at all five competition levels on both. Measured, not certified. |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
 | Builder dominance tournament | Not implemented/run |
 | OVR truthfulness report 1 | Not implemented/run |
@@ -357,11 +358,11 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 
 | Gate | Classification | Evidence |
 | --- | --- | --- |
-| GdUnit4 suite | **Structural** | 366 cases, 37 suites, 0 failures |
+| GdUnit4 suite | **Structural** | 410 cases, 39 suites, 0 failures |
 | `tests/run_all.gd` acceptance | **Structural** | PASS |
-| Parse check under warnings-as-errors | **Structural** | 208 scripts, 0 failures |
-| Simulation smoke diagnostics | **Structural** | Invariants PASS under the `simulation-v5-garbage-time` ruleset |
-| Golden ledgers and determinism | **Structural** | Six scenarios. **Unchanged by `simulation-v5-garbage-time` (§5.12):** no hash and no seed moved, because the six fixtures finish at four to thirteen points and the settled rotation needs eighteen before it can fire. Regenerated once under `simulation-v4-management` (§5.11), where the blast radius was proved by diffing every scenario's event stream |
+| Parse check under warnings-as-errors | **Structural** | 216 scripts, 0 failures |
+| Simulation smoke diagnostics | **Structural** | Invariants PASS under the `simulation-v6-pass-creation` ruleset |
+| Golden ledgers and determinism | **Structural** | Six scenarios. Regenerated under `simulation-v6-pass-creation` (§5.15): all six hashes moved and exactly one seed did, and the blast radius was proved by diffing every scenario's event stream to its first divergent event. Unchanged by `simulation-v5-garbage-time` (§5.12); regenerated once before that under `simulation-v4-management` (§5.11) |
 | Event/stat reconciliation | **Structural** | In the acceptance suite |
 | Play/Sim/Skip parity | **Structural** | Byte-identical ledgers. The §27.1 50,000-triplet distributional report is **not run** |
 | Detail-promotion invariance | **Structural** | `PlayerDevelopmentState.invariant_signature` |
@@ -376,8 +377,8 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | §8.4 continuity across the 72–74 gap | **Measured below requirement** | 0.017 share at 3,000 careers, against a 0.01–0.20 band |
 | Executor parity (manual / full-detail / aggregate) | **Measured below requirement** | Relative peak difference 0.0000 at 3,000 careers |
 | Performance profile | **Measured below requirement** | 1,157.7 ms/game debug against a same-machine before of 1,149.4, +0.7% (§5.12); no release-template measurement |
-| Competition §14.1 bands, top domestic | **Measured below requirement** | Re-measured at 400 games on the untouched range 60,000-60,399 (§5.11). **Ten of eleven pass**, unchanged by the score-and-clock correction; assist percentage is the only §14.1 failure |
-| Competition §14.1 bands, other four | **Measured below requirement** | Re-measured again at 400 games each on the same untouched range under `simulation-v4-management` (§5.11). High school 10/10, college 8/10, development 9/10, overseas 9/10 — identical to §5.10 |
+| Competition §14.1 bands, top domestic | **Measured below requirement** | Re-measured at 100 games on each of two untouched ranges under `simulation-v6-pass-creation` (§5.15). **Ten of eleven pass on Validation A and eleven of eleven on Validation B**: assist percentage is corrected to 0.5890 and 0.5817 and now passes; points per possession is 1.1809 against a 1.18 ceiling on A and 1.173 on B |
+| Competition §14.1 bands, other four | **Measured below requirement** | Re-measured at 100 games each on two untouched ranges under `simulation-v6-pass-creation` (§5.15). High school 10/10, college 9/10, development 10/10, overseas 10/10; assist percentage passes at all four where it failed at three, and college field-goal percentage is the only remaining failure below top domestic |
 | **§14.1 top-domestic assist percentage** | **Failed** | 0.4820 against 0.52-0.72 at 400 games on the untouched range 350,000-350,399, against 0.4817 for the same games before the settled rotation (§5.12). Measurement only; no assist parameter has ever been tuned. It also fails at development and overseas |
 | §14.1 top-domestic points per possession | **Measured below requirement; on its ceiling** | 1.1691 on 60,000-60,399 (§5.11) and **1.1809 on 350,000-350,399** against a 1.18 ceiling — where the same games measure 1.1844 *before* the settled rotation, which moved it down (§5.12). The range-to-range spread straddles the ceiling and no aggregate tuning was done in either direction |
 | **§14.2 blowout share** | **Failed at two of five levels** | **Improved again (§5.12).** High school 0.1300 ✓, college 0.1700 ✓ and overseas 0.1550 ✓ pass; development 0.2450 and top domestic 0.2725 do not. 0.2320 and 0.2120 on two untouched 500-game validation ranges, and 0.1883 pooled over 600 even-team games. §5.13 proposes competition-specific bands and does not enact them |
@@ -2406,6 +2407,331 @@ Explicitly out of scope here and not started:
 - **The remaining authorised effects.** Pace and clock strategy, intentional-foul strategy, and the garbage-time *release* threshold are all authorised for stakes and were all deliberately left alone. The smallest coherent set was the brief.
 - **A fuller end-of-regulation repertoire** — two-for-one, advance-the-ball, deliberate fouling while leading, intentional last-free-throw misses, end-of-period possession planning. §5.13 identified this as the reason the §14.2 overtime band is unreachable, and this task's measurement is further evidence for it. It is the single change most likely to make the stakes/overtime hypothesis testable at all.
 - **Postseason scheduling, brackets, Finals series, narrative, career consequences, presentation, and content.** Out of scope by instruction, and none was added.
+
+### 5.15 A pass that beats the defence now creates the shot it was thrown for
+
+Status: **The §14.1 assist band is met at all five competition levels on two untouched validation ranges, and the §14.3 conditional sits inside its locked envelope at every level. The cause was creation, not attribution, and the compensating constant that had been hiding it is removed. Not certified: §27.1 requires 100,000 games per competition and this is 100.**
+
+Assist percentage had been the longest-standing §14.1 failure. It was also flat — 46.5% to 49.7% at every level, while §14.1 asks for a band that *rises* from 42–66% at high school to 52–72% at top domestic. A metric that does not move with competition level is not a tuning miss; it is a ceiling.
+
+#### The metric, before anything was diagnosed
+
+Assist percentage is **credited `ASSIST` events over made field goals**, both counted from the ordered ledger and never inferred from a final score. `MatchMetricAccumulator.assist_percentage()` reads the box score, which is a projection of those same events; `AssistChainAudit` rebuilds the relationship from the ledger independently and the two are required to agree. The §14.3 conditional has a different denominator and is reported separately: **credited assists over made field goals that carried a recorded creator**.
+
+The accounting identity holds exactly at every level, on both validation ranges: assisted plus unassisted equals total eligible makes, with zero duplicate assisters, zero orphaned assists, zero self-assists, zero cross-team assists, zero unexplained assists, and zero team/player reconciliation failures.
+
+#### Baseline decomposition
+
+40 games per competition on variations 600,000–600,039 (RNG seeds 600,001–600,040), at `7b1bfe3`:
+
+| Level | FGM | Assist % | Makes with a qualifying delivery | Conditional credit | Pass-created attempts | Self-created attempts |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| High school | 2,072 | 47.9% | 57.4% | 83.4% | 52.7% | 47.3% |
+| College | 2,167 | 48.5% | 53.9% | 90.1% | 50.9% | 49.1% |
+| Development | 3,182 | 47.5% | 52.3% | 90.8% | 49.4% | 50.6% |
+| Overseas | 2,488 | 48.0% | 52.1% | 92.1% | 49.3% | 50.7% |
+| Top domestic | 3,494 | 47.7% | 52.4% | 90.9% | 49.5% | 50.6% |
+
+Two numbers in that table decide the diagnosis.
+
+**The conditional was running at 83–92% against a locked §14.3 baseline of 74%.** `SimulationBalanceProfile.assist_base` had been raised from 0.74 to 0.94 in `fbc8b63`. That is not a tuning choice inside a band; §14.3 is a locked row and 0.94 is outside it. It was holding assist percentage near 48% by crediting almost every qualifying delivery rather than by creating shots — the exact shortcut the brief forbids. **Reported as a code-versus-document conflict and corrected, not resolved silently.**
+
+**Only 52% of made field goals were reached by a qualifying delivery at all.** That is the ceiling: no attribution rule can credit more than that, and at the locked conversion it caps assist percentage near 0.52 × 0.78 ≈ 41%. So attribution was over-generous and creation was the binding constraint, and correcting attribution alone would have made the number *worse*.
+
+The ledger says why. Measured over 2,429 possessions of top-domestic basketball at `7b1bfe3`:
+
+- **40.8% of all field-goal attempts happened in a possession with no completed pass in it at all**, and 30.6% of attempts were taken on the possession's very first action.
+- Pull-up jump shots were **77.3% of every attempt**, and only 52% of them followed a pass.
+- The offence completed **about one pass per shot**.
+
+#### Root cause
+
+**The advantage a pass creates was attributed to the passer and then discarded, so a pass could not create a shot.** Three linked defects, all in production, all ledger-visible:
+
+1. **`AdvantageResolver` recorded the passer as the beneficiary of his own pass.** §11.1 gives `AdvantageResult` separate `creatorId` and `beneficiaryId` fields precisely so an action can create for somebody else. The §10.3 advantage continuation in `ActionCandidateGenerator._tactical_fit` lifts the *beneficiary's* next candidates by up to 1.20×, so it was lifting the candidates of a player who no longer had the ball. The receiver — the man the delivery actually freed — carried none of it into his own decision.
+
+2. **`PossessionContext.last_pass_created_advantage` was written on every completed pass and read by nothing.** That field is §11.3's "whether the pass directly created the eventual shot". It was computed correctly and thrown away. The pass was consequently the only creating family in the engine with **no continuation at all**: a drive kicks out, a pick action rolls, a post kicks out, a cut is fed and finished, and a pass simply handed the ball over and ended its action.
+
+3. **`RELOCATION` — 9.3% of every action, and §10.1 names the family "relocation or spot-up" — emitted an off-ball event and changed no state whatsoever.** It could not produce a shot, a pass, an advantage anyone consumed, or a state anyone read. A spot-up whose ball never arrives is not a basketball action, and it is the other half of the missing creation: `OFF_BALL_CUT` had its feed-and-finish and `RELOCATION` had nothing.
+
+And one compensating defect, `assist_base` at 0.94, which had been covering for all three.
+
+#### Ruled out
+
+- **Lost lineage.** Measured, not assumed: `unexplained_assists` was **zero** at every level in the baseline audit. Every assist the engine credited was already explainable from ledger evidence — a live pass, from that passer, reaching that shooter. Nothing was being dropped between the pass and the reducer.
+- **A reducer or box-score defect.** Team and player assists reconciled in every baseline game, and the projection agreed with the ledger event-for-event.
+- **The stat rule being too narrow in the aggregate.** Widening the credited families is worth about a point and a half; it does not span a twenty-point gap. It was still corrected, in both directions — see below.
+- **Executor divergence.** Play, Sim and Skip were already byte-identical and remain so.
+
+#### The event-chain contract, before and after
+
+Before, the chain was implicit and lived in two loose fields:
+
+```text
+pass -> last_passer_id (StringName), last_pass_created_advantage (never read)
+shot -> is the family one of {PULL_UP, OFF_BALL_CUT, POST_ACTION}?
+     -> is last_passer_id non-empty and not the shooter?
+```
+
+That rule never checked that the ball had reached *this* shooter, credited a post move off an entry pass, refused a transition finish off a pass ahead, and recorded `created` on the made-basket event for a shooter who had created his own shot after catching a pass — the inverse of §12.1's meaning.
+
+After, the relationship is an explicit record, `PassCreation`, and it says when it stops being true:
+
+```text
+pass completed -> PassCreation{passer, receiver, openness, catch quality,
+                              rotated defender, competition credited families}
+invalidated by -> possession change | turnover | offensive rebound
+                  | free-throw whistle | reset | a non-finishing attack
+                  | a later pass replacing it | the shot that consumes it
+delivery creates the shot iff -> the record is live
+                              AND the ball reached this shooter
+                              AND the passer is not the shooter
+                              AND the family is one the competition credits
+attempt event  -> carries the creator and the §12.1 assisted state
+made event     -> carries the same creator and state
+assist         -> only against a recorded creator, and only after the §14.3
+                  conditional resolves against the passer's execution
+```
+
+`FIELD_GOAL_ATTEMPT` and `FIELD_GOAL_MADE` now carry the creator in `tertiary_player_id`, so an assist is a pure function of ledger evidence and the audit can check it without reconstructing anything. `PASS_COMPLETED` carries the rotating defender and the catch quality, which is the rest of what §11.3 asks a pass event to record.
+
+#### The correction
+
+Five changes, in the brief's preferred order, with each contribution measured separately on the tuning range (variations 3,000,000–3,000,019).
+
+1. **Preserve the lineage that existed.** A pass's beneficiary is its receiver. `AdvantageResolver.resolve` — three lines.
+2. **Correct attribution.** Eligibility follows the recorded relationship instead of a hard-coded family list: the delivery must have reached this shooter, and the family must be one the delivery produces. `POST_ACTION` is removed — an entry pass followed by a post move is the post player creating his own shot — and `TRANSITION_ATTACK` is added, because a pass ahead finished in transition is an assist. The credited family set is a **competition rule** (`CompetitionRuleProfile.assist_rule_id`, `credited_assist_families`), which is what §11.3's "configurable competition/stat rules" asks for; all five competitions share `delivered-shot-v1`, because no §4 or §14 requirement asks any of them to differ.
+3. **Restore the locked conditional.** `assist_base` back to 0.74, and driven by **Pass Accuracy** rather than Read Quality, because §8 puts "assist conversion support" on Passing and "open-target recognition" on Vision.
+4. **Add the missing pass-created shot states.** The pass gains the catch-and-shoot continuation every other creating family already had, and the spot-up gains the feed it existed for. Both fire in proportion to the openness the action actually produced — a catch-and-shoot needs a beat of space, not a broken-down defence — and both resolve against the advantage **one level lower**, because the closeout arrives while the shooter gathers. Both consume their own §9.4 action time; resolving them for free shortened every possession they touched and raised pace by the rate they fired.
+5. **Correct action-family selection, last and only because the first four were not enough.** `base_weight_pull_up` 0.86 → 0.50. The constant is documented as the rate at which a *family* is considered, but `ActionCandidateGenerator` emits one pull-up candidate per legal shot zone, so a stated 0.86 reached the candidate pool as 2.6–3.4 and the zone enumeration, not the stated rate, set the shot mix.
+
+The catch-and-shoot's zone is chosen by the **same §10.3 candidate machinery the ordinary pull-up uses**, not by a rule written beside it. A hand-written "take the highest expected points" version made every competition shoot the same share of threes, because expected points does not know that a high-school offence and a professional one are shaped differently; the §10.3 factors — the shooter's capability, his Perimeter↔Interior slider, the coach's shot-profile instruction, spacing, his matchup — do.
+
+#### Contribution of each half
+
+Top domestic, tuning range, 20 games:
+
+| Stage | Assist % | Possessions | PPP | Turnovers/100 |
+| --- | ---: | ---: | ---: | ---: |
+| `7b1bfe3` | 47.5% | 99.9 | 1.224 | 13.4 |
+| Event chain corrected, conditional restored, continuations added | 51.3% | 107.7 | 1.229 | 11.3 |
+| Shot-mix correction added | **58.1%** | 101.9 | **1.161** | 14.5 |
+
+The two halves are not independent and were not meant to be. The continuations end a possession in the action the pass arrives, which shortens possessions, raises pace and removes turnover opportunities; restoring the ball-movement share puts the actions back. Together they land inside the band on all four numbers, and points per possession — a §14.1 failure at `7b1bfe3` on this range — comes back inside 1.08–1.18 as a consequence rather than as a target.
+
+#### Seed-range separation
+
+Every range below is new to this task and appears nowhere in §5.7 through §5.14.
+
+| Purpose | Variations | RNG seeds | Games per level |
+| --- | --- | --- | ---: |
+| Baseline decomposition and diagnosis | 600,000–600,039 | 600,001–600,040 | 40 |
+| Development and tuning probes | ≥ 3,000,000 | ≥ 3,000,001 | 12–20 |
+| **Validation A — untouched** | 610,000–610,099 | 610,001–610,100 | 100 |
+| **Validation B — untouched** | 620,000–620,099 | 620,001–620,100 | 100 |
+
+Neither validation range was measured until the five changes were frozen, and neither was revisited afterwards. No stakes, margin, progression, or Projected-Peak fitting range was reused.
+
+#### Result: the §14.1 assist band, before and after
+
+100 games per competition on each untouched validation range, measured by `calibration/runners/run_assist_diagnostics.gd` from the ledger.
+
+| Level | Band | Before (`7b1bfe3`, 40 games) | Validation A | Validation B |
+| --- | --- | ---: | ---: | ---: |
+| High school | 42–66% | 47.9% | **50.8% ±1.3** | **49.7% ±1.4** |
+| College | 48–68% | 48.5% | **53.1% ±1.3** | **52.9% ±1.3** |
+| Development | 48–69% | 47.5% | **54.8% ±1.1** | **55.0% ±1.1** |
+| Overseas | 50–72% | 48.0% | **55.3% ±1.2** | **55.2% ±1.2** |
+| Top domestic | 52–72% | 47.7% | **58.9% ±1.0** | **58.2% ±1.0** |
+
+Every level passes on both ranges, and the metric now **rises with competition level** as §14.1 asks. The two ranges agree to within 1.1 points at every level, and the largest disagreement is at the level with the widest band.
+
+#### The §14.3 conditional
+
+Credited assists over made field goals carrying a recorded creator, against the locked floor-to-ceiling envelope of 55–95% around a 74% baseline:
+
+| Level | Validation A | Validation B |
+| --- | ---: | ---: |
+| High school | 74.9% | 73.2% |
+| College | 80.2% | 80.9% |
+| Development | 85.4% | 85.6% |
+| Overseas | 87.5% | 86.8% |
+| Top domestic | 90.7% | 90.1% |
+
+All inside the envelope, and ordered by level — which is the capability term doing its job rather than a constant: the baseline is the rate at an even matchup, and a top-domestic roster's Pass Accuracy sits well above the middle of the scale while a high-school roster's sits near it. High school landing at 74.9% against a 74% baseline is the clearest evidence the curve is being used as written.
+
+#### Creation, not credit
+
+| Level (Validation A) | Makes with a recorded creator | Pass-created attempts | Catch-and-shoot attempts | Self-created attempts |
+| --- | ---: | ---: | ---: | ---: |
+| High school | 67.8% | 65.4% | 56.1% | 34.6% |
+| College | 66.2% | 64.1% | 54.9% | 35.9% |
+| Development | 64.1% | 61.4% | 52.9% | 38.6% |
+| Overseas | 63.2% | 61.2% | 52.5% | 38.8% |
+| Top domestic | 64.9% | 62.8% | 53.6% | 37.2% |
+
+Against 52–57% of makes carrying a delivery before. The gain is creation: the offence now reaches a shot through a pass far more often, and the conditional that turns those into credit went **down** to its locked value at the same time.
+
+#### Subgroups
+
+Top domestic, Validation A, 9,024 made field goals. No pathological subgroup and no group carrying the result.
+
+**By shot zone** — the shape a reader should check first, because it is where the old model was most obviously wrong:
+
+| Zone | Before | After |
+| --- | ---: | ---: |
+| Standard three | 55.8% | **71.3%** |
+| Restricted rim | 71.1% | 65.7% |
+| Midrange | 34.0% | 56.8% |
+| Close non-rim | 33.9% | 50.0% |
+| Deep three | 41.1% | 38.5% |
+
+Three-point makes being assisted more often than rim makes is the single most recognisable property of modern basketball, and the engine had it backwards. It does not any more. The deep three stays the least-assisted zone, which is right: it is the shot a creator takes for himself.
+
+**By action family:** off-ball cut 93.4%, pull-up 65.4%, transition attack 33.3% (60 makes, undersampled), and exactly 0.0% for drive, pick action, post action and putback — the four families where the shooter creates his own attempt. That the four are exactly zero rather than nearly zero is the attribution rule being categorical rather than probabilistic.
+
+**By phase:** half court 58.8%, transition 59.3%. The two are within half a point, which they should be: a transition finish off a pass ahead and a half-court catch-and-shoot are both deliveries.
+
+**By scorer role:** 50.9% (secondary creator) to 65.2% (roll/pop big), with primary creator at 55.6% and shooter at 62.5%. Bigs and shooters are assisted most, creators least. Nobody is above 70% or below 50%.
+
+**By passer role:** primary creator 15.9% of assists, slasher 12.9%, shooter 12.3%, secondary creator 11.7%, roll/pop big 11.1%, connector 9.8%, interior anchor 9.4%, perimeter stopper 7.7%, post option 6.1%, rebounder 3.2%. The primary creator leads without dominating, and the tail is genuine ball movement rather than one player's box score. **Undersampled subgroups are named in the report** rather than being quietly averaged: at 100 games the rebounder passer group and the transition-attack family are below the 200-event threshold at top domestic, and several passer-role groups are below it at high school.
+
+#### Turnovers, and the thing to be suspicious of
+
+More passing must not buy safe ball movement. It did not.
+
+| Level (Validation A) | Pass turnover rate | Assist/turnover |
+| --- | ---: | ---: |
+| High school | 5.4% | 1.71 |
+| College | 5.1% | 1.98 |
+| Development | 5.0% | 2.09 |
+| Overseas | 5.0% | 2.13 |
+| Top domestic | 4.5% | 2.51 |
+
+Pass turnover rate — bad passes and interceptions over all pass attempts — is **4.5–5.5%, against 4.8–6.3% before**. It is a per-pass rate and it did not fall to buy the assists; the extra assists came from more passes at the same risk, which is what "more ball movement" is supposed to cost. Turnovers per 100 possessions are reported in the §14.1 table below and stay inside their bands at every level.
+
+#### Vision and Passing stay distinct
+
+Measured at the resolvers that own them, at 400 samples per point, rating 40 against 95:
+
+- **Vision** raises the material-advantage rate of a completed pass — §11.1's "open-target recognition" — and raises it **more than Passing does**, which is the assertion that fails if Read Quality is taken out of the creation roll.
+- **Passing** raises pass completion, raises catch quality, and raises the §14.3 conditional. Measured in production as well as in arithmetic: an offence of 95-Passing players credits a larger share of the baskets its own deliveries created than a 40-Passing offence does, with shooters, defence, rules and seeds held fixed.
+- **Neither moves the receiver's shot.** The shooter's own shot capability, the contest band he faces, and his resolved make probability are identical whoever passed him the ball.
+- The two are separable in the way §11.3 describes in words: a high-Vision, low-Passing player creates more open targets *and* turns the ball over more; a high-Passing, low-Vision player delivers safely and creates less.
+
+**A contradiction between the brief and the specification, reported rather than resolved silently.** The brief's test 16 asks that Passing affect delivery and turnover risk "without modifying shot probability". `SIMULATION_SPEC.md` §12.6 lists `Advantage/PassQuality` as a term of `MakeQuality`, and §12.2 lists "catch/pass quality" among the shot-context inputs. Read literally the two disagree. This task implemented the specification — a badly delivered ball is a harder catch, as a bounded §12.2 context penalty — and tested the property that the brief is actually protecting: Passing is not a shooting rating, and it does not reach the shooter's capability, baseline, contest, or resolved probability at a fixed catch quality.
+
+#### Mutation evidence
+
+Fifteen mutations, each applied to production code, run against the assist, attribute-contract, invariant, reconciliation and parity suites, and restored byte-clean. Thirteen were killed.
+
+| Mutation | Result | First guard to catch it |
+| --- | --- | --- |
+| Drop the creator before shot resolution | **Killed** (7) | `test_every_assist_is_explained_by_a_recorded_creation_event` |
+| Credit every make after any pass | **Killed** (12) | `test_a_self_created_shot_is_unassisted` |
+| Credit the shooter as his own assister | **Killed** (2) | `test_a_delivery_only_creates_for_the_man_it_reached` |
+| Retain creator context across an offensive rebound | *Survived — equivalent* | — |
+| Retain it *and* credit putbacks | **Killed** (12) | `test_a_self_created_shot_is_unassisted` |
+| Credit assists on missed shots | **Killed** (39 + 89 assertion errors) | `test_a_missed_shot_produces_no_assist` |
+| Remove the free-throw creation clear | *Survived — equivalent* | — |
+| Emit an assist on a made free throw | **Killed** (39 + 78 assertion errors) | `test_free_throws_produce_no_assists` |
+| Remove Vision from recognition | **Killed** (2) | `test_vision_changes_open_target_recognition_and_creation` |
+| Remove Passing from execution | **Killed** (1) | `test_passing_drives_the_conditional_credit_rate_in_production` |
+| Make Passing change shot accuracy | **Killed** (3) | `test_passing_changes_delivery_execution_and_assist_conversion` |
+| Collapse every shot into assisted | **Killed** (5) | `test_a_self_created_shot_is_unassisted` |
+| Collapse every shot into unassisted | **Killed** (57) | `test_every_assist_is_explained_by_a_recorded_creation_event` |
+| Break team/player assist reconciliation | **Killed** (39 + 78 assertion errors) | `test_team_and_player_assists_reconcile` |
+| Make Skip produce different assists from Sim | **Killed** (6) | `test_play_sim_and_skip_agree_on_every_credited_assist` |
+
+**Three mutations survived the first pass and each exposed a real gap, which was closed rather than argued away.**
+
+- *Remove Passing from execution* survived because the §14.3 conditional was asserted against the balance profile's arithmetic rather than against the engine. It is now measured in production, from the ledger.
+- *Remove Vision from recognition* survived on one distinctness assertion, because Pass Accuracy carries 15% Vision under the locked §5.2 weight table, so Vision moved the advantage rate either way. The test now requires Vision to move it *more* than Passing does.
+- *Make Passing change shot accuracy* survived because the test reused one `CapabilityCalculator` across two fixtures that share player ids, and the calculator memoizes by player id and is documented as living for exactly one `MatchInput`. The second arm was being answered with the first arm's ratings, so that assertion had been vacuous since the moment it was written.
+
+**Two required mutations survive as equivalent mutants, and are reported as such rather than being made to look dead.** Removing the creation clear at the offensive rebound, and removing it at the free-throw whistle, change no credited assist on any reachable path — including when compounded with removing the blanket "a shot consumes its delivery" clear. The property they attack is held by two stronger guards nearer the decision: the delivery must have reached *this* shooter, and the shot's family must be one a delivery produces. A putback is neither, and a free throw is not a field goal. The audit measures this directly: **`broken_chains.offensive_rebound` is exactly zero at every level**, because the attempt that preceded the rebound had already consumed the record. The clears stay as the explicit §14.4 and §11.3 statement of when creation context ends; the evidence is that they are defence in depth rather than the load-bearing guard, and the mutations that reach the property are killed by twelve and thirty-nine tests respectively.
+
+#### Golden ledgers
+
+All six goldens were recorded before the change and all six moved, which is correct: the corrections change production pass and shot events on the first offensive action of almost every possession.
+
+First divergence, at the seeds each scenario always had:
+
+| Scenario | First divergent event | What changed |
+| --- | --- | --- |
+| `substitution_foul_out` | seq 17, `advantage_created` | `home_p4 \| home_p4` → `home_p4 \| home_p5`: the pass's beneficiary is its receiver. Nothing else about the event moves. |
+| `offensive_rebound` | seq 17, `pass_completed` | the §11.3 fields appear — the rotating defender (`away_p5`) and the catch quality (89) |
+| `regulation` | seq 27, `action_selected` | `pass_swing` → `handoff`: the shot-mix correction changes candidate weights |
+| `foul_free_throw` | seq 16, `action_selected` | `off_ball_cut` → `relocation` |
+| `late_game` | seq 16, `action_selected` | `drive` → `pass_swing` |
+| `overtime` | seq 25, `action_selected` | `post_action` → `pick_action` |
+
+The blast radius matches the defect exactly: every divergence is the first offensive action after half-court entry, which is the earliest point at which any of the three corrections can bite, and the first two are the corrections in their purest form — one field of one event, with the rest of the ledger to that point identical.
+
+**One scenario seed moved and only one.** `find_scenario_seeds.gd` re-checked all six over a 4,000-seed search: the overtime fixture stopped finishing level and moved from 39,595 to 190,056, carrying two overtimes rather than one so the check has a margin. The other five still exercise their named behaviour at the seeds they always had — including the offensive-rebound continuation and the foul-out substitution, which the §11.3 event chain runs straight through. **The ruleset is bumped to `simulation-v6-pass-creation`**, which is what the contract requires before a golden may be regenerated, and no hash was regenerated to make a gate pass: the harness re-checks every scenario's requirement on every regeneration and refused nothing.
+
+#### Two fixtures that were testing by coincidence
+
+Both were found by this change and are fixed rather than relaxed.
+
+- `test_offensive_rebound_percentage_uses_the_required_denominator` asserted that a team's own defensive rebounds differed from its opponent's in one golden game. They stopped differing (22 against 22). The rule — the denominator is the opponent's defensive rebounds — is now proven on lines built so the two differ by construction, which is what the assertion was always trying to say.
+- `test_regular_season_games_still_reach_overtime` hung on a forty-seed block that stopped containing an overtime. At 4–8% of games, forty fixtures expect one or two, and which forty finish level is a property of the scoring shape. The block moves from 6,100 to 6,140 and carries two.
+
+And one fixture was asking for a roster nobody can legally supply. `_mismatched_match` tilted the two rosters ±9 rating points; at that tilt the weaker roster now fouls out **six of its ten players**, and a ten-man roster under a six-foul limit then has no legal fifth player. That is the upstream supply problem `RotationResolver` names — §5 requires career services to authorise a replacement and forbids the engine from inventing one — rather than an engine defect. The tilt drops to ±7, which still blows eleven of twelve games open and still produces several hundred settled-rotation check-ins.
+
+#### Regression guardrails: the complete §14.1 table, before and after, on identical seeds
+
+100 games per competition on Validation A (variations 610,000–610,099), the pre-change engine at `7b1bfe3` against the post-change engine, playing the identical fixtures at the identical seeds. A bold figure is one that changed band membership.
+
+| Metric | Band | HS before → after | College | Development | Overseas | Top domestic |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Possessions/game | per level | 69.2 → 71.6 | 70.9 → 72.2 | 95.5 → 95.9 | 75.2 → 74.9 | 100.7 → 102.0 |
+| Points/possession | per level | 0.941 → 0.959 | 1.024 → 1.061 | 1.096 → 1.105 | 1.111 → 1.114 | 1.178 → **1.181** |
+| FG% | per level | **38.99 → 39.3** | 40.61 → 41.25 | **42.90 → 43.4** | 44.0 → 44.2 | 45.7 → 46.8 |
+| 3P% | per level | 30.5 → 32.4 | 31.7 → 34.0 | 34.3 → 35.6 | 34.3 → 36.7 | 37.2 → 37.9 |
+| 3PA/FGA | per level | 34.8 → 31.7 | 36.8 → 34.0 | 39.6 → 35.7 | 39.5 → 35.4 | 41.8 → 37.0 |
+| FT% | per level | 67.5 → 66.1 | 70.5 → 72.9 | 76.4 → 75.8 | 77.5 → 76.6 | 80.6 → 80.6 |
+| FTA/FGA | per level | 20.1 → 19.8 | 25.8 → 25.7 | 20.7 → 22.1 | 22.0 → 22.2 | 21.0 → 21.6 |
+| Turnovers/100 | per level | 18.0 → 16.8 | 16.6 → 15.3 | 14.7 → 14.7 | 14.5 → 14.6 | 14.0 → 14.2 |
+| Offensive rebound % | per level | **24.15 → 25.1** | 24.8 → 25.5 | 25.3 → 25.7 | 24.6 → 25.8 | 25.6 → 25.3 |
+| **Assist %** | per level | **48.9 → 50.8** | **48.7 → 53.1** | **47.4 → 54.8** | **47.5 → 55.3** | **48.7 → 58.9** |
+| Fouls/game | — | 16.6 → 16.7 | 16.4 → 16.2 | 21.1 → 22.0 | 16.8 → 16.7 | 22.2 → 22.7 |
+| Steals/game | — | 5.8 → 5.7 | 5.6 → 5.4 | 7.0 → 6.9 | 5.3 → 5.5 | 7.4 → 7.3 |
+| Blocks/game | — | 2.4 → 2.7 | 2.8 → 2.7 | 4.0 → 4.3 | 3.1 → 3.6 | 4.3 → 4.8 |
+
+**Four §14.1 failures resolved and one created.** Assist percentage passes at all five levels where it failed at three; high-school field-goal percentage and offensive rebound percentage and development field-goal percentage each cross from just outside their floor to just inside. College field-goal percentage improves from 40.61% to 41.25% and still fails against a 42% floor, which is the pre-existing failure §32.1 already records.
+
+**The one created failure is top-domestic points per possession, and it is nine ten-thousandths.** 1.178 before and 1.1809 after, against a 1.08–1.18 ceiling — inside by two thousandths, then outside by one. On Validation B the same comparison is 1.166 → 1.173 and passes on both sides. The metric moved by about +0.004 and it sits on the ceiling either way. It is reported as a regression because it is one, and it is a smaller failure than the 1.186 §32.1 currently records.
+
+**The largest movement outside the target is the three-point attempt rate, and it moves toward reality rather than away.** 3PA/FGA falls 3–5 points at every level and stays inside its band at all five, while three-point *percentage* rises 1–2 points at every level and also stays inside. That is the same fact twice: the offence now takes fewer, better three-point attempts, because the ones it takes are more often catch-and-shoot off a delivery instead of pull-ups off the dribble. Assisted three-point makes go from 55.8% to 71.3% at top domestic.
+
+**Turnovers did not fall to pay for the assists.** Turnovers per 100 possessions move by at most 1.3 at any level, downward at the two lowest-possession levels and flat-to-slightly-up at the other three, and every level stays inside its §14.1 band on both validation ranges. The per-pass risk is unchanged.
+
+**Home win rate, overtime frequency, and blowout share are not resolvable at 100 games**, and both engines wander across their bands on both ranges — home win rate has a standard error near five points against a three-point band. They are §14.2 items, they are out of this task's scope, and no claim is made about them here in either direction.
+
+#### Determinism, parity, and reconciliation
+
+- **Determinism.** Identical seeds and inputs reproduce identical attribution across all six golden scenarios, asserted on the assist-and-make signature rather than only on the hash.
+- **Executor parity.** Play, Sim and Skip produce byte-identical ledgers and identical team assist totals. The mutation that makes Skip derive a different possession stream is killed by the parity assertion.
+- **Reconciliation.** Team assists equal the sum of player assists in every game at every level, and no team has more assists than made field goals carrying a recorded creator — a new box-score invariant added with this change, projected from the ledger by `BoxScoreProjector` and checked by `MatchStatistics.reconcile`.
+- **Independence from any aggregate.** The attribution decision reads the creation record and the passer's Pass Accuracy. The only balance terms it touches are the §14.3 conditional's own three, and the test asserts that those three equal the locked §14.3 row.
+
+#### Performance
+
+`run_performance_profile.gd` at the reference game: candidate generation remains the dominant cost at 44.9% of a game, unchanged in shape. The two continuations add one shot resolution to the possessions where they fire and the shot-mix correction adds actions to the rest, so the cost moves with the action count rather than with any new per-action work. Reported rather than optimised; §32.1's finding that the §27.1 sample is not reachable in GDScript for this engine design is unaffected.
+
+#### What this is, and what it is not
+
+| Claim | Status |
+| --- | --- |
+| The event chain is explicit, ledger-visible, deterministic and reducer-owned | **Structural** — proven by tests and by fifteen mutations |
+| Assist percentage is inside its §14.1 band at all five levels | **Measured**, on two untouched 100-game validation ranges, and not certified |
+| The §14.3 conditional is inside its locked envelope at all five levels | **Measured**, same ranges, and not certified |
+| Any of the above at the §27.1 sample | **Not certified.** 100 games per competition against a requirement of 100,000. The reports say so and fail their own `sample.meets_certification_size` metric rather than implying otherwise. |
+
+#### Remaining Stage 4 blockers, unchanged by this task
+
+Nothing here touched, and nothing here fixes: home advantage and the §14.2 home win rate, overtime frequency, the §14.2 blowout share at the two high-possession competitions, college field-goal percentage, Builder dominance, OVR truthfulness, career progression, Projected Peak, postseason scheduling, or the §27.1 certification sample. Top-domestic points per possession moves from a clear failure to the ceiling of its band and is recorded as still failing by nine ten-thousandths, which is a smaller failure than it was and is still a failure.
 
 ## 6. Certification and workflow blockers
 

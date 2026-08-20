@@ -644,6 +644,12 @@ A pass event records:
 
 Assist attribution follows configurable competition/stat rules. Vision increases recognition and creation; Passing increases execution. A high Vision player can see a pass that poor Passing fails to deliver. A high Passing player with poor Vision may accurately deliver only obvious options.
 
+**Implementation status: the passer-to-shot relationship is an explicit record, and "whether the pass directly created the eventual shot" is settled at the shot rather than at the pass.** `PassCreation` carries the passer, the receiver, the openness the delivery produced, the catch quality it earned, the defender it moved, and the competition's own credited-assist rule; `PASS_COMPLETED` records all of it. A delivery creates the attempt when the record is live, the ball reached *that* shooter, the passer is not the shooter, and the shot's family is one the competition credits — the last of these being `CompetitionRuleProfile.assist_rule_id` and `credited_assist_families`, which all five version 1.0 competitions share as `delivered-shot-v1`. The creator is stamped on `FIELD_GOAL_ATTEMPT` and `FIELD_GOAL_MADE` before the shot resolves, so §24.3's requirement that every official statistic derive from an ordered event holds for assists without reconstruction.
+
+The record is invalidated by a possession change, a turnover, an offensive rebound, a free-throw whistle, a reset, an attack that does not finish, a later pass replacing it, and the shot that consumes it. Two of those are defence in depth rather than the load-bearing guard, and `PROJECT_STATUS.md` §5.15 records which and why.
+
+The attribute split is implemented as this section and §8 state it together: Vision leads the §11.1 advantage roll a completed pass makes — recognition and creation — and Passing leads the delivery, the catch quality, and the §14.3 conditional that converts a created basket into a credited assist, which §8 names "assist conversion support".
+
 ### 11.4 Screens and off-ball value
 
 Screens and off-ball actions produce measurable events even when they do not appear in the public box score:
@@ -674,6 +680,8 @@ interface ShotIntent {
 ```
 
 Shot zones at minimum include restricted rim, close non-rim, midrange, standard three, and deep three. Public logs can group these more simply.
+
+**Implementation status: `assistedState` is recorded on the attempt, not only on the make.** `CATCH_AND_SHOOT` is a shot taken off the catch, `CREATED` one the delivery produced but the shooter finished on the move, and `UNASSISTED` everything the shooter made for himself — including a shot he created for himself after catching an ordinary pass. The engine previously recorded `CREATED` for exactly that last case, which is the inverse of what this section means, and recorded nothing at all on the attempt.
 
 ### 12.2 Shot context construction
 
