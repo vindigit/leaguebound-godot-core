@@ -12,7 +12,48 @@ extends RefCounted
 ## Every roster is a deterministic function of a competition and a seed. No
 ## randomness escapes; two runs at the same seed build byte-identical inputs.
 
-const VERSION: StringName = &"competition-catalog-v2"
+## **v3 counterbalanced the opening inbound.** v1 and v2 handed it to the home
+## team in every fixture they ever built. See `OPENING_COUNTERBALANCED` below
+## for why that was a fixture artifact rather than a rule, and what it was
+## sitting inside.
+##
+## Note this constant is descriptive: nothing currently reads it, so it does not
+## invalidate a cached report on its own.
+const VERSION: StringName = &"competition-catalog-v3"
+
+## Who receives the opening inbound, per fixture.
+##
+## **The engine does not decide this and never has.**
+## `MatchInput.initial_possession_team_id` has no default and is asserted to
+## name one of the two supplied teams; `MatchEngine` consumes a `MatchInput` and
+## never constructs one; and nothing under `src/` constructs one either. The
+## opening inbound is a property of the *fixture*, and every caller chooses it.
+##
+## This catalog chose `home.team_id`, unconditionally, in `match_for` and
+## `mirrored_match_for` alike, for every game it has ever built. That is not a
+## modelled basketball rule: nothing in `SIMULATION_SPEC.md`, `BALANCE_SPEC.md`,
+## `GDD.md` or `PRD.md` describes a jump ball, a possession arrow or an
+## alternating-possession rule, and `CompetitionRuleProfile`'s
+## `possession_arrow_enabled` field is declared and never read by anything.
+##
+## It mattered because of where it sat. `run_competition_calibration` publishes
+## `home_win_rate` as a **banded** §14.2 metric judged against 53-56%, over
+## fixtures where the home team also received every opening possession — while
+## its own comment asserted that "the measured home win rate is the environment
+## effect and nothing else". It was the environment plus the inbound.
+##
+## The default is now counterbalanced: the home side opens on even variations
+## and the away side on odd ones. This is a **fixture** counterbalance and not a
+## production change, because there is no production behaviour here to change.
+## It is deterministic — a function of the variation, consuming no random
+## source — so two runs at the same seed still build byte-identical inputs.
+##
+## `OPENING_HOME` and `OPENING_AWAY` exist so a diagnostic can hold the inbound
+## fixed on purpose; `run_opening_possession.gd` uses them to measure what it is
+## worth.
+const OPENING_COUNTERBALANCED: int = 0
+const OPENING_HOME: int = 1
+const OPENING_AWAY: int = 2
 
 ## Half-width of the deterministic team-strength tilt, in rating points.
 ##
@@ -153,6 +194,7 @@ static func match_for(
 	home_environment: float = 0.5,
 	home_offset: float = 0.0,
 	away_offset: float = 0.0,
+	opening: int = OPENING_COUNTERBALANCED,
 ) -> MatchInput:
 	var balance: SimulationBalanceProfile = balance_profile()
 	var home: TeamMatchProfile = team_for(
@@ -166,9 +208,28 @@ static func match_for(
 		balance,
 		home,
 		away,
-		home.team_id,
+		opening_team_id(opening, variation, home, away),
 		ratings_profile(),
 		home_environment)
+
+
+## Resolves an opening-inbound policy against one fixture.
+##
+## Deterministic in the variation and nothing else: no random source is touched,
+## so the counterbalance cannot change what a seed reproduces.
+static func opening_team_id(
+	opening: int,
+	variation: int,
+	home: TeamMatchProfile,
+	away: TeamMatchProfile,
+) -> StringName:
+	match opening:
+		OPENING_HOME:
+			return home.team_id
+		OPENING_AWAY:
+			return away.team_id
+		_:
+			return home.team_id if variation % 2 == 0 else away.team_id
 
 
 ## A match between two identical rosters at one competition.
@@ -187,6 +248,7 @@ static func mirrored_match_for(
 	competition: int,
 	variation: int = 0,
 	home_environment: float = 0.5,
+	opening: int = OPENING_COUNTERBALANCED,
 ) -> MatchInput:
 	var balance: SimulationBalanceProfile = balance_profile()
 	var home: TeamMatchProfile = team_for(competition, &"home", variation * 2, balance, 0.0)
@@ -198,7 +260,7 @@ static func mirrored_match_for(
 		balance,
 		home,
 		away,
-		home.team_id,
+		opening_team_id(opening, variation, home, away),
 		ratings_profile(),
 		home_environment)
 
