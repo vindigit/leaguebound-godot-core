@@ -2758,6 +2758,207 @@ Nothing here reaches a §27.1 certification sample and nothing here claims to.
 
 Nothing here touched, and nothing here fixes: home advantage and the §14.2 home win rate, overtime frequency, the §14.2 blowout share at the two high-possession competitions, college field-goal percentage, Builder dominance, OVR truthfulness, career progression, Projected Peak, postseason scheduling, or the §27.1 certification sample. Top-domestic points per possession moves from a clear failure to the ceiling of its band and is recorded as still failing by nine ten-thousandths, which is a smaller failure than it was and is still a failure.
 
+### 5.16 The assist checkpoint closes, and three equivalent mutants were hiding an unguarded property
+
+Status: **Closed as verification. One real defect found and fixed — a test gap, not an engine defect — and no assist tuning was performed. `RELOCATION` is a productive basketball action and is measured as such. The §14.1 top-domestic points-per-possession figure is re-measured on an untouched 1,000-game range and the earlier `1.1809` is classified.**
+
+This section closes §5.15's outstanding verification items. It changes no balance value, no assist parameter, and no production behaviour. The one change it makes is a test.
+
+#### 1. Mutation accounting
+
+Fifteen mutations, each applied to production code, run against the assist, attribute-contract, invariant, reconciliation and parity suites, and restored byte-clean. **Thirteen killed, two equivalent** — and both equivalence claims are now *proven* rather than inferred from a silent suite.
+
+The proof mechanism is new and is committed as `tools/mutation_fingerprint.gd`. It replays a fixed set of complete matches — five competitions × three venue arms × eight games = **120 complete ledgers** — serializes every one with `MatchLedgerSerializer`, and reduces the set to a single fingerprint. §24.3 makes the ordered ledger the authority for every official statistic, so two runs with the same fingerprint produced the same events in the same order and therefore the same everything. An equivalent mutant leaves the fingerprint byte-identical; a live one does not, whatever the suite said.
+
+Clean baseline: `7f492e86…3ed7`, 120 scenarios, 4,552 assists, 21,545 points, 4,493 fouls, 3,983 free-throw attempts.
+
+| # | Mutation | Production behaviour changed | Initial result | Test that detected it | Test added or strengthened | Final result | Class | Evidence for equivalence |
+| ---: | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Drop the creator before shot resolution | `_resolve_shot` stops stamping `creator_id` on `FIELD_GOAL_ATTEMPT` | Killed (7) | `test_every_assist_is_explained_by_a_recorded_creation_event` | — | Killed | killed | — |
+| 2 | Credit every make after any pass | `PassCreation.creates_shot_for` drops the credited-family test | Killed (12) | `test_a_self_created_shot_is_unassisted` | — | Killed | killed | — |
+| 3 | Credit the shooter as his own assister | `PassCreation.reaches` drops `passer_id != shooter_id` | Killed (2) | `test_a_delivery_only_creates_for_the_man_it_reached` | — | Killed | killed | — |
+| 4 | Retain creator context across an offensive rebound | `_resolve_rebound` no longer clears `pass_creation` | **Survived** | — | `test_a_delivery_creates_at_most_one_attempt` (new; kills the pair, not this alone) | **Survived** | **equivalent** | Structural: `_resolve_shot` (626–629) is the only consumer of `pass_creation`, and all three entries to `_resolve_rebound` (650 blocked, 687 missed, 836 missed final free throw) already cleared it at 638 or 800. Empirical: fingerprint byte-identical over 120 ledgers. |
+| 5 | Retain it *and* credit putbacks | Adds `PUTBACK` to `DELIVERED_FAMILIES` with mutation 4 | Killed (12) | `test_a_self_created_shot_is_unassisted` | — | Killed | killed | — |
+| 6 | Credit assists on missed shots | `_credit_assist` called from the miss branch | Killed (39 + 89 assertion errors) | `test_a_missed_shot_produces_no_assist` | — | Killed | killed | — |
+| 7 | Remove the free-throw creation clear | `_resolve_free_throws` no longer clears `pass_creation` | **Survived** | — | `test_a_delivery_creates_at_most_one_attempt` (new; see note below) | **Survived** | **equivalent** | Structural: every exit from `_resolve_free_throws` either terminates the possession — and `PossessionContext._init` starts the next one at `PassCreation.none()` — or reaches `_resolve_rebound`, which clears at 907 before any shot resolves. The free-throw loop itself never reads `pass_creation`. Empirical: fingerprint byte-identical over 120 ledgers. |
+| 8 | Emit an assist on a made free throw | `FREE_THROW_MADE` routed through `_credit_assist` | Killed (39 + 78 assertion errors) | `test_free_throws_produce_no_assists` | — | Killed | killed | — |
+| 9 | Remove Vision from recognition | `PASS_READ_QUALITY` weight dropped from the pass advantage roll | Survived → gap | `test_vision_changes_open_target_recognition_and_creation` | **Strengthened**: Pass Accuracy carries 15% Vision under the locked §5.2 table, so Vision moved the rate either way; the test now requires Vision to move it *more* than Passing does | Killed (2) | killed | — |
+| 10 | Remove Passing from execution | `PASS_ACCURACY` dropped from `_credit_assist` | Survived → gap | `test_passing_drives_the_conditional_credit_rate_in_production` | **Added**: the §14.3 conditional had been asserted against the balance profile's arithmetic rather than against the engine; it is now measured in production, from the ledger | Killed (1) | killed | — |
+| 11 | Make Passing change shot accuracy | A direct Passing term added to `ShotResolver.resolve_make` | Survived → gap | `test_passing_changes_delivery_execution_and_assist_conversion` | **Fixed**: the test reused one `CapabilityCalculator` across two fixtures sharing player ids, and the calculator memoizes by player id, so the second arm was answered with the first arm's ratings and the assertion had been vacuous since it was written | Killed (3) | killed | — |
+| 12 | Collapse every shot into assisted | `assisted_state` returns `CATCH_AND_SHOOT` unconditionally | Killed (5) | `test_a_self_created_shot_is_unassisted` | — | Killed | killed | — |
+| 13 | Collapse every shot into unassisted | `assisted_state` returns `UNASSISTED` unconditionally | Killed (57) | `test_every_assist_is_explained_by_a_recorded_creation_event` | — | Killed | killed | — |
+| 14 | Break team/player assist reconciliation | Reducer stops summing player assists into the team line | Killed (39 + 78 assertion errors) | `test_team_and_player_assists_reconcile` | — | Killed | killed | — |
+| 15 | Make Skip produce different assists from Sim | Skip derives a different possession stream | Killed (6) | `test_play_sim_and_skip_agree_on_every_credited_assist` | — | Killed | killed | — |
+
+**Both equivalent mutants are genuinely equivalent, and §5.15's stronger claim about them was wrong.**
+
+§5.15 said the two clears "change no credited assist on any reachable path — *including when compounded with removing the blanket 'a shot consumes its delivery' clear*". The first half is right and is now proven twice over. The second half is false, and finding that out is the substance of this checkpoint.
+
+There are **three** creation clears on the shot path, not two: the offensive-rebound clear (row 4), the free-throw clear (row 7), and the blanket clear in `_resolve_shot` that §5.15 never listed as a mutation at all. The full lattice, each cell measured on the same 120 ledgers:
+
+| Mutation set | Fingerprint | Ledgers changed | Assists | Class |
+| --- | --- | ---: | ---: | --- |
+| none (clean) | `7f492e86…3ed7` | — | 4,552 | — |
+| offensive-rebound clear removed (4) | `7f492e86…3ed7` | 0 of 120 | 4,552 | equivalent |
+| free-throw clear removed (7) | `7f492e86…3ed7` | 0 of 120 | 4,552 | equivalent |
+| blanket shot clear removed (unlisted) | `7f492e86…3ed7` | 0 of 120 | 4,552 | equivalent |
+| (4) + (7) | `7f492e86…3ed7` | 0 of 120 | 4,552 | equivalent |
+| **(4) + blanket** | `b8b43901…5901` | **20 of 120** | **4,555** | **live** |
+| (4) + (7) + blanket | `b8b43901…5901` | 20 of 120 | 4,555 | live |
+
+The three clears were not defence in depth. They were **mutually masking**: each one is unreachable only because the other two catch every path, so mutation testing them one at a time reports three harmless deletions and says nothing about the property they exist to hold — which was defended by nothing but their conjunction. The free-throw clear turns out to be inert to the live path entirely; the minimal live pair is the offensive-rebound clear plus the blanket one.
+
+**And the whole assist, reconciliation, invariant and parity suite passed on the live pair.** 86 test cases, 0 failures, against a mutation that moves twenty ledgers and credits three assists that should not exist.
+
+The chain is ordinary basketball, and the first divergent event names it exactly. High school, variation 900,004, event 60:
+
+```text
+54 pass_completed      home_p5 -> home_p2   pass_swing  clear
+55 field_goal_attempt  home_p2  creator=home_p5   pull_up   midrange
+56 field_goal_missed   home_p2
+57 rebound             home_p2  OFFENSIVE          (his own miss)
+59 action_selected     home_p2                     pull_up   deep_three
+60 field_goal_attempt  home_p2  creator=(none)     pull_up   deep_three   <- clean
+60 field_goal_attempt  home_p2  creator=home_p5    pull_up   deep_three   <- live pair
+```
+
+A passer feeds a shooter, the shooter misses the shot the delivery created, the shooter rebounds his own miss and shoots again off the dribble — and the second attempt comes back carrying the first delivery's passer. Had it dropped, **one pass would have been two assists**.
+
+**Why the existing guard could not see it.** `test_no_credited_assist_crosses_an_invalidating_event` checks `ASSIST` events. An attempt that inherits a stale creator and then *misses* emits no assist at all, so the guard was blind to exactly the case that produces the defect. §12.1 records the creator on the shot *intent*, so the attempt is where the property has to be checked.
+
+**The guard that was missing**, added in `975c210`: `test_a_delivery_creates_at_most_one_attempt` walks the ledger, holds the live delivery's passer and receiver, invalidates it on a possession change, turnover, steal, free-throw whistle or rebound **and on every field-goal attempt**, and asserts that any attempt carrying a creator carries the live delivery's passer and was taken by the man that delivery reached. It runs over the six goldens plus six full top-domestic games, because the goldens are too short to reach the chain. It passes clean (22/22) and fails on the live pair with the stale creator named.
+
+It does not kill rows 4 and 7 individually, and nothing can: those mutations change no observable, which is what equivalence means. What it does is make the property they defend hold on its own evidence instead of on a coincidence between three redundant statements.
+
+#### 2. `RELOCATION` behaviour
+
+**It routes into the pass/catch-and-shoot continuation. It is not presentation-only, not suppressed, not removed, and not defective.** §5.15 fixed it; this checkpoint measures the fix rather than restating it.
+
+Exact before and after, both from production:
+
+```gdscript
+# Before (7b1bfe3 and earlier) — the whole branch:
+ActionFamily.Value.RELOCATION:
+    _emit(MatchDomainEvent.OFF_BALL_ACTION, _context.offense.team_id,
+        candidate.actor_id, candidate.target_id, &"",
+        candidate.action_id(), advantage.level_id())
+
+# After (fd0f71d) — `_resolve_relocation`:
+#   emit the same OFF_BALL_ACTION event
+#   return if late clock
+#   return unless spot_up draw < relocation_spot_up_share (0.80) * advantage.quality_share()
+#   build a real PASS_SWING feed from the ball handler to the relocating player
+#   resolve that feed's turnover risk — it can end the possession
+#   _record_completed_pass(...)  -> PASS_COMPLETED, PassCreation, ball handler moves
+#   _resolve_catch_and_shoot(...) -> the shot the relocation was run for
+```
+
+One correction to §5.15's wording: the old branch did not change *no* state. `_resolve_action` sets `_context.advantage` and emits `ADVANTAGE_CREATED` for every family before dispatch, so the relocation's openness was computed and recorded. What the *branch* did was nothing with it — the openness led nowhere, because the ball never arrived.
+
+Effect, dimension by dimension:
+
+| Dimension | Before | After |
+| --- | --- | --- |
+| Openness | Computed by `AdvantageResolver`, written to `_context.advantage`, emitted — and consumed by nothing on this path | Gates the spot-up directly (`relocation_spot_up_share × advantage.quality_share()`) and is carried onto the delivery as the receiver's §11.1 openness |
+| Spacing | Affected *selection* only: `lerpf(0.85, 1.20, spacing)` in `_tactical_fit` | Unchanged on selection; spacing now also reaches the shot, because the relocation can produce one |
+| Defensive rotation | Not recorded | `_record_completed_pass` records `rotated_defender_id = defender_of(receiver)`, so §11.3's "defensive rotation caused" is in the ledger |
+| Receiver identity | None — no ball movement | `_context.ball_handler_id` becomes the relocating player |
+| Shot selection | None | `_resolve_catch_and_shoot` picks the zone the *receiver's* own capability supports, which is what makes it his shot and the passer's creation |
+| Pass creation | None | A real `PASS_SWING` feed with real turnover risk, recorded as `PASS_COMPLETED` with catch quality |
+| Assist eligibility | Impossible — no attempt, no delivery | The catch-and-shoot resolves as `PULL_UP`, which is in `PassCreation.DELIVERED_FAMILIES`, so it is assist-eligible |
+| Time consumption | `_consume(_clock.action_ms(...))` runs before dispatch for every selected action, so the relocation always cost time | **Unchanged** at the action level. Possessions end sooner only because a shot now happens |
+
+**Measured, not asserted.** `RELOCATION` is **10.07%** of selected actions at top domestic in the current build. Reverting `_resolve_relocation` to its pre-fix body and re-running the same 120 ledgers:
+
+| | Clean | Reverted to no-op | Delta |
+| --- | ---: | ---: | ---: |
+| Ledgers changed | — | **120 of 120** | every game |
+| Assists | 4,552 | 4,344 | **−208 (−4.6%)** |
+| Points | 21,545 | 21,169 | −376 |
+| Fouls | 4,493 | 4,553 | +60 |
+| Free-throw attempts | 3,983 | 4,151 | +168 |
+
+Every single game changes. The family is load-bearing, and the "high-frequency no-op in the calibrated engine" the brief forbids does not exist here any more.
+
+#### 4. Vision/Passing contract
+
+The previous prompt demanded that Passing never affect shot probability. That is stricter than the governing specification, and the correct boundary is recorded here.
+
+| Rule | Status in the implementation |
+| --- | --- |
+| Passing may influence **delivery quality, catch quality, and the resulting physical shot context** | **Yes, and only through that path.** `_delivered_catch_quality` reads `PASS_ACCURACY` (Passing 65%, Vision 15%, Offensive IQ 20%) into `PassCreation.catch_quality`, and `ShotResolver.resolve_make` applies it as `probability -= clampf(1 - catch_quality, 0, 1) × catch_quality_penalty_max` (0.07 max, floor 0.70). It is a §12.2 physical shot-context term, it only ever subtracts, and it is clamped by the zone's own floor and ceiling. |
+| Passing must **not** provide an unexplained direct shooting bonus | **Confirmed.** `PASS_ACCURACY` appears in exactly three production sites: `TurnoverResolver.resolve_pass` (delivery completion), `AdvantageResolver` (0.40 of the pass creation roll), and `PossessionEngine` (catch quality and the §14.3 conditional). It appears in no shooting capability and in no term of `resolve_make`. Mutation 11 above adds such a term and is killed. |
+| Vision may influence **recognition and creation** | **Yes.** `PASS_READ_QUALITY` (Vision 60%, Offensive IQ 25%, Passing 15%) leads the pass advantage roll at 0.60 against Pass Accuracy's 0.40, and Vision carries 20% of `SHOT_SELECTION`. High Vision with poor Passing sees the open man and turns it over; high Passing with poor Vision delivers the obvious pass safely and creates less. |
+| Neither may **retroactively award an assist** | **Confirmed.** The creator is settled and stamped on the `FIELD_GOAL_ATTEMPT` event before `resolve_make` is called. `_credit_assist` runs after a made basket — because §14.1 defines an assist against a made field goal — but reads only the pre-recorded `creator_id`, the passer's Pass Accuracy, and a fresh draw. It cannot invent a creator, and rows 1, 6, 12 and 13 kill the mutations that try. |
+| Neither may **guarantee a make** | **Confirmed.** Catch quality can only reduce make probability, and the result is clamped to `shot_floor(zone, dunk)`/`shot_ceiling(zone, dunk)`. |
+
+#### 3. Top-domestic points per possession, on an untouched 1,000-game range
+
+Validation A's `1.1809` was one hundred games. This is one thousand, on variations **700,000–700,999** (RNG seeds 700,001–701,000), a range no previous section has touched, at `4f7cbf5`. Nothing was tuned toward it and nothing was tuned after it.
+
+| §14.1 metric | Estimate | Interval | Band | Verdict |
+| --- | ---: | ---: | ---: | --- |
+| Points per possession | **1.1863** | ±0.0052 | 1.08–1.18 | **FAIL** |
+| Possessions per game | 101.7970 | ±0.1632 | 96–103 | PASS |
+| Field-goal percentage | 0.4679 | ±0.0022 | 45–51% | PASS |
+| Three-point percentage | 0.3857 | ±0.0036 | 34–40% | PASS |
+| Three-point attempt rate | 0.3630 | ±0.0021 | 36–49% | PASS |
+| Free-throw percentage | 0.8010 | ±0.0038 | 73–83% | PASS |
+| Free-throw attempts per FGA | 0.2183 | ±0.0018 | 18–34% | PASS |
+| Turnovers per 100 possessions | 13.8599 | — | 11–16 | PASS |
+| Offensive rebound percentage | 0.2550 | ±0.0027 | 20–31% | PASS |
+| Assist percentage | 0.5872 | ±0.0032 | 52–72% | PASS |
+
+Ten of eleven §14.1 rows pass. The eleventh does not, and it misses by more than it was reported to.
+
+**The interval is the point.** Points per possession was the one judged §14.1 row published with no interval at all, which is how a nine-ten-thousandth miss came to be described as a boundary condition. It has one now — the linearized ratio estimator, because points per possession is a ratio of two sums whose numerator and denominator covary — and it reads **[1.1811, 1.1915]**. The whole interval is above the 1.1800 ceiling.
+
+Three independent untouched ranges at `simulation-v6-pass-creation`:
+
+| Range | Games | Points per possession |
+| --- | ---: | ---: |
+| 610,000–610,099 (Validation A) | 100 | 1.1809 |
+| 620,000–620,099 (Validation B) | 100 | 1.1730 |
+| **700,000–700,999 (this run)** | **1,000** | **1.1863 ±0.0052** |
+
+**Classification: a genuine, repeatable band failure of about +0.0063 — not sampling noise, and not negligible.** Taking the four options the brief names in turn:
+
+- **Sampling noise?** No. A larger sample moved the estimate *away* from the band and tightened the interval entirely outside it. Noise does not do that.
+- **A repeatable assist-chain regression?** Partly, and the honest word is "contribution" rather than "regression". §5.15 recorded points per possession moving 1.178 → 1.1809 on Validation A when the pass continuation landed, and the pre-assist pooled figure was 1.1771 ±0.0040 over 2,100 games. The assist work is worth something under a hundredth here. It is not a defect: the chain does what §11.3 specifies, and every assist-adjacent §14.1 and §14.3 row is inside its band.
+- **A pre-existing range effect?** Substantially yes. The metric was already sitting on its ceiling before the assist work — 1.1771 with an interval touching 1.18 — so the assist contribution pushed a boundary figure over rather than creating the problem.
+- **A genuine but negligible boundary condition?** No. Negligible was the reading available at 100 games without an interval. At 1,000 games with one, it is a real failure.
+
+**No parameter was changed.** The brief forbids moving any parameter solely to put this number under 1.1800, and forbids reopening the assist implementation without a demonstrated causal defect. No causal defect was demonstrated — the assist chain is correct and its own rows pass — so the honest outcome is that top-domestic points per possession is a §14.1 failure of +0.0063, recorded and left alone. It is a calibration debt against the possession model, not an assist defect, and it belongs to whichever task is allowed to move scoring rates.
+
+Action and shot mix on the same engine (400 top-domestic games, variations 710,000–710,399):
+
+| Action family | Share | | Shot zone | Share |
+| --- | ---: | --- | --- | ---: |
+| Pass/swing | 32.73% | | Close non-rim | 28.60% |
+| Pull-up | 14.25% | | Standard three | 26.02% |
+| Off-ball cut | 11.19% | | Midrange | 23.64% |
+| Relocation | 9.84% | | Restricted rim | 11.52% |
+| Screen | 8.74% | | Deep three | 10.21% |
+| Drive | 6.72% | | | |
+| Handoff | 5.97% | | | |
+| Pick action | 5.08% | | | |
+| Reset | 1.92% | | | |
+| Post action | 1.74% | | | |
+| Transition attack | 0.95% | | | |
+| Putback | 0.86% | | | |
+
+#### Part 1 exit criteria
+
+| Criterion | Status |
+| --- | --- |
+| CI is green | Verified on `fd0f71d` before any change (run 32418975454, "Pull request gate", success) and re-run after each Part 1 commit |
+| The 15-mutation table reconciles | 15 mutations, 13 killed, 2 equivalent — and the two equivalences are now proven rather than inferred |
+| Equivalent mutants are genuinely equivalent or killed | **Proven equivalent**, structurally and over 120 complete ledgers. A third, unlisted clear is equivalent too, and the *combination* is live and is now killed |
+| `RELOCATION` is meaningful or removed | **Meaningful.** Reverting it changes 120 of 120 ledgers and removes 208 assists |
+| Larger-sample PPP is reported without target-chasing | 1,000 games, untouched range, interval published, failure recorded, no parameter moved |
+| Assist accounting, bands, parity, ledger reconciliation remain green | Unchanged: assist percentage 0.5872 ±0.0032 inside 52–72%, and the full acceptance runner passes |
+| No new assist tuning was performed without a proven defect | No balance value was changed. The only Part 1 production-adjacent change is a test and two diagnostic tools |
+
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation
