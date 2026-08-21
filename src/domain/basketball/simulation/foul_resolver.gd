@@ -204,12 +204,25 @@ func _contact_probability(
 	var units: float = _capability.differential_units(force + leverage, discipline)
 	var base: float = (
 		_balance.foul_conversion_base * clampf(contact_load, 0.0, 1.0) * aggression * gamble)
-	if not context.input.is_home(context.offense.team_id):
-		base *= 1.0 - _balance.home_environment_foul_bonus * context.input.home_environment
-	else:
-		base *= 1.0 + _balance.home_environment_foul_bonus * context.input.home_environment
-	return _balance.opposed_probability(
+	var probability: float = _balance.opposed_probability(
 		base, units, _balance.foul_conversion_floor, _balance.foul_conversion_ceiling)
+	# §19.4 officiating. The whistle is nudged, never invented: this runs only
+	# after a real action produced real contact, so the opportunity exists
+	# whatever the venue says, and the shift is applied to its conversion.
+	#
+	# It reads the venue and nothing else — not the score, not the clock, not
+	# the margin, not who is expected to win — so it cannot rescue a trailing
+	# home team, and it is symmetric: the same magnitude that makes the visiting
+	# defence marginally likelier to be whistled makes the home defence
+	# marginally less so.
+	var officiating: float = context.input.home_environment_context.officiating()
+	if officiating > 0.0:
+		var direction: float = (
+			1.0 if context.input.is_home(context.offense.team_id) else -1.0)
+		probability = clampf(
+			probability + direction * officiating,
+			_balance.foul_conversion_floor, _balance.foul_conversion_ceiling)
+	return probability
 
 
 func _least_protected_defender(context: PossessionContext) -> StringName:

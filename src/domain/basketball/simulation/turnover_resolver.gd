@@ -62,6 +62,16 @@ func resolve_ball_handling(
 		units,
 		_balance.turnover_floor,
 		_balance.turnover_ceiling)
+	# §19.4 composure, inside §17.4's pressure envelope: a visiting handler
+	# carries marginally more execution noise. It is charged to the visitor
+	# rather than credited to the host, so a neutral court and a home court
+	# differ only by what the visitor loses, and it applies in every legitimate
+	# context rather than only when the game is close — a modifier that appeared
+	# only in close games would be a comeback mechanism with a different name.
+	var composure: float = context.input.home_environment_context.composure()
+	if composure > 0.0 and not context.input.is_home(context.offense.team_id):
+		probability = clampf(
+			probability + composure, _balance.turnover_floor, _balance.turnover_ceiling)
 	if random_source.next_float() >= probability:
 		return TurnoverOutcome.none()
 	return TurnoverOutcome.new(
@@ -115,6 +125,15 @@ func resolve_pass(
 		units,
 		_balance.turnover_floor,
 		_balance.turnover_ceiling)
+	# §19.4 communication: a home side's deliveries and catches are marginally
+	# better coordinated. It moves the *unforced* error and never the
+	# interception — a defender who reads the passing lane reads it just as well
+	# on the road, and letting the venue suppress his steal would be a home
+	# defensive bonus wearing a communication label.
+	var communication: float = context.input.home_environment_context.communication()
+	if communication > 0.0 and context.input.is_home(context.offense.team_id):
+		probability = clampf(
+			probability - communication, _balance.turnover_floor, _balance.turnover_ceiling)
 	if random_source.next_float() >= probability:
 		return TurnoverOutcome.none()
 	# An inaccurate pass that nobody intercepted went out of bounds or hit the

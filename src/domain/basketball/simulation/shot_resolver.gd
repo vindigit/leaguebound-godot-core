@@ -188,8 +188,13 @@ func resolve(
 	# attempt. Bounded by the advantage bonus so it cannot replace the shot.
 	var selection: float = _capability.shot_selection(shooter, runtime, zone)
 	probability += (selection - 0.5) * _balance.advantage_shot_bonus_max * 0.5
-	if context.input.is_home(context.offense.team_id):
-		probability += _balance.home_environment_shot_bonus * context.input.home_environment
+	# §19.4 deliberately contributes nothing here. A term added to the make
+	# probability of every home attempt is not officiating, communication,
+	# composure or familiarity — it is the flat shooting bonus §19.2 rules out
+	# for Coach Trust in the same breath, and an identical physical shot must go
+	# in at the same rate in both buildings. The venue reaches a shot only
+	# through §12.2 catch quality, which is a property of the delivery and is
+	# already in `catch_quality` above.
 
 	probability = clampf(
 		probability, _balance.shot_floor(zone, dunk), _balance.shot_ceiling(zone, dunk))

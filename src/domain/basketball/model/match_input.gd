@@ -20,8 +20,16 @@ var away: TeamMatchProfile
 var initial_possession_team_id: StringName
 ## §19.4 home environment strength, normalized. Bounded officiating,
 ## communication, composure, and familiarity effects only; it never guarantees
-## an outcome.
+## an outcome. Zero is a neutral court.
 var home_environment: float
+## §9.3's `HomeEnvironmentContext`: the strength above resolved into §19.4's
+## named channels, bounded by §17.4, and built exactly once per match.
+##
+## Every home-environment effect in the engine comes through this object. The
+## bare float stays as the *input* — it is what a caller supplies and what a
+## fixture records — and this is what production reads, so a new effect cannot
+## be added without appearing in the channel list and in the aggregation.
+var home_environment_context: HomeEnvironmentContext
 ## §18.2 what this game is worth: `GameStakes.Value`.
 ##
 ## A property of the occasion, not of a side — both teams play the same
@@ -68,6 +76,8 @@ func _init(
 	away = p_away
 	initial_possession_team_id = p_initial_possession_team_id
 	home_environment = p_home_environment
+	home_environment_context = HomeEnvironmentContext.from_profile(
+		p_home_environment, p_balance_profile)
 	stakes = p_stakes
 
 

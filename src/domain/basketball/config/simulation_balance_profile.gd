@@ -520,8 +520,24 @@ var offensive_rebound_spread: float = 1.20
 # --- Â§17 chemistry and home environment (bounded, never a flat bonus) -------
 var chemistry_pass_bonus_max: float = 0.04
 var chemistry_help_bonus_max: float = 0.04
-var home_environment_shot_bonus: float = 0.006
-var home_environment_foul_bonus: float = 0.010
+## §19.4's three implemented channels, each in **absolute probability points**
+## at full venue strength, each individually bounded by
+## `HomeEnvironmentContext.MAX_SINGLE_MODIFIER` (§17.4's four points) and
+## jointly by `MAX_COMBINED_MODIFIER`.
+##
+## They replace `home_environment_shot_bonus`, which added a term to the make
+## probability of every home field-goal attempt regardless of who was shooting,
+## from where, or against what contest. §19.4 authorizes bounded officiating,
+## communication, composure and familiarity; a flat make bonus is none of them,
+## and §19.2 rules out the identical thing for Coach Trust in the same breath —
+## "it does not increase the probability that an identical physical shot goes
+## in". It was also carrying most of the home advantage, which is why removing
+## it and replacing it is a correction rather than a deletion.
+##
+## Fitted on the §5.17 tuning range and validated on two untouched ranges.
+var home_officiating_modifier: float = 0.013
+var home_communication_modifier: float = 0.018
+var home_composure_modifier: float = 0.011
 
 # --- §10.2/§10.3/§18.2 score-and-clock game management -----------------------
 ## How much of a deficit a trailing team takes back in one pair of possessions
@@ -667,7 +683,7 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v6-pass-creation",
+	p_version: StringName = &"simulation-v7-home-environment",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1061,8 +1077,12 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"rebound.crash_share_base", &"probability", crash_share_base, 0.05, 0.80)
 	_add(tunables, &"chemistry.pass_bonus_max", &"probability", chemistry_pass_bonus_max, 0.0, 0.10)
 	_add(tunables, &"chemistry.help_bonus_max", &"probability", chemistry_help_bonus_max, 0.0, 0.10)
-	_add(tunables, &"home.shot_bonus", &"probability", home_environment_shot_bonus, 0.0, 0.03)
-	_add(tunables, &"home.foul_bonus", &"probability", home_environment_foul_bonus, 0.0, 0.05)
+	_add(tunables, &"home.officiating_modifier", &"probability",
+		home_officiating_modifier, 0.0, HomeEnvironmentContext.MAX_SINGLE_MODIFIER)
+	_add(tunables, &"home.communication_modifier", &"probability",
+		home_communication_modifier, 0.0, HomeEnvironmentContext.MAX_SINGLE_MODIFIER)
+	_add(tunables, &"home.composure_modifier", &"probability",
+		home_composure_modifier, 0.0, HomeEnvironmentContext.MAX_SINGLE_MODIFIER)
 	_add(tunables, &"management.swing_points", &"points", management_swing_points, 1.0, 6.0)
 	_add(tunables, &"management.pressure_floor", &"share", management_pressure_floor, 0.0, 0.60)
 	_add(tunables, &"management.protect_pace_gain", &"share", protect_pace_gain, 0.0, 0.40)
