@@ -207,7 +207,8 @@ func _judge(
 		"engine possessions", 0.0,
 		CalibrationTargets.points_per_possession(competition), totals.engine_possessions)
 		.with_aggregation(MetricAggregation.ratio(
-			float(totals.points), float(totals.engine_possessions))))
+			float(totals.points), float(totals.engine_possessions)))
+		.with_interval(totals.points_per_possession_half_width()))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.field_goal_percentage" % id),
 		"Field goals made divided by field goals attempted.",

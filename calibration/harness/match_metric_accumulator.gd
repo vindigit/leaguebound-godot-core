@@ -171,6 +171,35 @@ func points_per_possession() -> float:
 	return _ratio(float(points), float(engine_possessions))
 
 
+## The 95% half-width of points per possession.
+##
+## Points per possession is a *ratio of two sums*, not a mean and not a
+## proportion, so neither of the intervals this class already knows how to make
+## is the right one: the numerator and the denominator both vary from team-game
+## to team-game and they covary strongly — a fast game scores more points and
+## uses more possessions. The linearized ratio estimator is the interval that
+## accounts for that, and without it the §14.1 row most likely to sit on its
+## band boundary is the one row published with no interval at all.
+func points_per_possession_half_width() -> float:
+	var count: int = team_game_possessions.size()
+	if count < 2 or team_game_points.size() != count:
+		return 0.0
+	var estimate: float = points_per_possession()
+	var mean_possessions: float = 0.0
+	for value in team_game_possessions:
+		mean_possessions += value
+	mean_possessions /= float(count)
+	if mean_possessions <= 0.0:
+		return 0.0
+	var residual_sum: float = 0.0
+	for index in range(count):
+		var residual: float = (
+			team_game_points[index] - estimate * team_game_possessions[index])
+		residual_sum += residual * residual
+	var variance: float = residual_sum / float(count - 1)
+	return 1.96 * sqrt(variance / float(count)) / mean_possessions
+
+
 func field_goal_percentage() -> float:
 	return _ratio(float(field_goals_made), float(field_goals_attempted))
 
