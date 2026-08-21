@@ -338,27 +338,70 @@ func test_a_neutral_game_cannot_observe_the_home_modifiers() -> void:
 ## comeback mechanism, a score-aware whistle, or an expected-winner term is a
 ## difference between two numbers that are otherwise required to be identical.
 func test_no_channel_reads_the_scoreboard() -> void:
+	# Asserted as exact equality rather than against a tolerance, and the
+	# distinction matters: a channel worth four tenths of a probability point
+	# moves these rates by about three thousandths, so any tolerance loose
+	# enough to feel safe is looser than the whole effect and catches nothing.
+	# None of these three resolvers reads the score on any path, so the two
+	# columns are required to be identical to the last bit.
+	# Compared as integer counts rather than as rates, so the comparison is
+	# exact rather than approximate: a float assertion with any tolerance at all
+	# is looser than the channels themselves, which move these counts by a few
+	# dozen in six thousand.
 	for at_home: bool in [true, false]:
-		var behind: float = _foul_rate(at_home, -20)
-		var ahead: float = _foul_rate(at_home, 20)
-		assert_float(absf(behind - ahead)).override_failure_message(
-			"the foul rate read the scoreboard (%s): %.4f behind, %.4f ahead"
-			% ["home" if at_home else "away", behind, ahead]
-		).is_less(0.005)
+		var side: String = "home" if at_home else "away"
+		assert_int(_foul_count(at_home, -20)).override_failure_message(
+			"the foul rate read the scoreboard (%s)" % side
+		).is_equal(_foul_count(at_home, 20))
+		assert_int(_pass_turnover_count(at_home, -20)).override_failure_message(
+			"the pass turnover rate read the scoreboard (%s)" % side
+		).is_equal(_pass_turnover_count(at_home, 20))
+		assert_int(_handle_turnover_count(at_home, -20)).override_failure_message(
+			"the handle turnover rate read the scoreboard (%s)" % side
+		).is_equal(_handle_turnover_count(at_home, 20))
 
-		var behind_pass: float = _pass_turnover_rate(at_home, -20)
-		var ahead_pass: float = _pass_turnover_rate(at_home, 20)
-		assert_float(absf(behind_pass - ahead_pass)).override_failure_message(
-			"the pass turnover rate read the scoreboard (%s): %.4f behind, %.4f ahead"
-			% ["home" if at_home else "away", behind_pass, ahead_pass]
-		).is_less(0.005)
 
-		var behind_handle: float = _handle_turnover_rate(at_home, -20)
-		var ahead_handle: float = _handle_turnover_rate(at_home, 20)
-		assert_float(absf(behind_handle - ahead_handle)).override_failure_message(
-			"the handle turnover rate read the scoreboard (%s): %.4f behind, %.4f ahead"
-			% ["home" if at_home else "away", behind_handle, ahead_handle]
-		).is_less(0.005)
+## 6 and 17, structurally. Two of the three consumers have no legitimate reason
+## to know the score, and are asserted not to.
+##
+## The sampled version of this question cannot be made sharp enough on its own:
+## a channel worth four tenths of a probability point moves a six-thousand-draw
+## count by a few dozen, and a mutation placed where the §14.3 turnover floor
+## clamps it can move it by nothing at all while still being live in a real
+## game. So the score is forbidden at the source in the two files that never
+## need it.
+##
+## Scoped to the three functions the venue reaches, not to whole files. Two
+## things in these files read the score entirely legitimately and must keep
+## doing so: §13.1's deliberate late-game foul is a coaching decision gated on
+## score and clock, and §20.1 gives `FreeThrowResolver` a late-and-close
+## pressure term that applies in both buildings. A scan that forbade those would
+## be forbidding the specification.
+func test_the_foul_and_turnover_resolvers_never_read_the_score() -> void:
+	var scoreboard := RegEx.new()
+	assert_int(scoreboard.compile(
+		"offense_margin|defense_margin|margin_for|home_score|away_score"
+	)).is_equal(OK)
+	var targets: Array[PackedStringArray] = [
+		PackedStringArray([
+			"res://src/domain/basketball/simulation/foul_resolver.gd",
+			"_contact_probability"]),
+		PackedStringArray([
+			"res://src/domain/basketball/simulation/turnover_resolver.gd",
+			"resolve_pass"]),
+		PackedStringArray([
+			"res://src/domain/basketball/simulation/turnover_resolver.gd",
+			"resolve_ball_handling"]),
+	]
+	for target: PackedStringArray in targets:
+		var body: String = _function_source(target[0], target[1])
+		assert_str(body).override_failure_message(
+			"could not find %s in %s" % [target[1], target[0]]).is_not_empty()
+		var found: RegExMatch = scoreboard.search(body)
+		assert_bool(found != null).override_failure_message(
+			"%s.%s reads the scoreboard ('%s'); §19.4's channels read the venue"
+			% [target[0], target[1], "" if found == null else found.get_string()]
+		).is_false()
 
 
 ## 5, measured. Team identity does not affect the modifier.
@@ -643,6 +686,12 @@ func _context_at(
 ## The share of `RESOLUTIONS` non-shooting contact checks that became a whistle.
 func _foul_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
 		away_id: StringName = AWAY) -> float:
+	return float(_foul_count(at_home, home_margin, home_id, away_id)) / float(RESOLUTIONS)
+
+
+## The raw count behind the rate, so a comparison can be exact.
+func _foul_count(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> int:
 	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
 	var resolver := FoulResolver.new(
 		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
@@ -655,12 +704,18 @@ func _foul_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
 		if resolver.resolve_non_shooting_foul(
 			context, candidate, AdvantageResult.new(), source).occurred:
 			called += 1
-	return float(called) / float(RESOLUTIONS)
+	return called
 
 
 ## The share of `RESOLUTIONS` deliveries that were turned over.
 func _pass_turnover_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
 		away_id: StringName = AWAY) -> float:
+	return float(_pass_turnover_count(at_home, home_margin, home_id, away_id)) / float(RESOLUTIONS)
+
+
+## The raw count behind the rate, so a comparison can be exact.
+func _pass_turnover_count(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> int:
 	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
 	var resolver := TurnoverResolver.new(
 		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
@@ -679,12 +734,18 @@ func _pass_turnover_rate(at_home: bool, home_margin: int, home_id: StringName = 
 		var source: RandomSource = SeededRandomSource.new(index + 1)
 		if resolver.resolve_pass(context, candidate, AdvantageResult.new(), source).occurred:
 			lost += 1
-	return float(lost) / float(RESOLUTIONS)
+	return lost
 
 
 ## The share of `RESOLUTIONS` on-ball attacks that were turned over.
 func _handle_turnover_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
 		away_id: StringName = AWAY) -> float:
+	return float(_handle_turnover_count(at_home, home_margin, home_id, away_id)) / float(RESOLUTIONS)
+
+
+## The raw count behind the rate, so a comparison can be exact.
+func _handle_turnover_count(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> int:
 	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
 	var resolver := TurnoverResolver.new(
 		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
@@ -698,7 +759,7 @@ func _handle_turnover_rate(at_home: bool, home_margin: int, home_id: StringName 
 		if resolver.resolve_ball_handling(
 			context, candidate, AdvantageResult.new(), source).occurred:
 			lost += 1
-	return float(lost) / float(RESOLUTIONS)
+	return lost
 
 
 ## Each channel's venue lift: the rate with the venue's own side on offence
@@ -711,6 +772,18 @@ func _channel_lifts(home_id: StringName, away_id: StringName) -> PackedFloat64Ar
 		_handle_turnover_rate(true, 0, home_id, away_id)
 			- _handle_turnover_rate(false, 0, home_id, away_id),
 	])
+
+
+## One function's body, comments stripped, so a scan can be scoped to the code
+## the venue actually reaches rather than to a whole file that legitimately does
+## other things.
+func _function_source(path: String, function_name: String) -> String:
+	var code: String = _executable_source(path)
+	var start: int = code.find("func %s(" % function_name)
+	if start < 0:
+		return ""
+	var next: int = code.find("\nfunc ", start + 1)
+	return code.substr(start, code.length() - start if next < 0 else next - start)
 
 
 ## A script's code with comment lines and trailing comments removed, so a scan
