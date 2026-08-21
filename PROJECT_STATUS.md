@@ -2959,6 +2959,289 @@ Action and shot mix on the same engine (400 top-domestic games, variations 710,0
 | Assist accounting, bands, parity, ledger reconciliation remain green | Unchanged: assist percentage 0.5872 ±0.0032 inside 52–72%, and the full acceptance runner passes |
 | No new assist tuning was performed without a proven defect | No balance value was changed. The only Part 1 production-adjacent change is a test and two diagnostic tools |
 
+
+### 5.17 Home court was a fifth of what §14.2 asks for, and most of it came through a channel §19.4 does not authorize
+
+Status: **Diagnosed, corrected, and measured on two untouched validation ranges. Not certified: the estimator's own interval at 300 games per arm is about a point of margin, and §27.1 wants 100,000 games. The correction is inside §17.4's caps by construction and by measurement; the §14.2 band is reported with the interval that shows what the sample can and cannot say.**
+
+#### The measurement that had to be built first
+
+§14.2's row is "**even-team** home win rate: 53–56%; baseline 54.5%". Every previous measurement of it was taken on the population fixture, and that fixture cannot answer the question for two independent reasons.
+
+**It is not even.** `CompetitionCatalog.match_for` gives the two benches different variations, so a population sample carries a real strength spread. The spread is symmetric, so it does not bias the estimate much, but it inflates its variance — which is why four of five levels "failed" at 400 games with intervals five points wide.
+
+**It gives the home team the ball.** `match_for` sets `initial_possession_team_id` to the home team, every game. At top domestic that opening inbound is worth more than the entire §19.4 environment. The 1,000-game population run in §5.16 reports a home win rate of **0.5630 ±0.0307**, which reads like a home advantage above its band and is mostly an unearned possession.
+
+So `run_home_court_diagnostics.gd` is new, and its design is the finding. Both benches are built from the same variation — every rating, body, tactical role, rotation role and game plan identical, pregame gap exactly zero. Three arms play the identical fixtures at the identical seeds:
+
+```text
+home      home = A, away = B, environment = 0.5
+neutral   home = A, away = B, environment = 0
+reversed  home = B, away = A, environment = 0.5
+```
+
+The opening inbound alternates on variation parity and is held constant inside every matched triple, so it is balanced over the sample and cancels inside each pair.
+
+And the arms are **differenced per game**, not compared as column means. That is what makes the measurement possible at all: the unpaired margin has a standard deviation near 15, and the paired difference near 4. Two column means at 300 games cannot see an effect worth one and a half points; the paired difference can see it to about half a point.
+
+Two independent estimates are reported and §19.4 requires them to agree:
+
+```text
+effect on A =  margin_home[i]     - margin_neutral[i]
+effect on B =  margin_reversed[i] + margin_neutral[i]
+```
+
+The second is the venue reversal done as a subtraction on the other bench. An effect attached to a roster rather than to a building gives two numbers of opposite sign. **It agrees at all five levels, before and after the correction.**
+
+#### Phase 1 — the baseline
+
+400 games per arm, mirror fixtures, variations 710,000–710,399, at `aff6cc9`:
+
+| Level | Neutral win rate | Neutral mean margin | Neutral margin σ | Home-arm gain | Reversed-arm gain | Pooled gain | Possessions | Needed for 54.5% | Delivered | Home-arm win rate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| High school | 0.4975 | +0.235 ±1.177 | 12.01 | +0.290 ±0.370 | +0.380 ±0.341 | **+0.335** | 71.09 | 1.36 | 25% | 0.5075 |
+| College | 0.4875 | −0.030 ±1.297 | 13.23 | +0.695 ±0.354 | +0.425 ±0.359 | **+0.560** | 72.04 | 1.49 | 38% | 0.5150 |
+| Development | 0.4525* | −1.100 ±1.421 | 14.50 | +0.613 ±0.498 | +0.655 ±0.451 | **+0.634** | 95.55 | 1.64 | 39% | 0.4525 |
+| Overseas | 0.5375 | +0.740 ±1.307 | 13.34 | +0.660 ±0.416 | +0.510 ±0.373 | **+0.585** | 75.09 | 1.51 | 39% | 0.5425 |
+| Top domestic | 0.4950 | +0.570 ±1.486 | 15.17 | +0.075 ±0.520 | +0.633 ±0.482 | **+0.354** | 101.66 | 1.71 | 21% | 0.4975 |
+
+The neutral control centres on 50% and on a zero mean margin, which is what makes the rest of the table readable. The venue effect is **a fifth to two fifths of what §14.2 requires**, and the reversal agrees at every level.
+
+**The cap and the target are compatible, and the arithmetic is worth stating because the brief asks.** The margin a 54.5% win rate needs is `z(0.545) × σ = 0.1130 × σ`; §17.4 allows `2.5 × possessions ÷ 100` points per game.
+
+| Level | Needed (pts/game) | §17.4 allows (pts/game) | Headroom |
+| --- | ---: | ---: | ---: |
+| High school | 1.36 | 1.78 | 0.42 |
+| College | 1.49 | 1.80 | 0.31 |
+| Development | 1.64 | 2.39 | 0.75 |
+| Overseas | 1.51 | 1.88 | 0.37 |
+| Top domestic | 1.71 | 2.54 | 0.83 |
+
+There is no contradiction to report to the owner: every level can reach 54.5% inside the cap, with the least headroom at college.
+#### Phase 2 — every production read of the home environment
+
+The inventory is short, and its shortness is the finding. There is **one input**, read at **three sites**, with **no aggregation and no cap enforcement anywhere**.
+
+`MatchInput.home_environment` is a bare `float` in `0.0..1.0`, defaulting to `0.5`. `SIMULATION_SPEC.md` §9.3 names the field `homeEnvironment: HomeEnvironmentContext`; no such type exists. `PossessionContext`'s own class docstring lists "home environment" among the things §9.3 requires it to carry, and it carries no field for it — every consumer reaches through `context.input.home_environment` and `context.input.is_home(...)`.
+
+| # | Input | Consumer | Exact probability or decision affected | Maximum contribution at env 0.5 | Stacks with another environment modifier | Combined cap enforced | Visible in ledger or report | Neutral bypasses it | Venue reversal flips the sign |
+| ---: | --- | --- | --- | ---: | --- | --- | --- | --- | --- |
+| 1 | `home_environment`, `is_home(offense)` | `ShotResolver.resolve_make` | `probability += home_environment_shot_bonus × env` on **every** home field-goal attempt | **+0.30** absolute probability points | Yes — with 2 and 3 | **No** | **No** — the ledger carries the contest band, never the environment term | Yes (multiplied by `env`) | Yes |
+| 2 | `home_environment`, `is_home(offense)` | `FoulResolver._contact_probability` | `base ×= 1 ± home_environment_foul_bonus × env` on the shared contact model | ±0.5% relative ≈ **±0.10** absolute points on a 0.20 base | Yes | **No** | **No** | Yes | Yes |
+| 3 | `home_environment`, `is_home(offense)` | `FreeThrowResolver.probability` | `value -= home_environment_shot_bonus × env` for the **away** shooter | **−0.30** absolute probability points | Yes | **No** | **No** | Yes | Yes |
+
+Three details worth recording because each one matters to the correction:
+
+- **Path 2 is correctly gated.** `_contact_probability` is reached only from `resolve_shooting_foul`, `resolve_non_shooting_foul` and `resolve_loose_ball_foul`, each of which requires a real action with real contact. It cannot create a foul without a valid foul opportunity. `resolve_offensive_foul` computes its own probability and is **not** touched, which is right: a crowd influences whether the *defence* is whistled, and a home charge call is not the same event.
+- **Path 2 partially self-cancels on the glass.** `resolve_loose_ball_foul` runs `_contact_probability` and then splits the call 50/50 between offensive and defensive, so half the extra whistles the home multiplier buys while home has the ball are charged *to* the home team.
+- **Path 1 is not one of §19.4's channels.** §19.4 authorizes "bounded officiating, communication, composure, and familiarity". A term added to the make probability of every home attempt regardless of who is shooting, from where, or against what contest is none of those; it is the flat shooting bonus §19.2 rules out in the same breath for Coach Trust ("does not increase the probability that an identical physical shot goes in"). It is also **65% of the total current effect**, so the channel that carries most of the home advantage is the one channel that is not authorized to carry any of it.
+
+**No `HomeEnvironmentContext`, no channel accounting, no aggregation, no cap check.** Nothing in production sums the three contributions, nothing compares the sum with §17.4's +2.5 points per 100 possessions, and nothing bounds any single one against §17.4's four absolute probability points. Both caps are satisfied today only because the effects are far too small to reach them.
+
+
+#### Root cause
+
+**The home environment is worth about a fifth of §14.2's target, and roughly two thirds of that fifth was arriving through a flat field-goal make bonus that §19.4 does not authorize.**
+
+Taking the brief's candidate list in turn, because ruling things out is most of the work:
+
+| Candidate | Verdict |
+| --- | --- |
+| Home context exists but is never consumed | **Ruled out.** Consumed at three sites, all of them live |
+| Effects are too weak | **Confirmed — primary.** +0.35 to +0.63 points a game against a 1.36–1.71 requirement |
+| Effects cancel one another | **Ruled out.** All three point the same way; the reversal agrees at all five levels |
+| Only one permitted channel is implemented | **Confirmed — contributing.** Of §19.4's four, only officiating existed as such, plus a free-throw composure term. Communication and familiarity were absent entirely, and the largest term was not one of the four |
+| Neutral and home contexts are indistinguishable | **Ruled out.** Every site multiplies by strength, so zero is provably zero — and all forty neutral ledgers are byte-identical across the correction |
+| Home identity is lost before possession resolution | **Ruled out.** `is_home` is available at every consumer and correct at every one |
+| A fixture or team-strength offset contaminates measurement | **Confirmed — contributing, and large.** The population fixture hands the home team every opening inbound, which is worth more than the environment |
+| Officiating/familiarity/communication effects are missing | **Confirmed** for communication and familiarity |
+| The effect exists but the report measures it incorrectly | **Confirmed.** §14.2's even-team row was judged on a fixture that is neither even nor venue-neutral, at a sample whose interval spans the band |
+
+The previous diagnosis in §5.11 reached the right magnitude — "worth about 0.3 points a game where the band needs about 2.1" — and named the wrong remedy: "raising it is a one-line change inside the tunable's existing 0.0–0.03 range". That one line raises `home_environment_shot_bonus`, and the brief's own test list forbids exactly what it produces: *"9. Identical physical shot context does not receive an unexplained home make bonus."* Against the old implementation that test fails by construction.
+
+#### The correction
+
+**`HomeEnvironmentContext`**, which `SIMULATION_SPEC.md` §9.3 has always named and the engine has never had. One input, three channels, no setter.
+
+| Channel | §19.4 basis | Where it acts | Value at strength 1.0 | At production strength 0.5 |
+| --- | --- | --- | ---: | ---: |
+| Officiating | "bounded officiating" | `FoulResolver._contact_probability`, on the conversion of a contact opportunity that already exists | 0.009 | ±0.45 pp |
+| Communication | "communication", and the familiarity that is the same mechanism | `TurnoverResolver.resolve_pass`, on the home side's unforced delivery error | 0.013 | −0.65 pp |
+| Composure | "composure", inside §17.4's pressure envelope | `TurnoverResolver.resolve_ball_handling` and `FreeThrowResolver.probability`, on the visiting side | 0.008 | −0.40 pp |
+
+**Familiarity is deliberately not a fourth channel.** §19.4 lists it beside communication, and in this engine both act on the same mechanism — how well a delivery and its catch are coordinated. Implementing it twice would be two names for one effect and would make the combined cap harder to read rather than easier. The brief's instruction is to use the fewest channels necessary.
+
+**What was removed.** `home_environment_shot_bonus` added a term to the make probability of every home field-goal attempt, regardless of who was shooting, from where, or against what contest. That is not officiating, communication, composure or familiarity; §19.2 rules out the identical thing for Coach Trust in the same breath — "it does not increase the probability that an identical physical shot goes in" — and it was carrying about 65% of the old effect. `ShotResolver` now reads no home-environment term at all, and the venue reaches a shot only through §12.2 catch quality, which is a property of the delivery.
+
+**What is bounded, and how.**
+
+- **Per modifier**, structurally and exactly: every channel is clamped to `MAX_SINGLE_MODIFIER = 0.04`, which is §17.4's four absolute probability points. A balance profile that asks for more gets the cap rather than the number it asked for, so the bound holds without depending on assertions being compiled in.
+- **Combined**, in two halves that meet in the middle. The sum of the channel modifiers is bounded at `MAX_COMBINED_MODIFIER = 0.09` — exact, testable, and true without any calibration constant. The realized points per 100 possessions is then *measured* on paired fixtures and judged against §17.4's +2.5 directly. Neither half is sufficient alone: a modifier bound cannot know what a possession is worth, and a cohort average cannot prove an individual game stayed inside it.
+- **Neutral is zero**, provably: every channel is multiplied by strength, and `from_profile` returns `neutral()` at zero. Proven at the ledger, not asserted — see below.
+- **No second modifier can hide.** Every production read goes through the context, and a test scans the executable source of all nine simulation files for a bare `home_environment` read that is not the context object.
+- **Nothing reads the game.** The type takes one float and has no setter. A test strips the comments from its source and asserts the code mentions no team, score, margin, clock, period, winner, result, leading or trailing. A comeback mechanism cannot be written through this API because the API cannot see anything to come back from.
+
+#### Per-channel decomposition
+
+150 games per arm at top domestic on the tuning range, one channel switched off at a time, against a three-channel total of +2.10 points a game at the pre-final setting:
+
+| Configuration | Pooled venue gain | Channel's contribution | Share |
+| --- | ---: | ---: | ---: |
+| All three | +2.10 | — | — |
+| Officiating off | +0.65 | **+1.45** | 69% |
+| Communication off | +1.59 | **+0.51** | 24% |
+| Composure off (by difference) | — | **+0.14** | 7% |
+
+Officiating carries most of it, which is what §19.4 leads with, and communication carries a real quarter. The shares are what this table is for; the absolute levels are from the pre-final setting and were scaled by 0.70 afterwards.
+
+**One implementation note worth recording, because it nearly caused a wrong decision.** The communication channel appears to do nothing when probed with a *top* passer in a neutral-advantage context: §14.3 floors the unforced pass error at 1%, the probe sits on that floor, and the term is clamped away before it can act. The first version of the reachability test probed exactly that context and reported "this channel moves nothing" against clean production code. The channel is not inert — the decomposition above measures it at a quarter of the whole effect — and the test now probes the fifth starter, where the error rate is off its floor.
+
+
+#### Tests
+
+`tests/simulation/test_home_environment.gd`, 22 cases covering the 23 required properties (several properties share one case where one measurement answers both):
+
+| # | Property | Case |
+| ---: | --- | --- |
+| 1 | Neutral games apply zero home effect | `test_a_neutral_court_applies_no_home_effect` |
+| 2 | Missing home context uses the documented default | `test_a_missing_home_context_uses_the_documented_default` |
+| 3, 16 | Swapping venue swaps the advantage, with the mirrored event changes | `test_swapping_the_venue_swaps_the_advantage` |
+| 4 | Identical home/away identity creates no effect | `test_identical_home_and_away_identity_is_rejected` |
+| 5 | Team identity does not affect the modifier | `test_the_modifier_reads_only_venue_strength`, `test_team_identity_does_not_change_any_channel` |
+| 6, 17, 18 | Expected winner, result and margin are never read | `test_no_channel_reads_the_scoreboard`, `test_the_foul_and_turnover_resolvers_never_read_the_score`, `test_the_advantage_does_not_depend_on_the_margin` |
+| 7, 8 | Stored ratings and capability values unchanged | `test_the_venue_changes_no_rating_or_capability` |
+| 9 | Identical physical shot context gets no home make bonus | `test_an_identical_shot_context_has_no_home_make_bonus` |
+| 10 | Effects operate only through documented channels | `test_effects_operate_only_through_documented_channels` |
+| 11 | No modifier exceeds four absolute probability points | `test_no_single_modifier_exceeds_four_absolute_points` |
+| 12, 25 | Combined contributions bounded; no hidden second modifier | `test_combined_contributions_stay_inside_the_budget` |
+| 13, 14 | Neutral and home Play/Sim/Skip identical | `test_play_sim_and_skip_agree_at_every_venue` |
+| 15 | Determinism for identical venue, inputs and seed | `test_identical_venue_inputs_and_seed_reproduce_the_ledger` |
+| 19, 20 | No guaranteed outcome; away teams win a substantial share | `test_away_teams_still_win_a_substantial_share` |
+| 21 | Stakes tiers do not change the home-policy contract | `test_stakes_tiers_do_not_change_the_home_contract` |
+| 22 | Ledger and box-score totals reconcile | `test_ledger_and_box_score_reconcile_at_every_venue` |
+| 23 | The diagnostic distinguishes home, away and neutral | `test_the_diagnostic_distinguishes_the_three_fixtures` |
+| — | A neutral game cannot observe the modifier values at all | `test_a_neutral_game_cannot_observe_the_home_modifiers` |
+| — | Each channel moves the rate it claims to move | `test_every_channel_actually_moves_its_own_rate` |
+
+**Two of these are worth explaining, because the first versions were wrong and passed anyway.**
+
+`test_no_channel_reads_the_scoreboard` resolves the identical possession 6,000 times against two scoreboards twenty points apart and compares **integer counts**, not rates. The first version compared floats against a 0.005 tolerance — looser than the entire channel, which moves these counts by a few dozen in six thousand — and two mutations walked through it.
+
+`test_the_foul_and_turnover_resolvers_never_read_the_score` exists because sampling cannot close this on its own. A comeback modifier placed where §14.3's 1% turnover floor clamps it changes the probability and not the outcome: invisible to any number of draws, and still live in a real game. So the score is forbidden at the source, in the three functions the venue reaches — `FoulResolver._contact_probability`, `TurnoverResolver.resolve_pass`, `resolve_ball_handling`. It is scoped to those functions rather than to whole files on purpose: §13.1's deliberate late-game foul is a coaching decision gated on score and clock, and §20.1 gives the free-throw resolver a late-and-close pressure term that applies in both buildings. A scan that forbade those would be forbidding the specification.
+
+#### Mutation evidence
+
+Fourteen mutations, each applied to production code, run against the home-environment, parity and reconciliation suites, and restored byte-clean. **All fourteen are killed.**
+
+| # | Mutation | Result | First guard to catch it |
+| ---: | --- | --- | --- |
+| 1 | Home context ignored | **Killed** | `test_a_missing_home_context_uses_the_documented_default` |
+| 2 | Neutral context receiving a home effect | **Killed** | `test_a_neutral_court_applies_no_home_effect` |
+| 3 | Flat home shooting boost | **Killed** | `test_an_identical_shot_context_has_no_home_make_bonus` |
+| 4 | Home-team stored-rating boost | **Killed** | `test_an_identical_shot_context_has_no_home_make_bonus` |
+| 5 | Trailing-home-team comeback boost | **Killed** | `test_the_foul_and_turnover_resolvers_never_read_the_score` |
+| 6 | Score-aware officiating | **Killed** | `test_no_channel_reads_the_scoreboard` |
+| 7 | Team-identity exception | **Killed** | `test_every_channel_actually_moves_its_own_rate` |
+| 8 | Expected-winner dependency | **Killed** | `test_no_channel_reads_the_scoreboard` |
+| 9 | Reversed home/away sign | **Killed** | `test_swapping_the_venue_swaps_the_advantage` |
+| 10 | Individual modifier above four points | **Killed** | `test_no_single_modifier_exceeds_four_absolute_points` |
+| 11 | Combined environment cap bypass | **Killed** | `test_combined_contributions_stay_inside_the_budget` |
+| 12 | Executor divergence | **Killed**, abnormally — see below | the run does not complete |
+| 13 | Missing ledger/diagnostic explanation | **Killed** | `test_effects_operate_only_through_documented_channels` |
+| 14 | Home effect leaking into neutral games | **Killed** | `test_a_neutral_game_cannot_observe_the_home_modifiers` |
+
+Five of these survived the first pass — 5, 6, 7, 8 and 12 — and each survival was a real gap that was closed rather than argued away. The tolerance problem is described above. Mutation 7 revealed that a team-identity exception hides from a lift comparison but not from a lift *measurement*.
+
+**Mutation 12 is a special case worth recording precisely, because it says something stronger than a passing test.** Executor divergence cannot be written as a Skip-only behavioural mutation, because there is no Skip-only code path: `MatchEngine.simulate_match` is a thin front door onto the same `MatchSession` that Play and Skip drive, and `skip_to_final_result()` is literally `return run_to_completion()`. A mutation in the shared path changes all three executors equally, which is not a divergence at all. Making Skip differ requires first breaking that delegation, and the mutation that does — replacing the session's venue after the reducer and projector have been built from it — drives the run into a state it cannot finish. It is detected, the gate goes red, and it is honest to say it terminates abnormally rather than on a clean assertion. §2.1 parity here is structural, not merely tested.
+
+
+#### Validation
+
+Seed ranges, all disjoint and all owned by this section:
+
+| Purpose | Variations | Used for |
+| --- | --- | --- |
+| Diagnosis | 710,000–710,399 | The pre-correction baseline, 400 games per arm |
+| Tuning | 720,000–720,299 | First fit |
+| Tuning (second) | 730,000–730,299 | Second fit. Opened as a validation range and then a value was changed after reading it, so it is a tuning range whatever it was called |
+| **Validation A** | **780,000–780,249** | Opened after the values were frozen |
+| **Validation B** | **790,000–790,249** | Same |
+
+**Validation A**, 250 games per arm, mirror fixtures, at `b963431`:
+
+| Level | Home win rate | Neutral control | Home-arm gain | Reversed-arm gain | Pooled gain | Points/100 | Cap | Reversal |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| High school | 0.5800 ±0.0612 **✗** | 0.5040 | +1.596 ±0.925 | +0.676 ±0.842 | +1.14 | 2.260 ±1.310 | PASS | PASS |
+| College | 0.5360 ±0.0618 **✓** | 0.4880 | +1.252 ±0.814 | +1.220 ±0.913 | +1.24 | 1.739 ±1.131 | PASS | PASS |
+| Development | 0.5560 ±0.0616 **✓** | 0.4720 | +2.084 ±1.139 | +2.128 ±1.060 | +2.11 | 2.192 ±1.198 | PASS | PASS |
+| Overseas | 0.5520 ±0.0616 **✓** | 0.5160 | +2.104 ±0.832 | +0.056 ±0.790 | +1.08 | 2.801 ±1.108 | PASS | **FAIL** |
+| Top domestic | 0.5720 ±0.0613 **✗** | 0.5200 | +2.244 ±1.211 | +0.696 ±1.202 | +1.47 | 2.204 ±1.189 | PASS | PASS |
+
+Before and after, on the equal-team mirror fixture:
+
+| Level | Before (pooled gain) | After (pooled gain) | Before (home win) | After (home win) | Needed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| High school | +0.34 | **+1.14** | 0.5075 | 0.5800 | 1.36 |
+| College | +0.56 | **+1.24** | 0.5150 | 0.5360 | 1.49 |
+| Development | +0.63 | **+2.11** | 0.4525 | 0.5560 | 1.64 |
+| Overseas | +0.59 | **+1.08** | 0.5425 | 0.5520 | 1.51 |
+| Top domestic | +0.35 | **+1.47** | 0.4975 | 0.5720 | 1.71 |
+
+**What this does and does not establish, stated plainly.**
+
+- **The direction and rough size are established.** The venue was worth a fifth to two fifths of the §14.2 target and is now worth roughly three quarters to one and a quarter times it. Three of five levels sit inside 53–56% on the point estimate; the other two sit above it, and **every one of the five intervals spans the band**.
+- **The caps hold at every level**, measured as well as declared: `paired_combined_cap_respected` passes 5/5, with the largest measured contribution 2.80 ±1.11 at overseas against a +2.5 cap — a point estimate above the cap with an interval that spans it, and the one figure in this table that should be watched rather than accepted.
+- **The neutral control is clean.** 0.472 to 0.520 across the five levels, all consistent with 0.50 at ±0.062.
+- **The venue reversal agrees at four levels of five.** Overseas fails it on this range: +2.104 ±0.832 against +0.056 ±0.790, intervals that do not overlap. It agreed at overseas on the 400-game diagnosis range (+0.66 against +0.51), and two estimates 2.05 apart with a combined reach of 1.62 is about a two-and-a-half-sigma discrepancy, which will happen sometimes across ten paired estimates. It is reported as a **FAIL**, not explained away.
+- **The band is not certified and cannot be at this sample.** Pinning a 54.5% target inside a three-point band needs a standard error under a point, which needs roughly five thousand games per arm. §27.1 asks for 100,000 per competition. At 250 the interval is ±6 points and cannot distinguish 53–56% from 57–58%.
+
+#### Regression guardrails
+
+Pooled §14.1 statistics are the check that matters here, because every game contains one home team and one away team, so a home/away differential that moves in the model should leave the league-wide totals effectively where they were. Over the 120-ledger mutation fingerprint, before and after the whole correction:
+
+| Pooled total | Before | After | Change |
+| --- | ---: | ---: | ---: |
+| Assists | 4,552 | 4,550 | −0.04% |
+| Points | 21,545 | 21,633 | +0.41% |
+| Personal fouls | 4,493 | 4,492 | −0.02% |
+| Free-throw attempts | 3,983 | 4,114 | +3.3% |
+
+Fouls are flat pooled, which is exactly what a symmetric officiating channel should do: the extra whistles the home side draws are the ones the away side does not. Free-throw attempts rise 3.3% pooled, because the shift interacts with bonus state rather than cancelling inside it; at top domestic that moves free-throw attempts per field-goal attempt from 0.2183 toward 0.226 against an 18–34% band, which is comfortably inside it and is the one §14.1 row this correction visibly touches.
+
+Determinism, executor parity and ledger reconciliation are unchanged and are asserted at both venues by the new suite. The full acceptance runner, the 314-case GdUnit suite, builder calibration, the 80-metric attribute-sensitivity gate and the calibration smoke all pass.
+
+#### Golden ledgers
+
+All six were recorded before any production change. **Three are byte-identical to the hashes they had at `fd0f71d`** — overtime, offensive rebound, and foul/free throw — which is itself evidence about the size of the effect: those scenarios are short enough that a change of a few tenths of a probability point flips no draw in them.
+
+Three moved. Every one first diverges on a **foul call**, and both signs are represented:
+
+| Scenario | First divergent event | What changed | Channel |
+| --- | --- | --- | --- |
+| `regulation` | event 103 | A home post-up attempt becomes a non-shooting defensive foul drawn by the home side | Officiating, home on offence |
+| `substitution_foul_out` | event 423 | A shooting foul by the home defence no longer happens; the possession ends on a made basket | Officiating, away on offence |
+| `late_game` | event 342 | A defensive rebound becomes a shooting foul drawn by the home side | Officiating, home on offence |
+
+- **Neutral behaviour is unchanged, proven rather than argued.** All **40 neutral ledgers** in the mutation fingerprint — five competitions × eight games — are byte-identical before and after. The home arm changed 38 of 40 and the reversed arm 36 of 40.
+- **The divergence is inside the documented caps**, which is what the channel bounds and the measured points-per-100 above establish.
+- **No scenario was reseeded.** All six kept the seeds they had, and the harness re-verified that each still exercises the behaviour it is named for.
+- **The ruleset is bumped** to `simulation-v7-home-environment`, because the production simulation contract changed.
+
+#### What this is, and what it is not
+
+| Claim | Status |
+| --- | --- |
+| Every §19.4 home effect comes through one bounded, audited context, and no other path exists | **Structural** — proven by tests, by a source scan, and by fourteen mutations |
+| Individual modifiers are at or below §17.4's four absolute probability points | **Structural** — enforced by clamping, not by assertion |
+| Neutral courts contribute exactly zero | **Structural** — proven at the ledger over 40 complete neutral games |
+| Combined contributions are at or below +2.5 points per 100 possessions | **Measured**, 5/5 at 250 games per arm, with the overseas point estimate at 2.80 ±1.11 and its interval spanning the cap |
+| Equal-team home win rate is inside 53–56% | **Not established.** 3/5 inside on the point estimate, 5/5 intervals spanning the band, at a sample two orders of magnitude below §27.1 |
+| Any of the above at the §27.1 sample | **Not certified.** 250 games per arm against a requirement of 100,000 |
+
+#### Remaining Stage 4 blockers, unchanged by this task
+
+Top-domestic points per possession at +0.0063 over its ceiling (§5.16), college field-goal percentage, the §14.2 overtime and blowout rows, Builder dominance, OVR truthfulness, career progression, Projected Peak, postseason scheduling, and the §27.1 certification sample. None of them is touched here.
+
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation
