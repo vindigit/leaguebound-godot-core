@@ -98,22 +98,66 @@ func test_a_missing_neutral_arm_is_refused_even_though_it_cancels() -> void:
 
 # --- it pairs identical fixtures --------------------------------------------
 
-## Arms are differenced within a fixture key, never across keys. Two fixtures
-## whose per-fixture gains are +6 and -6 average to zero; an estimator that
-## differenced column means over a mismatched pairing would report something
-## else entirely.
+## Arms are differenced within a fixture key, never across keys.
+##
+## **The controls have to differ between fixtures for this to test anything**,
+## and a mutation proved it: misaligning the reversed arm's control by one
+## fixture survived an earlier version of this test whose two fixtures happened
+## to share a neutral margin. The identical control cancelled either way.
+##
+## Worse, the *mean* cannot catch this class of defect at all. Shifting every
+## control by one position cyclically changes each fixture's gain by
+## `(n[i+1] - n[i])/2`, and those differences sum to zero around the cycle — so
+## the published mean is exactly unchanged while every per-fixture value is
+## wrong. Only the series discriminates, so the series is what is asserted.
 func test_arms_are_differenced_within_a_fixture_and_not_across_fixtures() -> void:
 	var estimator := VenueEffectEstimator.new()
 	_observe_triple(estimator, &"f0", 10.0, 4.0, -4.0)
-	_observe_triple(estimator, &"f1", -2.0, 4.0, -10.0)
+	_observe_triple(estimator, &"f1", -2.0, -6.0, -10.0)
 
 	# f0: home gain 10-4 = 6, reversed gain -4+4 = 0, pooled 3.
-	# f1: home gain -2-4 = -6, reversed gain -10+4 = -6, pooled -6.
+	# f1: home gain -2-(-6) = 4, reversed gain -10+(-6) = -16, pooled -6.
 	var gains: PackedFloat64Array = estimator.paired_margin_gain()
 	assert_int(gains.size()).is_equal(2)
 	assert_float(gains[0]).is_equal_approx(3.0, TOLERANCE)
 	assert_float(gains[1]).is_equal_approx(-6.0, TOLERANCE)
 	assert_float(estimator.paired_margin_difference()).is_equal_approx(-1.5, TOLERANCE)
+
+	# The two arm series, pinned separately. A control borrowed from the wrong
+	# fixture moves exactly one of these and leaves the other alone.
+	var home_gains: PackedFloat64Array = estimator.home_arm_margin_gain()
+	var reversed_gains: PackedFloat64Array = estimator.reversed_arm_margin_gain()
+	assert_float(home_gains[0]).is_equal_approx(6.0, TOLERANCE)
+	assert_float(home_gains[1]).is_equal_approx(4.0, TOLERANCE)
+	assert_float(reversed_gains[0]).is_equal_approx(0.0, TOLERANCE)
+	assert_float(reversed_gains[1]).is_equal_approx(-16.0, TOLERANCE)
+
+
+## The same defect stated as the property it violates, on a sample large enough
+## that a mean-only check would certainly pass.
+##
+## Every fixture here has a different control, and every fixture's venue effect
+## is exactly +4 by construction. Correct pairing therefore gives a series that
+## is constant at +4 with zero dispersion. Any misalignment of the controls
+## leaves the mean at +4 and blows the dispersion up, so the interval is the
+## thing that detects it — which is why the interval is asserted and not just
+## the estimate.
+func test_correct_pairing_shows_up_as_zero_dispersion_not_as_the_mean() -> void:
+	var estimator := VenueEffectEstimator.new()
+	for index in range(40):
+		# A control that genuinely varies fixture to fixture.
+		var control: float = float(index % 7) - 3.0
+		# Both venue arms carry the same +4 effect over that control.
+		_observe_triple(
+			estimator, StringName("f%02d" % index),
+			control + 4.0, control, -control + 4.0)
+
+	assert_float(estimator.paired_margin_difference()).is_equal_approx(4.0, TOLERANCE)
+	assert_float(estimator.paired_margin_half_width()).override_failure_message(
+		"the paired series should be exactly constant when every fixture carries "
+		+ "the same effect; dispersion here means the arms are being differenced "
+		+ "against the wrong fixture's control"
+	).is_equal_approx(0.0, TOLERANCE)
 
 
 ## The per-fixture series comes back in lexicographic key order regardless of
