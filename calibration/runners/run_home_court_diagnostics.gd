@@ -30,11 +30,22 @@ extends SceneTree
 ## are both defects, and both are reported here rather than inferred.
 ##
 ## Initial possession alternates on variation parity and is held identical
-## across the three arms. `CompetitionCatalog` hands the opening inbound to the
-## home team, which is worth a measurable margin on its own; leaving that in
-## would put a first-possession edge inside the neutral control and make "is the
-## venue worth anything" unreadable. Alternating balances it over the sample
-## while keeping every matched triple exact.
+## across the three arms. The engine has no tip-off —
+## `MatchInput.initial_possession_team_id` is a required input with no default —
+## so the opening inbound belongs to the fixture, and `CompetitionCatalog` used
+## to hand it to the home team unconditionally. Leaving that in would put a
+## first-possession edge inside the neutral control and make "is the venue worth
+## anything" unreadable. Alternating balances it over the sample while keeping
+## every matched triple exact. `run_opening_possession.gd` measures what the
+## inbound is worth on its own and whether it is separable from the venue.
+##
+## **§17.4's cap is judged on the paired two-arm contribution**, computed by
+## `VenueEffectEstimator` and not by this file. The figure this report used to
+## cap was formed from the home arm alone — one of two estimates of the same
+## quantity, and the noisier one — which is why overseas breached twice as
+## published and does not on the pooled estimator. The single-arm reading is
+## still printed, named `home_arm_points_per_100` so it cannot be mistaken for
+## the verdict.
 ##
 ## This is a diagnostic and judges §14.2 on the mirror fixture only where the
 ## row is about even teams. It is **not** a §27.1 certification at any sample
@@ -43,7 +54,7 @@ extends SceneTree
 ## Run:
 ##   godot --headless --path . --script res://calibration/runners/run_home_court_diagnostics.gd -- \
 ##       [--games=N] [--competition=high_school|college|development|overseas|top_domestic_pro|all] \
-##       [--range=diagnosis|tuning|tuning_second|validation_a|validation_b] \
+##       [--range=diagnosis|tuning|tuning_second|validation_a|validation_b|validation_c|validation_d] \
 ##       [--environment=0.5] \
 ##       [--mode=mirror|population] [--label=NAME]
 
@@ -65,6 +76,20 @@ const TUNING_BASE: int = 720000
 const TUNING_SECOND_BASE: int = 730000
 const VALIDATION_A_BASE: int = 780000
 const VALIDATION_B_BASE: int = 790000
+
+## Validation C and D were opened after the **estimator** was frozen, which is a
+## different freeze from the one A and B were opened after.
+##
+## A and B validated the channel *values*: nothing was tuned after reading them
+## and that remains true. But they were read through a cap metric formed from
+## one arm, and the metric has since been replaced. Re-reporting them under the
+## corrected estimator would be quoting ranges that were observed before the
+## estimator that judges them existed. The values are unchanged and nothing was
+## fitted to anything here, so this is a measurement precaution rather than a
+## suspicion — and it is cheaper than arguing about which kind of freeze A and B
+## were on the far side of.
+const VALIDATION_C_BASE: int = 810000
+const VALIDATION_D_BASE: int = 820000
 
 const MODE_MIRROR: String = "mirror"
 const MODE_POPULATION: String = "population"
@@ -139,15 +164,35 @@ func _run() -> void:
 
 	var report := CalibrationReport.new(context)
 	var rows: Array[Dictionary] = []
+	var estimator_rows: Array[Dictionary] = []
+	# The pooled estimator is the union of every competition's matched fixtures.
+	# Fixture keys carry the competition, so the pool cannot silently merge two
+	# levels' games at the same variation.
+	var pooled := VenueEffectEstimator.new()
 	for competition in competitions:
-		var arms: Dictionary = _simulate(competition, games, base, mode, environment)
+		var estimator := VenueEffectEstimator.new()
+		var arms: Dictionary = _simulate(
+			competition, games, base, mode, environment, estimator)
 		var home_arm: ArmSample = arms[ARM_HOME]
 		var neutral_arm: ArmSample = arms[ARM_NEUTRAL]
 		var reversed_arm: ArmSample = arms[ARM_REVERSED]
 		for arm_id: StringName in [ARM_HOME, ARM_NEUTRAL, ARM_REVERSED]:
 			rows.append((arms[arm_id] as ArmSample).to_dictionary())
 		_report_competition(report, competition, home_arm, neutral_arm, reversed_arm, mode)
+		var id: String = String(CalibrationTargets.competition_id(competition))
+		_report_estimator(report, id, estimator, games)
+		var payload: Dictionary = estimator.to_dictionary()
+		payload["competition"] = id
+		estimator_rows.append(payload)
+		if not pooled.merge(estimator):
+			printerr("pooling refused overlapping fixtures at %s" % id)
+	if competitions.size() > 1:
+		_report_estimator(report, "pooled", pooled, games * competitions.size())
+		var pooled_payload: Dictionary = pooled.to_dictionary()
+		pooled_payload["competition"] = "pooled"
+		estimator_rows.append(pooled_payload)
 	report.add_section(&"matched_arms", rows)
+	report.add_section(&"venue_effect_estimator", estimator_rows)
 	report.finish()
 	quit(ReportWriter.publish(report, "home_court_diagnostics_%s" % label))
 
@@ -162,6 +207,10 @@ func _range_base(range_name: String) -> int:
 			return VALIDATION_A_BASE
 		"validation_b":
 			return VALIDATION_B_BASE
+		"validation_c":
+			return VALIDATION_C_BASE
+		"validation_d":
+			return VALIDATION_D_BASE
 		"diagnosis":
 			return DIAGNOSIS_BASE
 		_:
@@ -452,12 +501,18 @@ class ArmSample:
 
 
 ## The three arms for one competition, played over one shared set of fixtures.
+##
+## `estimator` is fed in the same loop rather than reconstructed afterwards, so
+## the paired series and the column samples cannot drift apart: every arm of
+## every fixture is offered to both, once, under a fixture key that names the
+## competition and the variation.
 func _simulate(
 	competition: int,
 	games: int,
 	base: int,
 	mode: String,
 	environment: float,
+	estimator: VenueEffectEstimator,
 ) -> Dictionary:
 	var arms: Dictionary = {}
 	for arm_id: StringName in [ARM_HOME, ARM_NEUTRAL, ARM_REVERSED]:
@@ -467,6 +522,8 @@ func _simulate(
 		arms[arm_id] = sample
 	for index in range(games):
 		var variation: int = base + index
+		var fixture_key := StringName("%s/%d" % [
+			CalibrationTargets.competition_id(competition), variation])
 		for arm_id: StringName in [ARM_HOME, ARM_NEUTRAL, ARM_REVERSED]:
 			var input: MatchInput = _venue_input(
 				competition, variation, mode,
@@ -477,6 +534,13 @@ func _simulate(
 			var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 				input, SeededRandomSource.new(variation + 1))
 			_accumulate(arms[arm_id] as ArmSample, input, output)
+			var result: MatchFinalResult = output.final_result
+			var venue_line: TeamStatLine = result.statistics.team_line(input.home.team_id)
+			if not estimator.observe(
+				fixture_key, arm_id,
+				float(result.home_score - result.away_score),
+				float(venue_line.engine_possessions)):
+				printerr("duplicate observation refused: %s/%s" % [fixture_key, arm_id])
 	return arms
 
 
@@ -730,22 +794,20 @@ func _report_paired(
 	_add_paired(report, competition_id, &"reversed.environment_win_gain",
 		"The same quantity after the venue is swapped.", reversed_win_gain)
 
-	# §17.4's combined cap, on the paired difference rather than on two column
-	# means, and expressed per 100 possessions rather than per game so the levels
-	# are comparable and the cap is read in its own units.
+	# §17.4's combined cap is judged by `_report_estimator` on the paired
+	# **two-arm** contribution. The single-arm reading is published here beside
+	# it, named for what it is, because it is what this report used to cap and
+	# the difference between the two should be visible rather than asserted.
 	var possessions: float = maxf(home_arm.venue.possessions_per_game(), 1.0)
 	var per_100: float = 100.0 * _mean(venue_gain) / possessions
 	report.add_metric(CalibrationMetric.raw(
-		StringName("%s.home.paired_points_per_100" % competition_id),
-		"Paired venue-minus-neutral margin per 100 venue possessions. This is the "
-		+ "figure §17.4 caps at +2.5.",
+		StringName("%s.home.home_arm_points_per_100" % competition_id),
+		"Paired venue-minus-neutral margin per 100 venue possessions, from the "
+		+ "home arm alone. One of two estimates of the same quantity and the "
+		+ "noisier of the pair. Published for comparison; §17.4 is NOT judged "
+		+ "on this figure.",
 		"points per 100 possessions", per_100, count).with_interval(
 			100.0 * _half_width(venue_gain) / possessions))
-	report.add_metric(CalibrationMetric.boolean(
-		StringName("%s.home.paired_combined_cap_respected" % competition_id),
-		"The paired environment contribution is at or below the §17.4 combined "
-		+ "cap of +2.5 points per 100 possessions.",
-		per_100 <= 2.5, "BALANCE_SPEC.md §17.4", count))
 	# The venue reversal has to reproduce the effect, not merely fail to
 	# contradict it: two estimates of one quantity whose intervals do not even
 	# overlap mean the effect is attached to a roster and not to a building.
@@ -757,6 +819,115 @@ func _report_paired(
 		"The home arm and the venue-reversed arm estimate the same environment "
 		+ "effect within their combined intervals.",
 		absf(home_gain - away_gain) <= reach, "SIMULATION_SPEC.md §19.4", count))
+
+
+## The published venue package for one level, or for the pool.
+##
+## Everything §17.4 and §14.2 are judged on comes from `VenueEffectEstimator`,
+## which is arithmetic on finished games and is tested against known answers in
+## `tests/calibration/test_venue_effect_estimator.gd`. The runner's own column
+## samples remain published beside it as description; they are not the verdict.
+##
+## `expected_pairs` is what the caller asked for. It is compared against what
+## the estimator actually holds, so a fixture that failed to produce all three
+## arms shows up as a refused sample rather than as a slightly smaller number.
+func _report_estimator(
+	report: CalibrationReport,
+	competition_id: String,
+	estimator: VenueEffectEstimator,
+	expected_pairs: int,
+) -> void:
+	var pairs: int = estimator.pair_count()
+
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.raw_home_win_rate" % competition_id),
+		"Share of decided games won by the venue side at the production "
+		+ "environment, with nothing subtracted.",
+		"decided games", estimator.raw_home_win_rate(), pairs))
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.neutral_home_win_rate" % competition_id),
+		"The same share on the identical fixtures with the environment at zero. "
+		+ "The control: it should centre on 0.50.",
+		"decided games", estimator.neutral_home_win_rate(), pairs))
+	report.add_metric(CalibrationMetric.banded(
+		StringName("%s.venue.attributable_home_win_rate" % competition_id),
+		"§14.2's even-team home win rate, attributed to the venue: the 0.50 "
+		+ "baseline plus the paired two-arm win gain. A paired estimate over "
+		+ "matched fixtures, not a subtraction of two column means.",
+		"matched pairs", estimator.venue_attributable_win_rate(),
+		CalibrationTargets.home_win_rate(), pairs
+	).with_interval(estimator.venue_attributable_win_rate_half_width()))
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.paired_win_rate_change" % competition_id),
+		"The venue-attributable change in win rate on its own, pooled over both "
+		+ "venue arms.",
+		"matched pairs",
+		estimator.venue_attributable_win_rate() - VenueEffectEstimator.NEUTRAL_WIN_BASELINE,
+		pairs).with_interval(estimator.venue_attributable_win_rate_half_width()))
+
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.raw_margin_difference" % competition_id),
+		"Mean venue-minus-visitor final margin at the production environment, "
+		+ "unadjusted.",
+		"complete games", estimator.raw_margin_difference(), pairs))
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.paired_margin_difference" % competition_id),
+		"The venue's effect on final margin with the roster, the matchup and "
+		+ "the seed cancelled, pooled over both venue arms.",
+		"matched pairs", estimator.paired_margin_difference(), pairs
+	).with_interval(estimator.paired_margin_half_width()))
+
+	# §17.4's combined cap, judged on the paired two-arm contribution.
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.points_per_100" % competition_id),
+		"Venue-attributable points per 100 possessions: the paired two-arm "
+		+ "margin gain over the possession base taken across the arms. **This "
+		+ "is the figure §17.4 caps at +2.5.**",
+		"points per 100 possessions", estimator.points_per_100(), pairs
+	).with_interval(estimator.points_per_100_half_width()))
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.points_per_100_standard_error" % competition_id),
+		"Standard error of the paired venue contribution.",
+		"matched pairs", estimator.points_per_100_standard_error(), pairs))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.cap_respected" % competition_id),
+		"The paired two-arm venue contribution is at or below the §17.4 "
+		+ "combined cap of +2.5 points per 100 possessions.",
+		estimator.cap_respected(), "BALANCE_SPEC.md §17.4", pairs))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.reversal_agrees" % competition_id),
+		"The home arm and the venue-reversed arm estimate the same environment "
+		+ "effect within their combined intervals.",
+		estimator.venue_reversal_agrees(), "SIMULATION_SPEC.md §19.4", pairs))
+
+	# --- the sample, stated rather than implied ------------------------------
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.matched_pairs" % competition_id),
+		"Independent matched fixtures behind every paired figure above. This is "
+		+ "the sample size.",
+		"matched pairs", float(pairs), pairs))
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.complete_games" % competition_id),
+		"Complete games simulated behind those pairs, which is three per pair — "
+		+ "one in each arm. Three simulations of one fixture are one piece of "
+		+ "independent evidence, and this figure is NOT the sample size.",
+		"complete games", float(estimator.unique_games()), pairs))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.sample_well_formed" % competition_id),
+		"Every fixture offered carries all three arms, nothing was observed "
+		+ "twice, and no shard overlapped another.",
+		estimator.is_well_formed(), "calibration estimator contract", pairs))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.sample_complete" % competition_id),
+		"The estimator holds every matched pair the run asked for.",
+		pairs == expected_pairs, "calibration estimator contract", pairs))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.certified" % competition_id),
+		"The sample reaches §27.1's certifying size. It does not, at any sample "
+		+ "this runner is given, and this metric exists so that is recorded "
+		+ "rather than inferred.",
+		estimator.unique_games() >= CalibrationTargets.REQUIRED_COMPETITION_GAMES,
+		CalibrationTargets.sample_size_source(), pairs))
 
 
 func _add_paired(
