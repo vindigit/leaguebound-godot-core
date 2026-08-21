@@ -654,8 +654,135 @@ func _report_competition(
 		"BALANCE_SPEC.md §17.4",
 		home_arm.games))
 
+	_report_paired(report, id, home_arm, neutral_arm, reversed_arm)
+
 	for arm: ArmSample in [home_arm, neutral_arm, reversed_arm] as Array[ArmSample]:
 		_report_arm_statistics(report, id, arm)
+
+
+## The measurement the marginal columns cannot make.
+##
+## The three arms play the identical fixtures at the identical seeds, so the
+## per-game *difference* between two arms is the venue with the roster, the
+## matchup and the seed all cancelled. Differencing two column means instead
+## throws that away and leaves a standard error several times larger: at 250
+## games the marginal home win rate carries an interval of six points, which
+## cannot resolve an effect worth one and a half.
+##
+## Two independent estimates of the same quantity are reported, and §19.4
+## requires them to agree:
+##
+## ```text
+## effect on A =  margin_home[i]     - margin_neutral[i]
+## effect on B =  margin_reversed[i] + margin_neutral[i]
+## ```
+##
+## The second is the venue reversal. `margin_reversed` is signed from B's end of
+## the building, and B's neutral margin is `-margin_neutral`, so adding them is
+## the same subtraction performed on the other bench. An effect attached to a
+## roster rather than to a venue produces two numbers of opposite sign here and
+## is caught nowhere else.
+func _report_paired(
+	report: CalibrationReport,
+	competition_id: String,
+	home_arm: ArmSample,
+	neutral_arm: ArmSample,
+	reversed_arm: ArmSample,
+) -> void:
+	var venue_gain := PackedFloat64Array()
+	var reversed_gain := PackedFloat64Array()
+	var venue_win_gain := PackedFloat64Array()
+	var reversed_win_gain := PackedFloat64Array()
+	var count: int = mini(
+		home_arm.margins.size(), mini(neutral_arm.margins.size(), reversed_arm.margins.size()))
+	for index in range(count):
+		var neutral_margin: float = neutral_arm.margins[index]
+		venue_gain.append(home_arm.margins[index] - neutral_margin)
+		reversed_gain.append(reversed_arm.margins[index] + neutral_margin)
+		venue_win_gain.append(
+			_win_value(home_arm.margins[index]) - _win_value(neutral_margin))
+		reversed_win_gain.append(
+			_win_value(reversed_arm.margins[index]) - _win_value(-neutral_margin))
+
+	_add_paired(report, competition_id, &"home.environment_margin_gain",
+		"Mean per-game venue-minus-neutral final margin for the same roster at the "
+		+ "same seed. The §19.4 environment with everything else cancelled.",
+		venue_gain)
+	_add_paired(report, competition_id, &"reversed.environment_margin_gain",
+		"The same quantity measured from the other bench after the venue is "
+		+ "swapped. It must agree with the home arm in sign and size.",
+		reversed_gain)
+	_add_paired(report, competition_id, &"home.environment_win_gain",
+		"Mean per-game change in the venue side's win/draw value from playing at "
+		+ "home rather than neutral. Add 0.50 to read it as a home win rate.",
+		venue_win_gain)
+	_add_paired(report, competition_id, &"reversed.environment_win_gain",
+		"The same quantity after the venue is swapped.", reversed_win_gain)
+
+	# §17.4's combined cap, on the paired difference rather than on two column
+	# means, and expressed per 100 possessions rather than per game so the levels
+	# are comparable and the cap is read in its own units.
+	var possessions: float = maxf(home_arm.venue.possessions_per_game(), 1.0)
+	var per_100: float = 100.0 * _mean(venue_gain) / possessions
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.home.paired_points_per_100" % competition_id),
+		"Paired venue-minus-neutral margin per 100 venue possessions. This is the "
+		+ "figure §17.4 caps at +2.5.",
+		"points per 100 possessions", per_100, count).with_interval(
+			100.0 * _half_width(venue_gain) / possessions))
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.home.paired_combined_cap_respected" % competition_id),
+		"The paired environment contribution is at or below the §17.4 combined "
+		+ "cap of +2.5 points per 100 possessions.",
+		per_100 <= 2.5, "BALANCE_SPEC.md §17.4", count))
+	# The venue reversal has to reproduce the effect, not merely fail to
+	# contradict it: two estimates of one quantity whose intervals do not even
+	# overlap mean the effect is attached to a roster and not to a building.
+	var home_gain: float = _mean(venue_gain)
+	var away_gain: float = _mean(reversed_gain)
+	var reach: float = _half_width(venue_gain) + _half_width(reversed_gain)
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue_reversal_agrees" % competition_id),
+		"The home arm and the venue-reversed arm estimate the same environment "
+		+ "effect within their combined intervals.",
+		absf(home_gain - away_gain) <= reach, "SIMULATION_SPEC.md §19.4", count))
+
+
+func _add_paired(
+	report: CalibrationReport,
+	competition_id: String,
+	key: StringName,
+	definition: String,
+	values: PackedFloat64Array,
+) -> void:
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.%s" % [competition_id, key]), definition,
+		"matched pairs", _mean(values), values.size()
+	).with_interval(_half_width(values)))
+
+
+## A win is 1, a draw 0.5, a loss 0. Regulation ties enter overtime, so the draw
+## case does not arise in a completed game; it is here so the statistic is
+## defined on any margin rather than silently scoring a tie as a loss.
+func _win_value(margin: float) -> float:
+	if margin > 0.0:
+		return 1.0
+	return 0.0 if margin < 0.0 else 0.5
+
+
+func _mean(values: PackedFloat64Array) -> float:
+	if values.is_empty():
+		return 0.0
+	var total: float = 0.0
+	for value in values:
+		total += value
+	return total / float(values.size())
+
+
+func _half_width(values: PackedFloat64Array) -> float:
+	if values.size() < 2:
+		return 0.0
+	return 1.96 * sqrt(maxf(ScoringCovariance.variance(values), 0.0)) / sqrt(float(values.size()))
 
 
 ## Both sides' §14.1 statistics and game shape for one arm. Reported raw: a
