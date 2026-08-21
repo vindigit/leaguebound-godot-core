@@ -23,6 +23,13 @@ extends GdUnitTestSuite
 const HOME: StringName = &"home"
 const AWAY: StringName = &"away"
 
+## The seed range the double-credit guard owns. Disjoint from every calibration
+## range, so a suite run can never be mistaken for a sample of one.
+const DOUBLE_CREDIT_BASE: int = 760000
+## Enough top-domestic possessions to reach a shooter rebounding his own missed
+## catch-and-shoot. At six games the chain appeared in four of them.
+const DOUBLE_CREDIT_SAMPLE: int = 6
+
 
 # --- the accounting identity ------------------------------------------------
 
@@ -236,6 +243,87 @@ func test_no_credited_assist_crosses_an_invalidating_event() -> void:
 					).is_true()
 				_:
 					pass
+
+
+## A delivery is consumed by the first attempt it reaches, and a creator on an
+## attempt is always the passer of a delivery that is still live.
+##
+## This is the property the three §11.3/§14.4 creation clears exist to hold, and
+## until this test it had no guard of its own. Each clear — the blanket one in
+## `_resolve_shot`, the offensive-rebound one, the free-throw one — is an
+## *equivalent mutant* on its own, because the other two still catch every
+## reachable path. Mutation testing them one at a time therefore reported three
+## harmless deletions and said nothing about the property, which was in fact
+## defended by nothing but their conjunction: removing all three credits one
+## delivery to a second attempt, and the suite passed.
+##
+## The chain that does it is ordinary basketball. A passer feeds a shooter, the
+## shooter misses, the shooter rebounds his own miss and shoots again off the
+## dribble — and the second attempt, which he created for himself, comes back
+## carrying the first delivery's passer. Had it dropped, one pass would have been
+## two assists.
+##
+## Checked on the *attempt* rather than on the credited assist, because §12.1
+## records the creator on the shot intent: an attempt that carries a stale
+## creator and then misses emits no `ASSIST` at all, which is exactly why the
+## existing invalidating-event guard could not see this.
+func test_a_delivery_creates_at_most_one_attempt() -> void:
+	var checked: int = 0
+	for scenario in GoldenScenarios.names():
+		checked += _assert_deliveries_are_consumed_once(
+			String(scenario), GoldenScenarios.simulate(scenario))
+	# The golden scenarios are short, and the chain that breaks this property —
+	# a shooter who misses a shot a delivery created, rebounds it himself, and
+	# shoots again off the dribble — needs more possessions than six of them
+	# supply. These are full top-domestic games on a seed range this suite owns.
+	for index in range(DOUBLE_CREDIT_SAMPLE):
+		var variation: int = DOUBLE_CREDIT_BASE + index
+		var input: MatchInput = CompetitionCatalog.match_for(
+			CalibrationTargets.Competition.TOP_DOMESTIC_PRO, variation, 0.5)
+		checked += _assert_deliveries_are_consumed_once(
+			"top_domestic_%d" % variation,
+			MatchEngine.new().simulate_match(input, SeededRandomSource.new(variation + 1)))
+	assert_int(checked).override_failure_message(
+		"no attempt carried a creator, so this proved nothing").is_greater(0)
+
+
+## Walks one ledger and returns how many creator-carrying attempts it checked.
+func _assert_deliveries_are_consumed_once(
+	scenario: String,
+	output: MatchSimulationOutput,
+) -> int:
+	var live_passer: StringName = &""
+	var live_receiver: StringName = &""
+	var checked: int = 0
+	for event in output.events:
+		match event.event_type:
+			MatchDomainEvent.POSSESSION_STARTED, MatchDomainEvent.TURNOVER, \
+			MatchDomainEvent.STEAL, MatchDomainEvent.FREE_THROW_AWARDED, \
+			MatchDomainEvent.REBOUND:
+				live_passer = &""
+				live_receiver = &""
+			MatchDomainEvent.PASS_COMPLETED:
+				live_passer = event.primary_player_id
+				live_receiver = event.secondary_player_id
+			MatchDomainEvent.FIELD_GOAL_ATTEMPT:
+				if not event.tertiary_player_id.is_empty():
+					checked += 1
+					assert_str(String(event.tertiary_player_id)).override_failure_message(
+						"%s: attempt %d carried creator '%s', but the live delivery's "
+						% [scenario, event.sequence, event.tertiary_player_id]
+						+ "passer was '%s'" % live_passer
+					).is_equal(String(live_passer))
+					assert_str(String(event.primary_player_id)).override_failure_message(
+						"%s: attempt %d was taken by '%s' but the live delivery "
+						% [scenario, event.sequence, event.primary_player_id]
+						+ "reached '%s'" % live_receiver
+					).is_equal(String(live_receiver))
+				# The attempt consumes the delivery, whatever it does next.
+				live_passer = &""
+				live_receiver = &""
+			_:
+				pass
+	return checked
 
 
 ## 10. A later, unrelated pass replaces the previous creator.
