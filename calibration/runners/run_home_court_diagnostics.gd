@@ -43,19 +43,28 @@ extends SceneTree
 ## Run:
 ##   godot --headless --path . --script res://calibration/runners/run_home_court_diagnostics.gd -- \
 ##       [--games=N] [--competition=high_school|college|development|overseas|top_domestic_pro|all] \
-##       [--range=diagnosis|tuning|validation_a|validation_b] [--environment=0.5] \
+##       [--range=diagnosis|tuning|tuning_second|validation_a|validation_b] \
+##       [--environment=0.5] \
 ##       [--mode=mirror|population] [--label=NAME]
 
 const DEFAULT_GAMES: int = 200
 
-## The four seed ranges this section owns, disjoint from every range §5.7-§5.15
-## used. Diagnosis is where the implementation is looked at, tuning is where a
-## correction may be fitted, and the two validation ranges stay untouched until
-## the implementation is frozen.
+## The seed ranges this section owns, disjoint from every range §5.7-§5.16 used
+## and from each other.
+##
+## Diagnosis is where the implementation was looked at. Tuning is where the
+## correction was fitted — twice, and the second range says so: 730,000 was
+## opened as a validation range and then a channel value was changed after
+## reading it, which makes it a tuning range whatever it was called. Renaming it
+## honestly is cheaper than pretending a fitted range validated anything.
+##
+## The two validation ranges below were opened only after the channel values
+## were frozen, and nothing was changed after reading them.
 const DIAGNOSIS_BASE: int = 710000
 const TUNING_BASE: int = 720000
-const VALIDATION_A_BASE: int = 730000
-const VALIDATION_B_BASE: int = 740000
+const TUNING_SECOND_BASE: int = 730000
+const VALIDATION_A_BASE: int = 780000
+const VALIDATION_B_BASE: int = 790000
 
 const MODE_MIRROR: String = "mirror"
 const MODE_POPULATION: String = "population"
@@ -147,6 +156,8 @@ func _range_base(range_name: String) -> int:
 	match range_name:
 		"tuning":
 			return TUNING_BASE
+		"tuning_second":
+			return TUNING_SECOND_BASE
 		"validation_a":
 			return VALIDATION_A_BASE
 		"validation_b":

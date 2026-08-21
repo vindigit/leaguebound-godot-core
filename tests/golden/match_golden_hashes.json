@@ -45,12 +45,12 @@
 			"seed": 190056
 		},
 		"regulation": {
-			"away_score": 33,
-			"events": 1135,
-			"hash": "183dffe959c0f855c7d63715470dc4600e81b9a3e59b7ce2eb93923d3a57e865",
-			"home_score": 30,
+			"away_score": 29,
+			"events": 1146,
+			"hash": "52dfdb1a6f3caed1deee51184690180072fc4723e04bc9c15ce2f2038e5bceb3",
+			"home_score": 37,
 			"overtime_periods": 0,
-			"possessions": 75,
+			"possessions": 78,
 			"seed": 20260815
 		},
 		"substitution_foul_out": {

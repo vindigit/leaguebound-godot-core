@@ -535,9 +535,9 @@ var chemistry_help_bonus_max: float = 0.04
 ## it and replacing it is a correction rather than a deletion.
 ##
 ## Fitted on the §5.17 tuning range and validated on two untouched ranges.
-var home_officiating_modifier: float = 0.013
-var home_communication_modifier: float = 0.018
-var home_composure_modifier: float = 0.011
+var home_officiating_modifier: float = 0.009
+var home_communication_modifier: float = 0.013
+var home_composure_modifier: float = 0.008
 
 # --- §10.2/§10.3/§18.2 score-and-clock game management -----------------------
 ## How much of a deficit a trailing team takes back in one pair of possessions

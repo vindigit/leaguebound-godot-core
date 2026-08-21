@@ -324,6 +324,71 @@ func test_a_neutral_game_cannot_observe_the_home_modifiers() -> void:
 	).is_equal(signatures[0])
 
 
+## 17, 18, and 6, measured exactly rather than sampled.
+##
+## The whole-game split is too coarse to see this: a channel worth a couple of
+## probability points moves a twelve-game turnover rate by less than its own
+## sampling error, so a modifier that *tripled* when the home side trailed sat
+## comfortably inside the tolerance. This asks the resolvers directly instead.
+##
+## The same possession is resolved `RESOLUTIONS` times against two scoreboards
+## that differ only in the score — twenty points behind and twenty points ahead
+## — with the identical lineups, matchups, clock, seeds and venue. §19.4's
+## channels read the venue, so both columns have to come back the same. A
+## comeback mechanism, a score-aware whistle, or an expected-winner term is a
+## difference between two numbers that are otherwise required to be identical.
+func test_no_channel_reads_the_scoreboard() -> void:
+	for at_home: bool in [true, false]:
+		var behind: float = _foul_rate(at_home, -20)
+		var ahead: float = _foul_rate(at_home, 20)
+		assert_float(absf(behind - ahead)).override_failure_message(
+			"the foul rate read the scoreboard (%s): %.4f behind, %.4f ahead"
+			% ["home" if at_home else "away", behind, ahead]
+		).is_less(0.005)
+
+		var behind_pass: float = _pass_turnover_rate(at_home, -20)
+		var ahead_pass: float = _pass_turnover_rate(at_home, 20)
+		assert_float(absf(behind_pass - ahead_pass)).override_failure_message(
+			"the pass turnover rate read the scoreboard (%s): %.4f behind, %.4f ahead"
+			% ["home" if at_home else "away", behind_pass, ahead_pass]
+		).is_less(0.005)
+
+		var behind_handle: float = _handle_turnover_rate(at_home, -20)
+		var ahead_handle: float = _handle_turnover_rate(at_home, 20)
+		assert_float(absf(behind_handle - ahead_handle)).override_failure_message(
+			"the handle turnover rate read the scoreboard (%s): %.4f behind, %.4f ahead"
+			% ["home" if at_home else "away", behind_handle, ahead_handle]
+		).is_less(0.005)
+
+
+## 5, measured. Team identity does not affect the modifier.
+##
+## The venue's lift on each channel is measured on a fixture whose teams are
+## called `home` and `away`, and again on one whose identical teams are called
+## something else. An exception keyed on a team id — the shape a "this club is
+## different" rule takes — changes one column and not the other.
+func test_team_identity_does_not_change_any_channel() -> void:
+	var named: PackedFloat64Array = _channel_lifts(HOME, AWAY)
+	var renamed: PackedFloat64Array = _channel_lifts(&"alpha", &"beta")
+	var labels: PackedStringArray = ["foul", "pass turnover", "handle turnover"]
+	for index in range(named.size()):
+		assert_float(absf(named[index] - renamed[index])).override_failure_message(
+			"the %s lift depended on the team's name: %.4f vs %.4f"
+			% [labels[index], named[index], renamed[index]]
+		).is_less(0.005)
+
+
+## The venue's lift on each channel is non-zero, so the two tests above are
+## comparing something rather than agreeing about nothing.
+func test_every_channel_actually_moves_its_own_rate() -> void:
+	var lifts: PackedFloat64Array = _channel_lifts(HOME, AWAY)
+	var labels: PackedStringArray = ["foul", "pass turnover", "handle turnover"]
+	for index in range(lifts.size()):
+		assert_float(absf(lifts[index])).override_failure_message(
+			"the %s channel moved nothing, so nothing above was tested"
+			% labels[index]).is_greater(0.001)
+
+
 ## 19. Home advantage never guarantees an outcome, and 20. away teams still win
 ## a substantial share of equal-team games.
 func test_away_teams_still_win_a_substantial_share() -> void:
@@ -541,6 +606,111 @@ func _shot_probability(at_home: bool) -> float:
 	return resolver.resolve(
 		context, offense.starters()[0], ShotZone.Value.MIDRANGE, false, contest,
 		AdvantageResult.new(), 1.0, 0.0, SeededRandomSource.new(1)).probability
+
+
+## How many times each resolver is asked. Large enough that a two-point channel
+## is far outside the sampling error of the comparison, and cheap because no
+## game is played: this is the same technique the attribute-sensitivity suite
+## uses to make a small effect exactly measurable.
+const RESOLUTIONS: int = 6000
+
+
+## A possession context at a stated scoreboard, with the venue and the team
+## names supplied. Everything else is held identical.
+func _context_at(
+	at_home: bool,
+	home_margin: int,
+	home_id: StringName = HOME,
+	away_id: StringName = AWAY,
+) -> PossessionContext:
+	var balance: SimulationBalanceProfile = _balance()
+	var competition: int = CalibrationTargets.Competition.TOP_DOMESTIC_PRO
+	var home_side: TeamMatchProfile = CompetitionCatalog.team_for(
+		competition, home_id, SUITE_BASE * 2, balance, 0.0)
+	var away_side: TeamMatchProfile = CompetitionCatalog.team_for(
+		competition, away_id, SUITE_BASE * 2, balance, 0.0)
+	var input := MatchInput.new(
+		&"home_rate", &"home_rate_game", CompetitionCatalog.rules_for(competition),
+		balance, home_side, away_side, home_side.team_id,
+		CompetitionCatalog.ratings_profile(), PRODUCTION_STRENGTH)
+	var snapshot := MatchSnapshot.new(input)
+	snapshot.home.score = maxi(home_margin, 0) + 40
+	snapshot.away.score = maxi(-home_margin, 0) + 40
+	var offense_id: StringName = home_side.team_id if at_home else away_side.team_id
+	return PossessionContext.new(input, snapshot, offense_id, MatchupState.new({}), 1)
+
+
+## The share of `RESOLUTIONS` non-shooting contact checks that became a whistle.
+func _foul_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> float:
+	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
+	var resolver := FoulResolver.new(
+		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
+		BodyEffects.new(context.input.balance_profile), context.input.balance_profile)
+	var actor: StringName = context.offense_on_court()[0]
+	var candidate := ActionCandidate.new(ActionFamily.Value.DRIVE, actor, 1.0, &"")
+	var called: int = 0
+	for index in range(RESOLUTIONS):
+		var source: RandomSource = SeededRandomSource.new(index + 1)
+		if resolver.resolve_non_shooting_foul(
+			context, candidate, AdvantageResult.new(), source).occurred:
+			called += 1
+	return float(called) / float(RESOLUTIONS)
+
+
+## The share of `RESOLUTIONS` deliveries that were turned over.
+func _pass_turnover_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> float:
+	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
+	var resolver := TurnoverResolver.new(
+		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
+		context.input.balance_profile)
+	# The fifth starter rather than the first. §14.3 floors the unforced pass
+	# error at 1%, and a top passer in a neutral-advantage context sits on that
+	# floor, where a communication term is clamped away before it can act. The
+	# channel is real — the report measures it at about a quarter of the venue's
+	# whole effect — and this is the context in which it is visible.
+	var on_court: Array[StringName] = context.offense_on_court()
+	context.ball_handler_id = on_court[4]
+	var candidate := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, on_court[4], 1.0, on_court[0])
+	var lost: int = 0
+	for index in range(RESOLUTIONS):
+		var source: RandomSource = SeededRandomSource.new(index + 1)
+		if resolver.resolve_pass(context, candidate, AdvantageResult.new(), source).occurred:
+			lost += 1
+	return float(lost) / float(RESOLUTIONS)
+
+
+## The share of `RESOLUTIONS` on-ball attacks that were turned over.
+func _handle_turnover_rate(at_home: bool, home_margin: int, home_id: StringName = HOME,
+		away_id: StringName = AWAY) -> float:
+	var context: PossessionContext = _context_at(at_home, home_margin, home_id, away_id)
+	var resolver := TurnoverResolver.new(
+		CapabilityCalculator.new(context.input.ratings_profile, context.input.balance_profile),
+		context.input.balance_profile)
+	var on_court: Array[StringName] = context.offense_on_court()
+	context.ball_handler_id = on_court[0]
+	var candidate := ActionCandidate.new(ActionFamily.Value.DRIVE, on_court[0], 1.0, &"")
+	var lost: int = 0
+	for index in range(RESOLUTIONS):
+		var source: RandomSource = SeededRandomSource.new(index + 1)
+		if resolver.resolve_ball_handling(
+			context, candidate, AdvantageResult.new(), source).occurred:
+			lost += 1
+	return float(lost) / float(RESOLUTIONS)
+
+
+## Each channel's venue lift: the rate with the venue's own side on offence
+## minus the rate with the visitor on offence, at a level scoreboard.
+func _channel_lifts(home_id: StringName, away_id: StringName) -> PackedFloat64Array:
+	return PackedFloat64Array([
+		_foul_rate(true, 0, home_id, away_id) - _foul_rate(false, 0, home_id, away_id),
+		_pass_turnover_rate(true, 0, home_id, away_id)
+			- _pass_turnover_rate(false, 0, home_id, away_id),
+		_handle_turnover_rate(true, 0, home_id, away_id)
+			- _handle_turnover_rate(false, 0, home_id, away_id),
+	])
 
 
 ## A script's code with comment lines and trailing comments removed, so a scan
