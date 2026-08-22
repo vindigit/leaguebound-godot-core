@@ -1024,11 +1024,39 @@ Morale can modify decision confidence, effort selection, and recovery by at most
 - Equal-team home win target: 54.5%, allowed 53–56%.
 - No single home modifier may exceed four absolute probability points.
 - Combined environment contributions are capped at +2.5 points per 100 possessions.
+
+**The cap is judged on the paired two-arm venue contribution, not on one arm's scoring.** Three arms play identical fixtures at identical seeds: `home` (venue at strength `E`), `neutral` (the same fixture at strength `0`), and `reversed` (the venue swapped to the other bench at strength `E`). Margins are signed venue-minus-visitor throughout, giving two independent per-fixture estimates of one quantity:
+
+```text
+effect on A = margin_home[i]     − margin_neutral[i]
+effect on B = margin_reversed[i] + margin_neutral[i]
+```
+
+The published contribution is their mean, divided by the venue-side possessions per game taken across the arms and expressed per 100. The two estimates must also agree within their combined intervals; a disagreement means the effect is attached to a roster rather than to a building.
+
+The control cancels from that mean — `((h − n) + (r + n))/2 = (h + r)/2` — which is why the neutral arm is read as an independent check that the fixture is unbiased rather than as an input to the answer. It remains required: a fixture missing any arm is refused, not estimated from the arms that survived.
+
+Sample size is the count of **matched fixtures**, not of simulations. Three arms of one fixture are three complete games and one piece of independent evidence.
 - Pressure can shrink a manual perfect zone by at most 20% relative, visibly.
 - Pressure can change simulated decision/execution noise by at most five absolute probability points.
 - Momentum is disabled in the version 0.1 baseline. Enabling it requires a separate no-rubber-band report.
 
-**Implementation status: the home environment is `HomeEnvironmentContext`, and the flat shooting bonus that used to carry most of it is gone.** `SIMULATION_SPEC.md` §9.3 names the type and the engine did not have it: the environment was a bare float read at three call sites, with nothing anywhere that summed the channels or compared the sum with either cap. It is now one bounded object with §19.4's channels — officiating, communication, and composure — each clamped to the four-point cap above, jointly bounded, and reached through one accessor so a fourth effect cannot be added without appearing in the aggregation. `home_environment_shot_bonus`, which added a term to the make probability of every home field-goal attempt and was worth about 65% of the whole effect, is removed: §19.4 authorizes officiating, communication, composure and familiarity, and a flat make bonus is none of them. On equal-team mirror fixtures the venue was worth +0.34 to +0.63 points a game against a requirement of 1.36 to 1.71. Pooled over ten frozen samples on two untouched validation ranges it is now worth +1.33, giving a venue-attributable equal-team home win rate of **54.64% against the 54.5% baseline** and a contribution of **1.93 points per 100 against the 2.5 cap** above. It is **not certified**: individual 250-game ranges disagree by more than the effect is worth, and §27.1 asks for 100,000 games per competition. `PROJECT_STATUS.md` §5.17.
+**Implementation status: the home environment is `HomeEnvironmentContext`, and the flat shooting bonus that used to carry most of it is gone.** `SIMULATION_SPEC.md` §9.3 names the type and the engine did not have it: the environment was a bare float read at three call sites, with nothing anywhere that summed the channels or compared the sum with either cap. It is now one bounded object with §19.4's channels — officiating, communication, and composure — each clamped to the four-point cap above, jointly bounded, and reached through one accessor so a fourth effect cannot be added without appearing in the aggregation. `home_environment_shot_bonus`, which added a term to the make probability of every home field-goal attempt and was worth about 65% of the whole effect, is removed: §19.4 authorizes officiating, communication, composure and familiarity, and a flat make bonus is none of them. On equal-team mirror fixtures the venue was worth +0.34 to +0.63 points a game against a requirement of 1.36 to 1.71.
+
+**Measured on the paired two-arm estimator above** (`PROJECT_STATUS.md` §5.18), over two untouched validation ranges of 250 matched fixtures per level — 810,000–810,249 and 820,000–820,249:
+
+| Pooled over five levels | Validation C | Validation D |
+| --- | ---: | ---: |
+| Venue-attributable equal-team home win rate | **0.5432 ±0.0125** | **0.5360 ±0.0122** |
+| Venue contribution, points per 100 possessions | **1.729 ±0.331** | **1.460 ±0.307** |
+| Levels inside the +2.5 cap | 5 of 5 | 5 of 5 |
+| Levels whose venue reversal agrees | 5 of 5 | 5 of 5 |
+
+Both pooled win rates sit inside the 53–56% band and both contributions inside the cap.
+
+**An earlier figure of "1.93 points per 100" recorded here was the home-arm-only metric**, not the paired contribution, and is superseded. On the corrected estimator no level breaches the cap on either range; the closest is overseas at 2.297.
+
+It is **not certified**: the sample is 250 matched fixtures per level per range — 750 complete games — against §27.1's 100,000 complete games per competition. **Top domestic fails the band on both ranges in opposite directions** (0.5640 and 0.5100, intervals not overlapping), which is an open tension and not something to be tuned away. `PROJECT_STATUS.md` §5.17 and §5.18.
 
 ### 17.5 Relationship labels
 

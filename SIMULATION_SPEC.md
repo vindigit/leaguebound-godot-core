@@ -1040,6 +1040,16 @@ If included as match inputs, morale and professionalism effects must be small, v
 
 Home advantage can affect bounded officiating, communication, composure, and familiarity factors. Its aggregate effect is calibrated as a small win-rate edge for otherwise even teams. It never guarantees an outcome.
 
+**How the aggregate effect is measured.** The venue's contribution is a *paired two-arm* quantity and never one column of games. Three arms play identical fixtures at identical seeds — the venue at strength `E`, the same fixture at strength `0`, and the venue swapped to the other bench at strength `E` — and the contribution is the mean of the two venue arms' estimates against the shared control. A single arm carries the fixture, the rosters and the seeds along with the venue and cannot separate them. `BALANCE_SPEC.md` §17.4 states the estimator and the cap it feeds.
+
+### 19.5 Opening possession
+
+**The engine does not choose which team receives the opening possession.** `MatchInput.initial_possession_team_id` is a required input with no default, validated to name one of the two supplied teams. The match engine consumes a `MatchInput` and never constructs one.
+
+No tip-off, jump ball, possession arrow, or alternating-possession rule is modelled at version 0.1. `CompetitionRuleProfile.possession_arrow_enabled` is reserved and unread; wiring it up is a specification change and requires this section to describe the rule first.
+
+Until a scheduling or career layer exists to decide it from real fixture context, choosing the opening possession belongs to whoever builds the input. **A measurement fixture must counterbalance it.** Receiving the opening possession is worth a measurable margin on its own; a fixture that gives it to the same side in every game puts a first-possession edge inside every home/away differential measured on that fixture, including §14.2's equal-team home win rate.
+
 ## 20. Pressure, Clutch, and Momentum
 
 ### 20.1 Pressure

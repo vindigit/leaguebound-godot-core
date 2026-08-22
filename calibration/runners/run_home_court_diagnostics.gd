@@ -814,10 +814,18 @@ func _report_paired(
 	var home_gain: float = _mean(venue_gain)
 	var away_gain: float = _mean(reversed_gain)
 	var reach: float = _half_width(venue_gain) + _half_width(reversed_gain)
+	# Deliberately computed here from the runner's own arrays as well as in
+	# `_report_estimator` from the estimator's. They are two implementations of
+	# one verdict over one set of games and must always agree; a run where
+	# `venue_reversal_agrees` and `venue.reversal_agrees` disagree means the
+	# estimator and the column samples are no longer looking at the same games,
+	# which is worth knowing and is invisible if only one of them is published.
 	report.add_metric(CalibrationMetric.boolean(
 		StringName("%s.venue_reversal_agrees" % competition_id),
 		"The home arm and the venue-reversed arm estimate the same environment "
-		+ "effect within their combined intervals.",
+		+ "effect within their combined intervals. Cross-checks "
+		+ "`venue.reversal_agrees`, which computes the same verdict from the "
+		+ "estimator; the two must agree.",
 		absf(home_gain - away_gain) <= reach, "SIMULATION_SPEC.md §19.4", count))
 
 
@@ -921,13 +929,23 @@ func _report_estimator(
 		StringName("%s.venue.sample_complete" % competition_id),
 		"The estimator holds every matched pair the run asked for.",
 		pairs == expected_pairs, "calibration estimator contract", pairs))
-	report.add_metric(CalibrationMetric.boolean(
-		StringName("%s.venue.certified" % competition_id),
-		"The sample reaches §27.1's certifying size. It does not, at any sample "
-		+ "this runner is given, and this metric exists so that is recorded "
-		+ "rather than inferred.",
-		estimator.unique_games() >= CalibrationTargets.REQUIRED_COMPETITION_GAMES,
-		CalibrationTargets.sample_size_source(), pairs))
+	# Certification status is reported as a **measurement**, not as a judged
+	# invariant. `context.require_certification_sample` already carries the
+	# requirement, and a boolean that can only ever be false would turn every
+	# run of this diagnostic permanently red — which does not communicate "not
+	# certified", it hides whichever metric failed for a real reason.
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.venue.certification_sample_reached" % competition_id),
+		"Share of §27.1's certifying sample this run reached, against %d complete "
+		% CalibrationTargets.REQUIRED_COMPETITION_GAMES
+		+ "games per competition. Zero point something is not certification. "
+		+ "Source: " + CalibrationTargets.sample_size_source(),
+		"complete games",
+		(
+			float(estimator.unique_games())
+			/ float(maxi(CalibrationTargets.REQUIRED_COMPETITION_GAMES, 1))
+		),
+		pairs))
 
 
 func _add_paired(

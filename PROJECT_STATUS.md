@@ -384,7 +384,7 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | **§14.2 blowout share** | **Failed at two of five levels** | **Improved again (§5.12).** High school 0.1300 ✓, college 0.1700 ✓ and overseas 0.1550 ✓ pass; development 0.2450 and top domestic 0.2725 do not. 0.2320 and 0.2120 on two untouched 500-game validation ranges, and 0.1883 pooled over 600 even-team games. §5.13 proposes competition-specific bands and does not enact them |
 | **§14.2 close-game share** | **Passes at all five competition levels** | 0.2700 / 0.2700 / 0.2200 / 0.2700 / 0.2475 against 0.22-0.34 on the untouched range 350,000-350,399 (§5.12). The two 500-game population validation ranges sit at 0.2220 and 0.2060, so the pass is marginal and is reported as marginal |
 | **§14.2 overtime rate** | **Failed at four of five levels** | High school 0.0425 ✓; college 0.0100, development 0.0225, overseas 0.0250, top domestic 0.0175. Unmoved by the settled rotation, as expected. **Unreachable by any dispersion mechanism under the current possession/scoring model (§5.11, §5.13):** the replay model's tie rate never reaches 0.04 even at a margin standard deviation of 9.9. §5.13 classifies this narrowly and proposes a band |
-| **§14.2 home win rate** | **Failed at four of five levels** | 0.5450 / 0.5250 / 0.5200 / 0.5275 / 0.5325 against 0.53-0.56 at 400 games (§5.12), and inside the band on both 500-game population validation ranges. **Untouched by this work and explicitly out of its scope.** The cause §5.10 measured is unchanged: the home environment is worth about 0.3 points a game where the band needs about 2.1 |
+| **§14.2 home win rate** | **Measured below requirement; pooled inside the band, one level failing** | **Corrected (§5.17), re-measured on the paired estimator (§5.18).** Venue-attributable equal-team rate pooled over five levels is **0.5432 ±0.0125** and **0.5360 ±0.0122** on two untouched ranges, both inside 0.53–0.56. Four of five levels pass on each range; **top domestic fails on both, in opposite directions** (0.5640 and 0.5100, intervals not overlapping, 2.80 standard errors apart). Not certified: 250 matched fixtures per level per range against §27.1's 100,000 games |
 | §8.4 rare-generational band | **Measured below requirement** | **Corrected (§5.8), closed (§5.9).** Median 93 against 92–95 at 3,000 careers and on two untouched 2,000-career validation ranges. Was 90 |
 | §9.5 upper-guardrail warnings | **Measured below requirement** | Every guardrail-passing season carries a source-ledger explanation, 1.0000 on all three ranges |
 | §9.5 elite-opportunity ruling | **Structural** | Bounded at 20% per the owner ruling of 2026-08, enforced as each season is granted so the lifetime total cannot exceed it at any setting; zero violations on all three ranges and through three-shard aggregation |
@@ -2964,6 +2964,8 @@ Action and shot mix on the same engine (400 top-domestic games, variations 710,0
 
 Status: **Diagnosed, corrected, and measured on two untouched validation ranges. Pooled over ten frozen samples the venue-attributable equal-team home win rate is 54.64% against a 54.5% baseline, and the contribution is 1.93 points per 100 possessions against a 2.5 cap. Not certified: individual 250-game ranges disagree by more than the effect is worth, two of ten breach the published cap metric at overseas, one of ten fails the venue-reversal control, and §27.1 wants 100,000 games per competition.**
 
+> **§5.18 supersedes three figures below.** The "1.93 points per 100" is the mean of the *home-arm-only* column — the metric this section itself diagnosed as defective — and the corrected paired two-arm estimator reads **1.73 and 1.46** on two fresh ranges. The "25,000 complete games" is a tenfold double count of a per-arm figure; the real totals are **7,500 simulations over 2,500 unique paired fixtures**. And both failures recorded here — the two overseas cap breaches and the one venue-reversal failure — **do not survive correction**: zero of ten on each, on ranges opened after the estimator was frozen. The narrative below is left as written, because it is the record of what was believed when it was written; §5.18 is the correction.
+
 #### The measurement that had to be built first
 
 §14.2's row is "**even-team** home win rate: 53–56%; baseline 54.5%". Every previous measurement of it was taken on the population fixture, and that fixture cannot answer the question for two independent reasons.
@@ -3241,7 +3243,7 @@ Ten of ten inside +2.5, with overseas the closest at 2.34. **The cap metric shou
 - **The neutral control is clean.** 0.456 to 0.552 across the ten samples, pooling to 0.5064, consistent with 0.50.
 - **The caps hold on the pooled estimator and fail twice as published.** Ten of ten pooled two-arm contributions are inside +2.5, the largest 2.34 at overseas. The published metric uses the home arm alone and breaches at overseas on both ranges — a reporting defect recorded above, not a licence to ignore the level.
 - **The venue reversal agrees nine times in ten**, failing once at overseas on Validation A.
-- **None of this is certified and cannot be at this sample.** §27.1 asks for 100,000 games per competition; this is 250 per arm per range, 25,000 complete games in total.
+- **None of this is certified and cannot be at this sample.** §27.1 asks for 100,000 games per competition; this is 250 per arm per range, 25,000 complete games in total. **[§5.18: the total is 7,500 simulations over 2,500 unique paired fixtures. 25,000 multiplied a per-arm figure by the ten samples already inside it.]**
 
 #### Regression guardrails
 
@@ -3290,6 +3292,166 @@ Three moved. Every one first diverges on a **foul call**, and both signs are rep
 
 Top-domestic points per possession at +0.0063 over its ceiling (§5.16), college field-goal percentage, the §14.2 overtime and blowout rows, Builder dominance, OVR truthfulness, career progression, Projected Peak, postseason scheduling, and the §27.1 certification sample. None of them is touched here.
 
+
+### 5.18 The venue estimator was reading one arm, and the fixture was giving the home team every opening possession
+
+Status: **Instrumentation corrected; conclusions re-measured on two untouched ranges. Both previously recorded failures — the two overseas cap breaches and the venue-reversal failure — were artifacts of the estimator and do not survive correction. Two published figures were arithmetically wrong and are corrected here. No production value was changed and no golden hash moved.**
+
+This section is a measurement closeout. §5.17 accepted the home-environment mechanisms and then recorded three unresolved problems with the package that measured them. All three are settled below.
+
+#### 1. The opening possession: a fixture artifact, and what it was worth
+
+**The engine does not choose who receives the opening possession, and never has.** `MatchInput.initial_possession_team_id` has no default and is validated to name one of the two supplied teams. `MatchEngine` consumes a `MatchInput` and never constructs one, and **nothing anywhere under `src/` constructs one** — the scheduling and career layers that would eventually decide this do not exist yet.
+
+**No specification describes an opening-possession rule.** There is no jump ball, possession arrow, or alternating-possession rule in `SIMULATION_SPEC.md`, `BALANCE_SPEC.md`, `GDD.md`, or `PRD.md`. `CompetitionRuleProfile.possession_arrow_enabled` is declared and read by nothing.
+
+**`CompetitionCatalog` chose, and chose `home.team_id` unconditionally**, in `match_for` and `mirrored_match_for` alike, for every fixture either has ever built.
+
+So the ruling is **calibration-fixture artifact**, and the correction belongs to the fixture. Production is untouched, because there is no production behaviour here to correct. `SIMULATION_SPEC.md` §19.5 now states the contract that was previously unwritten: the engine does not choose, no tip-off is modelled, and a measurement fixture must counterbalance.
+
+**Where it mattered.** `run_home_court_diagnostics.gd` already alternated the opener in `_venue_input`, so the §5.17 venue figures were *not* contaminated. The contaminated metric is `run_competition_calibration.gd`'s **banded §14.2 `home_win_rate`**, judged against 53–56% over fixtures where the home team also received every opening inbound — while the runner's own comment asserted that the measured home win rate was "the environment effect and nothing else". It was the environment plus the inbound. The comment now says what the fixture guarantees.
+
+**What the inbound is worth.** `run_opening_possession.gd` measures it independently of the venue, on two audit ranges no other section owns (800,000–800,149 and 805,000–805,149). Six cells play one shared set of mirror fixtures at one shared set of seeds: environment on and off, crossed with the venue opening, the visitor opening, and the counterbalance itself. Pooled over ten samples (five levels × two ranges, 150 matched pairs each):
+
+| Effect | Contrast, venue-opens minus visitor-opens | Value of receiving the inbound | Resolved at this sample |
+| --- | ---: | ---: | --- |
+| Win rate | +0.0347 ±0.0285 | **+1.73 percentage points** | **Yes** |
+| Possessions per game | +0.400 ±0.340 | **+0.20** | **Yes** |
+| Final margin | +0.912 ±0.925 | +0.456 points | No |
+| Points per possession | −0.0046 ±0.0070 | −0.0023 | No |
+
+The result is physically coherent rather than merely non-zero: the side that opens receives the extra odd possession, that is worth about half a point of margin, and **efficiency does not move**. More possessions, not better ones, which is the only shape this effect could honestly take.
+
+**§14.2's band is three points wide.** An uncounterbalanced opener was worth 1.73 points of home win rate — more than half the width of the band it sat inside.
+
+**The counterbalance is exact and the two effects are separable.** `venue_open_share` is 0.5000 at all five levels on both ranges, ten of ten. The opening-by-environment interaction covers zero in **nine of ten** samples (high school on range B is the exception at −5.767 ±4.002; one exceedance in ten at a 95% interval is what a correct control does). Separability is what licenses counterbalancing the inbound away without disturbing the venue estimate — it is checked, not assumed.
+
+**The opening-possession effect was not subtracted from anything.** The corrected §14.2 figures below come from a fixture that never had it, which is a different and stronger claim than removing it arithmetically afterwards.
+
+#### 2. The estimator: it was reading one arm of a matched pair
+
+`paired_points_per_100` was formed from the home arm's gain over the neutral control. The reversed arm — an independent estimate of the same quantity, which the same report already printed — never entered the number §17.4 was judged against.
+
+`VenueEffectEstimator` is that arithmetic, extracted so it can be tested against known answers. The published contribution is the mean of the two arm estimates:
+
+```text
+effect on A = margin_home[i]     - margin_neutral[i]
+effect on B = margin_reversed[i] + margin_neutral[i]
+```
+
+**The control cancels from that mean** — `((h - n) + (r + n))/2 = (h + r)/2` — and that is the design working rather than an accident. A biased control cannot bias the contribution, which is exactly what licenses reading the neutral arm as an independent check on the fixture instead of as an input to the answer. The neutral arm remains required: a fixture missing any arm is refused, not estimated from what survived.
+
+**That property is visible in the data.** High school on Validation C reads a raw home win rate of 0.5560 and a neutral control of 0.5560 — a marginal difference of exactly zero — while the paired estimate is 0.5360. The two-arm estimator cancels a fixture-side bias that the marginal comparison would have reported as "no home advantage at all".
+
+The single-arm reading is still published, renamed `home_arm_points_per_100` and documented as not being what §17.4 is judged on, so the gap between the old metric and the corrected one stays visible rather than disappearing into a better number.
+
+#### 3. The sample arithmetic, and two figures that were wrong
+
+**"25,000 complete games" was a tenfold double count.** 250 games × 5 levels × 2 ranges is 2,500 games *per arm*; that figure was then multiplied by the ten samples already inside it.
+
+| Quantity | §5.17 published | Actual |
+| --- | ---: | ---: |
+| Games per arm, per level, per range | 250 | 250 |
+| Games per arm, all levels and ranges | 2,500 | 2,500 |
+| Arms | 3 | 3 |
+| **Total simulations executed** | **25,000** | **7,500** |
+| **Unique paired fixtures** | not stated | **2,500** |
+
+**"1.93 points per 100" was the defective metric's own output.** It is exactly the mean of the ten home-arm-only figures (19.307 / 10 = 1.9307). The same section's own two-arm recomputation averages 1.621. §17.4's published pass was quoted from the estimator that section diagnosed as broken two paragraphs later. `BALANCE_SPEC.md` §17.4 is corrected.
+
+The runner now publishes both counts per level and pooled — `venue.matched_pairs` and `venue.complete_games` — with the definition stating explicitly that three arms of one fixture are three complete games and **one** piece of independent evidence. `sample_well_formed` and `sample_complete` pass at every level on both ranges: no fixture is missing an arm, none was observed twice, and no shard overlapped another.
+
+**Pooling weights.** Every level contributes 250 pairs, so equal-weight and games-weighted pooling coincide. The pooled estimator is the unweighted mean of the per-fixture paired series over the union of fixture keys; keys carry the competition, so two levels at the same variation cannot merge.
+
+**Ranges.** Validation A and B validated the channel *values* and nothing was tuned after reading them, which remains true. But they were read through a cap metric that no longer exists, so **two fresh ranges were opened after the estimator was frozen**: Validation C at 810,000–810,249 and Validation D at 820,000–820,249. Nothing here is fitted to anything; this is a measurement precaution, not a suspicion.
+
+#### 4. Five levels, two untouched ranges, corrected estimator
+
+250 matched pairs per level per range. Mirror fixtures, common random numbers, counterbalanced opening inbound.
+
+| Level | Attributable home win rate, Val C | Val D | Venue points/100, Val C | Val D | Cap | Reversal |
+| --- | ---: | ---: | ---: | ---: | --- | --- |
+| High school | 0.5360 ±0.0291 PASS | 0.5380 ±0.0287 PASS | 1.539 ±0.750 | 1.498 ±0.745 | PASS/PASS | PASS/PASS |
+| College | 0.5340 ±0.0272 PASS | 0.5480 ±0.0266 PASS | 1.759 ±0.801 | 1.662 ±0.666 | PASS/PASS | PASS/PASS |
+| Development | 0.5420 ±0.0281 PASS | 0.5440 ±0.0283 PASS | 1.485 ±0.727 | 1.624 ±0.662 | PASS/PASS | PASS/PASS |
+| Overseas | 0.5400 ±0.0273 PASS | 0.5400 ±0.0273 PASS | 2.297 ±0.775 | 1.354 ±0.747 | PASS/PASS | PASS/PASS |
+| Top domestic | **0.5640 ±0.0283 FAIL** | **0.5100 ±0.0251 FAIL** | 1.651 ±0.664 | 1.214 ±0.626 | PASS/PASS | PASS/PASS |
+| **Pooled** | **0.5432 ±0.0125 PASS** | **0.5360 ±0.0122 PASS** | **1.729 ±0.331** | **1.460 ±0.307** | PASS/PASS | PASS/PASS |
+
+| Range | Raw home win rate | Neutral control | Attributable | Raw margin | Paired margin |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Validation C | 0.5336 | 0.5072 | 0.5432 ±0.0125 | +1.540 | +1.435 ±0.275 |
+| Validation D | 0.5336 | 0.4968 | 0.5360 ±0.0122 | +1.343 | +1.214 ±0.255 |
+
+**The estimator repair is doing the work, and it is measurable.** Per-level intervals moved from ±0.0612–±0.0620 under the marginal estimator to ±0.0251–±0.0291 under the paired one — a 2.3× tightening on the same 250 games, which is the common-random-number pairing finally being used rather than thrown away.
+
+#### 5. The two recorded failures do not survive correction
+
+| Finding | §5.17, as published | Corrected estimator, Val C and D |
+| --- | --- | --- |
+| §17.4 cap | **2 breaches of 10** — overseas 2.801 and 3.498 | **0 breaches of 10**, plus both pooled. Overseas reads 2.297 and 1.354 |
+| Venue reversal | **1 failure of 10** — overseas, Validation A | **0 failures of 10**, plus both pooled |
+
+**Both were artifacts of the metric, not properties of the level.** §5.17 suspected this of the cap and recorded it as the first thing the next task on this section should change; it is now measured on fresh ranges rather than recomputed on the ranges that produced the suspicion.
+
+#### 6. What is *not* resolved
+
+**Top domestic fails the §14.2 band on both untouched ranges, in opposite directions.** 0.5640 on Validation C, 0.5100 on Validation D. The intervals do not overlap; the gap is **2.80 standard errors**. That is a genuine tension in the model rather than a reading artifact, and the pooled pass must not be read as covering it. **No parameter was changed for it.**
+
+**The marginal metric and the corrected one disagree about which levels pass.** `home.win_rate` — the single-arm reading, still judged against §14.2 — fails at four of five levels on Validation C, while `venue.attributable_home_win_rate` passes at four of five on the same games. Re-pointing that band at the paired estimator is the consistent extension of the cap repair and is **recommended but not done**: which estimator judges a locked target is an owner decision, not a measurement one.
+
+#### 7. Regular-season §14.1 after the counterbalance
+
+The counterbalance changes which games the population fixture plays, so top-domestic points per possession was re-measured on a fresh untouched 1,000-game range, 830,000–830,999.
+
+| Range | Points per possession | Interval |
+| --- | ---: | --- |
+| 700,000–700,999 (§5.16, preserved) | 1.1863 ±0.0052 | [1.1811, 1.1915] |
+| **830,000–830,999 (counterbalanced)** | **1.1831 ±0.0053** | [1.1778, 1.1884] |
+| **Pooled, 2,000 games** | **1.1847 ±0.0037** | **[1.1810, 1.1884]** |
+
+The measurement moved by −0.0032, which is **0.84 standard errors** — no change at all. The pooled interval sits entirely above the 1.1800 ceiling. **Top-domestic points per possession remains a genuine §14.1 failure and was not touched.** Possessions per game reads 101.7390 ±0.1535 and passes. On the same range the §14.2 population home win rate reads 0.5520 ±0.0308 and passes; overtime, close-game and blowout rates fail and sit inside the identity §5.13 already records for them, unchanged by this work and out of its scope.
+
+#### 8. Tests and the mutation battery
+
+`VenueEffectEstimator` carries 22 arithmetic tests on rows whose answers are known, and `test_opening_possession.gd` carries 12 contract tests. The strongest of the latter asserts that **nothing under `res://src` constructs a `MatchInput`**: if a scheduling layer ever does, the ruling in §1 above stops being true and somebody must write a real opening-possession rule into `SIMULATION_SPEC.md` rather than leaning on a fixture counterbalance.
+
+Twelve mutations, run sequentially in an isolated worktree at `6eecd66` under a 300-second and 2,048 MB budget, each restored byte-clean with the worktree re-verified:
+
+| # | Mutation | Outcome |
+| --- | --- | --- |
+| M1 | The fixture returns `home.team_id` unconditionally again | DETECTED, 4 tests |
+| M2 | Counterbalance alternates on a period of 3 — "mostly" balanced | DETECTED, 3 tests |
+| M3 | `points_per_100` returns the home-arm gain | DETECTED, 3 tests |
+| M4 | Reversed arm differenced against the next fixture's control | DETECTED, 2 tests |
+| M5 | `observe` overwrites a duplicate instead of refusing it | DETECTED, 2 tests |
+| M6 | An overlapping shard is merged anyway | DETECTED, 1 test |
+| M7 | The venue-reversal control can no longer fail | DETECTED, 1 test |
+| M8 | Neutral guard weakened from `<= 0.0` to `< 0.0` | **EQUIVALENT** |
+| M8b | A neutral court keeps `is_neutral()` true but gains a live channel | DETECTED, 1 test |
+| M9 | A flat home shot bonus added to make probability | DETECTED, 1 test |
+| M10a | Skip stops at the end of regulation instead of delegating | DETECTED, 1 test |
+| M10b | Skip consumes an extra draw before delegating | **EQUIVALENT** |
+
+Every baseline completed comfortably inside both budgets. **No mutation was scored on a timeout, a memory breach, or a crash.**
+
+**Three results are worth recording in detail, because each exposed something a passing battery would have hidden.**
+
+**M4 survived its first run, and the reason is not the obvious one.** The pairing test gave both fixtures the same neutral margin, so borrowing the neighbour's control cancelled identically. The deeper problem is that **the published mean cannot detect this class of defect at all**: shifting every control by one position cyclically changes fixture *i*'s gain by `(n[i+1] - n[i])/2`, and those differences sum to zero around the cycle. The mean is exactly unchanged while every per-fixture value is wrong. Only the series or its dispersion discriminates, so both are asserted now — the series value by value, and a second test requiring exactly zero dispersion on a sample where every fixture carries an identical effect.
+
+**M10a survived a coverage gap that had nothing to do with the estimator.** A Skip that stops at the end of regulation produced byte-identical output on every fixture in the parity suite, because **the suite never played a game that reached overtime**. It is not an equivalent mutation — §23.4 forbids Skip reducing the result, and dropping the extra period is exactly that. The suite now runs all three executors over the `overtime` golden scenario's fixture and seed, asserting overtime actually occurred before comparing anything, and M10a is detected.
+
+**M8 and M10b are equivalent, and the reasons are load-bearing.** `from_profile` builds every channel as `modifier × strength`, so at strength zero both branches construct an identical object and `is_neutral()` is true either way — no test can distinguish them and none should. `SeededRandomSource.derive` builds each possession's stream from the **immutable root seed** and a label and never reads the generator's mutable state, so consuming an extra draw before delegating cannot change any outcome. That is §23.5's resume-safety holding by construction, and a suite that "detected" it would be asserting something false.
+
+#### 9. Classification of every conclusion
+
+- **Structural:** the engine has no opening-possession behaviour; no `MatchInput` is constructed under `src/`; the estimator's arm symmetry, control cancellation, pair completeness, duplicate refusal and shard-overlap refusal; the counterbalance's determinism and its independence from any random source; executor parity through overtime. All proven by deterministic test.
+- **Measured, below the §27.1 requirement:** every number in sections 1, 4 and 7 above. 250 matched pairs per level per range against a requirement of 100,000 complete games per competition.
+- **Certified:** nothing. `venue.certification_sample_reached` reads **0.0075** — 750 complete games against 100,000 — and is published as a ratio precisely so that it cannot be read as a verdict.
+
+#### 10. Golden ledgers
+
+**Unchanged.** All six hashes and the ledger file's own SHA-256 (`9f56843a…`) are identical before and after, and `test_golden_ledgers.gd` passes 7 of 7. This work is instrumentation-only: it touched calibration fixtures, a calibration runner, a new calibration harness class, and tests. The golden scenarios are built by `MatchFixtureFactory`, not by `CompetitionCatalog`, so the fixture counterbalance cannot reach them — and no production resolver was modified at all.
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation
