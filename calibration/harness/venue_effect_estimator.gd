@@ -337,12 +337,69 @@ func neutral_home_win_rate() -> float:
 	return arm_win_rate(ARM_NEUTRAL)
 
 
-## The venue-attributable home win rate: the baseline plus the paired two-arm
-## win gain. This is what §14.2's 53-56% band is about — what the *venue* is
-## worth between even teams — and it is a paired estimate, not a subtraction of
-## two column means.
+## **The judged §14.2 estimator.** The venue-attributable home win rate.
+##
+## The owner ruling defines the canonical quantity as
+##
+## ```text
+## 0.5 * [ P(designated venue side wins when the environment favours it)
+##       + P(opposite venue side wins when the environment is reversed) ]
+## ```
+##
+## and this returns the pair-level form of exactly that. The published contract,
+## in full, because a verdict metric whose definition lives only in a commit
+## message is a metric nobody can check:
+##
+## - **Formula.** `NEUTRAL_WIN_BASELINE + mean_i(paired_win_gain[i])`, where
+##   `paired_win_gain[i] = 0.5 * ((wv(h_i) - wv(n_i)) + (wv(r_i) - wv(-n_i)))`.
+##   `wv(n) + wv(-n) = 1` for every margin including zero, so this reduces
+##   algebraically to `0.5 * (mean_i wv(h_i) + mean_i wv(r_i))` — the canonical
+##   form above, with no approximation. `canonical_venue_win_rate` computes that
+##   reduced form directly and the two are asserted equal by test.
+## - **Denominator.** Matched fixtures carrying all three arms. Not simulations:
+##   one fixture is three complete games and one observation. Fixtures missing an
+##   arm contribute to nothing.
+## - **Arm construction.** `home` = venue A at strength E; `neutral` = the same
+##   fixture at strength 0; `reversed` = venue B at strength E. Identical
+##   rosters, identical seeds, opening inbound counterbalanced and held constant
+##   across the three arms.
+## - **Ties.** A win is 1, a loss 0, a tie 0.5. A regulation tie enters overtime
+##   so a completed game is never a tie; the case is defined for totality, and
+##   defining it this way is what makes the reduction above exact rather than
+##   approximate.
+## - **Weighting.** Every matched pair carries weight 1. Levels are not
+##   reweighted by size, and reports are not weighted by report count.
+## - **Interval.** 1.96 x the standard error of the per-fixture paired series,
+##   `sd(paired_win_gain) / sqrt(n)`. Paired, so it carries the
+##   common-random-number variance reduction rather than a marginal proportion's.
+## - **Pooling.** Union of fixture keys across shards, then the same unweighted
+##   mean over the pooled series. Keys carry the competition, so two levels at
+##   one variation cannot merge, and an overlapping key is refused rather than
+##   double-counted.
 func venue_attributable_win_rate() -> float:
 	return NEUTRAL_WIN_BASELINE + mean(paired_win_gain())
+
+
+## The canonical form written out directly, for comparison against the paired
+## form above. Identical by algebra, and pinned identical by test: if the two
+## ever disagree the paired implementation has stopped computing what the ruling
+## says it computes.
+func canonical_venue_win_rate() -> float:
+	return 0.5 * (arm_win_value_mean(ARM_HOME) + arm_win_value_mean(ARM_REVERSED))
+
+
+## Mean win value for one arm over the complete matched pairs.
+##
+## Distinct from `arm_win_rate`, which divides by *decided* games. They coincide
+## whenever no game ends level — which the engine guarantees, because a
+## regulation tie plays overtime — and this form is the one the canonical
+## reduction needs, because it keeps one denominator across all three arms.
+func arm_win_value_mean(arm_id: StringName) -> float:
+	var values := PackedFloat64Array()
+	for key in complete_keys():
+		values.append(
+			win_value(((_fixtures[key] as Dictionary)[arm_id] as Observation).margin))
+	return mean(values)
 
 
 func venue_attributable_win_rate_half_width() -> float:

@@ -3398,7 +3398,7 @@ The runner now publishes both counts per level and pooled — `venue.matched_pai
 
 **Top domestic fails the §14.2 band on both untouched ranges, in opposite directions.** 0.5640 on Validation C, 0.5100 on Validation D. The intervals do not overlap; the gap is **2.80 standard errors**. That is a genuine tension in the model rather than a reading artifact, and the pooled pass must not be read as covering it. **No parameter was changed for it.**
 
-**The marginal metric and the corrected one disagree about which levels pass.** `home.win_rate` — the single-arm reading, still judged against §14.2 — fails at four of five levels on Validation C, while `venue.attributable_home_win_rate` passes at four of five on the same games. Re-pointing that band at the paired estimator is the consistent extension of the cap repair and is **recommended but not done**: which estimator judges a locked target is an owner decision, not a measurement one.
+**The marginal metric and the corrected one disagree about which levels pass.** `home.win_rate` — the single-arm reading, still judged against §14.2 — fails at four of five levels on Validation C, while `venue.attributable_home_win_rate` passes at four of five on the same games. Re-pointing that band at the paired estimator is the consistent extension of the cap repair and is **recommended but not done**: which estimator judges a locked target is an owner decision, not a measurement one. **[Ruled on by the owner and enacted in §5.19.]**
 
 #### 7. Regular-season §14.1 after the counterbalance
 
@@ -3452,6 +3452,97 @@ Every baseline completed comfortably inside both budgets. **No mutation was scor
 #### 10. Golden ledgers
 
 **Unchanged.** All six hashes and the ledger file's own SHA-256 (`9f56843a…`) are identical before and after, and `test_golden_ledgers.gd` passes 7 of 7. This work is instrumentation-only: it touched calibration fixtures, a calibration runner, a new calibration harness class, and tests. The golden scenarios are built by `MatchFixtureFactory`, not by `CompetitionCatalog`, so the fixture counterbalance cannot reach them — and no production resolver was modified at all.
+
+### 5.19 The §14.2 home-win estimator: owner ruling enacted
+
+Status: **Ruling enacted. No production value changed, no target changed, no measurement re-run — the same games now carry the verdict the ruling assigns.** Provisional measured evidence, not certification.
+
+§5.18 recommended re-pointing the §14.2 home-win band at the paired estimator and explicitly declined to do it, on the grounds that which estimator judges a locked target is an owner decision. The owner has ruled:
+
+> The §14.2 home-win target is judged by the controlled, symmetrized paired venue-side win estimator. The marginal single-arm `home.win_rate` remains an informational population diagnostic and does not independently determine the home-environment calibration verdict.
+
+#### The canonical estimator, and the form the code uses
+
+The ruling defines the judged quantity as
+
+```text
+0.5 × [ P(designated venue side wins when the environment favours it)
+      + P(opposite venue side wins when the environment is reversed) ]
+```
+
+The implementation uses the paired-fixture form, and the two are **identical rather than approximately equal**:
+
+```text
+paired_win_gain[i] = 0.5 × ((wv(hᵢ) − wv(nᵢ)) + (wv(rᵢ) − wv(−nᵢ)))
+                   = 0.5 × (wv(hᵢ) + wv(rᵢ) − 1)        since wv(n) + wv(−n) = 1
+estimate           = 0.5 + mean_i(paired_win_gain[i])
+                   = 0.5 × (mean_i wv(hᵢ) + mean_i wv(rᵢ))
+```
+
+which is the canonical form with no approximation. `win_value` scoring a tie as 0.5 is what makes `wv(n) + wv(−n) = 1` hold for *every* margin, and therefore what makes the reduction exact; any other tie convention would turn the identity into an approximation. `VenueEffectEstimator.canonical_venue_win_rate` computes the reduced form directly, a unit test asserts the two agree, and every report now publishes `venue.canonical_form_agrees` so a divergence would show up in the run rather than only in a test.
+
+**The identity was checked against the measured data before it was asserted.** Across all ten level×range samples from §5.18, `0.5 × (home-arm win rate + reversed-arm win rate)` reproduces the published `attributable_home_win_rate` exactly:
+
+| Level | Val C: 0.5 × (home + reversed) | Published | Val D: 0.5 × (home + reversed) | Published |
+| --- | ---: | ---: | ---: | ---: |
+| High school | 0.5 × (0.5560 + 0.5160) = 0.5360 | 0.5360 | 0.5 × (0.4880 + 0.5880) = 0.5380 | 0.5380 |
+| College | 0.5 × (0.5120 + 0.5560) = 0.5340 | 0.5340 | 0.5 × (0.5480 + 0.5480) = 0.5480 | 0.5480 |
+| Development | 0.5 × (0.5240 + 0.5600) = 0.5420 | 0.5420 | 0.5 × (0.5560 + 0.5320) = 0.5440 | 0.5440 |
+| Overseas | 0.5 × (0.4880 + 0.5920) = 0.5400 | 0.5400 | 0.5 × (0.5880 + 0.4920) = 0.5400 | 0.5400 |
+| Top domestic | 0.5 × (0.5880 + 0.5400) = **0.5640** | 0.5640 | 0.5 × (0.4880 + 0.5320) = **0.5100** | 0.5100 |
+
+#### The published contract
+
+| Element | Definition |
+| --- | --- |
+| Formula | `0.5 + mean_i(paired_win_gain[i])`, identical to the canonical form above |
+| Denominator | Matched fixtures carrying all three arms. **Not simulations** — one fixture is three complete games and one observation |
+| Arm construction | `home` = venue A at strength `E`; `neutral` = same fixture at strength `0`; `reversed` = venue B at strength `E`. Identical rosters, identical seeds, opening inbound counterbalanced and constant across arms |
+| Ties | Win 1, loss 0, tie 0.5. A completed game is never a tie; defined for totality and to keep the reduction exact |
+| Weighting | Weight 1 per matched pair. Not reweighted by level size, not weighted by report count |
+| Interval | 1.96 × SE of the per-fixture paired series |
+| Pooling | Union of fixture keys; overlapping keys refused rather than double-counted |
+
+#### Roles of the two metrics
+
+| Metric | Role | Target |
+| --- | --- | --- |
+| `venue.attributable_home_win_rate` | **Judged.** Carries the §14.2 verdict | 0.530–0.560 |
+| `home.win_rate` | **Informational** population diagnostic. Still published | none |
+
+`home.win_rate` stays in every report. Removing it would delete the evidence that the two estimators disagree, which is the thing most worth keeping: at overseas on Validation C the marginal reading is **0.4880** while the judged reading on the same games is **0.5400**. A single arm carries the fixture, the rosters and the seeds along with the venue, so it can fail while the venue contribution is correct.
+
+**Metric identity and schema.** The id `%s.home.win_rate` is unchanged deliberately. `report_aggregator` buckets by id and refuses to pool metrics whose targets differ across shards, so an old stored shard meeting a new one fails loudly rather than silently pooling a judged metric with an informational one. The home-court runner is single-shard in any case — `set_shard(0, 1, …)`, no `--shard` option — so nothing aggregates it today.
+
+#### What the ruling does not change
+
+No home-environment production value moved. Neutral venue remains exactly neutral, the three authorized channels are untouched, counterbalancing remains exact at 0.5000, venue reversal remains a published control, and the ≤2.5 points-per-100 paired contribution cap is unchanged and still judged on the paired contribution. The §14.2 band itself is still 0.530–0.560; only the estimator reading it moved, and a test pins the band values so a future edit cannot quietly widen them.
+
+#### The top-domestic disagreement is preserved, not resolved
+
+| Range | Judged estimate |
+| --- | ---: |
+| Validation C (810,000–810,249, 250 pairs) | **0.5640** |
+| Validation D (820,000–820,249, 250 pairs) | **0.5100** |
+| **Combined, 500 matched pairs** | **0.5370** |
+
+The combined figure sits inside 0.530–0.560, and that is **not** a resolution of the disagreement. The two ranges are 2.80 standard errors apart with non-overlapping intervals; a midpoint that lands in band is arithmetic, not agreement. **Classification: provisional measured evidence.** It is not certification, and §27.1's requirement of 100,000 complete games per competition is untouched — 500 matched pairs is 1,500 complete games.
+
+#### Tests
+
+Nine assertions across two suites, six of them named by the ruling:
+
+- the paired estimator, not the marginal metric, carries the target and the verdict;
+- the marginal metric returns `informational` for values from 0.0 to 1.0 and can never fail the gate;
+- a disagreement between the two is resolved by the judged metric alone;
+- the judged metric still fails on a genuinely wrong venue effect — the ruling moves which metric decides, it does not make the gate unfailable;
+- reversing which arm is called `home` preserves the estimate and its interval exactly;
+- a control biased to hand every game to the nominal home side leaves the judged estimate unmoved while the marginal reading goes to 1.0;
+- missing, duplicated, mismatched and overlapping pairs all leave the judged number untouched;
+- pooling weights by matched pair, not report — a 190-pair shard at 1.00 pooled with a 10-pair shard at 0.00 gives 0.95, not 0.50;
+- the §14.2 band is still 0.530–0.560.
+
+Two of these caught defects in their own first drafts. The biased-control test initially used a margin of zero for every control game, which is a *tie* rather than a neutral result: `decided_games` stayed at zero and the marginal rate read 0.0000 instead of 0.5000. And the source-shape test used a fixed character window to find which constructor emitted a metric, which straddled unrelated code and reported whichever constructor happened to be nearby — replaced with a backward search to the nearest enclosing `CalibrationMetric.` call.
 ## 6. Certification and workflow blockers
 
 ### 6.1 Sharded-report aggregation

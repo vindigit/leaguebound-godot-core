@@ -400,6 +400,164 @@ func test_the_three_win_rates_are_each_what_they_claim_to_be() -> void:
 	assert_float(estimator.venue_attributable_win_rate()).is_equal_approx(0.75, TOLERANCE)
 
 
+# --- the owner ruling: the canonical §14.2 estimator ------------------------
+
+## The paired-fixture form and the canonical form are the same number.
+##
+## The owner ruling defines the judged §14.2 metric as
+## `0.5 * [P(venue side wins when the environment favours it) + P(opposite
+## venue side wins when the environment is reversed)]`. The implementation is
+## allowed to use the equivalent paired-fixture form, which is what it does —
+## so the equivalence is the thing that has to be pinned, not assumed. It holds
+## because `win_value(n) + win_value(-n) = 1` for every margin, ties included,
+## which is what makes the neutral arm cancel exactly rather than approximately.
+func test_the_paired_form_equals_the_canonical_ruling_form() -> void:
+	var estimator := VenueEffectEstimator.new()
+	# Deliberately lopsided arms and a control that is nowhere near 0.50, so the
+	# two forms have every opportunity to disagree.
+	_observe_triple(estimator, &"f0", 7.0, 6.0, 3.0)
+	_observe_triple(estimator, &"f1", -2.0, 9.0, 11.0)
+	_observe_triple(estimator, &"f2", 4.0, -8.0, -1.0)
+	_observe_triple(estimator, &"f3", 1.0, 2.0, 5.0)
+	_observe_triple(estimator, &"f4", -6.0, -3.0, 8.0)
+
+	assert_float(estimator.canonical_venue_win_rate()).is_equal_approx(
+		estimator.venue_attributable_win_rate(), TOLERANCE)
+	# And the canonical form really is the average of the two arm win rates.
+	var expected: float = 0.5 * (
+		estimator.arm_win_value_mean(VenueEffectEstimator.ARM_HOME)
+		+ estimator.arm_win_value_mean(VenueEffectEstimator.ARM_REVERSED))
+	assert_float(estimator.canonical_venue_win_rate()).is_equal_approx(
+		expected, TOLERANCE)
+
+
+## A tie is scored 0.5 in both arms, and the equivalence survives it.
+##
+## A completed game is never a tie, because a regulation tie plays overtime. The
+## case is defined anyway, and it is defined *this* way because any other choice
+## breaks `win_value(n) + win_value(-n) = 1` and turns the canonical reduction
+## from an identity into an approximation.
+func test_the_equivalence_survives_a_tied_fixture() -> void:
+	var estimator := VenueEffectEstimator.new()
+	_observe_triple(estimator, &"f0", 0.0, 0.0, 0.0)
+	_observe_triple(estimator, &"f1", 5.0, 0.0, 5.0)
+	_observe_triple(estimator, &"f2", -5.0, 3.0, 0.0)
+
+	assert_float(VenueEffectEstimator.win_value(0.0)).is_equal_approx(0.5, TOLERANCE)
+	assert_float(estimator.canonical_venue_win_rate()).is_equal_approx(
+		estimator.venue_attributable_win_rate(), TOLERANCE)
+
+
+## Reversing which arm is called `home` and which `reversed` leaves the judged
+## estimate exactly where it was.
+##
+## The ruling's formula is symmetric in the two venue arms by construction. An
+## implementation that weighted them unequally, or that read the home arm and
+## treated the reversed arm as a check, would fail this.
+func test_reversing_the_venue_arms_preserves_the_judged_estimate() -> void:
+	var forward := VenueEffectEstimator.new()
+	_observe_triple(forward, &"f0", 9.0, 1.0, -3.0)
+	_observe_triple(forward, &"f1", -4.0, -2.0, 6.0)
+	var swapped := VenueEffectEstimator.new()
+	# Arms exchanged; the control is negated because it is signed from the
+	# venue's end and the venue has moved to the other bench.
+	_observe_triple(swapped, &"f0", -3.0, -1.0, 9.0)
+	_observe_triple(swapped, &"f1", 6.0, 2.0, -4.0)
+
+	assert_float(swapped.venue_attributable_win_rate()).is_equal_approx(
+		forward.venue_attributable_win_rate(), TOLERANCE)
+	assert_float(swapped.venue_attributable_win_rate_half_width()).is_equal_approx(
+		forward.venue_attributable_win_rate_half_width(), TOLERANCE)
+
+
+## A neutral arm that is badly biased does not move the judged estimate.
+##
+## This is the property the whole ruling rests on. High school on Validation C
+## measured a raw home win rate of 0.5560 against a neutral control of 0.5560 —
+## a marginal difference of exactly zero — while the judged estimate read
+## 0.5360. If a fixture-side bias could leak into the judged metric, the
+## marginal and paired readings would agree and the ruling would be pointless.
+func test_a_biased_neutral_control_cannot_contaminate_the_judged_estimate() -> void:
+	var unbiased := VenueEffectEstimator.new()
+	var biased := VenueEffectEstimator.new()
+	for index in range(20):
+		var key := StringName("f%02d" % index)
+		var home_margin: float = 6.0 if index % 4 != 0 else -2.0
+		var reversed_margin: float = 4.0 if index % 3 != 0 else -5.0
+		# A clean control: it splits the fixtures evenly, so it centres on 0.50.
+		# It must not be a run of zeroes — a margin of zero is a *tie*, which
+		# leaves `decided_games` at zero and makes the marginal rate undefined
+		# rather than neutral.
+		var clean_control: float = 3.0 if index % 2 == 0 else -3.0
+		_observe_triple(unbiased, key, home_margin, clean_control, reversed_margin)
+		# The same venue arms against a control that hands every game to the
+		# nominal home side, which is as biased as a control can be.
+		_observe_triple(biased, key, home_margin, 25.0, reversed_margin)
+
+	assert_float(biased.venue_attributable_win_rate()).is_equal_approx(
+		unbiased.venue_attributable_win_rate(), TOLERANCE)
+	# The marginal reading, by contrast, is entirely at the control's mercy.
+	assert_float(biased.neutral_home_win_rate()).is_equal_approx(1.0, TOLERANCE)
+	assert_float(unbiased.neutral_home_win_rate()).is_equal_approx(0.5, TOLERANCE)
+
+
+## Pooling weights by unique matched pairs, not by report count.
+##
+## Two shards of very different sizes must pool to the estimate their combined
+## fixtures imply, not to the average of their two headline numbers. A pool that
+## weighted by report would give a 10-pair shard the same say as a 190-pair one.
+func test_pooling_weights_by_matched_pairs_and_not_by_report_count() -> void:
+	var large := VenueEffectEstimator.new()
+	for index in range(190):
+		# Venue wins both arms: this shard's estimate is 1.0.
+		_observe_triple(large, StringName("a%03d" % index), 5.0, 0.0, 5.0)
+	var small := VenueEffectEstimator.new()
+	for index in range(10):
+		# Venue loses both arms: this shard's estimate is 0.0.
+		_observe_triple(small, StringName("b%03d" % index), -5.0, 0.0, -5.0)
+
+	assert_float(large.venue_attributable_win_rate()).is_equal_approx(1.0, TOLERANCE)
+	assert_float(small.venue_attributable_win_rate()).is_equal_approx(0.0, TOLERANCE)
+
+	assert_bool(large.merge(small)).is_true()
+	assert_int(large.pair_count()).is_equal(200)
+	# Pair-weighted: 190/200. Report-weighted would be 0.5.
+	assert_float(large.venue_attributable_win_rate()).override_failure_message(
+		"pooling appears to weight by report rather than by matched pair"
+	).is_equal_approx(0.95, TOLERANCE)
+
+
+## The judged estimate ignores fixtures that are not complete matched triples,
+## so a missing, duplicated, mismatched or overlapping pair cannot reach it.
+##
+## The individual refusals are pinned elsewhere in this suite; this one asserts
+## that all four failure modes leave the *judged §14.2 number* untouched, which
+## is the property the ruling cares about.
+func test_no_malformed_pair_can_reach_the_judged_estimate() -> void:
+	var clean := VenueEffectEstimator.new()
+	for index in range(12):
+		_observe_triple(clean, StringName("f%02d" % index), 5.0, 0.0, 5.0)
+	var expected: float = clean.venue_attributable_win_rate()
+
+	var polluted := VenueEffectEstimator.new()
+	for index in range(12):
+		_observe_triple(polluted, StringName("f%02d" % index), 5.0, 0.0, 5.0)
+	# Missing an arm.
+	polluted.observe(&"missing", VenueEffectEstimator.ARM_HOME, -40.0, 100.0)
+	polluted.observe(&"missing", VenueEffectEstimator.ARM_NEUTRAL, -40.0, 100.0)
+	# Duplicated observation on an existing pair.
+	polluted.observe(&"f00", VenueEffectEstimator.ARM_HOME, -40.0, 100.0)
+	# An overlapping shard.
+	var overlapping := VenueEffectEstimator.new()
+	_observe_triple(overlapping, &"f01", -40.0, 0.0, -40.0)
+	polluted.merge(overlapping)
+
+	assert_float(polluted.venue_attributable_win_rate()).is_equal_approx(
+		expected, TOLERANCE)
+	assert_int(polluted.pair_count()).is_equal(12)
+	assert_bool(polluted.is_well_formed()).is_false()
+
+
 ## The cap judges the paired two-arm contribution. A sample whose home arm
 ## breaches +2.5 while the pooled estimate does not must be judged on the
 ## pooled estimate — which is exactly the overseas case the previous report

@@ -156,6 +156,18 @@ func _run() -> void:
 		"Initial possession alternates on variation parity and is identical across "
 		+ "the three arms, so the opening inbound is balanced over the sample and "
 		+ "constant within every matched triple.")
+	context.notes.append(
+		"OWNER RULING: §14.2's home-win row is judged by "
+		+ "`venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the "
+		+ "environment favours it) + P(opposite venue side wins when the "
+		+ "environment is reversed)], computed per matched fixture over the "
+		+ "home and reversed arms against a shared neutral control. Denominator "
+		+ "is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. "
+		+ "Every pair carries weight 1. The interval is 1.96 x SE of the paired "
+		+ "series. Pooling is the union of fixture keys, refusing overlaps.")
+	context.notes.append(
+		"`home.win_rate` is an INFORMATIONAL population diagnostic and does not "
+		+ "determine the home-environment calibration verdict.")
 	if mode == MODE_MIRROR:
 		context.notes.append(
 			"Mirror matches are played between two identical rosters, so the pregame "
@@ -639,25 +651,38 @@ func _report_competition(
 	var win_rate: float = home_arm.venue_win_rate()
 	var win_interval: float = accumulator.proportion_half_width(
 		home_arm.venue_wins, home_arm.decided_games)
-	if mode == MODE_MIRROR:
-		report.add_metric(CalibrationMetric.banded(
-			StringName("%s.home.win_rate" % id),
-			"Share of decided games won by the team playing at its own venue, "
-			+ "between two identical rosters at the production home environment.",
-			"decided games",
-			win_rate,
-			CalibrationTargets.home_win_rate(),
-			home_arm.decided_games,
-			win_interval))
-	else:
-		report.add_metric(CalibrationMetric.raw(
-			StringName("%s.home.win_rate" % id),
-			"Share of decided games won by the home team on the population "
-			+ "fixture. Reported without a verdict: §14.2's row is about even "
-			+ "teams and this fixture has a strength spread.",
-			"decided games",
-			win_rate,
-			home_arm.decided_games).with_interval(win_interval))
+	# **Informational, per the owner ruling.** §14.2's home-win row is judged by
+	# `venue.attributable_home_win_rate` — the controlled, symmetrized paired
+	# venue-side estimator — and this marginal single-arm figure does not
+	# independently determine the home-environment verdict.
+	#
+	# It stays published because it is the population-facing number and because
+	# hiding it would remove the evidence that the two estimators disagree. It
+	# carries no target: a single arm carries the fixture, the rosters and the
+	# seeds along with the venue, so a marginal reading can fail while the venue
+	# contribution is correct — which is exactly what it does at four of five
+	# levels on Validation C.
+	#
+	# The metric id is unchanged on purpose. `report_aggregator` buckets by id
+	# and refuses to pool metrics whose targets differ across shards, so an old
+	# stored shard meeting a new one fails loudly rather than silently pooling a
+	# judged metric with an informational one. This runner is single-shard in any
+	# case (`set_shard(0, 1, ...)`, no `--shard` option), so nothing aggregates it.
+	var win_rate_definition: String = (
+		"Share of decided games won by the team playing at its own venue, "
+		+ "between two identical rosters at the production home environment. "
+		if mode == MODE_MIRROR else
+		"Share of decided games won by the home team on the population fixture. "
+	) + (
+		"INFORMATIONAL population diagnostic: §14.2 is judged by "
+		+ "`venue.attributable_home_win_rate`, the paired venue-side estimator."
+	)
+	report.add_metric(CalibrationMetric.raw(
+		StringName("%s.home.win_rate" % id),
+		win_rate_definition,
+		"decided games",
+		win_rate,
+		home_arm.decided_games).with_interval(win_interval))
 
 	# The neutral control. With the environment at zero and the opening inbound
 	# balanced, nothing left in the engine knows which bench is which, so this
@@ -857,14 +882,30 @@ func _report_estimator(
 		"The same share on the identical fixtures with the environment at zero. "
 		+ "The control: it should centre on 0.50.",
 		"decided games", estimator.neutral_home_win_rate(), pairs))
+	# **The judged §14.2 metric**, per the owner ruling. Everything about how it
+	# is formed is in `VenueEffectEstimator.venue_attributable_win_rate`'s
+	# contract block: formula, denominator, arm construction, ties, weighting,
+	# interval and pooling rule.
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.venue.attributable_home_win_rate" % competition_id),
-		"§14.2's even-team home win rate, attributed to the venue: the 0.50 "
-		+ "baseline plus the paired two-arm win gain. A paired estimate over "
-		+ "matched fixtures, not a subtraction of two column means.",
+		"JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win "
+		+ "rate: 0.5 x [P(venue side wins when the environment favours it) + "
+		+ "P(opposite venue side wins when the environment is reversed)], "
+		+ "computed per matched fixture. Weight 1 per matched pair; interval is "
+		+ "1.96 x SE of the paired series; pooling is the union of fixture keys.",
 		"matched pairs", estimator.venue_attributable_win_rate(),
 		CalibrationTargets.home_win_rate(), pairs
 	).with_interval(estimator.venue_attributable_win_rate_half_width()))
+	# The canonical form computed directly rather than through the paired series.
+	# They are equal by algebra; publishing both means a run where they diverge
+	# says so in its own report instead of only in a unit test.
+	report.add_metric(CalibrationMetric.boolean(
+		StringName("%s.venue.canonical_form_agrees" % competition_id),
+		"The paired-fixture estimator and the directly-computed canonical form "
+		+ "0.5 x [P(home arm) + P(reversed arm)] return the same value.",
+		absf(estimator.canonical_venue_win_rate()
+			- estimator.venue_attributable_win_rate()) <= 1e-9,
+		"owner ruling, §14.2 home-win estimator", pairs))
 	report.add_metric(CalibrationMetric.raw(
 		StringName("%s.venue.paired_win_rate_change" % competition_id),
 		"The venue-attributable change in win rate on its own, pooled over both "

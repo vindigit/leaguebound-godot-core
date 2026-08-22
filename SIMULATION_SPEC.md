@@ -1040,6 +1040,8 @@ If included as match inputs, morale and professionalism effects must be small, v
 
 Home advantage can affect bounded officiating, communication, composure, and familiarity factors. Its aggregate effect is calibrated as a small win-rate edge for otherwise even teams. It never guarantees an outcome.
 
+**Which metric carries the verdict.** The §14.2 home-win target is judged by the controlled, symmetrized paired venue-side win estimator defined in `BALANCE_SPEC.md` §17.4. The marginal single-arm home win rate is an informational population diagnostic and does not independently determine the home-environment calibration verdict. Both are published; only the paired estimator carries a target.
+
 **How the aggregate effect is measured.** The venue's contribution is a *paired two-arm* quantity and never one column of games. Three arms play identical fixtures at identical seeds — the venue at strength `E`, the same fixture at strength `0`, and the venue swapped to the other bench at strength `E` — and the contribution is the mean of the two venue arms' estimates against the shared control. A single arm carries the fixture, the rosters and the seeds along with the venue and cannot separate them. `BALANCE_SPEC.md` §17.4 states the estimator and the cap it feeds.
 
 ### 19.5 Opening possession

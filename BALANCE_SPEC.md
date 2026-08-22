@@ -1025,6 +1025,28 @@ Morale can modify decision confidence, effort selection, and recovery by at most
 - No single home modifier may exceed four absolute probability points.
 - Combined environment contributions are capped at +2.5 points per 100 possessions.
 
+**Owner ruling — which metric judges the home-win target.** The §14.2 home-win target is judged by the **controlled, symmetrized paired venue-side win estimator**. The marginal single-arm home win rate remains an **informational population diagnostic** and does not independently determine the home-environment calibration verdict.
+
+The judged estimator is
+
+```text
+0.5 × [ P(designated venue side wins when the environment favours it)
+      + P(opposite venue side wins when the environment is reversed) ]
+```
+
+evaluated per matched fixture. The implementation may use the mathematically equivalent paired-fixture form `0.5 + mean_i(0.5 × ((wv(hᵢ) − wv(nᵢ)) + (wv(rᵢ) − wv(−nᵢ))))`; the two are identical because `wv(n) + wv(−n) = 1` for every margin, and both forms must be published and asserted equal.
+
+| Contract element | Definition |
+| --- | --- |
+| Denominator | Matched fixtures carrying all three arms. **Not simulations** — one fixture is three complete games and one observation |
+| Arm construction | `home` = venue A at strength `E`; `neutral` = the same fixture at strength `0`; `reversed` = venue B at strength `E`. Identical rosters, identical seeds, opening inbound counterbalanced and held constant across the three arms |
+| Ties | Win 1, loss 0, tie 0.5. A regulation tie plays overtime so a completed game is never a tie; the case is defined for totality, and defining it this way is what makes the two forms exactly equal |
+| Weighting | Every matched pair carries weight 1. Levels are not reweighted by size and reports are not weighted by report count |
+| Interval | 1.96 × the standard error of the per-fixture paired series. Paired, so it carries the common-random-number variance reduction |
+| Pooling | Union of fixture keys across shards, then the same unweighted mean. Keys carry the competition; an overlapping key is refused rather than double-counted |
+
+The neutral arm **cancels** from the estimate and is therefore required as an independent check on the fixture rather than as an input to the answer. A fixture missing any arm is refused, not estimated from the arms that survived.
+
 **The cap is judged on the paired two-arm venue contribution, not on one arm's scoring.** Three arms play identical fixtures at identical seeds: `home` (venue at strength `E`), `neutral` (the same fixture at strength `0`), and `reversed` (the venue swapped to the other bench at strength `E`). Margins are signed venue-minus-visitor throughout, giving two independent per-fixture estimates of one quantity:
 
 ```text
