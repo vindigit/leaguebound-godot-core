@@ -870,6 +870,12 @@ The following are stable target bands for mature seasons. They are fictional-lea
 | Free-throw attempts/FGA | 18–38% | 20–38% | 18–36% | 20–39% | 18–34% |
 | Assist % | 42–66% | 48–68% | 48–69% | 50–72% | 52–72% |
 
+**Implementation status: top-domestic points per possession is inside its band.** It measured 1.1847 ±0.0037 over 2,000 games against the 1.18 ceiling — a genuine failure of about +0.0047. The cause was **not** shot mix, turnovers, offensive rebounding, free throws, or a top-domestic-specific defect: zone shares matched the adjacent level within ±0.006 while accuracy was uniformly higher, which is what a roster-rating gap through a shared balance profile produces.
+
+The cause was the contest-band distribution. Two thirds of every attempt at every level resolved `OPEN` or `LIGHT`, `HEAVY` was 2–3%, and `SMOTHERED` was 0.00% everywhere, because `contest_capability_span` moved pressure by less than one band width across the entire defender-capability range. Raised from 0.35 to **0.46** in ruleset `simulation-v8-contest-capability`, so capability spans more than one band as `SIMULATION_SPEC.md` §12.3 requires.
+
+Measured after the correction: **1.1694 ±0.0037** pooled over two untouched 1,000-game ranges, with field-goal percentage at 0.4588 against a 0.45 floor. **Zero §14.1 verdict changes at any of the five levels.** The effect is monotone in roster strength and pivots at college — scoring rises slightly where defenders are poor and falls where they are good, which is the mechanism and is deliberately not compensated. **Not certified**: §27.1 asks for 100,000 complete games per competition. `PROJECT_STATUS.md` §5.20.
+
 ### 14.2 Game-shape targets
 
 - Even-team home win rate: 53–56%; baseline 54.5%.

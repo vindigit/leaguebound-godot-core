@@ -716,6 +716,10 @@ interface ShotContest {
 
 Contest is created from actual defensive positioning and capabilities. It is not selected as independent random flavor after shot probability is known.
 
+**Defender capability must span more than one band.** Contest pressure is centred on a base and moved by how far the defender's contest capability sits from the middle of the scale. If that span is narrower than the distance between band boundaries, the best and worst defenders in a league produce contests inside the same band and the clause above is satisfied in form only — capability is read, and then makes no difference. `BALANCE_SPEC.md` §14.1 carries the measured consequence and the corrected value.
+
+**Perimeter contests currently have no help term.** Help pressure is applied only to interior attempts, so a perimeter jumper's pressure comes from the primary defender alone and cannot reach the `HEAVY` threshold. `SMOTHERED` is therefore unreachable on the perimeter. This is a known gap, recorded rather than modelled; closing it requires a perimeter closeout or rotation term that does not exist yet.
+
 ### 12.4 Execution window
 
 Every manually executed shot receives an `ExecutionWindow`:

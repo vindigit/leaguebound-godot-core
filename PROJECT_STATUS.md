@@ -230,7 +230,7 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Rare-generational peak band | ~~**Fail:** pooled median 90 against target 92–95~~ **Corrected (§5.8):** median 93 on the development range and on two untouched validation ranges |
 | Projected-peak coverage | ~~**Fail:** 29.2% pooled~~ **Corrected (§5.7):** 0.7473 and 0.7370 on two untouched validation ranges against 70–85% |
 | Projected-peak signed error | ~~**Fail:** pooled median +10.0~~ **Corrected (§5.7):** −1.0 and 0.0 on two untouched validation ranges against ±2 |
-| Competition §14.1 bands | Substantially converged, not certified; see §5.5 for the post-correction re-measurement |
+| Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. College and high-school field-goal percentage remain pre-existing failures. Measured, not certified |
 | Assist percentage | ~~**Fail:** 48.15% top domestic at 400 games against 52–72%~~ **Corrected (§5.15):** 58.9% and 58.2% top domestic on two untouched 100-game validation ranges, and inside the band at all five competition levels on both. Measured, not certified. |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
 | Builder dominance tournament | Not implemented/run |
@@ -3292,6 +3292,8 @@ Three moved. Every one first diverges on a **foul call**, and both signs are rep
 
 Top-domestic points per possession at +0.0063 over its ceiling (§5.16), college field-goal percentage, the §14.2 overtime and blowout rows, Builder dominance, OVR truthfulness, career progression, Projected Peak, postseason scheduling, and the §27.1 certification sample. None of them is touched here.
 
+> **§5.20 corrects two entries in that list.** Top-domestic points per possession is no longer a blocker: it measures **1.1694 ±0.0037** pooled over two untouched 1,000-game ranges, inside the 1.08–1.18 band. And **career progression and Projected Peak were misclassified as implementation defects** — both are structurally complete and measured green (§5.7, §5.8, §5.9); what remains for each is the §27.1 certification sample, which is the standing §6.4 hardware blocker and not a behaviour result. See §6 for the corrected classification.
+
 
 ### 5.18 The venue estimator was reading one arm, and the fixture was giving the home team every opening possession
 
@@ -3543,7 +3545,228 @@ Nine assertions across two suites, six of them named by the ruling:
 - the §14.2 band is still 0.530–0.560.
 
 Two of these caught defects in their own first drafts. The biased-control test initially used a margin of zero for every control game, which is a *tie* rather than a neutral result: `decided_games` stayed at zero and the marginal rate read 0.0000 instead of 0.5000. And the source-shape test used a fixed character window to find which constructor emitted a metric, which straddled unrelated code and reported whichever constructor happened to be nearby — replaced with a backward search to the nearest enclosing `CalibrationMetric.` call.
+
+### 5.20 Defenders barely determined the contest, and that was the points-per-possession excess
+
+Status: **Diagnosed from the ledger, corrected in one shared production value, validated on two untouched 1,000-game ranges. Top-domestic points per possession is inside its §14.1 band with margin on both. Zero §14.1 verdict changes at any of the five levels. One golden hash of six moved, with first-divergence evidence.** Measured, not certified.
+
+§5.18 closed the home-court measurement and left top-domestic points per possession recorded as a genuine failure of about +0.0047 — pooled **1.1847 ±0.0037** over 2,000 games against a 1.08–1.18 ceiling, interval entirely above it. This section finds the cause and corrects it.
+
+#### 1. The accounting decomposition
+
+A number that misses by four ten-thousandths of a point per possession cannot be diagnosed by looking at points per possession. `PppDecomposition` takes it apart from the **ordered ledger** and the possession records — never the box score, because a decomposition that trusted a projection would be checking the projection — into terms that sum back exactly:
+
+```text
+PPP = 2PT points/possession + 3PT points/possession + FT points/possession
+```
+
+Three identities are enforced rather than assumed, and a breach is published rather than absorbed:
+
+```text
+2PT points + 3PT points + FT points   == ledger points
+sum(possession_record.points_scored)  == ledger points
+count(POSSESSION_ENDED)               == count(possession records)
+```
+
+plus a third independent check against the box score, and a requirement that every field-goal result be preceded by an attempt in the same possession.
+
+**The gate fired on its first ten games.** The decomposition was reading `event.points` on `FREE_THROW_MADE`, which the ledger leaves at **zero** — a free throw's value is carried by the event type, and `amount` holds the attempt index. About thirty points a game, silently missing. An accounting that had quietly absorbed that would have added up and been wrong, which is worse than no accounting at all.
+
+#### 2. Where the excess is, and where it is not
+
+400 games per level on diagnosis ranges 840,000–840,399 and 845,000–845,399:
+
+| Term | Top domestic | Overseas | Δ |
+| --- | ---: | ---: | ---: |
+| **PPP total** | **1.1726** | **1.1204** | **+0.0522** |
+| 2PT ppp | 0.6173 | 0.5975 | +0.0198 |
+| 3PT ppp | 0.3898 | 0.3572 | +0.0326 |
+| FT ppp | 0.1655 | 0.1657 | −0.0002 |
+
+**It is not a top-domestic defect.** Zone *shares* match overseas within ±0.006 while zone *accuracy* is uniformly higher in every zone (+0.012 to +0.029) — exactly what a four-point roster-rating gap through a **shared** balance profile produces. The measured level gap (0.0643) matches the §14.1 band-midpoint gap (0.0650). The level relationship was already right; top domestic breaches first because its band is **77% as wide** as overseas'.
+
+**And top domestic is not getting easier shots** — it carries *more* contest pressure than overseas (mean penalty 0.0522 against 0.0490). Its efficiency edge is entirely shooter quality.
+
+Ruled out on measurement rather than argument:
+
+| Hypothesis | Evidence against |
+| --- | --- |
+| Offensive-rebound extensions | Extension rate **lower** at top domestic, 0.1111 vs 0.1128 |
+| Turnovers | 0.1402 vs 0.1410 — flat |
+| Free throws | FT ppp −0.0002; FT attempt rate at 12% of its band |
+| Three-point volume | 3PAr at the band **floor** (0.3614 vs 0.36–0.49). A three returns 1.137 points an attempt against a two's 1.019, so *more* threes would raise PPP — the low rate suppresses it |
+| Transition, putbacks, second chance, garbage time, foul-generated trips | All within noise of overseas |
+
+#### 3. The cause: the contest-band distribution
+
+| Band | Penalty | Top domestic share / accuracy | Overseas share / accuracy |
+| --- | ---: | --- | --- |
+| open | 0.000 | 29.98% / 61.70% | 32.15% / 58.89% |
+| light | 0.040 | 34.81% / 45.92% | 34.86% / 42.71% |
+| moderate | 0.100 | 32.18% / 34.89% | 30.86% / 32.31% |
+| heavy | 0.200 | **3.03%** / 28.90% | **2.12%** / 23.44% |
+| smothered | 0.365 | **0.00%** | **0.00%** |
+
+Two thirds of every attempt at every level resolves `OPEN` or `LIGHT`, and `SMOTHERED` never happens at all. **The bands are not the problem** — accuracy falls correctly and steeply across them. The distribution feeding them is.
+
+The mechanism is in `ShotResolver.build_contest`:
+
+```text
+pressure = 0.38 + (capability − 0.5) × 0.35 + reach + help×0.55 − advantage×0.55
+bands at 0.20 / 0.40 / 0.60 / 0.82
+```
+
+At a span of 0.35 the **entire** capability range moves pressure by at most ±0.175 — less than one band width. The best perimeter defender in the league and the worst produced contests under one band apart. `SIMULATION_SPEC.md` §12.3 says contest "is created from actual defensive positioning and capabilities"; at 0.35 it substantially was not.
+
+#### 4. Choosing the correction
+
+Both candidate tunables were measured on **matched fixtures at identical seeds** on tuning range 850,000–850,199, so a cell-to-cell difference is the tunable with roster, matchup and draw sequence cancelled.
+
+| Tunable | Value | ΔPPP | ΔFG% | PPP per FG% | heavy | smothered |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| *(baseline)* | span 0.35 | — | — | — | 2.79% | 0.00% |
+| `capability_span` | 0.50 | −0.0096 | −0.0064 | 1.50 | 5.04% | 0.00% |
+| `capability_span` | 0.65 | −0.0456 | −0.0264 | 1.73 | 12.00% | 0.75% |
+| `advantage_relief` | 0.45 | −0.0167 | −0.0102 | 1.64 | 2.83% | 0.00% |
+| `advantage_relief` | 0.35 | −0.0326 | −0.0193 | 1.69 | 3.23% | 0.00% |
+
+**`advantage_relief` was rejected on evidence.** It cannot produce heavy contests at any value — `heavy` stays pinned at 2.8–3.2% while it merely shuffles shots between open, light and moderate — and it costs more field-goal percentage per unit of points per possession.
+
+#### 5. The value was chosen twice, and the first choice is the interesting part
+
+**0.52 was frozen and validated first, and it passed.** Both untouched ranges returned PPP inside band with every §14.1 row passing. It was still the wrong value.
+
+Field-goal percentage landed at 0.4528 and 0.4510 against a **0.4500 floor** — 0.0010 to 0.0028 of headroom, with one range's interval lower bound at 0.4488, beneath the floor. The two bands are coupled: contest pressure moves FG% roughly 1:1 and PPP 1.59:1, so the feasible window is narrow —
+
+```text
+FG% floor 0.4500  ⟹  PPP ≥ ~1.161
+PPP ceiling 1.1800 ⟹  FG% ≤ ~0.4633
+```
+
+— and 0.52 sat at the bottom of it. Across the four measured pre-change ranges the expected position at 0.52 leaves roughly a **7% chance per 1,000-game range of breaching a locked band**. Passing twice on that is not a corrected calibration.
+
+**The paired before/after is what made the decision possible.** Running the pre-change value on the identical validation fixtures gave three different estimates of the same effect:
+
+| Method | ΔPPP |
+| --- | ---: |
+| 200-game tuning grid, CRN | −0.0118 |
+| Naive cross-range subtraction | −0.0247 |
+| **Paired, identical seeds, 2,000 games** | **−0.0170** |
+
+The spread is entirely seed-range variation (~0.005 on this metric). Neither uncontrolled estimate was trustworthy, and this is the same class of error §5.18 corrected in the "25,000 games" and "1.93 points per 100" figures.
+
+**0.46 centres the window** and lifts the worst margin from 1.5σ to 2.2σ. Ranges **860,000–865,999 are recorded as tuning ranges** because they informed that choice; they are not quoted as validation for the shipped value.
+
+#### 6. The correction
+
+**`contest_capability_span: 0.35 → 0.46`.** One value, in the one balance profile every competition shares. Ruleset bumped to `simulation-v8-contest-capability`.
+
+At 0.46 the capability range spans ±0.26 — more than a full band — so a good defender and a poor one now produce genuinely different contests. Nothing else moved: `contest_base_pressure`, `contest_advantage_relief` and `contest_help_weight` are untouched, as is every shooting, turnover, rebounding and assist term.
+
+#### 7. Validation, on ranges opened after the value was frozen
+
+1,000 top-domestic games each.
+
+| Metric | Val A (870,000) | Val B (875,000) | Pooled | Band |
+| --- | ---: | ---: | ---: | --- |
+| **Points per possession** | **1.1686 ±0.0053** | **1.1701 ±0.0051** | **1.1694 ±0.0037** | 1.08–1.18 **PASS** |
+| Field-goal percentage | 0.4587 | 0.4590 | 0.4588 | 0.45–0.51 PASS |
+| Three-point percentage | 0.3781 | 0.3793 | — | 0.34–0.40 PASS |
+| Three-point attempt rate | 0.3617 | 0.3622 | — | 0.36–0.49 PASS |
+| Free-throw percentage | 0.7989 | 0.8029 | — | 0.73–0.83 PASS |
+| Free-throw attempt rate | 0.2196 | 0.2206 | — | 0.18–0.34 PASS |
+| Turnovers per 100 | 13.8457 | 13.8551 | — | 11–16 PASS |
+| Offensive rebound % | 0.2528 | 0.2522 | — | 0.20–0.31 PASS |
+| **Assist percentage** | **0.5838** | **0.5839** | — | 0.52–0.72 PASS |
+| Possessions per game | 101.5805 | 101.6595 | — | 96–103 PASS |
+| Home win rate | 0.5360 | 0.5370 | — | 0.53–0.56 PASS |
+
+Margins: **0.0106 below the points-per-possession ceiling** and **0.0088 above the field-goal floor**, roughly 2.1 and 4.5 range-standard-deviations respectively.
+
+#### 8. Five-level regression: zero verdict changes
+
+Paired before/after on one shared range, 880,000–880,249, 250 games per level.
+
+| Level | PPP before → after | Δ | Field-goal % verdict |
+| --- | ---: | ---: | --- |
+| High school | 0.9574 → 0.9594 | **+0.0020** | FAIL → FAIL (pre-existing) |
+| College | 1.0424 → 1.0443 | **+0.0019** | FAIL → FAIL (pre-existing) |
+| Development | 1.1123 → 1.1083 | −0.0040 | PASS → PASS |
+| Overseas | 1.1140 → 1.1084 | −0.0056 | PASS → PASS |
+| **Top domestic** | **1.1784 → 1.1683** | **−0.0101** | PASS → PASS |
+
+**Not one of the 45 §14.1 rows changed verdict.** The two field-goal failures at high school and college fail on *both* sides, which is why the paired run was necessary rather than simply showing that the current verdicts pass. Assist percentage moves by at most 0.0035 anywhere; turnovers and offensive rebounding are flat.
+
+**The effect is monotone in roster strength and pivots at college**, because capability centres near 0.5 there. Scoring rising slightly where defenders are poor and falling where they are good is the mechanism behaving correctly, and it was deliberately **not** cancelled — an offset there would be exactly the compensation defect the correction was chosen to avoid.
+
+#### 9. Golden ledgers: one hash of six, with first-divergence evidence
+
+| Scenario | Seed | Hash | Status |
+| --- | ---: | --- | --- |
+| regulation | 20260815 | `52dfdb1a…` | unchanged |
+| overtime | 190056 | `ab37ad08…` | unchanged |
+| offensive_rebound | 7001 | `5dbd798f…` | unchanged |
+| foul_free_throw | 4242 | `31ce2e07…` | unchanged |
+| **substitution_foul_out** | 31337 | `42586a2a…` → **`f03f1a3a…`** | **changed** |
+| late_game | 8675309 | `af3f5cc9…` | unchanged |
+
+**First divergence: event 423**, after 422 byte-identical events.
+
+```text
+OLD  possession_ended | away | made_score
+NEW  foul | home_p14 on away_p12 | shooting | restricted_rim
+```
+
+A tighter rim contest draws a shooting foul where the old value allowed a clean score. Pressure feeds `legal_contact`, so this is the corrected mechanism visible in the ledger rather than unexplained churn.
+
+**Why only one moved.** The pressure shift is `(capability − 0.5) × 0.11`, and the golden fixtures are built at ratings 72 and 70 — defenders near the capability centre — so their shift is small and flips an outcome only where a draw already sat near a threshold. Regenerated through `golden_ledger_harness.gd`, which verified every scenario still exercises the behaviour it is named for; **no reseeding was required**.
+
+#### 10. What this does not fix
+
+**The `SMOTHERED` gap is structural, not a tuning shortfall.** It rises from 0.00% to a fraction of a per cent and no value of this tunable closes it, because `build_contest` applies `help_pressure` **only when the shot is interior**. A perimeter jumper has no help or closeout term at all and essentially cannot reach the 0.60 `HEAVY` threshold. Closing that is a new mechanism and separate work; it is recorded in the tunable's own documentation rather than bundled in here.
+
+#### 11. Tests and mutations
+
+Eleven tests in `test_ppp_decomposition.gd` covering the accounting identity, possession-denominator reconciliation against three independent sources, the correction moving the component it was chosen for, unrelated components not moving, per-competition rule profiles against the shared balance profile, the absence of any competition-identity or calibration-target read in the contest path, the absence of any scoreboard read in `build_contest`, and every golden scenario still exercising its named behaviour. The reconciliation gate is itself tested for its ability to *fail*.
+
+Thirteen mutations, sequential, isolated worktree at `6f7c02e`, 600-second and 2,048 MB budgets, every baseline comfortable, each restored byte-clean:
+
+| # | Mutation | Outcome |
+| --- | --- | --- |
+| N1 | The marginal `home.win_rate` becomes judged again | DETECTED |
+| N2 | The paired estimator loses its target | DETECTED |
+| N3 | The canonical form reads the neutral arm instead of the reversed arm | DETECTED |
+| N4 | A tie scores as a loss, breaking `wv(n) + wv(−n) = 1` | DETECTED |
+| N5b | Merge takes every second fixture, weighting by report | DETECTED |
+| N6 | The correction is reverted to 0.35 | DETECTED |
+| N7 | The ruleset is not bumped alongside the behaviour change | DETECTED |
+| N8 | A free throw is worth zero points again | DETECTED |
+| N9 | The accounting identity can no longer fail | DETECTED |
+| N10 | Contest pressure stops reading defender capability | DETECTED |
+| N11 | A competition-scoped scoring hack keyed on `top_domestic_pro` | DETECTED |
+| N12 | Contest pressure reads the scoreboard | DETECTED |
+| N13 | A golden hash is edited | DETECTED |
+
+**No mutation was scored on a timeout, a memory breach, or a crash.** One earlier attempt at N5 survived and was withdrawn rather than reported as a test gap: it guarded the mutated branch with `randf() < -1.0`, which is always false, making it dead code and an equivalent mutant by construction. N5b is the same defect written so that it actually executes.
+
+#### 12. Classification
+
+- **Structural:** the accounting identities and their ability to fail; the contest path's inability to read a competition identity, a calibration target, or the scoreboard; the shared balance profile against per-competition rule profiles; every golden scenario still exercising its named behaviour.
+- **Measured, below the §27.1 requirement:** every number in sections 2, 3, 4, 7 and 8. Validation is 1,000 top-domestic games per untouched range against §27.1's 100,000 per competition.
+- **Certified:** nothing.
 ## 6. Certification and workflow blockers
+
+### 6.0 Blocker classification, corrected
+
+Two items have been carried in the remaining-blocker lists as though they were open implementation defects. They are not, and §5.20 corrects the classification so the list reflects what is actually outstanding.
+
+| Item | Correct classification |
+| --- | --- |
+| **Career progression** | **Structurally complete and measured green.** All five §8.4 career-peak bands measure inside their locked targets, executor parity is exact at 0.0000, and the §9.5 guardrail is enforced by construction (§5.8, §5.9). **Certification pending only** — §27.1 asks for 1,000,000 careers, which §6.4 explains no developer machine produces. Not an implementation defect |
+| **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
+| **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
+
+What remains genuinely open is listed in §6.4 and §9: college and high-school field-goal percentage, the §14.2 overtime, close-game and blowout rows, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 
