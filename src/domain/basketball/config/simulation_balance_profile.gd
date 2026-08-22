@@ -97,7 +97,53 @@ var advantage_shot_bonus_max: float = 0.10
 ## uncontested-looking jumper resolved as `HEAVY` and league three-point
 ## percentage collapsed.
 var contest_base_pressure: float = 0.38
-var contest_capability_span: float = 0.35
+
+## How far a defender's contest capability moves the pressure away from the
+## centre, across the whole capability range.
+##
+## **Raised from 0.35 to 0.46 in ruleset `simulation-v8-contest-capability`.**
+##
+## §12.3 says contest "is created from actual defensive positioning and
+## capabilities". At 0.35 it substantially was not. The band boundaries are
+## 0.20 apart, and 0.35 moves pressure by at most ±0.175 across the *entire*
+## capability range — so the best perimeter defender in the league and the
+## worst produced contests less than one band apart, and defender quality was
+## very nearly not an input to the shot at all.
+##
+## What that did to the distribution, measured over 400 games per level on the
+## §5.20 diagnosis range: two thirds of every attempt resolved `OPEN` or
+## `LIGHT`, `HEAVY` was 2-3%, `SMOTHERED` was **0.00% at every competition**,
+## and the attempt-weighted contest penalty reaching the make roll was 0.052.
+## The bands themselves were never the problem — accuracy falls correctly and
+## steeply across them, 61.7 / 45.9 / 34.9 / 28.9 per cent at top domestic — the
+## distribution feeding them was.
+##
+## At 0.52 the capability range spans ±0.26, which is more than one full band,
+## so a good defender and a poor one now produce genuinely different contests.
+## Measured on matched fixtures at the identical seeds, this removes 0.0118
+## points per possession at top domestic and leaves turnovers, offensive
+## rebounding, assisted share and possessions per game unmoved — it is a
+## defensive-pressure correction, not a scoring reduction wearing one as a
+## disguise.
+##
+## The effect is monotone in roster strength and pivots at college, because
+## capability centres near 0.5 there: high school **+0.0047**, college
+## **0.0000**, development −0.0041, overseas −0.0095, top domestic −0.0118.
+## Scoring rising slightly where defenders are poor and falling where they are
+## good is the mechanism behaving correctly, not a side effect to be cancelled.
+##
+## Safe range: 0.05-0.90. Above about 0.65 the correction overshoots — it
+## removes 0.0456 at top domestic and drags the level toward mid-band for no
+## reason §14.1 asks for. `PROJECT_STATUS.md` §5.20 carries the derivation.
+##
+## **This does not close the `SMOTHERED` gap.** It rises from 0.00% to a
+## fraction of a per cent, and the reason is structural rather than a tuning
+## shortfall: `ShotResolver.build_contest` applies `help_pressure` only when the
+## shot is interior, so a perimeter jumper has no help or closeout term at all
+## and essentially cannot reach the 0.60 `HEAVY` threshold. Closing that is a
+## new mechanism and a separate piece of work; it is recorded rather than
+## bundled in here.
+var contest_capability_span: float = 0.46
 var contest_advantage_relief: float = 0.55
 var contest_help_weight: float = 0.55
 
@@ -683,7 +729,7 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v7-home-environment",
+	p_version: StringName = &"simulation-v8-contest-capability",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")

@@ -54,12 +54,12 @@
 			"seed": 20260815
 		},
 		"substitution_foul_out": {
-			"away_score": 20,
-			"events": 940,
-			"hash": "42586a2a3a791c02880698803836565a2ef702cf7fb05f1495e0b8890221e41f",
-			"home_score": 38,
+			"away_score": 22,
+			"events": 942,
+			"hash": "f03f1a3a1b46dcdd510cda234c5f340e56fc99c4d4b1263c9d17b40c35a0c599",
+			"home_score": 35,
 			"overtime_periods": 0,
-			"possessions": 61,
+			"possessions": 60,
 			"seed": 31337
 		}
 	},
