@@ -3754,6 +3754,38 @@ Thirteen mutations, sequential, isolated worktree at `6f7c02e`, 600-second and 2
 - **Structural:** the accounting identities and their ability to fail; the contest path's inability to read a competition identity, a calibration target, or the scoreboard; the shared balance profile against per-competition rule profiles; every golden scenario still exercising its named behaviour.
 - **Measured, below the §27.1 requirement:** every number in sections 2, 3, 4, 7 and 8. Validation is 1,000 top-domestic games per untouched range against §27.1's 100,000 per competition.
 - **Certified:** nothing.
+
+#### 13. The venue effect after the correction, re-measured
+
+The §14.2 paired venue figures in §5.18 and §5.19 were all measured under ruleset `simulation-v7-home-environment`. The contest correction changes shot conversion, and §19.4's channels move probabilities that a heavier contest has already pushed down, so there is a real mechanism by which the venue effect could move. It was re-measured rather than assumed.
+
+Validation C (810,000–810,249), 250 matched pairs per level — the same fixtures and seeds §5.18 used, with only the ruleset differing, so this is a controlled before/after and not two independent samples.
+
+| Level | v7 attributable | v8 attributable | Δ | Verdict |
+| --- | ---: | ---: | ---: | --- |
+| High school | 0.5360 | 0.5440 | +0.0080 | PASS → PASS |
+| College | 0.5340 | 0.5380 | +0.0040 | PASS → PASS |
+| **Development** | 0.5420 | **0.5160** | **−0.0260** | **PASS → FAIL** |
+| Overseas | 0.5400 | 0.5360 | −0.0040 | PASS → PASS |
+| **Top domestic** | 0.5640 | **0.5380** | −0.0260 | **FAIL → PASS** |
+| **Pooled** | **0.5432** | **0.5344 ±0.0127** | −0.0088 | **PASS → PASS** |
+
+| Control | v7 | v8 |
+| --- | --- | --- |
+| §17.4 cap respected | 5 of 5 and pooled | **5 of 5 and pooled** |
+| Venue reversal agrees | 5 of 5 and pooled | **5 of 5 and pooled** |
+| Canonical form agrees | — | **5 of 5 and pooled** |
+| Pooled contribution, points per 100 | 1.729 | **1.396** against a 2.5 cap |
+
+**Preserved at the pooled level, which is the level §5.19 classified the evidence at.** The venue-attributable win rate stays inside 53–56%, the cap holds everywhere with more headroom than before, and the reversal control is clean.
+
+**One level changed verdict, and it is recorded rather than averaged away.** Development fell 0.0260 and now sits 0.0140 below the floor; its own interval of ±0.0293 covers the band, so at 250 pairs this is a marginal failure and not a resolved one. Top domestic moved the same 0.0260 in the other direction and crossed *into* the band. The count of levels outside the band is unchanged at one; which level it is has moved.
+
+**The direction is a real interaction, not sampling.** The pooled contribution fell from 1.729 to 1.396 points per 100. A heavier contest lowers make probability, and §19.4's officiating, communication and composure channels act on probabilities that have already been pushed down, so the venue is worth slightly less when shots are better defended. That is two authorized mechanisms interacting; it moves the cap metric *away* from its limit rather than toward it, and no §19.4 value was touched to produce it.
+
+**What this does not establish.** One range at 250 pairs per level cannot separate the development movement from range scatter, and §5.19 already recorded that individual levels are draws from an interval while the pooled figure is the measurement. A second untouched range under `v8` would settle whether development's fall is the interaction or the draw; it has not been run, and no claim is made either way.
+
+**Process note.** This measurement was missing from the first completion report, which asserted that the paired estimator and cap were preserved on the strength of the *marginal population* home win rate passing on the points-per-possession validation ranges. That is a different metric on a different fixture, and §5.17 had already established it is the wrong measurement for §14.2's even-team row. The claim was corrected by measuring it.
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
