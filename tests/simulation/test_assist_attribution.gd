@@ -542,12 +542,21 @@ func test_passing_drives_the_conditional_credit_rate_in_production() -> void:
 	# handful of fixture games cannot, so this asserts the direction only.
 
 
-## The share of creator-carrying makes that were credited, over four games
-## played by an offence whose only distinguishing attribute is Passing.
+## The share of creator-carrying makes that were credited, over a handful of
+## games played by an offence whose only distinguishing attribute is Passing.
+##
+## **Eight games rather than six since ruleset `simulation-v8-contest-capability`.**
+## The minimum below is a sample floor, not a behavioural assertion: the
+## conversion rate is undefined on too few creations. Widening the contest
+## capability span lowered field-goal percentage by about 1.5% relative, which
+## lowered the number of creator-carrying makes these fixtures produce, and six
+## games stopped clearing the floor. The floor itself is unchanged — the fixture
+## is given enough games to reach it rather than the bar being lowered to meet
+## the fixture.
 func _conversion_for(passing: int) -> float:
 	var credited: int = 0
 	var created: int = 0
-	for variation in range(6):
+	for variation in range(8):
 		var input: MatchInput = MatchFixtureFactory.match_between(
 			MatchFixtureFactory.uniform_team(&"home", 70, {AttributeKey.Key.PASSING: passing}),
 			MatchFixtureFactory.uniform_team(&"away", 70),
@@ -565,7 +574,8 @@ func _conversion_for(passing: int) -> float:
 			):
 				created += 1
 	assert_int(created).override_failure_message(
-		"too few created baskets to measure a conversion rate").is_greater(40)
+		"too few created baskets to measure a conversion rate: %d, floor 40"
+		% created).is_greater(40)
 	return float(credited) / float(created)
 
 
