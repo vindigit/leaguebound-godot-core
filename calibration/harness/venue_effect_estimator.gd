@@ -198,6 +198,32 @@ func unique_games() -> int:
 	return pair_count() * 3
 
 
+## Every complete matched fixture as a flat row: the key, and each arm's signed
+## venue-minus-visitor margin with the venue side's possessions.
+##
+## The published means are computed from these same observations, so a report
+## carrying these rows carries the evidence behind its own estimate rather than
+## only the estimate. That is what makes two ranges poolable *correctly*: the
+## union is taken over these fixture-level rows, and because the key travels
+## with the observation, `merge` can still refuse an overlap. Averaging two
+## published rates instead would weight by report rather than by fixture and
+## would have no way to notice that the two ranges shared a fixture.
+##
+## Incomplete fixtures are omitted for the same reason they contribute to
+## nothing else: a triple missing an arm is not a matched observation.
+func fixture_rows() -> Array[Dictionary]:
+	var rows: Array[Dictionary] = []
+	for key in complete_keys():
+		var arms: Dictionary = _fixtures[key]
+		var row: Dictionary = {"fixture": String(key)}
+		for arm_id: StringName in [ARM_HOME, ARM_NEUTRAL, ARM_REVERSED]:
+			var observation: Observation = arms[arm_id]
+			row["%s_margin" % String(arm_id)] = observation.margin
+			row["%s_possessions" % String(arm_id)] = observation.venue_possessions
+		rows.append(row)
+	return rows
+
+
 ## `(fixture, arm)` observations offered twice and refused.
 func duplicate_attempts() -> PackedStringArray:
 	return _duplicate_attempts.duplicate()

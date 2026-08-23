@@ -56,7 +56,7 @@ extends SceneTree
 ##       [--games=N] [--competition=high_school|college|development|overseas|top_domestic_pro|all] \
 ##       [--range=diagnosis|tuning|tuning_second|validation_a|validation_b|validation_c|validation_d] \
 ##       [--environment=0.5] \
-##       [--mode=mirror|population] [--label=NAME]
+##       [--mode=mirror|population] [--label=NAME] [--emit-pairs]
 
 const DEFAULT_GAMES: int = 200
 
@@ -106,6 +106,9 @@ const NEUTRAL_ENVIRONMENT: float = 0.0
 const CLOSE_MARGIN: float = 5.0
 const BLOWOUT_MARGIN: float = 20.0
 
+## How often `_simulate` states its progress, in matched pairs.
+const PROGRESS_EVERY_PAIRS: int = 50
+
 
 func _init() -> void:
 	call_deferred("_run")
@@ -119,6 +122,11 @@ func _run() -> void:
 	var mode: String = CalibrationCli.string_option(options, &"mode", MODE_MIRROR)
 	var environment: float = CalibrationCli.float_option(options, &"environment", 0.5)
 	var label: String = CalibrationCli.string_option(options, &"label", "home_court")
+	# Off by default so existing report artifacts keep their present shape. When
+	# on, the report carries the per-fixture paired observations behind its own
+	# estimate, which is what lets two ranges be pooled over the union of their
+	# fixtures instead of by averaging two published rates.
+	var emit_pairs: bool = CalibrationCli.bool_option(options, &"emit-pairs", false)
 	if mode != MODE_MIRROR and mode != MODE_POPULATION:
 		printerr("unknown mode '%s'; using %s" % [mode, MODE_MIRROR])
 		mode = MODE_MIRROR
@@ -177,6 +185,7 @@ func _run() -> void:
 	var report := CalibrationReport.new(context)
 	var rows: Array[Dictionary] = []
 	var estimator_rows: Array[Dictionary] = []
+	var fixture_rows: Array[Dictionary] = []
 	# The pooled estimator is the union of every competition's matched fixtures.
 	# Fixture keys carry the competition, so the pool cannot silently merge two
 	# levels' games at the same variation.
@@ -196,6 +205,11 @@ func _run() -> void:
 		var payload: Dictionary = estimator.to_dictionary()
 		payload["competition"] = id
 		estimator_rows.append(payload)
+		if emit_pairs:
+			for fixture_row in estimator.fixture_rows():
+				fixture_row["competition"] = id
+				fixture_row["range"] = range_name
+				fixture_rows.append(fixture_row)
 		if not pooled.merge(estimator):
 			printerr("pooling refused overlapping fixtures at %s" % id)
 	if competitions.size() > 1:
@@ -205,6 +219,8 @@ func _run() -> void:
 		estimator_rows.append(pooled_payload)
 	report.add_section(&"matched_arms", rows)
 	report.add_section(&"venue_effect_estimator", estimator_rows)
+	if emit_pairs:
+		report.add_section(&"venue_paired_fixtures", fixture_rows)
 	report.finish()
 	quit(ReportWriter.publish(report, "home_court_diagnostics_%s" % label))
 
@@ -532,10 +548,17 @@ func _simulate(
 		sample.arm_id = arm_id
 		sample.competition = competition
 		arms[arm_id] = sample
+	var competition_id: String = String(CalibrationTargets.competition_id(competition))
 	for index in range(games):
 		var variation: int = base + index
+		# A 250-pair level is 750 complete games and takes long enough that a
+		# silent process is indistinguishable from a hung one. The cadence is
+		# every 50 pairs so the log states progress without burying the report.
+		if index > 0 and index % PROGRESS_EVERY_PAIRS == 0:
+			print("  %s: %d/%d matched pairs (%d complete games)" % [
+				competition_id, index, games, index * 3])
 		var fixture_key := StringName("%s/%d" % [
-			CalibrationTargets.competition_id(competition), variation])
+			competition_id, variation])
 		for arm_id: StringName in [ARM_HOME, ARM_NEUTRAL, ARM_REVERSED]:
 			var input: MatchInput = _venue_input(
 				competition, variation, mode,
@@ -553,6 +576,8 @@ func _simulate(
 				float(result.home_score - result.away_score),
 				float(venue_line.engine_possessions)):
 				printerr("duplicate observation refused: %s/%s" % [fixture_key, arm_id])
+	print("  %s: %d/%d matched pairs (%d complete games)" % [
+		competition_id, games, games, games * 3])
 	return arms
 
 

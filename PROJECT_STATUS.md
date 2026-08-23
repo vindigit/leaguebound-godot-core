@@ -384,7 +384,7 @@ Every Stage 4 gate, classified. The categories are kept distinct on purpose: a s
 | **§14.2 blowout share** | **Failed at two of five levels** | **Improved again (§5.12).** High school 0.1300 ✓, college 0.1700 ✓ and overseas 0.1550 ✓ pass; development 0.2450 and top domestic 0.2725 do not. 0.2320 and 0.2120 on two untouched 500-game validation ranges, and 0.1883 pooled over 600 even-team games. §5.13 proposes competition-specific bands and does not enact them |
 | **§14.2 close-game share** | **Passes at all five competition levels** | 0.2700 / 0.2700 / 0.2200 / 0.2700 / 0.2475 against 0.22-0.34 on the untouched range 350,000-350,399 (§5.12). The two 500-game population validation ranges sit at 0.2220 and 0.2060, so the pass is marginal and is reported as marginal |
 | **§14.2 overtime rate** | **Failed at four of five levels** | High school 0.0425 ✓; college 0.0100, development 0.0225, overseas 0.0250, top domestic 0.0175. Unmoved by the settled rotation, as expected. **Unreachable by any dispersion mechanism under the current possession/scoring model (§5.11, §5.13):** the replay model's tie rate never reaches 0.04 even at a margin standard deviation of 9.9. §5.13 classifies this narrowly and proposes a band |
-| **§14.2 home win rate** | **Measured below requirement; pooled inside the band, one level failing** | **Corrected (§5.17), re-measured on the paired estimator (§5.18).** Venue-attributable equal-team rate pooled over five levels is **0.5432 ±0.0125** and **0.5360 ±0.0122** on two untouched ranges, both inside 0.53–0.56. Four of five levels pass on each range; **top domestic fails on both, in opposite directions** (0.5640 and 0.5100, intervals not overlapping, 2.80 standard errors apart). Not certified: 250 matched fixtures per level per range against §27.1's 100,000 games |
+| **§14.2 home win rate** | **Measured below requirement; five-level pool inside the band, Development below it on the pooled two-range v8 measurement** | **Corrected (§5.17), re-measured on the paired estimator (§5.18), re-measured again after the contest correction (§5.20 §13, §5.21).** Under `v7` the five-level pool was **0.5432 ±0.0125** and **0.5360 ±0.0122** on two untouched ranges. Under `v8` the five-level pool on Validation C is **0.5344 ±0.0127**, still inside 0.53–0.56 (§5.20 §13). **Development** is the level outside it: **0.5160** on Validation C, **0.5400** on Validation D, **0.5280 ±0.0206 pooled over 500 matched fixtures** against a 0.530 floor, with the pooled interval covering the band and the two ranges statistically indistinguishable (§5.21). The §17.4 cap holds everywhere. Not certified: 1,500 complete Development games against §27.1's 100,000 per competition |
 | §8.4 rare-generational band | **Measured below requirement** | **Corrected (§5.8), closed (§5.9).** Median 93 against 92–95 at 3,000 careers and on two untouched 2,000-career validation ranges. Was 90 |
 | §9.5 upper-guardrail warnings | **Measured below requirement** | Every guardrail-passing season carries a source-ledger explanation, 1.0000 on all three ranges |
 | §9.5 elite-opportunity ruling | **Structural** | Bounded at 20% per the owner ruling of 2026-08, enforced as each season is granted so the lifetime total cannot exceed it at any setting; zero violations on all three ranges and through three-shard aggregation |
@@ -3783,9 +3783,227 @@ Validation C (810,000–810,249), 250 matched pairs per level — the same fixtu
 
 **The direction is a real interaction, not sampling.** The pooled contribution fell from 1.729 to 1.396 points per 100. A heavier contest lowers make probability, and §19.4's officiating, communication and composure channels act on probabilities that have already been pushed down, so the venue is worth slightly less when shots are better defended. That is two authorized mechanisms interacting; it moves the cap metric *away* from its limit rather than toward it, and no §19.4 value was touched to produce it.
 
-**What this does not establish.** One range at 250 pairs per level cannot separate the development movement from range scatter, and §5.19 already recorded that individual levels are draws from an interval while the pooled figure is the measurement. A second untouched range under `v8` would settle whether development's fall is the interaction or the draw; it has not been run, and no claim is made either way.
+**What this does not establish.** ~~One range at 250 pairs per level cannot separate the development movement from range scatter, and §5.19 already recorded that individual levels are draws from an interval while the pooled figure is the measurement. A second untouched range under `v8` would settle whether development's fall is the interaction or the draw; it has not been run, and no claim is made either way.~~ **Superseded by §5.21**, which ran that second range. Development reads **0.5400** on Validation D and **0.5280 ±0.0206 pooled over 500 matched fixtures**; the two ranges are statistically indistinguishable (−0.0240 ±0.0412), so the answer is neither "the interaction" nor "the draw" as posed — the pooled estimate sits 0.0020 below the floor with an interval that covers the band.
 
 **Process note.** This measurement was missing from the first completion report, which asserted that the paired estimator and cap were preserved on the strength of the *marginal population* home win rate passing on the points-per-possession validation ranges. That is a different metric on a different fixture, and §5.17 had already established it is the wrong measurement for §14.2's even-team row. The claim was corrected by measuring it.
+### 5.21 The second range was run, and pooled Development sits two thousandths below the floor
+
+§5.20 §13 left exactly one thing open, in its own words: "one range at 250 pairs
+per level cannot separate the development movement from range scatter … a second
+untouched range under `v8` would settle whether development's fall is the
+interaction or the draw; it has not been run, and no claim is made either way."
+
+It has now been run. **Only Development, only Validation D, only under the
+current `simulation-v8-contest-capability` ruleset.** No other level was
+re-measured, no new seed range was opened, no unrelated calibration was rerun,
+and no production value was changed under any result.
+
+#### 1. Development on Validation D
+
+Validation D is 820,000–820,249: the range §5.18 already documented, disjoint
+from Validation C and from every range §5.7–§5.16 used. 250 matched fixtures,
+three arms each — home, neutral, reversed — at identical seeds, ratings, rosters
+and counterbalanced opening possession, for 750 complete simulations.
+
+| Required check | Result |
+| --- | ---: |
+| `venue.attributable_home_win_rate` | **0.5400** |
+| 95% interval, paired-fixture series | **±0.0290** → [0.5110, 0.5690] |
+| `venue.points_per_100` | **1.6018 ±0.6515** |
+| §17.4 cap verdict against ≤2.5 | **PASS** |
+| Venue-reversal agreement | **PASS** |
+| Canonical-form agreement | **PASS** |
+| `sample_well_formed` | **true** |
+| `sample_complete` | **true** |
+| Unique matched pairs | **250** |
+| Complete simulations | **750** |
+| Marginal `home.win_rate` | 0.5440 ±0.0617 — **INFORMATIONAL, cannot fail the gate** |
+
+**Validation D passes the §14.2 band.** Every control is clean: the sample is
+well formed and complete, the canonical form agrees with the paired form to
+better than 1e-9, the reversal agrees, and the cap holds with a point estimate
+less than two-thirds of its limit.
+
+#### 2. Pooling C and D, over fixtures rather than over reports
+
+Validation C was re-run under the same ruleset and **reproduced §5.20 §13
+exactly: 0.5160 ±0.0293**, to the digit. That is the controlled starting point,
+not a new observation.
+
+The two ranges were then combined **over the union of their per-fixture paired
+observations**, weight 1 per matched fixture, by the same `VenueEffectEstimator`
+that judged each range on its own. Averaging the two published rates was
+explicitly not done: an average weights by report rather than by fixture, cannot
+form the pooled interval — which is a property of the combined per-fixture
+series — and cannot detect a shared fixture. The union was verified disjoint:
+**zero overlapping fixture keys**, so 500 pairs is the sum of the parts and not
+a number the estimator quietly shrank.
+
+| | Validation C | Validation D | **Pooled C+D** |
+| --- | ---: | ---: | ---: |
+| Matched fixtures | 250 | 250 | **500** |
+| Complete simulations | 750 | 750 | **1,500** |
+| Attributable home win rate | 0.5160 ±0.0293 | 0.5400 ±0.0290 | **0.5280 ±0.0206** |
+| 95% interval | [0.4867, 0.5453] | [0.5110, 0.5690] | **[0.5074, 0.5486]** |
+| Points per 100 | 1.0865 ±0.7416 | 1.6018 ±0.6515 | **1.3448 ±0.4935** |
+| §14.2 band verdict | **FAIL** | PASS | **FAIL** |
+| §17.4 cap verdict | PASS | PASS | **PASS** |
+| Reversal / canonical / well-formed / complete | PASS | PASS | **PASS** |
+
+**C versus D: −0.0240 ±0.0412**, interval [−0.0652, +0.0172], z = −1.14. The
+interval covers zero, so **the two ranges are not distinguishable** and the
+per-range spread is scatter, exactly as §5.19 said individual levels behave.
+What the second range settled is not that C was anomalous — it is that neither
+range is anomalous, and the pooled estimate is the measurement.
+
+#### 3. v7 → v8
+
+| Range | v7 attributable | v8 attributable | Δ |
+| --- | ---: | ---: | ---: |
+| Validation C | 0.5420 | 0.5160 | −0.0260 |
+| Validation D | 0.5440 | 0.5400 | −0.0040 |
+| **Combined** | **0.5430** | **0.5280** | **−0.0150** |
+
+| Range | v7 points per 100 | v8 points per 100 |
+| --- | ---: | ---: |
+| Validation C | 1.485 | 1.0865 |
+| Validation D | 1.624 | 1.6018 |
+
+The combined v7 figure is **derived, not re-measured**: v7's per-fixture
+observations were not retained, and re-running them would mean reverting the
+ruleset. Because both v7 ranges carry exactly 250 matched fixtures, the
+equal-weight union of their fixtures is arithmetically identical to the mean of
+their two rates, so 0.5430 is exact for this pooling rule rather than an
+average standing in for one. It is labelled derived wherever it is quoted.
+
+**The v7→v8 movement is concentrated almost entirely in Validation C.** D moved
+four ten-thousandths and its contribution barely moved at all. That is a further
+reason not to read C's fall as the interaction acting uniformly.
+
+#### 4. The verdict
+
+**Pooled Development C+D reads 0.5280 against a floor of 0.5300 — short by
+0.0020.** Under the decision rule this is a **measured contest/home-environment
+interaction blocker**, and it is recorded as one.
+
+It is recorded with its uncertainty rather than as a settled deficit: the pooled
+95% interval [0.5074, 0.5486] **covers the band**, and the miss is two
+thousandths of a win rate at 500 matched fixtures. This is a point estimate
+below a floor, not a demonstrated structural failure to produce a home
+advantage. §27.1 asks for 100,000 complete games per competition; 1,500 is 1.5%
+of that.
+
+**Nothing was tuned for it.** `contest_capability_span` is unchanged, every
+§19.4 channel value is unchanged, the §14.2 band and §17.4 cap are unchanged,
+the contest correction was not reverted, and no production simulation code was
+touched.
+
+#### 5. Channel decomposition: which channel the interaction reaches
+
+§19.4's three implemented channels and their profile values are unchanged —
+officiating 0.009, communication 0.013, composure 0.008, summing to 0.030
+against the 0.09 structural budget `HomeEnvironmentContext` enforces. Each acts
+on a different observable, so the venue side's arm-to-arm differences say which
+ones are still delivering.
+
+| Channel | Observable it moves | C (home − neutral) | D (home − neutral) | Reading |
+| --- | --- | ---: | ---: | --- |
+| Communication | Turnovers per 100 | **−0.393** | **−0.432** | Delivering, stable across ranges |
+| Officiating | Free-throw attempt rate | **+0.0144** | **+0.0113** | Delivering, stable across ranges |
+| Composure | Field-goal percentage | **−0.0023** | **−0.0018** | **Flat to slightly negative in both ranges** |
+
+**The two channels that act on discrete, countable events are intact; the one
+that routes through shot conversion is not visible.** Communication moves
+unforced pass error and officiating moves the conversion of an existing foul
+opportunity — neither passes through the contest — and both reproduce their
+expected sign and rough size on both ranges. Composure applies execution noise
+to resolutions that include shooting, and field-goal percentage at home is flat
+to marginally *negative* against the same fixture at a neutral court, on both
+ranges independently.
+
+That is precisely the mechanism §5.20 §13 recorded, localized: making defender
+capability determine the contest means shot make probability is more determined
+by the defensive contest and correspondingly less movable by a small composure
+nudge. The channels that never touch the contest are unaffected; the one that
+does is diluted.
+
+Expressed in the units §17.4 is written in, the pooled venue is worth **1.285
+points a game** paired, against the **1.36 to 1.71 points a game** §17.4 records
+as the range consistent with a 53–56% band. The shortfall in the win rate and
+the shortfall in the margin are the same shortfall.
+
+**A caution on this decomposition.** The field-goal differences are ~0.002 at
+250 fixtures per range and are individually inside noise. What carries weight is
+that the sign is the same on two disjoint ranges while the other two channels
+reproduce cleanly on both — not the magnitude of any single cell. This is
+directional evidence about where to look, not a measured per-channel budget.
+
+#### 6. The reversal control, and why the arm split is not a defect
+
+| | Home-arm win value | Reversed-arm win value | Canonical 0.5 × (h + r) |
+| --- | ---: | ---: | ---: |
+| Validation C | 0.5400 | 0.4920 | 0.5160 |
+| Validation D | 0.5440 | 0.5360 | 0.5400 |
+| **Pooled** | **0.5420** | **0.5140** | **0.5280** |
+
+C and D disagree about which arm carries more of the effect, and **they disagree
+in opposite directions**: C's margin gain is +1.284 from the home bench against
++0.788 reversed, D's is +0.892 against +2.176. Pooled, the gap is −0.394 against
+a combined reach of 1.547. Every one of those agreements passes, including at
+the pooled level. An effect attached to a roster rather than to a building would
+show a consistent sign here; this flips, which is what scatter looks like.
+
+#### 7. Instrumentation added, and what it does not touch
+
+Correct fixture-level pooling was not possible from the existing artifacts:
+neither the arm rows nor the estimator payload carried per-fixture observations,
+only summary means, and pooling from summary means is the thing this section
+must not do. Three additions, all measurement-side:
+
+- `VenueEffectEstimator.fixture_rows()` — exposes the per-fixture triples the
+  estimate was already formed from. Incomplete fixtures are omitted, for the
+  same reason they contribute to nothing else.
+- `--emit-pairs` on `run_home_court_diagnostics.gd` — **off by default**, so
+  every existing report keeps its present shape. It also now states progress
+  every 50 matched pairs, because a 750-game run that prints nothing is
+  indistinguishable from a hung one.
+- `calibration/runners/run_venue_pooled_estimate.gd` — replays emitted
+  observations into the authoritative estimator and pools with `merge`, the
+  union of fixture keys, refusing overlaps. It simulates nothing.
+
+The pooling runner **re-derives each source range from its own emitted rows and
+compares against what that range's report published**, as a judged metric rather
+than a note: both ranges reproduced to better than 1e-9. An independent
+recomputation of the canonical form, written from the §14.2 ruling rather than
+from the GDScript, agrees with the engine to 0.0 on the rates and ~1e-15 on
+points per 100.
+
+Three tests were added for the round-trip property the pooling rests on:
+replayed rows rebuild an identical estimator, incomplete fixtures never appear
+in emitted rows, and pooling from rows matches pooling estimators directly.
+
+No production simulation code was changed. **All six golden ledger hashes are
+byte-identical** — verified by recomputation in the acceptance suite, not by
+inspecting the file.
+
+#### 8. Classification
+
+- **Structural:** the pooling rule — union of fixture keys, weight 1 per matched
+  fixture, overlaps refused — and its tests; the reproduction check binding
+  emitted rows to published estimates; the §19.4 channel bound.
+- **Measured, below the §27.1 requirement:** every number in this section.
+  1,500 complete Development games against §27.1's 100,000 per competition, and
+  Development only.
+- **Certified:** nothing.
+
+#### 9. What this does not establish
+
+Development is one level of five. This section says nothing about the other
+four under `v8` beyond what §5.20 §13 already recorded on Validation C, and
+nothing about the five-level pooled figure on Validation D, which was not run.
+The pooled five-level Validation C result remains §5.20 §13's 0.5344 ±0.0127,
+inside the band.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -3798,7 +4016,7 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
 | **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
 
-What remains genuinely open is listed in §6.4 and §9: college and high-school field-goal percentage, the §14.2 overtime, close-game and blowout rows, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
+What remains genuinely open is listed in §6.4 and §9: college and high-school field-goal percentage, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 

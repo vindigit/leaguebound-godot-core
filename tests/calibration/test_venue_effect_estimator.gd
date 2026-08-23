@@ -266,6 +266,96 @@ func test_disjoint_shards_pool_by_union_of_fixtures() -> void:
 	assert_float(first.points_per_100()).is_equal_approx(3.0, TOLERANCE)
 
 
+## The rows a report emits must be the observations the estimate was formed
+## from, so replaying them rebuilds the estimator exactly.
+##
+## This is the property pooling two published ranges rests on: the pooled figure
+## is computed from the union of the per-fixture rows, and if a row lost or
+## rounded anything on its way through the report the pooled number would be a
+## different measurement wearing the same name.
+func test_fixture_rows_replay_into_an_identical_estimator() -> void:
+	var original := VenueEffectEstimator.new()
+	_observe_triple(original, &"f0", 7.0, 2.0, 3.0, 96.0)
+	_observe_triple(original, &"f1", -1.0, -4.0, 5.0, 104.0)
+	_observe_triple(original, &"f2", 0.0, 0.0, 0.0, 100.0)
+
+	var replayed := VenueEffectEstimator.new()
+	for row in original.fixture_rows():
+		var key := StringName(row["fixture"] as String)
+		for arm_id: StringName in [
+			VenueEffectEstimator.ARM_HOME,
+			VenueEffectEstimator.ARM_NEUTRAL,
+			VenueEffectEstimator.ARM_REVERSED,
+		]:
+			replayed.observe(
+				key, arm_id,
+				row["%s_margin" % String(arm_id)] as float,
+				row["%s_possessions" % String(arm_id)] as float)
+
+	assert_int(replayed.pair_count()).is_equal(original.pair_count())
+	assert_bool(replayed.is_well_formed()).is_true()
+	assert_float(replayed.venue_attributable_win_rate()).is_equal_approx(
+		original.venue_attributable_win_rate(), TOLERANCE)
+	assert_float(replayed.venue_attributable_win_rate_half_width()).is_equal_approx(
+		original.venue_attributable_win_rate_half_width(), TOLERANCE)
+	assert_float(replayed.points_per_100()).is_equal_approx(
+		original.points_per_100(), TOLERANCE)
+	assert_float(replayed.possession_base()).is_equal_approx(
+		original.possession_base(), TOLERANCE)
+
+
+## An incomplete fixture is not an observation, so it must not appear in the
+## emitted rows either. Emitting it would let a replay rebuild a triple the
+## source estimator itself refused to count.
+func test_fixture_rows_omit_an_incomplete_fixture() -> void:
+	var estimator := VenueEffectEstimator.new()
+	_observe_triple(estimator, &"complete", 4.0, 0.0, 4.0)
+	estimator.observe(&"partial", VenueEffectEstimator.ARM_HOME, 9.0, 100.0)
+
+	var rows: Array[Dictionary] = estimator.fixture_rows()
+	assert_int(rows.size()).is_equal(1)
+	assert_str(rows[0]["fixture"] as String).is_equal("complete")
+
+
+## Pooling from rows must reach the same answer as pooling the estimators
+## directly. Two routes to one number, and the runner that pools reports takes
+## the row route while every existing caller takes the merge route.
+func test_pooling_from_rows_matches_pooling_the_estimators() -> void:
+	var first := VenueEffectEstimator.new()
+	_observe_triple(first, &"c/810000", 5.0, 1.0, 3.0, 98.0)
+	_observe_triple(first, &"c/810001", -2.0, 0.0, 6.0, 101.0)
+	var second := VenueEffectEstimator.new()
+	_observe_triple(second, &"d/820000", 8.0, -1.0, 2.0, 99.0)
+	_observe_triple(second, &"d/820001", 1.0, 3.0, -4.0, 97.0)
+
+	var merged := VenueEffectEstimator.new()
+	assert_bool(merged.merge(first)).is_true()
+	assert_bool(merged.merge(second)).is_true()
+
+	var from_rows := VenueEffectEstimator.new()
+	for source: VenueEffectEstimator in [first, second] as Array[VenueEffectEstimator]:
+		for row in source.fixture_rows():
+			var key := StringName(row["fixture"] as String)
+			for arm_id: StringName in [
+				VenueEffectEstimator.ARM_HOME,
+				VenueEffectEstimator.ARM_NEUTRAL,
+				VenueEffectEstimator.ARM_REVERSED,
+			]:
+				from_rows.observe(
+					key, arm_id,
+					row["%s_margin" % String(arm_id)] as float,
+					row["%s_possessions" % String(arm_id)] as float)
+
+	assert_int(from_rows.pair_count()).is_equal(4)
+	assert_int(from_rows.unique_games()).is_equal(12)
+	assert_float(from_rows.venue_attributable_win_rate()).is_equal_approx(
+		merged.venue_attributable_win_rate(), TOLERANCE)
+	assert_float(from_rows.points_per_100()).is_equal_approx(
+		merged.points_per_100(), TOLERANCE)
+	assert_float(from_rows.venue_attributable_win_rate_half_width()).is_equal_approx(
+		merged.venue_attributable_win_rate_half_width(), TOLERANCE)
+
+
 ## Merging is order-independent: pooling A into B gives the same estimate as
 ## pooling B into A.
 func test_pooling_is_independent_of_shard_order() -> void:
