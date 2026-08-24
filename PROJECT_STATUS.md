@@ -230,7 +230,7 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Rare-generational peak band | ~~**Fail:** pooled median 90 against target 92–95~~ **Corrected (§5.8):** median 93 on the development range and on two untouched validation ranges |
 | Projected-peak coverage | ~~**Fail:** 29.2% pooled~~ **Corrected (§5.7):** 0.7473 and 0.7370 on two untouched validation ranges against 70–85% |
 | Projected-peak signed error | ~~**Fail:** pooled median +10.0~~ **Corrected (§5.7):** −1.0 and 0.0 on two untouched validation ranges against ±2 |
-| Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. College and high-school field-goal percentage remain pre-existing failures. Measured, not certified |
+| Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. **College and high-school field-goal percentage re-examined (§5.22): high school does not reproduce — 0.3888 ±0.0018 pooled over two untouched 1,000-game ranges with the interval reaching its 0.390 floor — and college reproduces at 0.4124 against 0.420 with no production defect behind it.** Measured, not certified |
 | Assist percentage | ~~**Fail:** 48.15% top domestic at 400 games against 52–72%~~ **Corrected (§5.15):** 58.9% and 58.2% top domestic on two untouched 100-game validation ranges, and inside the band at all five competition levels on both. Measured, not certified. |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
 | Builder dominance tournament | Not implemented/run |
@@ -4004,6 +4004,430 @@ nothing about the five-level pooled figure on Validation D, which was not run.
 The pooled five-level Validation C result remains §5.20 §13's 0.5344 ±0.0127,
 inside the band.
 
+### 5.22 One of the two field-goal failures is not a failure, and the other one is not a defect
+
+Status: **High school does not reproduce as a repeatable failure and is
+reclassified. College reproduces on every range run and is confirmed. Neither
+has a causal defect in production, so no production value was changed and all
+six golden hashes are byte-identical.** Measured, not certified.
+
+Both levels have carried a §14.1 field-goal-percentage failure across several
+rulesets, and §5.20 §8 recorded them together as "FAIL → FAIL (pre-existing)"
+without publishing either number. They were treated here as two separate
+questions, and they turned out to have two different answers.
+
+#### 1. What was published before
+
+| Section | Ruleset | Level | Field-goal % | Band floor |
+| --- | --- | --- | ---: | ---: |
+| §5.10 | `v3`/`v5` | High school | 0.3932 ✓ | 0.390 |
+| §5.10 | `v3`/`v5` | College | 0.4151 ✗ | 0.420 |
+| §5.12 | `v5` | College | 0.4144 → 0.4146 ✗ | 0.420 |
+| §5.15 | `v6` | High school | crossed from just outside to just inside | 0.390 |
+| §5.15 | `v6` | College | 0.4061 → 0.4125, and 0.4070 on the second range ✗ | 0.420 |
+| §5.20 §8 | `v8` | Both | verdict only, no value published | — |
+
+High school has been on both sides of its floor under three rulesets. College
+has never been inside its band. That asymmetry is the first evidence that these
+are not one finding, and it is why they were sampled and ruled on separately.
+
+#### 2. The interval this verdict is read against was wrong, and is fixed
+
+`run_competition_calibration.gd` published field-goal percentage with a Wilson
+interval over **attempts**. Attempts inside one team-game share a roster, an
+opponent, a game plan and a fatigue path, so they are not independent trials and
+that interval is the wrong shape for the quantity — it is the same class of
+error §5.18 corrected in the venue sample and §5.20 §5 corrected in the paired
+before/after.
+
+Field-goal percentage is now published with the **clustered ratio estimator over
+team-games** that points per possession already used: the residual
+`y_i − R·x_i` carries the covariance the two totals share, which is exactly what
+makes a ratio's variance different from either total's. The estimator is pinned
+against a hand-computed value and against a series whose answer is known by
+construction, and a mutant that reverts it to a binomial is detected.
+
+Every interval in this section is that estimator. None of them is binomial.
+
+#### 3. Phase 1: fresh diagnosis on two untouched ranges
+
+400 games per level per range, one worker per level, ranges **910,000–910,399**
+and **920,000–920,399** — neither used by any previous diagnosis, tuning,
+validation, regression or test.
+
+| Level | Range A (910,000) | Range B (920,000) | Pooled from counts (800 games) |
+| --- | ---: | ---: | ---: |
+| **High school** | 0.3865 ±0.0041 **FAIL** | **0.3906 ±0.0040 PASS** | **0.3885 ±0.0029** |
+| **College** | 0.4146 ±0.0042 FAIL | 0.4105 ±0.0041 FAIL | **0.4126 ±0.0029** |
+
+**The two high-school ranges return opposite verdicts.** Range B passes. The
+pooled interval is [0.3856, 0.3914] and **reaches the band**.
+
+**Both college ranges miss below**, and each range's interval — [0.4104, 0.4188]
+and [0.4064, 0.4147] — lies entirely beneath the 0.420 floor on its own.
+
+Under the classification rule this is **MARGINAL/UNRESOLVED at high school** and
+**REPEATABLE FAILURE at college**. Pooling is over the underlying per-team-game
+counts, never over the two published percentages; the average of the rates is
+quoted beside the pooled figure only to show it was not used.
+
+#### 4. Phase 2: the accounting decomposition, and it closes
+
+`PppDecomposition` was extended from the points identity to the field-goal one,
+which is independently breakable: a decomposition can attribute every point
+correctly and still lose a shot off the zone axis, and the zone shares will
+still sum to one and still look like basketball.
+
+Four axes now count the same shots and all four are required to total the
+ledger's own count — zone, contest band, assisted state, and the box score,
+which `BoxScoreProjector` builds on a different code path. Attempts, makes and
+the box-score arm are checked per game so two games with opposite errors cannot
+cancel. **Zero violations and zero identity breaches at every level, on every
+range run in this section**, across 268,751 high-school and 271,419 college
+attempts at validation size alone.
+
+Pooled over both diagnosis ranges, 800 games per level, beside Development as
+the adjacent passing control and top domestic as the anchor:
+
+| Term | High school | College | Development | Top domestic |
+| --- | ---: | ---: | ---: | ---: |
+| **Field-goal %** | **0.3885** | **0.4126** | **0.4356** | **0.4566** |
+| §14.1 band | 0.39–0.47 | 0.42–0.49 | 0.43–0.50 | 0.45–0.51 |
+| Against floor | −0.0015 | −0.0074 | **+0.0056** | **+0.0066** |
+| 2P% / 3P% | 0.4268 / 0.3083 | 0.4542 / 0.3326 | 0.4793 / 0.3552 | 0.5041 / 0.3748 |
+| 3PA/FGA | 0.3227 | 0.3419 | 0.3527 | 0.3668 |
+| Points from twos / threes / free throws | 62,266 / 32,154 / 14,278 | — | — | — |
+| PPP from twos / threes / free throws | 0.5498 / 0.2839 / 0.1261 | 0.5617 / 0.3205 / 0.1715 | — | — |
+| Possessions/game (both teams) | 141.56 | 144.22 | 191.03 | 202.88 |
+| Mean shooter capability | 0.5182 | 0.5984 | 0.6768 | 0.7562 |
+| Mean primary-defender capability | 0.5035 | 0.5805 | 0.6566 | 0.7374 |
+| Mean contest pressure | 0.2319 | 0.2678 | 0.3044 | 0.3401 |
+| Mean contest penalty | 0.0358 | 0.0443 | 0.0497 | 0.0574 |
+| Mean §13.1 baseline | 0.4419 | 0.4725 | 0.5018 | 0.5288 |
+| Mean make probability | 0.4048 | 0.4305 | 0.4557 | 0.4833 |
+| Block rate | 0.0389 | 0.0434 | 0.0483 | 0.0545 |
+| Shooting-foul rate | 0.1186 | 0.1185 | 0.1191 | 0.1175 |
+| Turnovers/possession | 0.1625 | 0.1533 | 0.1424 | 0.1404 |
+| Offensive-rebound extension rate | 0.1252 | 0.1207 | 0.1160 | 0.1125 |
+| Assisted share of makes | 0.6483 | 0.6359 | 0.6165 | 0.6254 |
+| Clamped share (§13.2 floor/ceiling) | 0.0000 | 0.0000 | 0.0002 | 0.0026 |
+
+The probability terms are read **out of `ShotResolver` itself** rather than
+rebuilt here, and they are published as an attribution: they sum to the mean
+make probability, and the residual — non-zero only through the §13.2 clamp — is
+published beside them so a term going missing cannot hide inside a plausible
+total. It is 0.0000 at every level.
+
+| Term, mean signed contribution | High school | College | Development | Top domestic |
+| --- | ---: | ---: | ---: | ---: |
+| §13.1 baseline | +0.4419 | +0.4725 | +0.5018 | +0.5288 |
+| Contest penalty | −0.0344 | −0.0427 | −0.0479 | −0.0549 |
+| Advantage / pass-quality bonus | **+0.0352** | **+0.0353** | **+0.0353** | **+0.0355** |
+| Catch-quality penalty | −0.0060 | −0.0048 | −0.0036 | −0.0025 |
+| Movement penalty | **−0.0269** | **−0.0269** | **−0.0271** | **−0.0268** |
+| Fatigue penalty | **−0.0046** | **−0.0047** | **−0.0048** | **−0.0045** |
+| Clock-pressure penalty | −0.0013 | −0.0030 | −0.0068 | −0.0051 |
+| Shot-selection bonus | +0.0009 | +0.0048 | +0.0088 | +0.0127 |
+| **Residual (clamp)** | **0.0000** | **0.0000** | **0.0000** | **0.0000** |
+
+**Every term that is not driven by capability is flat across all five levels**:
+movement to within 0.0003, the advantage bonus to within 0.0003, fatigue to
+within 0.0003, the shooting-foul rate to within 0.0016. Nothing in the shared
+profile bites a weak level harder than a strong one.
+
+#### 5. Phase 3: every production hypothesis is ruled out on measurement
+
+Ruled out by measurement, not by reading the code:
+
+| Hypothesis | Evidence against |
+| --- | --- |
+| **Shot mix** | Zone shares match within ±0.021 at every level, and the one real difference runs the *wrong way*: high school takes 4.6% deep threes against top domestic's 10.4%, and the deep three is the worst shot on the floor. The mix favours the failing levels |
+| **Accuracy within identical zones** | The baseline-to-realized gap *grows* with level in every zone — restricted rim +0.013 at high school against +0.042 at top domestic, close non-rim +0.115 against +0.172. Higher levels lose more, not less |
+| **Contest distribution** | High school resolves 42.0% of attempts `OPEN` against top domestic's 26.5%. The failing levels get the *easier* contests |
+| **Accuracy within identical contest bands** | Accuracy falls monotonically across bands at every level, and the bands' own penalties are shared constants |
+| **Shooter-rating distribution** | Mean shooter capability steps 0.5182 → 0.5984 → 0.6768 → 0.7562, three gaps of 0.0802, 0.0784 and 0.0794 against a roster ladder of exactly 6 rating points each. One rating point is 1/74 = 0.0135; six is 0.0811. The ladder is delivered |
+| **Defender-rating distribution** | Steps with the shooter ladder, and produces *lighter* contests at the failing levels |
+| **Player builder / rating normalization** | `Rating.normalized` and `shot_baseline`'s inverse round-trip exactly at nine ratings from 25 to 99, pinned by test. The curve is monotone in rating in all five zones |
+| **Simulated execution quality** | Catch, movement, fatigue and clock terms are flat or favour the failing levels |
+| **Pass / advantage quality** | The advantage bonus is +0.0352 to +0.0355 across all five levels — flat to three ten-thousandths |
+| **Fatigue or movement penalties** | −0.0046 and −0.0269, flat to three ten-thousandths across all five levels |
+| **Rule profile** | Crossed against rosters below: worth −0.004 to −0.006, and in the direction that would make Development *worse* than college |
+| **Three-point line / competition environment** | All five competitions carry `standard_arc` and `standard_restricted`. No competition varies the line, by construction |
+| **Sampling only** | College misses on four independent ranges totalling 2,800 games, with every range's interval below the floor on its own |
+
+**The decisive measurement is the cross.** Rule profiles were crossed against
+roster populations on matched fixtures at identical seeds, 200 games per cell,
+range 930,000–930,199:
+
+| Cell | Field-goal % |
+| --- | ---: |
+| college rules × college rosters | 0.4104 ±0.0058 |
+| college rules × **development rosters** | **0.4405 ±0.0061** |
+| development rules × **college rosters** | **0.4057 ±0.0047** |
+| development rules × development rosters | 0.4346 ±0.0048 |
+| high-school rules × high-school rosters | 0.3864 ±0.0059 |
+| high-school rules × **development rosters** | **0.4388 ±0.0060** |
+| development rules × **high-school rosters** | **0.3826 ±0.0050** |
+
+**Field-goal percentage follows the roster and not the rules.** Swapping the
+roster moves it +0.0289 to +0.0524; swapping the rule profile moves it −0.0038
+to −0.0059, roughly a seventh as much and in the opposite direction. The *band
+verdict* follows the roster too: college's rules with Development's roster
+returns **0.4405, comfortably inside college's 0.42–0.49 band**, while
+Development's rules with college's roster returns **0.4057, below Development's
+own floor**.
+
+The first version of this cross named each match after its cell. `MatchSession`
+derives every possession's random stream from `"match:%s:possession:%d"`, so
+that gave each cell a different draw sequence and destroyed the pairing the
+runner exists to provide — two nominally identical cells measured 0.0018 apart
+on pure label noise. The match id is now a function of the variation alone, the
+cells reproduce each other to the digit, and the numbers above are the repaired
+run.
+
+**Root-cause ruling, stated separately per level as required:**
+
+- **High school — no failure to attribute.** The fresh evidence does not
+  establish a repeatable failure. Two of the four ranges run in this section
+  pass, and every pooled interval reaches the band.
+- **College — a confirmed failure with no production defect.** The shortfall is
+  carried entirely by where the calibration fixture places the college roster,
+  and the engine's response to roster strength is smooth, monotone, and
+  demonstrably correct: the same shared profile, the same shot resolution and
+  the same balance values put Development at +0.0056 and top domestic at +0.0066
+  inside their own floors. The defect class is **fixture roster construction**,
+  not the player builder, not rating normalization, not the shared balance
+  profile, not the competition rule profile, and not reporting.
+
+#### 6. Why nothing was corrected
+
+A production correction requires **both** a repeatable failure and a causal
+defect. College has the first and not the second, so production is unchanged.
+
+The remaining gap is a mismatch between two ladders. `CompetitionCatalog`
+walks a roster ladder that is linear in rating — 60, 66, 72, 74, 78 — while
+§14.1's floors climb 0.390, 0.420, 0.430, 0.430, 0.450, which is +0.030 from
+high school to college and +0.010 from college to Development. The engine's own
+response is uniform at about +0.0044 of field-goal percentage per rating point.
+A linear roster ladder cannot sit centrally in a non-linear band ladder, and the
+level that ends up furthest from its floor is college.
+
+Measured on the same matched fixtures, holding the rules and moving only the
+roster level:
+
+| Roster level | College field-goal % | College PPP | High-school field-goal % | High-school PPP |
+| --- | ---: | ---: | ---: | ---: |
+| +0 (as shipped) | 0.4104 | 1.0434 | 0.3864 | 0.9594 |
+| +2 | **0.4215** | 1.0746 | **0.4020** | 0.9926 |
+| +4 | 0.4311 | **1.1016** | 0.4054 | 1.0093 |
+| +6 | 0.4416 | **1.1315** | 0.4114 | 1.0293 |
+
+College needs about **+2 rating points** to clear its field-goal floor, and by
+**+4** its points per possession has crossed the 1.10 ceiling §14.1 locks. The
+feasible window is roughly +2 to +3 points, and moving one level along the
+ladder does not preserve the intended rating gap between levels, which this work
+is explicitly forbidden from disturbing. Amending §14.1's college band is the
+other way to close it, and that is a locked target which must not be weakened to
+match observed output.
+
+**Both remaining options are owner decisions and neither is enacted here.** They
+are recorded in §6 as an open blocker rather than resolved by tuning.
+
+#### 7. Validation: two fresh untouched ranges, 1,000 games per level per range
+
+Ranges **950,000–950,999** and **960,000–960,999**, opened only after the
+no-change ruling was reached, and used for nothing else.
+
+| Level | Validation A | Validation B | Pooled from counts (2,000 games) | Floor | Verdict |
+| --- | ---: | ---: | ---: | ---: | --- |
+| **High school** | 0.3884 ±0.0025 | 0.3892 ±0.0026 | **0.3888 ±0.0018** → [0.3870, **0.3906**] | 0.390 | **MARGINAL/UNRESOLVED — interval reaches the band** |
+| **College** | 0.4129 ±0.0027 | 0.4119 ±0.0026 | **0.4124 ±0.0018** → [0.4106, **0.4142**] | 0.420 | **REPEATABLE FAILURE — interval entirely below the band** |
+
+High school's pooled interval still covers its floor at 2,000 games and 268,751
+attempts. Its point estimate misses by 0.0012 — a third of the miss college
+carries — and it has now passed on one diagnosis range and failed on three. It
+is recorded as **unresolved**, not as a failure and not as a pass.
+
+College misses by 0.0076, and its pooled interval over 271,419 attempts stops
+0.0058 short of the floor with every one of its four range intervals lying
+entirely below it. That is a settled measurement of a real shortfall,
+and §27.1 asks for 100,000 games per competition against the 2,000 run here.
+
+#### 8. Five-level §14.1 verdicts on a fresh range
+
+Range **970,000–970,399**, 400 games per level. Production simulation behaviour
+is unchanged by this work, so this is a state table rather than a before/after:
+the "before" is byte-identical to the "after" and all six golden hashes prove it.
+
+| Metric | High school | College | Development | Overseas | Top domestic |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Possessions/game | 70.83 ✓ | 72.08 ✓ | 95.64 ✓ | 75.08 ✓ | 101.79 ✓ |
+| Points per possession | 0.9598 ✓ | 1.0495 ✓ | 1.1029 ✓ | 1.1113 ✓ | 1.1666 ✓ |
+| **Field-goal %** | **0.3861 ✗** | **0.4117 ✗** | 0.4335 ✓ | 0.4377 ✓ | 0.4581 ✓ |
+| Three-point % | 0.3058 ✓ | 0.3278 ✓ | 0.3481 ✓ | 0.3512 ✓ | 0.3781 ✓ |
+| 3PA/FGA | 0.3207 ✓ | 0.3426 ✓ | 0.3500 ✓ | 0.3528 ✓ | 0.3646 ✓ |
+| Free-throw % | 0.6725 ✓ | 0.7145 ✓ | 0.7588 ✓ | 0.7714 ✓ | 0.7991 ✓ |
+| Free-throw attempts/FGA | 0.2041 ✓ | 0.2510 ✓ | 0.2242 ✓ | 0.2309 ✓ | 0.2178 ✓ |
+| Turnovers/100 | 16.09 ✓ | 15.59 ✓ | 14.36 ✓ | 14.12 ✓ | 13.79 ✓ |
+| Offensive rebound % | 0.2544 ✓ | 0.2581 ✓ | 0.2539 ✓ | 0.2528 ✓ | 0.2503 ✓ |
+| Assist % | 0.5011 ✓ | 0.5272 ✓ | 0.5484 ✓ | 0.5476 ✓ | 0.5864 ✓ |
+
+**Forty-eight of the fifty §14.1 rows pass. The two that fail are the two this
+section is about, and no previously passing verdict became a failure.** Starter
+and rotation minutes pass at top domestic. The §14.2 game-shape rows behave
+exactly as §5.13 and §5.21 already record — overtime short at four levels,
+blowout share high at the two high-possession competitions, the marginal
+population home win rate scattering either side of its band on a metric §5.19
+already ruled is not the §14.2 authority — and none of them moved.
+
+**The Development venue result is untouched and was not used as a target.**
+`contest_capability_span` is unchanged, every §19.4 channel value is unchanged,
+and no production simulation code was modified, so §5.21's **0.5280 ±0.0206
+pooled over 500 matched fixtures** stands exactly as it was: a point estimate
+0.0020 below a 0.530 floor whose interval covers the band. No claim is made that
+this work moved it in either direction, because it cannot have.
+
+#### 9. Tests
+
+Twenty-one tests in `tests/calibration/test_fg_decomposition.gd`, plus a
+strengthened guard in `test_ppp_decomposition.gd`:
+
+- The field-goal identities close on all four axes, and the gate is required to
+  **fail** on a manufactured breach of each axis independently.
+- The ledger, the possession records and the box score agree about field goals,
+  per game.
+- Two-point and three-point makes reconcile to made field goals, and the scoring
+  identity `2·2PM + 3·3PM + FTM = points` closes.
+- Zone attempts and contest-band attempts each total field-goal attempts, and
+  each axis's shares sum to one.
+- Contest-band accuracy is monotone in every band the fixture actually uses, on
+  a fixture sized so at least three bands are judged — the fixture was **grown**
+  to reach that, and the threshold was not lowered to meet it.
+- Shooter capability moves make probability; defender capability moves contest
+  pressure, measured through the probe rather than by re-deriving the formula.
+- Rating normalization round-trips through the §13.1 curve at nine ratings, and
+  the curve is monotone in every zone.
+- The roster ladder is strictly increasing across all five competitions, with
+  the top-domestic end inside the one range §8.2 pins as a current-OVR median.
+- Shared shot resolution cannot name a competition, cannot reach a rule profile,
+  and cannot see the scoreboard; calibration targets cannot reach it.
+- The diagnostic probe cannot change the ledger — the same seed produces a
+  byte-identical signature with and without it — is detached by default, and its
+  published terms sum to the probability they describe.
+- The published field-goal interval goes through the ratio estimator, pinned
+  against a hand-computed value and against a series whose answer is known.
+- Turnovers, offensive rebounding, pace and assists are pinned on a fixed
+  deterministic fixture, so a scoring change paid for through any of them moves
+  a number this suite is watching.
+
+No existing sample floor or tolerance was weakened. `test_ppp_decomposition.gd`'s
+competition guard was **widened** after the mutation battery walked past it.
+
+#### 10. Mutation battery
+
+Fifteen mutations, run sequentially in an isolated worktree with a 600-second
+and 2,048 MB budget per mutant, every baseline green, each mutant restored
+byte-clean against a pristine tree hash.
+
+| # | Mutation | Outcome |
+| --- | --- | --- |
+| M1 | Contest pressure stops reading defender capability | DETECTED — `test_defender_capability_moves_contest_pressure` |
+| M2 | Make probability stops reading shooter capability | DETECTED — `test_shooter_capability_moves_make_probability` |
+| M3 | High-school-only scoring bonus in shared shot resolution | DETECTED — `test_shot_resolution_cannot_name_a_competition` |
+| M4 | College-only scoring bonus in shared shot resolution | DETECTED — `test_shot_resolution_cannot_name_a_competition` |
+| M5 | Contest reads the competition identity | DETECTED — `test_the_contest_path_cannot_read_a_competition_or_a_target` |
+| M6 | Make resolution reads the scoreboard | DETECTED — `test_the_probe_terms_sum_to_the_probability_they_describe` |
+| M7 | Field-goal accounting loses a zone attempt | DETECTED — `test_the_field_goal_identities_close_on_every_axis` |
+| M8 | A made free throw is worth zero points again | DETECTED — `test_the_scoring_terms_account_for_every_point` |
+| M9 | The field-goal identity can no longer fail | DETECTED — `test_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it` |
+| M10 | Scoring offset through turnovers | DETECTED — `test_the_compensation_channels_are_pinned_on_a_fixed_fixture` |
+| M11 | Scoring offset through offensive rebounding | DETECTED — `test_the_compensation_channels_are_pinned_on_a_fixed_fixture` |
+| M12 | Assist ownership disturbed | DETECTED — `test_every_assist_is_explained_by_a_recorded_creation_event` |
+| M13 | A golden hash is edited without regeneration | DETECTED — `FAIL: golden ledger changed for scenario regulation` |
+| M14 | The diagnostic probe changes the ledger | DETECTED — `test_shooter_capability_moves_make_probability` |
+| M15 | The field-goal interval reverts to a binomial one | DETECTED — `test_the_published_field_goal_interval_goes_through_the_ratio_estimator` |
+
+**Fifteen of fifteen detected by a named assertion or a compile failure
+attributable to the mutant.** No mutation was scored on a timeout, a memory
+breach, a crash, an invalid mutation or a setup failure.
+
+**Six of them were not detected on the first pass, and that is the finding.**
+The first battery scored 9 of 15. M3, M4 and M5 survived because the
+competition guard forbade four tokens and the mutants reached their per-league
+branch through `context.input.rule_profile.profile_id`, which matched none of
+them. M10 and M11 survived because nothing pinned the compensation channels on
+a fixed fixture. M15 survived because nothing pinned the interval's estimator.
+The tests were widened to close each gap — the guard now bans the route rather
+than four spellings — and the battery was re-run to 15 of 15. No mutant was
+withdrawn and none was scored equivalent.
+
+**"Revert the correction" and "disable the diagnosed causal input" have no
+mutant, honestly recorded:** there is no correction to revert, and the diagnosed
+cause is a fixture roster level rather than a production input. M1 and M2 stand
+in for the second of those by disabling the two capability inputs the diagnosis
+turned on, and both are detected.
+
+#### 11. Golden ledgers
+
+**No production event behaviour changed, and all six golden hashes are
+byte-identical** — verified by recomputation in the acceptance suite, not by
+inspecting the committed file. The ruleset stays at
+`simulation-v8-contest-capability` and was deliberately **not** bumped, because
+nothing it versions has moved.
+
+| Scenario | Seed | Hash | Status |
+| --- | ---: | --- | --- |
+| regulation | 20260815 | `52dfdb1a…` | unchanged |
+| overtime | 190056 | `ab37ad08…` | unchanged |
+| offensive_rebound | 7001 | `5dbd798f…` | unchanged |
+| foul_free_throw | 4242 | `31ce2e07…` | unchanged |
+| substitution_foul_out | 31337 | `f03f1a3a…` | unchanged |
+| late_game | 8675309 | `af3f5cc9…` | unchanged |
+
+The committed hash file is unchanged at `be8c8b19…`. There are no first
+divergences to report.
+
+The one production file this work touches is `ShotResolver`, and it touches it
+only to expose the terms it had already computed to a diagnostic sink that is
+null by default. The make probability was rewritten from eight sequential
+compound assignments into one left-associative expression over named terms —
+the identical sequence of IEEE-754 operations, which the golden hashes are the
+evidence for rather than the claim.
+
+#### 12. Seed-range ledger
+
+| Purpose | Range | Sample | Status |
+| --- | --- | --- | --- |
+| Diagnosis A | 910,000–910,399 | 400 games × high school, college, Development, top domestic | **Spent — diagnosis** |
+| Diagnosis B | 920,000–920,399 | 400 games × high school, college | **Spent — diagnosis** |
+| Counterfactual cross and roster sweep | 930,000–930,199 | 200 games × 15 cells | **Spent — counterfactual** |
+| **Validation A — untouched until the ruling** | 950,000–950,999 | 1,000 games × high school, college | **Spent — validation** |
+| **Validation B — untouched until the ruling** | 960,000–960,999 | 1,000 games × high school, college | **Spent — validation** |
+| Five-level §14.1 table | 970,000–970,399 | 400 games × five levels | **Spent — regression** |
+| `test_fg_decomposition.gd` | 905,000+ | suite-owned | **Spent — tests** |
+
+940,000 was deliberately avoided: `test_guardrail_exception.gd` owns it. No
+range in this table appears in §5.7–§5.21.
+
+#### 13. Performance
+
+No production hot path gained work. The diagnostic probe is a null `Callable`
+check per contest and per make in an ordinary run, and the make probability is
+the same arithmetic rearranged. The 400-game single-level calibration runs in
+this section held 1.1 games/second on the same debug build §5.12 profiled.
+
+#### 14. Classification
+
+- **Structural:** the four field-goal identities and their demonstrated ability
+  to fail; the probe's inability to change the ledger; shared shot resolution's
+  inability to name a competition, reach a rule profile, or see the scoreboard;
+  the ratio estimator standing behind the published field-goal interval; the
+  rating-normalization round trip; the roster ladder's ordering.
+- **Measured, below the §27.1 requirement:** every number in sections 3 through
+  8. The largest sample here is 2,000 complete games per level against §27.1's
+  100,000 per competition, which is 2%.
+- **Certified:** nothing.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -4015,8 +4439,10 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **Career progression** | **Structurally complete and measured green.** All five §8.4 career-peak bands measure inside their locked targets, executor parity is exact at 0.0000, and the §9.5 guardrail is enforced by construction (§5.8, §5.9). **Certification pending only** — §27.1 asks for 1,000,000 careers, which §6.4 explains no developer machine produces. Not an implementation defect |
 | **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
 | **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
+| **High-school field-goal percentage** | **Not a repeatable failure (§5.22).** Two untouched 1,000-game validation ranges pool to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band, and one of four fresh ranges passes outright. Recorded as a **measured marginal/unresolved row**, not as a failure. Not an implementation defect |
+| **College field-goal percentage** | **Confirmed as a repeatable measurement, reclassified as to cause (§5.22).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). **A fixture/target ladder mismatch, not an implementation defect**, and it needs an owner decision rather than a correction |
 
-What remains genuinely open is listed in §6.4 and §9: college and high-school field-goal percentage, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
+What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the fixture's roster ladder and §14.1's band ladder rather than as an engine defect (§5.22)**, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 
