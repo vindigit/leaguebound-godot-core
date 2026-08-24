@@ -17,6 +17,38 @@ extends RefCounted
 ## the anonymous literals out of shot resolution as outstanding work; the shape
 ## of the model lives here and the numbers live there.
 
+## Optional diagnostic sink for the decomposed terms of a contest and a make
+## (`BALANCE_SPEC.md` §14.1 accounting decomposition).
+##
+## **Observation only, and structurally so.** The probe is null by default, so
+## an ordinary simulation never allocates or calls anything here. When a
+## calibration runner attaches one, it is invoked *after* every term and the
+## draw are already decided, it is passed values that have already been used,
+## and its return value is discarded — there is no branch anywhere below whose
+## outcome depends on whether a probe is attached. That is what lets a
+## diagnostic publish "mean shooter capability" and "mean movement penalty"
+## without those numbers being reconstructed by a second, drifting copy of this
+## arithmetic, and without a calibration target acquiring a path into
+## production probability code.
+##
+## `build_contest` fires once per field-goal attempt; `resolve` fires once per
+## attempt that was *not* blocked, because §12.7 evaluates the block first. A
+## consumer that wants per-attempt denominators must use the contest record.
+##
+## It is `static` so that attaching one costs production nothing: the resolver
+## is constructed deep inside `PossessionEngine`, and threading a diagnostic
+## argument through `MatchEngine`, `MatchSession` and `PossessionEngine` would
+## put a calibration concern into three production signatures to serve a
+## measurement. A runner sets it, runs, and clears it in the same function;
+## `detach_probe` exists so that clearing it is not spelled differently in
+## different places. Nothing in `src/` ever sets it.
+static var probe: Callable = Callable()
+
+
+## Clears the diagnostic probe. Always safe, and idempotent.
+static func detach_probe() -> void:
+	probe = Callable()
+
 var _capability: CapabilityCalculator
 var _body: BodyEffects
 var _balance: SimulationBalanceProfile
@@ -98,6 +130,21 @@ func build_contest(
 		else (_balance.perimeter_contact_base + pressure * _balance.perimeter_contact_pressure_share),
 		0.0,
 		1.0)
+	if not probe.is_null():
+		probe.call({
+			"kind": &"contest",
+			"zone": zone,
+			"interior": interior,
+			"band": band,
+			"pressure": pressure,
+			"defender_capability": contest_capability,
+			"reach": reach,
+			"help_pressure": help_pressure * _balance.contest_help_weight,
+			"advantage_relief": advantage.quality_share() * _balance.contest_advantage_relief,
+			"contest_penalty": _balance.contest_penalty(band),
+			"legal_contact": legal_contact,
+			"block_eligible": block_eligible,
+		})
 	return ShotContest.new(
 		band, defender_id, helper_id, block_eligible,
 		band >= ContestBand.Value.MODERATE, pressure, legal_contact)
@@ -176,18 +223,30 @@ func resolve(
 	if dunk:
 		capability = _capability.capability_of(CapabilityKey.Value.DUNK_THREAT, shooter, runtime)
 
-	var probability: float = _balance.shot_baseline(zone, capability, dunk)
-	probability -= _balance.contest_penalty(contest.band)
-	probability += advantage.quality_share() * _balance.advantage_shot_bonus_max
-	probability -= clampf(1.0 - catch_quality, 0.0, 1.0) * _balance.catch_quality_penalty_max
-	probability -= clampf(movement_load, 0.0, 1.0) * _balance.movement_penalty_max
-	probability -= (
+	var baseline: float = _balance.shot_baseline(zone, capability, dunk)
+	var contest_penalty: float = _balance.contest_penalty(contest.band)
+	var advantage_bonus: float = advantage.quality_share() * _balance.advantage_shot_bonus_max
+	var catch_penalty: float = (
+		clampf(1.0 - catch_quality, 0.0, 1.0) * _balance.catch_quality_penalty_max)
+	var movement_penalty: float = (
+		clampf(movement_load, 0.0, 1.0) * _balance.movement_penalty_max)
+	var fatigue_penalty: float = (
 		clampf(runtime.acute_fatigue / 100.0, 0.0, 1.0) * _balance.fatigue_shot_penalty_max)
-	probability -= _clock_desperation(context) * _balance.clock_desperation_penalty_max
+	var clock_penalty: float = (
+		_clock_desperation(context) * _balance.clock_desperation_penalty_max)
 	# §12.2 shot selection: Offensive IQ improves the circumstances of the
 	# attempt. Bounded by the advantage bonus so it cannot replace the shot.
 	var selection: float = _capability.shot_selection(shooter, runtime, zone)
-	probability += (selection - 0.5) * _balance.advantage_shot_bonus_max * 0.5
+	var selection_bonus: float = (selection - 0.5) * _balance.advantage_shot_bonus_max * 0.5
+	var probability: float = (
+		baseline
+		- contest_penalty
+		+ advantage_bonus
+		- catch_penalty
+		- movement_penalty
+		- fatigue_penalty
+		- clock_penalty
+		+ selection_bonus)
 	# §19.4 deliberately contributes nothing here. A term added to the make
 	# probability of every home attempt is not officiating, communication,
 	# composure or familiarity — it is the flat shooting bonus §19.2 rules out
@@ -196,9 +255,30 @@ func resolve(
 	# through §12.2 catch quality, which is a property of the delivery and is
 	# already in `catch_quality` above.
 
+	var unclamped: float = probability
 	probability = clampf(
 		probability, _balance.shot_floor(zone, dunk), _balance.shot_ceiling(zone, dunk))
 	var made: bool = random_source.next_float() < probability
+	if not probe.is_null():
+		probe.call({
+			"kind": &"shot",
+			"zone": zone,
+			"dunk": dunk,
+			"band": contest.band,
+			"made": made,
+			"shooter_capability": capability,
+			"baseline": baseline,
+			"contest_penalty": contest_penalty,
+			"advantage_bonus": advantage_bonus,
+			"catch_penalty": catch_penalty,
+			"movement_penalty": movement_penalty,
+			"fatigue_penalty": fatigue_penalty,
+			"clock_penalty": clock_penalty,
+			"selection_bonus": selection_bonus,
+			"unclamped_probability": unclamped,
+			"probability": probability,
+			"clamped": not is_equal_approx(unclamped, probability),
+		})
 	return ShotOutcome.new(
 		made, ShotZone.points_for(zone), probability, zone, dunk, false, &"", contest)
 
