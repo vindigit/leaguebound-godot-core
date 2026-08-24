@@ -221,8 +221,21 @@ func test_the_balance_profile_is_shared_and_the_rules_are_per_competition() -> v
 ## playing. The engine must not be able to ask.
 func test_the_contest_path_cannot_read_a_competition_or_a_target() -> void:
 	var forbidden := RegEx.new()
+	# `rule_profile` and the individual competition id strings were added after a
+	# mutation battery walked straight past this guard: a high-school-only and a
+	# college-only scoring bonus, and a competition-scoped contest relief, all
+	# reached their per-league branch through
+	# `context.input.rule_profile.profile_id` and matched none of the four
+	# patterns this regex used to carry.
+	#
+	# A bare `profile_id` is deliberately *not* forbidden: the balance profile
+	# has one of its own, naming the balance profile rather than a league, so
+	# forbidding the token outright would fail on a file that is doing nothing
+	# wrong. `rule_profile` is the route to a competition, and it is the one
+	# that is banned.
 	assert_int(forbidden.compile(
-		"CalibrationTargets|CompetitionCatalog|top_domestic|competition_id"
+		"CalibrationTargets|CompetitionCatalog|competition_id|rule_profile"
+		+ "|high_school|college|domestic_development|overseas|top_domestic"
 	)).is_equal(OK)
 	for path: String in [
 		"res://src/domain/basketball/simulation/shot_resolver.gd",
