@@ -74,6 +74,25 @@ class Totals:
 	## Possessions whose free throws came from a foul rather than a shot.
 	var foul_generated_trips: int = 0
 	var shooting_fouls: int = 0
+	## Blocked attempts. §12.7 resolves the block *before* make resolution, so a
+	## block is an attempt that never reached a make roll: it is in `FGA` and can
+	## never be in `FGM`, which is why it belongs in a field-goal decomposition
+	## and not only in a defensive one.
+	var blocks: int = 0
+
+	# --- assisted state, at the attempt ------------------------------------
+	## Attempts that carried a recorded creator, and their makes. The ledger
+	## settles the creation relationship on the *attempt* (§12.1), so this is a
+	## property of the shot's circumstances rather than of how it turned out —
+	## which is what makes the accuracy split below meaningful.
+	var created_attempts: int = 0
+	var created_makes: int = 0
+	var uncreated_attempts: int = 0
+	var uncreated_makes: int = 0
+
+	# --- box-score arm of the field-goal reconciliation ---------------------
+	var box_field_goals_made: int = 0
+	var box_field_goals_attempted: int = 0
 
 	# --- distributions ------------------------------------------------------
 	## `[zone]` attempts and makes.
@@ -94,6 +113,52 @@ class Totals:
 
 	func field_goals_made() -> int:
 		return two_point_made + three_point_made
+
+	func field_goal_percentage() -> float:
+		return _ratio(field_goals_made(), field_goals_attempted())
+
+	## Attempts counted through the zone axis. Every attempt lands in exactly one
+	## zone, so this must equal `field_goals_attempted()`; when it does not, one
+	## of the two axes has lost a shot and every share below it is wrong.
+	func zone_attempts_total() -> int:
+		var total: int = 0
+		for zone in range(ShotZone.COUNT):
+			total += zone_attempts[zone]
+		return total
+
+	## Attempts counted through the contest axis, for the same reason.
+	func contest_attempts_total() -> int:
+		var total: int = 0
+		for band in range(ContestBand.COUNT):
+			total += contest_attempts[band]
+		return total
+
+	func zone_makes_total() -> int:
+		var total: int = 0
+		for zone in range(ShotZone.COUNT):
+			total += zone_makes[zone]
+		return total
+
+	func contest_makes_total() -> int:
+		var total: int = 0
+		for band in range(ContestBand.COUNT):
+			total += contest_makes[band]
+		return total
+
+	func block_rate() -> float:
+		return _ratio(blocks, field_goals_attempted())
+
+	func shooting_foul_rate() -> float:
+		return _ratio(shooting_fouls, field_goals_attempted())
+
+	func created_share() -> float:
+		return _ratio(created_attempts, field_goals_attempted())
+
+	func created_percentage() -> float:
+		return _ratio(created_makes, created_attempts)
+
+	func uncreated_percentage() -> float:
+		return _ratio(uncreated_makes, uncreated_attempts)
 
 	func two_point_points() -> int:
 		return 2 * two_point_made
@@ -228,7 +293,24 @@ class Totals:
 			"second_chance_ppp": second_chance_ppp(),
 			"foul_generated_trips": foul_generated_trips,
 			"shooting_fouls": shooting_fouls,
+			"shooting_foul_rate": shooting_foul_rate(),
 			"accounted_points": accounted_points(),
+			"field_goals_made": field_goals_made(),
+			"field_goals_attempted": field_goals_attempted(),
+			"field_goal_percentage": field_goal_percentage(),
+			"blocks": blocks,
+			"block_rate": block_rate(),
+			"created_attempts": created_attempts,
+			"created_makes": created_makes,
+			"created_share": created_share(),
+			"created_percentage": created_percentage(),
+			"uncreated_attempts": uncreated_attempts,
+			"uncreated_makes": uncreated_makes,
+			"uncreated_percentage": uncreated_percentage(),
+			"box_field_goals_made": box_field_goals_made,
+			"box_field_goals_attempted": box_field_goals_attempted,
+			"zone_attempts_total": zone_attempts_total(),
+			"contest_attempts_total": contest_attempts_total(),
 		}
 		for zone in range(ShotZone.COUNT):
 			var zone_name: String = ShotZone.IDS[zone]
@@ -258,6 +340,11 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 	totals.games += 1
 
 	var ledger_points: int = 0
+	## Per-game field-goal counts, kept separately from the running totals so
+	## the box-score reconciliation below can be judged one game at a time. A
+	## whole-run comparison would let two games with opposite errors cancel.
+	var game_ledger_field_goals_made: int = 0
+	var game_ledger_field_goals_attempted: int = 0
 	var possession_ended: int = 0
 	var seen_possessions: Dictionary = {}
 	# Attempts open in the current possession, so a result without an attempt
@@ -270,6 +357,7 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 	## silently attributed every made shot to no band at all and left every
 	## contest accuracy reading 0.0000.
 	var attempt_band: int = -1
+	var attempt_created: bool = false
 	var attempt_is_putback: bool = false
 	var possession_had_offensive_rebound: bool = false
 	var possession_points_after_rebound: int = 0
@@ -307,10 +395,20 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 				attempt_band = ContestBand.from_id(event.detail_id)
 				if attempt_band >= 0 and attempt_band < ContestBand.COUNT:
 					totals.contest_attempts[attempt_band] += 1
+				# §12.1 settles the creation relationship on the attempt, and
+				# the attempt carries the creator in `tertiary_player_id`. Read
+				# here rather than off the make, so that "how accurate is a
+				# created shot" is answered without conditioning on the outcome.
+				attempt_created = not event.tertiary_player_id.is_empty()
+				if attempt_created:
+					totals.created_attempts += 1
+				else:
+					totals.uncreated_attempts += 1
 				if ShotZone.is_three(attempt_zone):
 					totals.three_point_attempted += 1
 				else:
 					totals.two_point_attempted += 1
+				game_ledger_field_goals_attempted += 1
 				possession_had_shot = true
 			MatchDomainEvent.FIELD_GOAL_MADE:
 				if open_attempts <= 0:
@@ -322,10 +420,15 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 				totals.zone_makes[made_zone] += 1
 				if attempt_band >= 0 and attempt_band < ContestBand.COUNT:
 					totals.contest_makes[attempt_band] += 1
+				if attempt_created:
+					totals.created_makes += 1
+				else:
+					totals.uncreated_makes += 1
 				if ShotZone.is_three(made_zone):
 					totals.three_point_made += 1
 				else:
 					totals.two_point_made += 1
+				game_ledger_field_goals_made += 1
 				match event.detail_id:
 					PassCreation.CATCH_AND_SHOOT:
 						totals.catch_and_shoot_makes += 1
@@ -366,6 +469,8 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 					garbage_points_this_possession += FREE_THROW_POINTS
 			MatchDomainEvent.FREE_THROW_MISSED:
 				totals.free_throws_attempted += 1
+			MatchDomainEvent.BLOCK:
+				totals.blocks += 1
 			MatchDomainEvent.TURNOVER:
 				totals.turnovers += 1
 			MatchDomainEvent.FOUL:
@@ -425,8 +530,32 @@ func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
 			"%s: box score totals %d points, the ledger totals %d"
 			% [input.match_id, box_points, ledger_points])
 
+	# --- the field-goal arm -------------------------------------------------
+	#
+	# §14.1 judges field-goal percentage, so its numerator and denominator get
+	# the same treatment points already had: counted from the ledger, and then
+	# checked against a projection built by different code. The box score is a
+	# third source, not the source.
+	var statistics: MatchStatistics = result.statistics
+	var game_box_made: int = 0
+	var game_box_attempted: int = 0
+	for team_id: StringName in [input.home.team_id, input.away.team_id]:
+		var line: TeamStatLine = statistics.team_line(team_id)
+		game_box_made += line.field_goals_made
+		game_box_attempted += line.field_goals_attempted
+	totals.box_field_goals_made += game_box_made
+	totals.box_field_goals_attempted += game_box_attempted
+	if game_box_made != game_ledger_field_goals_made:
+		violations.append(
+			"%s: box score shows %d made field goals, the ledger shows %d"
+			% [input.match_id, game_box_made, game_ledger_field_goals_made])
+	if game_box_attempted != game_ledger_field_goals_attempted:
+		violations.append(
+			"%s: box score shows %d field-goal attempts, the ledger shows %d"
+			% [input.match_id, game_box_attempted, game_ledger_field_goals_attempted])
 
-## The accounting identity, checked over everything accumulated so far.
+
+## The points accounting identity, checked over everything accumulated so far.
 func identity_holds() -> bool:
 	return totals.accounted_points() == totals.points
 
@@ -435,15 +564,71 @@ func unexplained_points() -> int:
 	return totals.points - totals.accounted_points()
 
 
+## The field-goal identities, over everything accumulated so far.
+##
+## Each of these is a different way of counting the same shots, so each is a
+## chance for the decomposition to be quietly wrong in a way that still adds up:
+## a zone axis that drops a shot still produces zone shares that sum to one, and
+## a contest axis that drops a band still produces plausible accuracies. They
+## are checked rather than assumed, and the runner fails on a breach.
+func field_goal_identities_hold() -> bool:
+	return field_goal_identity_breaches().is_empty()
+
+
+func field_goal_identity_breaches() -> PackedStringArray:
+	var breaches := PackedStringArray()
+	var attempted: int = totals.field_goals_attempted()
+	var made: int = totals.field_goals_made()
+	if totals.zone_attempts_total() != attempted:
+		breaches.append(
+			"zone attempts total %d against %d field-goal attempts"
+			% [totals.zone_attempts_total(), attempted])
+	if totals.contest_attempts_total() != attempted:
+		breaches.append(
+			"contest-band attempts total %d against %d field-goal attempts"
+			% [totals.contest_attempts_total(), attempted])
+	if totals.zone_makes_total() != made:
+		breaches.append(
+			"zone makes total %d against %d made field goals"
+			% [totals.zone_makes_total(), made])
+	if totals.contest_makes_total() != made:
+		breaches.append(
+			"contest-band makes total %d against %d made field goals"
+			% [totals.contest_makes_total(), made])
+	if totals.created_attempts + totals.uncreated_attempts != attempted:
+		breaches.append(
+			"assisted-state attempts total %d against %d field-goal attempts"
+			% [totals.created_attempts + totals.uncreated_attempts, attempted])
+	if totals.created_makes + totals.uncreated_makes != made:
+		breaches.append(
+			"assisted-state makes total %d against %d made field goals"
+			% [totals.created_makes + totals.uncreated_makes, made])
+	if totals.box_field_goals_made != made:
+		breaches.append(
+			"box score totals %d made field goals against the ledger's %d"
+			% [totals.box_field_goals_made, made])
+	if totals.box_field_goals_attempted != attempted:
+		breaches.append(
+			"box score totals %d field-goal attempts against the ledger's %d"
+			% [totals.box_field_goals_attempted, attempted])
+	if made > attempted:
+		breaches.append("more made field goals than attempts")
+	if totals.blocks > attempted:
+		breaches.append("more blocks than field-goal attempts")
+	return breaches
+
+
 ## True when every identity closed and nothing was orphaned or duplicated.
 func is_reconciled() -> bool:
-	return violations.is_empty() and identity_holds()
+	return violations.is_empty() and identity_holds() and field_goal_identities_hold()
 
 
 func to_dictionary() -> Dictionary:
 	var payload: Dictionary = totals.to_dictionary()
 	payload["identity_holds"] = identity_holds()
 	payload["unexplained_points"] = unexplained_points()
+	payload["field_goal_identities_hold"] = field_goal_identities_hold()
+	payload["field_goal_identity_breaches"] = field_goal_identity_breaches().size()
 	payload["violations"] = violations.size()
 	payload["reconciled"] = is_reconciled()
 	return payload
