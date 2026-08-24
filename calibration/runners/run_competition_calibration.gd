@@ -21,6 +21,12 @@ extends SceneTree
 
 const DEFAULT_GAMES: int = 120
 
+## Progress cadence, in games. A run of more than this many games prints a line
+## at least this often: a multi-hundred-game run that prints nothing is
+## indistinguishable from a hung one, and every long-running runner in this
+## project is required to say where it is.
+const PROGRESS_EVERY: int = 50
+
 ## One competition's summary line. A typed row rather than a bare Dictionary so
 ## the printed table and the archived JSON cannot drift apart, and so the
 ## project's typed-access warnings stay satisfied.
@@ -176,6 +182,10 @@ func _run_competition(competition: int, games: int, shard: int) -> MatchMetricAc
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(variation + 1))
 		accumulator.accumulate(input, output)
+		if games > PROGRESS_EVERY and (index + 1) % PROGRESS_EVERY == 0:
+			print("  %s: %d/%d games (variations %d-%d)" % [
+				CalibrationTargets.competition_id(competition),
+				index + 1, games, base, base + index])
 	return accumulator
 
 
@@ -223,7 +233,13 @@ func _judge(
 		"field-goal attempts", 0.0,
 		CalibrationTargets.field_goal_percentage(competition), totals.field_goals_attempted)
 		.with_aggregation(MetricAggregation.proportion(
-			totals.field_goals_made, totals.field_goals_attempted)))
+			totals.field_goals_made, totals.field_goals_attempted))
+		# The interval is the clustered ratio estimator over team-games, not a
+		# binomial interval over attempts. Attempts inside one team-game share a
+		# roster, an opponent and a fatigue path, so treating them as
+		# independent trials reports a width roughly half of the real one and
+		# makes a marginal verdict look settled.
+		.with_interval(totals.field_goal_percentage_half_width()))
 	report.add_metric(CalibrationMetric.banded(
 		StringName("%s.three_point_percentage" % id),
 		"Three-pointers made divided by three-pointers attempted.",

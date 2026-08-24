@@ -64,6 +64,17 @@ var starter_minutes: PackedFloat64Array
 ## a bare mean.
 var team_game_points: PackedFloat64Array
 var team_game_possessions: PackedFloat64Array
+## Per-team-game field goals made and attempted.
+##
+## Field-goal percentage is a **ratio of two totals**, not a mean of independent
+## Bernoulli trials: the attempts inside one team-game share a roster, a
+## matchup, a game plan and a fatigue path, so they are correlated and a
+## binomial interval over `field_goals_attempted` understates the width. These
+## two series are the clusters the ratio estimator needs, kept for the same
+## reason `team_game_points` and `team_game_possessions` are kept for points per
+## possession.
+var team_game_field_goals_made: PackedFloat64Array
+var team_game_field_goals_attempted: PackedFloat64Array
 
 
 func _init() -> void:
@@ -78,6 +89,8 @@ func _init() -> void:
 	starter_minutes = PackedFloat64Array()
 	team_game_points = PackedFloat64Array()
 	team_game_possessions = PackedFloat64Array()
+	team_game_field_goals_made = PackedFloat64Array()
+	team_game_field_goals_attempted = PackedFloat64Array()
 
 
 func accumulate(input: MatchInput, output: MatchSimulationOutput) -> void:
@@ -126,6 +139,8 @@ func _accumulate_team(line: TeamStatLine, opponent: TeamStatLine) -> void:
 	second_chance_points += line.second_chance_points
 	team_game_points.append(float(line.points))
 	team_game_possessions.append(float(line.engine_possessions))
+	team_game_field_goals_made.append(float(line.field_goals_made))
+	team_game_field_goals_attempted.append(float(line.field_goals_attempted))
 
 
 func _accumulate_players(
@@ -181,23 +196,50 @@ func points_per_possession() -> float:
 ## accounts for that, and without it the §14.1 row most likely to sit on its
 ## band boundary is the one row published with no interval at all.
 func points_per_possession_half_width() -> float:
-	var count: int = team_game_possessions.size()
-	if count < 2 or team_game_points.size() != count:
+	return ratio_half_width(team_game_points, team_game_possessions, points_per_possession())
+
+
+## The 95% half-width of field-goal percentage, treating each team-game as the
+## sampling unit.
+##
+## §14.1 judges a *rate*, and the rate's uncertainty is not binomial. Attempts
+## within a team-game are drawn against one opponent, by one roster, down one
+## fatigue path, so they are positively correlated; a binomial interval over the
+## attempt count assumes they are independent games and reports a width that is
+## too narrow — for a 400-game run, by roughly a factor of two. This is the same
+## clustered ratio estimator `points_per_possession_half_width` uses, and it is
+## the interval a §14.1 verdict on field-goal percentage must be read against.
+func field_goal_percentage_half_width() -> float:
+	return ratio_half_width(
+		team_game_field_goals_made,
+		team_game_field_goals_attempted,
+		field_goal_percentage())
+
+
+## The 95% half-width of `sum(numerators) / sum(denominators)` over paired
+## per-cluster series, by the standard linearized ratio estimator: the residual
+## `y_i - R * x_i` carries the covariance the two totals share, which is exactly
+## what makes a ratio's variance different from either total's own.
+static func ratio_half_width(
+	numerators: PackedFloat64Array,
+	denominators: PackedFloat64Array,
+	estimate: float,
+) -> float:
+	var count: int = denominators.size()
+	if count < 2 or numerators.size() != count:
 		return 0.0
-	var estimate: float = points_per_possession()
-	var mean_possessions: float = 0.0
-	for value in team_game_possessions:
-		mean_possessions += value
-	mean_possessions /= float(count)
-	if mean_possessions <= 0.0:
+	var mean_denominator: float = 0.0
+	for value in denominators:
+		mean_denominator += value
+	mean_denominator /= float(count)
+	if mean_denominator <= 0.0:
 		return 0.0
 	var residual_sum: float = 0.0
 	for index in range(count):
-		var residual: float = (
-			team_game_points[index] - estimate * team_game_possessions[index])
+		var residual: float = numerators[index] - estimate * denominators[index]
 		residual_sum += residual * residual
 	var variance: float = residual_sum / float(count - 1)
-	return 1.96 * sqrt(variance / float(count)) / mean_possessions
+	return 1.96 * sqrt(variance / float(count)) / mean_denominator
 
 
 func field_goal_percentage() -> float:
