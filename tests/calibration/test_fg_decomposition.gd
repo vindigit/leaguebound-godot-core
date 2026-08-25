@@ -60,6 +60,17 @@ const SUITE_BASE: int = 905000
 const CHANNEL_TOLERANCE: float = 0.004
 
 
+## Detaches the diagnostic probe after every test, whatever the test did.
+##
+## `ShotResolver.probe` is static, so it outlives the accumulator that attached
+## it and outlives this suite. Every attach below is paired with a detach on its
+## own happy path, but a failed assertion aborts the test between the two, and
+## the field would then survive into another suite bound to a freed object. The
+## production guard makes that harmless; this makes it not happen.
+func after_test() -> void:
+	ShotResolver.detach_probe()
+
+
 func _decompose(competition: int, games: int) -> PppDecomposition:
 	var decomposition := PppDecomposition.new()
 	for index in range(games):
@@ -359,6 +370,40 @@ func test_the_probe_is_detached_by_default() -> void:
 	assert_bool(ShotResolver.probe.is_null()).is_true()
 	ShotResolver.detach_probe()
 	assert_bool(ShotResolver.probe.is_null()).is_true()
+
+
+## A leaked probe is a no-op, not an error storm.
+##
+## The static field can outlive its attacher — a test aborted between attaching
+## and detaching leaves it holding a `Callable` bound to an object that is then
+## freed. `is_null` is false for such a `Callable`, so a guard written that way
+## would call into freed memory on every shot in the process. This pins the
+## `is_valid` guard instead: after the attacher is gone, a full game simulates
+## cleanly and produces the identical ledger it produces with no probe at all.
+func test_a_probe_whose_owner_was_freed_is_ignored() -> void:
+	var input: MatchInput = CompetitionCatalog.match_for(
+		CalibrationTargets.Competition.COLLEGE, SUITE_BASE, 0.5)
+
+	ShotResolver.detach_probe()
+	var clean: String = MatchEngine.new().simulate_match(
+		input, SeededRandomSource.new(SUITE_BASE + 1)).signature()
+
+	var doomed := ShotTermAccumulator.new()
+	doomed.attach()
+	assert_bool(ShotResolver.probe.is_null()).is_false()
+	# Drop the only reference. The accumulator is RefCounted, so it is freed
+	# here, and the static field is left holding a Callable bound to nothing.
+	doomed = null
+	assert_bool(ShotResolver.probe.is_null()).override_failure_message(
+		"the leaked Callable reported itself as null, so this test would pass "
+		+ "without exercising the guard it exists for").is_false()
+	assert_bool(ShotResolver.probe.is_valid()).override_failure_message(
+		"a Callable bound to a freed object still reports valid").is_false()
+
+	var after_leak: String = MatchEngine.new().simulate_match(
+		input, SeededRandomSource.new(SUITE_BASE + 1)).signature()
+	assert_str(after_leak).override_failure_message(
+		"a leaked probe changed the ledger").is_equal(clean)
 
 
 ## The published terms are the arithmetic the engine actually performed.

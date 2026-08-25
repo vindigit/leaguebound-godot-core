@@ -42,6 +42,17 @@ extends RefCounted
 ## measurement. A runner sets it, runs, and clears it in the same function;
 ## `detach_probe` exists so that clearing it is not spelled differently in
 ## different places. Nothing in `src/` ever sets it.
+##
+## **The guard below is `is_valid`, not `is_null`, and the difference matters.**
+## A static field outlives whatever attached to it, so an attacher that is
+## interrupted between attaching and detaching — a test aborted by a failed
+## assertion, a runner that raises — leaves this field holding a `Callable`
+## bound to an object that is subsequently freed. `is_null` is false for such a
+## `Callable`, so the guard would pass and every shot in the process would call
+## into a freed object for as long as it ran. `is_valid` is false once the bound
+## object is gone, which turns a leaked probe into a no-op instead of an
+## unbounded error storm. Detaching properly is still the contract; this is what
+## makes failing to do so survivable.
 static var probe: Callable = Callable()
 
 
@@ -130,7 +141,7 @@ func build_contest(
 		else (_balance.perimeter_contact_base + pressure * _balance.perimeter_contact_pressure_share),
 		0.0,
 		1.0)
-	if not probe.is_null():
+	if probe.is_valid():
 		probe.call({
 			"kind": &"contest",
 			"zone": zone,
@@ -259,7 +270,7 @@ func resolve(
 	probability = clampf(
 		probability, _balance.shot_floor(zone, dunk), _balance.shot_ceiling(zone, dunk))
 	var made: bool = random_source.next_float() < probability
-	if not probe.is_null():
+	if probe.is_valid():
 		probe.call({
 			"kind": &"shot",
 			"zone": zone,
