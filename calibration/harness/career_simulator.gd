@@ -260,6 +260,20 @@ class CareerResult extends RefCounted:
 	var final_state: PlayerDevelopmentState = null
 	var age_by_season: PackedInt32Array = []
 
+	## Ratings as they stood at the end of each §9.5 COLLEGE season, captured only
+	## under diagnostics and indexed by college class year (0 = first college
+	## season). The career model is the only production-owned path that produces a
+	## player at college age, so this is what a "production-built college player"
+	## means here — and it is a *player* population, never a roster: nothing under
+	## `src/` assembles a team.
+	##
+	## Pure measurement. It is appended after the season has fully resolved, reads
+	## the canonical attribute vector, consumes no random source, and is never read
+	## back by the simulator, the domain, or any projection.
+	var college_values_by_class: Array = []
+	var college_overall_by_class: PackedInt32Array = []
+	var college_age_by_class: PackedInt32Array = []
+
 	func projected_peak_width() -> int:
 		return projected_peak_high - projected_peak_low
 
@@ -503,6 +517,10 @@ func _run_seasons(
 		if diagnostics:
 			result.overall_by_season.append(current)
 			result.age_by_season.append(state.age)
+			if phase == CareerPhase.Value.COLLEGE:
+				result.college_values_by_class.append(state.attributes.canonical_values())
+				result.college_overall_by_class.append(current)
+				result.college_age_by_class.append(state.age)
 
 	result.seasons = seasons
 	result.peak_overall = peak

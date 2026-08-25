@@ -4428,6 +4428,131 @@ this section held 1.1 games/second on the same debug build §5.12 profiled.
   100,000 per competition, which is 2%.
 - **Certified:** nothing.
 
+### 5.23 The college field-goal decision, and what the fixture actually is
+
+Status: **Owner-decision package delivered. Nothing enacted.** No production
+value, locked target, ruleset or golden changed; all six golden hashes and the
+smoke output are byte-identical.
+
+Full package: **[`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md)**.
+
+§5.22 classified the college §14.1 field-goal miss as *fixture roster
+construction* and left an owner decision open between the roster ladder and the
+band ladder. That ruling rested on an unmeasured claim: whether the calibration
+fixture resembles a production-built college roster. This section measures it,
+and the answer removes an option rather than adding one.
+
+#### 1. Fixture representativeness ruling — structural
+
+Every college measurement this project has published — `run_competition_calibration.gd`,
+`run_fg_decomposition.gd`, `run_calibration_smoke.gd`, `run_fg_counterfactual.gd`,
+and the 950,000 / 960,000 / 970,000 validation ranges — draws its rosters from one
+function, `CompetitionCatalog.team_for`.
+
+That function is a **hard-coded linear ladder**: every one of a player's twenty
+ratings is a single scalar plus a constant from a fixed 20×5 offset table. It
+carries no age, no class year, no attribute correlation structure, six distinct
+archetypes across 200 teams, and ten players rather than a college roster's
+thirteen to fifteen.
+
+**Nothing under `src/` constructs a `TeamMatchProfile` or a `PlayerMatchProfile`.**
+Production consumes rosters and never generates them; there is no roster
+generator, no team assembly, and no college tier system. Both facts are pinned by
+`tests/calibration/test_roster_provenance.gd` rather than left as prose.
+
+So the fixture is neither representative nor unrepresentative of production
+college rosters: **it is the only college roster that exists.**
+
+#### 2. Production-builder evidence — measured, not certified
+
+The closest production-owned path to a college player is `BuilderService` +
+`DevelopmentService` run through the three §9.5 COLLEGE seasons. 1,000 careers on
+fresh seeds **1,200,001–1,201,000**, snapshotted at every college class year:
+
+| Measure | Fixture college | Production builder, college age |
+| --- | ---: | ---: |
+| Mean current Overall | **67.01** | **67.40** |
+| Overall standard deviation | 5.14 | 4.67 |
+| Age / class year | **neither field exists** | 19–21 / three classes |
+| Distinct derived archetypes | 6 | 20+ |
+| **three_point** | 66.01 | **70.21 (+4.20)** |
+
+**The fixture's college rating *level* is corroborated by production to 0.39
+Overall points; its shooting *shape* is not.** Field-goal percentage reads
+shooting ratings, not Overall.
+
+A defect was found while measuring and is reported rather than absorbed:
+`CareerSimulator._family_weights` iterates emphasis *levels* as attribute
+*indices*, so every position family weights `short_range`, `dunking` and
+`mid_range` at 1.0 and everything else at 0.35. It is calibration-harness code,
+not production. It contaminates those three rows; the three-point row is
+cap-driven and clean. **It is not fixed here** — repairing it moves recorded §8.4
+figures and invalidates frozen validation ranges — and is carried as its own item
+in §6 and §9.
+
+#### 3. Controlled grid — measured, not certified
+
+CRN-matched, 400 complete games per cell, fresh variations **980,000–980,399**,
+accounting identities reconciled on every cell.
+
+| Transform | Field-goal enters 0.420 | First other locked band to break | Overall cost |
+| --- | --- | --- | ---: |
+| **Uniform roster lift** | **+3** (0.4241) | **+4** — points per possession 1.1019 against a 1.100 ceiling **and** turnovers/100 14.941 against a 15.00 floor | **+3.00** |
+| **Shooting-only lift** | **+3** (0.4245) | **none out to +5** | **+0.60** |
+
+The uniform window is **one rating point wide** — narrower than §5.22's estimate
+of +2 to +3, and with a second binding constraint that section did not find. The
+shooting-only route reaches the same field-goal percentage for one-fifth of the
+Overall inflation and lands the fixture within **0.21** Overall of the production
+builder's own college-age centre.
+
+#### 4. Five-level consequences — measured, not certified
+
+Fresh variations **990,000–990,399**, 400 games per level.
+
+| Metric | High school | College | Development | Overseas | Top domestic |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Field-goal % | 0.3899 ✗ | **0.4115 ✗** | 0.4358 ✓ | 0.4395 ✓ | 0.4563 ✓ |
+| §14.1 floor | 0.390 | 0.420 | 0.430 | 0.430 | 0.450 |
+| Margin | −0.0001 | **−0.0085** | +0.0058 | +0.0095 | +0.0113 |
+
+Every scoring statistic is monotone across the five levels. Pace and free-throw
+rate are not, and both are rule-profile properties §4 permits.
+
+**Why college and nowhere else:** the roster ladder is linear in rating
+(61/67/73/75/79) and the band ladder is not linear in percentage (floors stepping
++0.030, +0.010, 0.000, +0.020). Six rating points buys roughly 0.024 of
+field-goal percentage. The high-school-to-college step asks for 0.030 and is
+handed 0.024; the college-to-Development step asks for 0.010 and is handed the
+same 0.024. College absorbs the whole discrepancy. That is a **specification
+conflict** between two ladders, and it exists whatever the fixture's shape.
+
+#### 5. Decision matrix and recommendation
+
+| Rank | Option | Verdict |
+| --- | --- | --- |
+| **1** | **A — fix the fixture's shooting shape**, after repairing `_family_weights` | Two independent measurements, not fitted to each other, converge on it. ≥2 points of headroom, +0.60 Overall, no production behaviour change |
+| **2** | **E — defer to §27.1** | Costs nothing, blocks nothing, preserves every option |
+| ✗ | **B — raise the college rating ladder** | Contradicted by the production builder's own 67.40. Collapses the college-to-Development gap 6.00 → 3.00 for a one-point window |
+| ✗ | **C — revise the locked 0.420 floor** | A 0.415 floor **still fails** (pooled interval tops out at 0.4142); only 0.410 passes, and it ratifies a fixture artifact and forecloses Option A |
+| ✗ | **D — hybrid** | Strictly dominated: at the shooting lift that passes (+3), the current 0.420 floor already passes, so the band concession does no work |
+
+**The exact owner decision:** *does the owner accept that the shortfall is a
+defect in the calibration fixture's attribute shape — shooting roughly four
+points below the production builder's at matched Overall — rather than in its
+rating level or in the §14.1 band?* If yes, Option A, and no locked target moves.
+If no, or if the owner declines to act below §27.1, Option E.
+
+#### 6. Classification
+
+- **Engine defect:** none demonstrated.
+- **Fixture defect:** yes — now identified as a *shape* defect, not a level one.
+- **Specification conflict:** yes — linear roster ladder against a non-linear band ladder.
+- **Owner preference:** yes — which of the two contracts moves.
+- **Sampling uncertainty:** ruled out as the cause (six independent ranges), and a live limit on the magnitude of any fix.
+- **Certification:** nothing here is certified. §27.1 asks 100,000 games per competition; this task ran 400 per cell.
+
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -4440,9 +4565,9 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
 | **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
 | **High-school field-goal percentage** | **Not a repeatable failure (§5.22).** Two untouched 1,000-game validation ranges pool to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band, and one of four fresh ranges passes outright. Recorded as a **measured marginal/unresolved row**, not as a failure. Not an implementation defect |
-| **College field-goal percentage** | **Confirmed as a repeatable measurement, reclassified as to cause (§5.22).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). **A fixture/target ladder mismatch, not an implementation defect**, and it needs an owner decision rather than a correction |
+| **College field-goal percentage** | **Confirmed as a repeatable measurement, cause now identified to the property (§5.22, §5.23).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **A fixture shape defect plus a linear-roster-against-non-linear-band specification conflict, not an implementation defect.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
 
-What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the fixture's roster ladder and §14.1's band ladder rather than as an engine defect (§5.22)**, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
+What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the calibration fixture's shooting shape, its roster ladder, and §14.1's band ladder rather than as an engine defect (§5.22, §5.23)**, **the `CareerSimulator._family_weights` defect §5.23 found in the calibration harness**, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 
@@ -4557,6 +4682,8 @@ Work should proceed in this order unless new evidence changes a dependency:
 4. ~~Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.~~ **Done** (§5.7). The interval is now conditioned on the prospect profile, with the player's own caps supplying a second axis through conversion saturation. All three §6.3 measures pass with interior margin on two untouched validation ranges and on the production judged path. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it can be called certified.
 5. ~~Resolve the rare-generational 92–95 peak miss.~~ **Done** (§5.8), and **closed** (§5.9). The band reads 93 on the development range and on two untouched validation ranges. The §9.5 tension §5.8 left open is settled by the owner ruling of 2026-08, which permits a bounded 20% exception for the rare-generational path only; enforcing it as a per-season bound made compliance structural and moved the opportunity multiplier from 1.70 to 1.85. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it is certified.
 6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
+6a. **Take the §5.23 college field-goal owner decision**, or record a deliberate deferral to §27.1. The package is complete and the evidence is delivered; what is missing is the owner's choice of which contract moves. Nothing downstream is blocked by the deferral.
+6b. **Repair `CareerSimulator._family_weights`** (§5.23). It iterates `AttributeEmphasis` *values* as attribute *indices*, so every position family weights `short_range`, `dunking` and `mid_range` at 1.0 and nothing else by its own emphasis. Calibration-harness code, not production, so no shipped behaviour is affected — but it contaminates creation-time allocation in every career the progression suites have run, and it must be repaired **before** any §5.23 Option A offsets are chosen. Needs its own fresh validation ranges, because repairing it moves recorded §8.4 figures and invalidates ranges 700,001–702,000 and 900,001–902,000.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
 8. Complete the required game-shape and parity reports at usable samples.
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.

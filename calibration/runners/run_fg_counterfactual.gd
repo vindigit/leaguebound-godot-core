@@ -18,6 +18,12 @@ extends SceneTree
 ##   profile is exonerated on measurement rather than by reading it; if it
 ##   follows the rules, the rule profile is the cause and the roster is not.
 ##
+## - `distribution` holds one competition's rules *and* its roster level, and
+##   moves only a named **attribute subset**. It answers a different question
+##   from `sweep`: whether a level's shortfall needs the whole ladder to move, or
+##   only the part of the roster the statistic actually reads. The §14.1
+##   field-goal row reads shooting ratings, not Overall.
+##
 ## - `sweep` holds one competition's rules and moves the **roster level** by a
 ##   whole number of rating points. This is the engine's field-goal response to
 ##   roster strength, measured rather than assumed, and it is what decides
@@ -27,8 +33,9 @@ extends SceneTree
 ##
 ## Run:
 ##   godot --headless --path . --script res://calibration/runners/run_fg_counterfactual.gd -- \
-##       [--mode=cross|sweep] [--games=N] [--base=SEED_BASE] \
-##       [--rules=college] [--rosters=development] [--offsets=0,2,4,6] [--label=NAME]
+##       [--mode=cross|sweep|distribution] [--games=N] [--base=SEED_BASE] \
+##       [--rules=college] [--rosters=development] [--offsets=0,2,4,6] \
+##       [--subset=shooting|shooting_and_finishing|three_point_only|all] [--label=NAME]
 
 const DEFAULT_GAMES: int = 200
 const DEFAULT_BASE: int = 930000
@@ -42,17 +49,28 @@ class Cell:
 	var rules_competition: int
 	var roster_competition: int
 	var level_offset: float
+	## Attributes this cell shifts *after* the roster is built, and by how much.
+	## Empty on every cell except a `distribution` cell. A **diagnostic transform
+	## only**: it exists so the owner package can ask "what if the fixture's
+	## shooting sat where the production builder puts it?" without editing the
+	## fixture, and it must never reach production or the shipped catalog.
+	var attribute_keys: PackedInt32Array = []
+	var attribute_offset: float = 0.0
 
 	func _init(
 		p_name: String,
 		p_rules: int,
 		p_rosters: int,
 		p_offset: float = 0.0,
+		p_attribute_keys: PackedInt32Array = [],
+		p_attribute_offset: float = 0.0,
 	) -> void:
 		name = p_name
 		rules_competition = p_rules
 		roster_competition = p_rosters
 		level_offset = p_offset
+		attribute_keys = p_attribute_keys
+		attribute_offset = p_attribute_offset
 
 
 func _init() -> void:
@@ -70,10 +88,15 @@ func _run() -> void:
 	var offsets: PackedFloat64Array = _offsets(
 		CalibrationCli.string_option(options, &"offsets", "0,2,4,6"))
 
-	var cells: Array[Cell] = (
-		_cross_cells(_competition(rules_name), _competition(rosters_name))
-		if mode == "cross"
-		else _sweep_cells(_competition(rules_name), offsets))
+	var subset: String = CalibrationCli.string_option(options, &"subset", "shooting")
+	var cells: Array[Cell] = []
+	match mode:
+		"cross":
+			cells = _cross_cells(_competition(rules_name), _competition(rosters_name))
+		"distribution":
+			cells = _distribution_cells(_competition(rules_name), subset, offsets)
+		_:
+			cells = _sweep_cells(_competition(rules_name), offsets)
 
 	var context := ReportContext.create(
 		&"fg_counterfactual",
@@ -108,6 +131,7 @@ func _run() -> void:
 		_simulate(cell, games, base, decomposition, terms, accumulator)
 		var totals: PppDecomposition.Totals = decomposition.totals
 		var half_width: float = accumulator.field_goal_percentage_half_width()
+		var mean_roster_overall: float = _mean_roster_overall(cell, games, base)
 		var payload: Dictionary = {
 			"cell": cell.name,
 			"rules": String(CalibrationTargets.competition_id(cell.rules_competition)),
@@ -134,6 +158,32 @@ func _run() -> void:
 			"mean_contest_penalty": terms.mean_contest_penalty(),
 			"mean_probability": terms.mean_probability(),
 			"reconciled": decomposition.is_reconciled(),
+			# The §14.1 and §14.2 rows the owner decision is judged against.
+			# `accumulator` has counted them since this runner was written and
+			# only its interval was ever read; a decision grid that publishes
+			# field-goal percentage alone cannot show which *other* locked band
+			# a roster change breaks first, which is the question that decides
+			# whether an option is viable at all. Pure reporting: the same games,
+			# the same counts, no extra simulation and no extra draw.
+			"points_per_game": accumulator.points_per_game(),
+			"free_throw_percentage": accumulator.free_throw_percentage(),
+			"free_throw_attempt_rate": accumulator.free_throw_attempt_rate(),
+			"turnovers_per_100_possessions": accumulator.turnovers_per_100_possessions(),
+			"offensive_rebound_percentage": accumulator.offensive_rebound_percentage(),
+			"assist_percentage": accumulator.assist_percentage(),
+			"steals_per_game": accumulator.steals_per_game(),
+			"blocks_per_game": accumulator.blocks_per_game(),
+			"fouls_per_game": accumulator.fouls_per_game(),
+			"home_win_rate": accumulator.home_win_rate(),
+			"overtime_rate": accumulator.overtime_rate(),
+			"close_game_rate": accumulator.close_game_rate(),
+			"blowout_rate": accumulator.blowout_rate(),
+			"points_per_possession_half_width":
+				accumulator.points_per_possession_half_width(),
+			# The rating level the cell actually played at, read off the built
+			# rosters rather than inferred from the requested offset, so a grid
+			# row states its own population instead of its own intention.
+			"mean_roster_overall": mean_roster_overall,
 		}
 		rows.append(payload)
 		report.add_metric(CalibrationMetric.boolean(
@@ -158,6 +208,24 @@ func _run() -> void:
 			StringName("%s.possessions_per_game" % cell.name),
 			"Engine possessions per game for this cell.",
 			"games", totals.possessions_per_game(), totals.games))
+		report.add_metric(CalibrationMetric.raw(
+			StringName("%s.mean_roster_overall" % cell.name),
+			"Mean current Overall across both rosters, as built for this cell.",
+			"players", mean_roster_overall, totals.games))
+		report.add_metric(CalibrationMetric.raw(
+			StringName("%s.assist_percentage" % cell.name),
+			"Assists over the team's own made field goals.",
+			"made field goals", accumulator.assist_percentage(),
+			accumulator.field_goals_made))
+		report.add_metric(CalibrationMetric.raw(
+			StringName("%s.offensive_rebound_percentage" % cell.name),
+			"ORB / (ORB + opponent DREB).", "offensive-rebound chances",
+			accumulator.offensive_rebound_percentage(),
+			accumulator.offensive_rebound_chances))
+		report.add_metric(CalibrationMetric.raw(
+			StringName("%s.blowout_rate" % cell.name),
+			"Share of games decided by a §14.2 blowout margin.", "games",
+			accumulator.blowout_rate(), accumulator.games))
 		print("  %s: FG%% %.4f ±%.4f, capability %.4f, PPP %.4f, poss/game %.2f%s" % [
 			cell.name, totals.field_goal_percentage(), half_width,
 			terms.mean_shooter_capability(), totals.points_per_possession(),
@@ -167,6 +235,33 @@ func _run() -> void:
 	report.add_section(&"cells", rows)
 	report.finish()
 	quit(ReportWriter.publish(report, "fg_counterfactual_%s" % label))
+
+
+## Mean current Overall of the rosters a cell plays with.
+##
+## Rebuilt from the same constructor and the same variations the cell simulated,
+## so it describes the population that produced the cell's numbers. It consumes
+## no random source and touches no match state.
+func _mean_roster_overall(cell: Cell, games: int, base: int) -> float:
+	var balance: SimulationBalanceProfile = CompetitionCatalog.balance_profile()
+	var ratings: RatingsProfile = CompetitionCatalog.ratings_profile()
+	var total: float = 0.0
+	var counted: int = 0
+	for index in range(games):
+		var variation: int = base + index
+		var teams: Array[TeamMatchProfile] = [
+			_transform(CompetitionCatalog.team_for(
+				cell.roster_competition, &"home", variation * 2, balance, cell.level_offset),
+				cell, balance),
+			_transform(CompetitionCatalog.team_for(
+				cell.roster_competition, &"away", variation * 2 + 1, balance, cell.level_offset),
+				cell, balance),
+		]
+		for team in teams:
+			for player in team.players:
+				total += float(OverallCalculator.current_overall(player.attributes, ratings))
+				counted += 1
+	return total / float(counted) if counted > 0 else 0.0
 
 
 ## The four cells that separate a rule profile from a roster population.
@@ -179,6 +274,93 @@ func _cross_cells(rules: int, rosters: int) -> Array[Cell]:
 		Cell.new("%s_rules_%s_rosters" % [rosters_id, rules_id], rosters, rules),
 		Cell.new("%s_rules_%s_rosters" % [rosters_id, rosters_id], rosters, rosters),
 	] as Array[Cell]
+
+
+## Applies a cell's diagnostic attribute shift to a freshly built roster.
+##
+## Returns the roster unchanged when the cell asks for no shift, which is every
+## cell in `cross` and `sweep` mode, so those two modes are bit-identical to what
+## they measured before this option existed.
+##
+## Rebuilds rather than mutates. `CompetitionCatalog.team_for` hands back objects
+## a later call could still be holding, and a transform that edited them in place
+## would leak into whatever else touched the same roster in the same run.
+##
+## **Diagnostic only.** This is a sensitivity instrument for the owner decision,
+## not a proposed implementation: a real distribution change belongs in whatever
+## builds rosters, and today nothing does.
+func _transform(
+	team: TeamMatchProfile,
+	cell: Cell,
+	balance: SimulationBalanceProfile,
+) -> TeamMatchProfile:
+	if cell.attribute_keys.is_empty() or is_zero_approx(cell.attribute_offset):
+		return team
+	var shifted: Array[PlayerMatchProfile] = []
+	for player in team.players:
+		var values: Array[int] = player.attributes.canonical_values()
+		for key in cell.attribute_keys:
+			values[key] = clampi(
+				int(roundf(float(values[key]) + cell.attribute_offset)),
+				Rating.ACTIVE_MINIMUM, Rating.MAXIMUM)
+		shifted.append(PlayerMatchProfile.new(
+			player.player_id,
+			player.positions,
+			player.body,
+			PlayerAttributes.from_values(values),
+			player.badges,
+			player.tendencies,
+			player.rotation_role,
+			player.tactical_role,
+			player.condition,
+			player.injury_limitations,
+			player.qualitative_durability_band))
+	return TeamMatchProfile.new(
+		team.team_id, shifted, team.starters(), team.chemistry, team.game_plan, balance)
+
+
+## The attribute subsets a `distribution` cell may shift, named so a report row
+## says which distribution it moved rather than listing twenty indices.
+static func attribute_subset(name_value: String) -> PackedInt32Array:
+	match name_value:
+		"shooting":
+			return [
+				AttributeKey.Key.SHORT_RANGE, AttributeKey.Key.MID_RANGE,
+				AttributeKey.Key.THREE_POINT,
+			] as PackedInt32Array
+		"shooting_and_finishing":
+			return [
+				AttributeKey.Key.SHORT_RANGE, AttributeKey.Key.MID_RANGE,
+				AttributeKey.Key.THREE_POINT, AttributeKey.Key.DUNKING,
+			] as PackedInt32Array
+		"three_point_only":
+			return [AttributeKey.Key.THREE_POINT] as PackedInt32Array
+		"all":
+			var every := PackedInt32Array()
+			for key in range(AttributeKey.COUNT):
+				every.append(key)
+			return every
+		_:
+			printerr("unknown attribute subset '%s'; using shooting" % name_value)
+			return attribute_subset("shooting")
+
+
+## One competition's rules, with a named attribute subset shifted and the roster
+## level left exactly where the fixture puts it.
+func _distribution_cells(
+	competition: int,
+	subset: String,
+	offsets: PackedFloat64Array,
+) -> Array[Cell]:
+	var id: String = String(CalibrationTargets.competition_id(competition))
+	var keys: PackedInt32Array = attribute_subset(subset)
+	var cells: Array[Cell] = []
+	for offset in offsets:
+		cells.append(Cell.new(
+			"%s_%s_%+d" % [id, subset, int(roundf(offset))],
+			competition, competition, 0.0,
+			PackedInt32Array() if is_zero_approx(offset) else keys, offset))
+	return cells
 
 
 ## One competition's rules, with its roster level moved by whole rating points.
@@ -230,10 +412,12 @@ func _simulate(
 	for index in range(games):
 		var variation: int = base + index
 		var balance: SimulationBalanceProfile = CompetitionCatalog.balance_profile()
-		var home: TeamMatchProfile = CompetitionCatalog.team_for(
-			cell.roster_competition, &"home", variation * 2, balance, cell.level_offset)
-		var away: TeamMatchProfile = CompetitionCatalog.team_for(
-			cell.roster_competition, &"away", variation * 2 + 1, balance, cell.level_offset)
+		var home: TeamMatchProfile = _transform(CompetitionCatalog.team_for(
+			cell.roster_competition, &"home", variation * 2, balance, cell.level_offset),
+			cell, balance)
+		var away: TeamMatchProfile = _transform(CompetitionCatalog.team_for(
+			cell.roster_competition, &"away", variation * 2 + 1, balance, cell.level_offset),
+			cell, balance)
 		# The match id must **not** carry the cell name.
 		#
 		# `MatchSession` derives each possession's random stream from
