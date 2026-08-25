@@ -759,3 +759,34 @@ No mutation battery was run: no behavioural or guard code changed. The added
 instrumentation is reporting, and its "cannot affect the result" property is
 covered by the equality tests above rather than by mutating a branch that does
 not exist.
+
+### 10.3 One CI change, and why it is not a weakened gate
+
+The first pull-request gate run on this work failed, and the failure was a clock
+rather than a test:
+
+```
+##[error]Run Godot process ends with error: Error: spawnSync /bin/sh ETIMEDOUT
+##[end-action id=...gdUnit4-action.test-run;outcome=failure;duration_ms=605229]
+```
+
+**480 test cases passed and none failed.** The Godot process was killed at
+10 minutes 5 seconds against the action's default `timeout: 10`, partway through
+`test_fg_decomposition.gd`. The suite added by this task had not started when the
+kill landed and contributed nothing to the elapsed time.
+
+The budget was already the problem. The previous green run spent **9 minutes 1
+second** of its 10-minute allowance on 516 cases — 90% of the limit — and the
+runner that failed was roughly 35% slower per case, which is ordinary
+runner-to-runner variance on hosted runners. A gate filled to 90% on a good day
+reports runner load, not test results.
+
+`timeout` is raised from the default 10 to **25** in
+`.github/workflows/headless-tests.yml`. No test is skipped, no tolerance is
+relaxed, no assertion is removed, and a genuine hang still fails the job. It is
+the only change in this task outside instrumentation, tests and documentation,
+and it is recorded here because a CI edit made while a gate is red deserves to be
+visible rather than quiet.
+
+If the suite ever approaches 25 minutes honestly, the answer is to split the job
+across runners, not to raise the number again.

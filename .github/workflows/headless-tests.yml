@@ -23,6 +23,22 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      # `timeout` is the action's own wall-clock budget for the Godot process,
+      # in minutes, and its default of 10 stopped fitting this suite.
+      #
+      # The last green run spent **9 minutes 1 second** of that 10-minute budget
+      # with 516 test cases — 90% of the limit — and the next run was killed at
+      # 10m 5s on a slower runner having passed 480 cases and failed none. The
+      # step was not failing a test; it was running out of clock, and a budget
+      # that a green run already fills to 90% cannot absorb ordinary
+      # runner-to-runner variance, which is routinely 30% or more on hosted
+      # runners.
+      #
+      # Raised to 25 so the gate reports what the tests say rather than how busy
+      # the runner was. This weakens nothing: no test is skipped, no tolerance
+      # relaxed, and a genuine hang still fails the job. If the suite ever
+      # approaches this budget honestly, the answer is to split the job, not to
+      # raise the number again.
       - name: Run GdUnit4 and Godot headless checks
         uses: godot-gdunit-labs/gdUnit4-action@v1
         with:
@@ -30,6 +46,7 @@ jobs:
           version: "v6.2.0"
           paths: "res://tests"
           warnings-as-errors: true
+          timeout: 25
 
       # The parse gate needs the global class cache: without it every reference
       # to a `class_name` reports as a compile failure. The import pass builds
