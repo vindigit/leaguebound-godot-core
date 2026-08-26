@@ -188,8 +188,115 @@ const FAMILY_SECONDARY: Array[Array] = [
 ]
 
 
+## Canonical attributes no starting family emphasizes, declared rather than
+## inferred.
+##
+## The three families between them claim seventeen of the twenty canonical
+## attributes. The remaining three are unclaimed on purpose, and naming them
+## here is what keeps "unclaimed" distinguishable from "forgotten":
+##
+## - `free_throw` is a closed skill taken from a stationary line against no
+##   defender. Every family shoots them and none is characteristically better at
+##   them, so a family emphasis would make it a positional perk rather than a
+##   skill the player buys.
+## - `defensive_iq` is the reading half of defence, which §12.4 keeps equally
+##   available to every build. What a family shapes is the *physical* half —
+##   `interior_defense`, `blocking`, `perimeter_defense`, `stealing` — and those
+##   are emphasized. Emphasizing the reading half too would make defensive
+##   intelligence a Big trait.
+## - `stamina` is conditioning, which body maturation and the §9.5 season model
+##   already move on their own. A family emphasis on top of those would
+##   double-count the same thing.
+##
+## An attribute that is neither emphasized by a family nor listed here is an
+## undeclared gap in the catalog, and `family_catalog_failures` reports it.
+## Closing such a gap is a balance decision: it means either emphasizing the
+## attribute in an existing family or declaring it neutral, never inventing a
+## family to hold it.
+const FAMILY_NEUTRAL_ATTRIBUTES: Array[int] = [
+	AttributeKey.Key.FREE_THROW,
+	AttributeKey.Key.DEFENSIVE_IQ,
+	AttributeKey.Key.STAMINA,
+]
+
+
+## Structural failures in the family catalog, as human-readable messages.
+##
+## The catalog is a set of constants, so this can only fail when somebody edits
+## it — which is exactly when a silent failure costs the most. A family that
+## declared an attribute twice would have one tier quietly overwrite the other; a
+## family that declared an out-of-range key would corrupt whatever attribute
+## happened to sit at that index; an attribute that fell out of every family
+## without being declared neutral would lose its emphasis with nothing saying so.
+##
+## `emphasis_from_family` asserts on this, so a malformed catalog stops the run
+## instead of producing a family that emphasizes the wrong thing.
+static func family_catalog_failures(
+	primary_catalog: Array[Array] = FAMILY_PRIMARY,
+	secondary_catalog: Array[Array] = FAMILY_SECONDARY,
+	neutral_catalog: Array[int] = FAMILY_NEUTRAL_ATTRIBUTES,
+) -> PackedStringArray:
+	var failures := PackedStringArray()
+	if primary_catalog.size() != PositionFamily.COUNT:
+		failures.append("FAMILY_PRIMARY declares %d families, expected %d" % [
+			primary_catalog.size(), PositionFamily.COUNT])
+	if secondary_catalog.size() != PositionFamily.COUNT:
+		failures.append("FAMILY_SECONDARY declares %d families, expected %d" % [
+			secondary_catalog.size(), PositionFamily.COUNT])
+	if not failures.is_empty():
+		return failures
+
+	var emphasized: Dictionary = {}
+	for family in range(PositionFamily.COUNT):
+		var seen: Dictionary = {}
+		var primary: Array = primary_catalog[family]
+		var secondary: Array = secondary_catalog[family]
+		if primary.is_empty():
+			failures.append("family %s declares no primary attributes"
+				% PositionFamily.id_of(family))
+		for attribute: int in primary:
+			_record_declaration(family, attribute, "primary", seen, emphasized, failures)
+		for attribute: int in secondary:
+			_record_declaration(family, attribute, "secondary", seen, emphasized, failures)
+
+	for attribute in AttributeKey.all():
+		var is_emphasized: bool = emphasized.has(attribute)
+		var is_neutral: bool = neutral_catalog.has(attribute)
+		if is_emphasized and is_neutral:
+			failures.append(
+				"%s is declared family-neutral but is emphasized by a family"
+				% AttributeKey.name_of(attribute))
+		elif not is_emphasized and not is_neutral:
+			failures.append(
+				"%s is emphasized by no family and is not declared family-neutral"
+				% AttributeKey.name_of(attribute))
+	return failures
+
+
+static func _record_declaration(
+	family: int,
+	attribute: int,
+	tier: String,
+	seen: Dictionary,
+	emphasized: Dictionary,
+	failures: PackedStringArray,
+) -> void:
+	if attribute < 0 or attribute >= AttributeKey.COUNT:
+		failures.append("family %s declares unknown attribute key %d as %s" % [
+			PositionFamily.id_of(family), attribute, tier])
+		return
+	if seen.has(attribute):
+		failures.append("family %s declares %s more than once" % [
+			PositionFamily.id_of(family), AttributeKey.name_of(attribute)])
+		return
+	seen[attribute] = true
+	emphasized[attribute] = true
+
+
 static func emphasis_from_family(family: int, incompatible: Array[int]) -> Array[int]:
 	assert(PositionFamily.is_valid(family), "unknown position family")
+	assert(family_catalog_failures().is_empty(),
+		"malformed family catalog: %s" % ", ".join(family_catalog_failures()))
 	var emphasis: Array[int] = []
 	for _attribute in range(AttributeKey.COUNT):
 		emphasis.append(AttributeEmphasis.Value.NEUTRAL)

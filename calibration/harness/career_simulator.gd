@@ -32,6 +32,12 @@ const PATH_IDS: PackedStringArray = [
 	"exceptional", "rare_generational",
 ]
 
+## Creation-time allocation weight per Â§8.1 emphasis level. See
+## `_weight_for_emphasis` for why these three numbers are these three numbers.
+const PRIMARY_WEIGHT: float = 1.0
+const SECONDARY_WEIGHT: float = 0.70
+const NEUTRAL_WEIGHT: float = 0.35
+
 ## How the career-outcome population is drawn. These are *population shares*,
 ## not difficulty settings (Â§3.1: there is one standard difficulty). They
 ## describe how often a career is well managed, healthy, and given opportunity â€”
@@ -368,7 +374,7 @@ func simulate(seed_value: int, executor: int, force_path: int = -1) -> CareerRes
 	var build: BuilderState = _builder.begin_build(
 		family, prospect, maturity, body, source.derive(&"build"),
 		ceiling_pool_for(path))
-	build.spend_remaining_weighted(_family_weights(family))
+	build.spend_remaining_weighted(family_allocation_weights(family))
 	build.fill_remaining_anywhere()
 	var view: BuilderConfirmationView = _query.builder_confirmation_view(build)
 
@@ -626,13 +632,70 @@ func _cap_attainment(state: PlayerDevelopmentState) -> float:
 
 ## A coherent allocation for the build's own position family (Â§8.4: "allocation
 ## that is coherent for its position family").
-func _family_weights(family: int) -> Array[float]:
+##
+## The weight vector is indexed by canonical `AttributeKey`, and the emphasis
+## array `CapGenerator.emphasis_from_family` returns is indexed the same way:
+## entry *i* is the emphasis *level* of attribute *i*. Resolving one through the
+## other therefore means reading `emphasis[attribute]` at every canonical index.
+## It never means iterating the array's values, because the values are
+## `AttributeEmphasis.Value` levels and carry no attribute identity at all.
+##
+## Iterating the values is exactly what this function did until Â§5.24. PRIMARY,
+## SECONDARY and NEUTRAL are 0, 1 and 2, so every family set the weights at
+## canonical indices 0, 1 and 2 â€” `short_range`, `dunking` and `mid_range` â€” to
+## 1.0 and left everything it actually declared, `three_point` included, at the
+## neutral baseline. Every Â§8.4 and Â§9.5 figure measured through this function
+## before the repair is contaminated; `PROJECT_STATUS.md` Â§5.24 records which.
+##
+## Because the vector is built by walking `range(AttributeKey.COUNT)` and never
+## by iterating a set or a dictionary, no collection's iteration order can reach
+## the output.
+static func family_allocation_weights(family: int) -> Array[float]:
+	assert(PositionFamily.is_valid(family), "unknown position family")
+	return weights_for_emphasis(CapGenerator.emphasis_from_family(family, [] as Array[int]))
+
+
+## The Â§8.1 emphasis vector resolved into an allocation weight vector.
+##
+## Both vectors are indexed by canonical `AttributeKey`, and this walks that
+## index. Splitting it out from `family_allocation_weights` keeps the identity
+## resolution provable on an arbitrary emphasis vector rather than only on the
+## three the committed catalog happens to produce.
+static func weights_for_emphasis(emphasis: Array[int]) -> Array[float]:
+	assert(emphasis.size() == AttributeKey.COUNT,
+		"one emphasis value per canonical attribute is required")
 	var weights: Array[float] = []
 	for attribute in range(AttributeKey.COUNT):
-		weights.append(0.35)
-	for attribute in CapGenerator.emphasis_from_family(family, [] as Array[int]):
-		weights[attribute] = 1.0
+		weights.append(_weight_for_emphasis(emphasis[attribute]))
 	return weights
+
+
+## The creation-time allocation weight one Â§8.1 emphasis level earns.
+##
+## PRIMARY and NEUTRAL are the two weights this allocation has always used and
+## are unchanged. SECONDARY is the tier the defect made unreachable: it is the
+## midpoint of the other two, and it is also the weight
+## `tools/builder_calibration_harness.gd` has committed for the same
+## family-secondary tier since the Builder portfolio was written, so the two
+## harnesses now describe one contract instead of two.
+##
+## INCOMPATIBLE is unreachable here â€” `family_allocation_weights` passes no
+## incompatible list â€” and is deliberately given no weight. A body tradeoff that
+## reached creation-time *spending* rather than only the cap draw would be a new
+## balance decision, and it must be taken deliberately rather than inherited
+## from a number chosen in passing.
+static func _weight_for_emphasis(emphasis: int) -> float:
+	match emphasis:
+		AttributeEmphasis.Value.PRIMARY:
+			return PRIMARY_WEIGHT
+		AttributeEmphasis.Value.SECONDARY:
+			return SECONDARY_WEIGHT
+		AttributeEmphasis.Value.NEUTRAL:
+			return NEUTRAL_WEIGHT
+		_:
+			assert(false,
+				"no creation-time allocation weight is defined for emphasis %d" % emphasis)
+	return NEUTRAL_WEIGHT
 
 
 ## The Â§8.4 opportunity multiplier in force for a path.
