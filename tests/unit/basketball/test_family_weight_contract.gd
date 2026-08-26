@@ -499,18 +499,45 @@ func test_the_declared_neutral_set_is_exactly_the_documented_three() -> void:
 # --- scope --------------------------------------------------------------------
 
 
-## The allocation weights are a function of the family alone. No competition, no
-## rule profile, and no venue reaches them, so the repair cannot have introduced
-## competition-specific behaviour.
+## The allocation weights are a function of the family catalog alone.
+##
+## Asserted against a vector rebuilt here from `FAMILY_PRIMARY` and
+## `FAMILY_SECONDARY` directly, so any term the production function adds from
+## anywhere else — a competition, a rule profile, a venue, a balance profile —
+## makes the two disagree. Each competition's rule and balance profiles are
+## resolved between the calls so that competition state is genuinely live when
+## the weights are taken, rather than merely named in a loop.
 func test_the_repair_introduces_no_competition_specific_behaviour() -> void:
 	for family in PositionFamily.all():
-		var weights: Array[float] = CareerSimulator.family_allocation_weights(family)
+		var expected: Array[float] = _weights_from_catalog(family)
+		assert_array(CareerSimulator.family_allocation_weights(family)) \
+			.override_failure_message(
+				"%s does not match a vector rebuilt from the catalog alone" % _where(family)
+			).is_equal(expected)
 		for competition in CalibrationTargets.all_competitions():
-			var again: Array[float] = CareerSimulator.family_allocation_weights(family)
-			assert_array(again).override_failure_message(
-				"%s moved under competition %s"
-				% [_where(family), CalibrationTargets.competition_id(competition)]
-			).is_equal(weights)
+			var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+			var balance: SimulationBalanceProfile = CompetitionCatalog.balance_profile()
+			assert_bool(rules != null and balance != null).override_failure_message(
+				"competition %s did not resolve"
+				% CalibrationTargets.competition_id(competition)).is_true()
+			assert_array(CareerSimulator.family_allocation_weights(family)) \
+				.override_failure_message(
+					"%s moved under competition %s"
+					% [_where(family), CalibrationTargets.competition_id(competition)]
+				).is_equal(expected)
+
+
+## The weight vector the committed catalog implies, rebuilt from the two tier
+## constants without going through the production resolution at all.
+func _weights_from_catalog(family: int) -> Array[float]:
+	var weights: Array[float] = []
+	for _attribute in range(AttributeKey.COUNT):
+		weights.append(CareerSimulator.NEUTRAL_WEIGHT)
+	for attribute in _declared_secondary(family):
+		weights[attribute] = CareerSimulator.SECONDARY_WEIGHT
+	for attribute in _declared_primary(family):
+		weights[attribute] = CareerSimulator.PRIMARY_WEIGHT
+	return weights
 
 
 ## Weighted spending never breaches a cap, never leaves the legal rating band,

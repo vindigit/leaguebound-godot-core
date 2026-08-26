@@ -4477,6 +4477,15 @@ fresh seeds **1,200,001–1,201,000**, snapshotted at every college class year:
 | Distinct derived archetypes | 6 | 20+ |
 | **three_point** | 66.01 | **70.21 (+4.20)** |
 
+> **Superseded by the §5.24 family-weight repair.** Every "production builder"
+> figure in this table was measured through the defective `_family_weights` and
+> is contaminated. The corrected paired remeasurement on these same seeds is in
+> §5.24 §9. In short: Overall 67.40 → **67.48** and three_point 70.21 → **70.74**
+> both survive, but `short_range` 71.60 → **68.89**, `mid_range` 69.61 →
+> **65.19** and `dunking` 70.85 → **68.13** are withdrawn. The claim that the
+> fixture's shooting *shape* is uncorroborated survives; the claim that the gap
+> is uniform across the shooting zones does not.
+
 **The fixture's college rating *level* is corroborated by production to 0.39
 Overall points; its shooting *shape* is not.** Field-goal percentage reads
 shooting ratings, not Overall.
@@ -4489,6 +4498,13 @@ not production. It contaminates those three rows; the three-point row is
 cap-driven and clean. **It is not fixed here** — repairing it moves recorded §8.4
 figures and invalidates frozen validation ranges — and is carried as its own item
 in §6 and §9.
+
+> **Repaired in §5.24.** The "three-point row is cap-driven and clean" reading
+> was right at *college age* and wrong at *creation time*: a Guard invested
+> −0.33 in `three_point` against a neutral control where the repair gives
+> +5.77. Three college seasons of development recover a cap-driven attribute
+> regardless of its starting value, which is why the college centre moved only
+> +0.53. The conclusion held; the evidence offered for it did not.
 
 #### 3. Controlled grid — measured, not certified
 
@@ -4531,7 +4547,7 @@ conflict** between two ladders, and it exists whatever the fixture's shape.
 
 | Rank | Option | Verdict |
 | --- | --- | --- |
-| **1** | **A — fix the fixture's shooting shape**, after repairing `_family_weights` | Two independent measurements, not fitted to each other, converge on it. ≥2 points of headroom, +0.60 Overall, no production behaviour change |
+| **1** | **A — fix the fixture's shooting shape**, after repairing `_family_weights` | Two independent measurements, not fitted to each other, converge on it. ≥2 points of headroom, +0.60 Overall, no production behaviour change. **§5.24 has now repaired `_family_weights`. Option A's direction survives and its three-point gap widens from +4.20 to +4.73, but the uniform shooting lift its offsets assumed is withdrawn: corrected, the fixture is 4.73 low on `three_point`, 1.88 low on `short_range` and 1.22 _high_ on `mid_range`. The per-zone shape must be re-derived, which needs roster assembly and is therefore still blocked** |
 | **2** | **E — defer to §27.1** | Costs nothing, blocks nothing, preserves every option |
 | ✗ | **B — raise the college rating ladder** | Contradicted by the production builder's own 67.40. Collapses the college-to-Development gap 6.00 → 3.00 for a one-point window |
 | ✗ | **C — revise the locked 0.420 floor** | A 0.415 floor **still fails** (pooled interval tops out at 0.4142); only 0.410 passes, and it ratifies a fixture artifact and forecloses Option A |
@@ -4553,6 +4569,651 @@ If no, or if the owner declines to act below §27.1, Option E.
 - **Certification:** nothing here is certified. §27.1 asks 100,000 games per competition; this task ran 400 per cell.
 
 
+### 5.24 A family emphasized whatever sat at canonical indices 0-2, and every §8.4 figure was measured through it
+
+§5.23 reported, without fixing, that `CareerSimulator._family_weights` read
+`AttributeEmphasis` levels as `AttributeKey` indices. This section establishes
+the exact mechanism, proves the call graph rather than asserting it, repairs it,
+and re-measures everything the defect reached. It changes no locked target, no
+roster, no fixture, and no match-engine tuning.
+
+#### 1. The exact mechanism — structural proof
+
+`CapGenerator.emphasis_from_family` returns an array **indexed by canonical
+attribute** whose **values** are `AttributeEmphasis.Value` levels. The defective
+body iterated that array's values and used each one as an index:
+
+```gdscript
+for attribute in CapGenerator.emphasis_from_family(family, [] as Array[int]):
+    weights[attribute] = 1.0
+```
+
+The set of indices written is therefore the set of *distinct emphasis levels
+present*, not the set of emphasized attributes. Every family declares four
+primaries, four secondaries and twelve neutrals, so every family wrote exactly
+`{PRIMARY, SECONDARY, NEUTRAL}` = `{0, 1, 2}`. Canonical attributes 0, 1 and 2
+are `short_range`, `dunking` and `mid_range`.
+
+`INCOMPATIBLE` (3) never appeared, because this call site passes an empty
+incompatible list — which is why `three_point`, canonical index 3, was the one
+shooting attribute the defect left at the baseline while emphasizing the other
+three.
+
+The result: **three families, one weight vector.** Sum 8.9500 for all three
+(17 × 0.35 + 3 × 1.00), above-baseline set identical for all three.
+
+#### 2. Call-graph classification — structural proof, not inherited
+
+§5.23 classified this as "calibration harness, not production". That
+classification is correct, and it is now proved rather than asserted:
+
+| Question | Evidence |
+| --- | --- |
+| Call sites of `_family_weights` | Exactly one: `career_simulator.gd:371`, inside `simulate` |
+| Anything under `src/` referencing `CareerSimulator` | **None.** Only `calibration/runners/*` (7 runners) and 4 test suites |
+| Any other site iterating an emphasis array as indices | **None.** `grep` over every `.gd` returns one hit, the defect itself |
+| `BuilderService.begin_build` (production) | Passes the whole emphasis array to `CapGenerator.generate`, which reads `emphasis[attribute]`. **Correct** |
+
+Classification: **builder/calibration behaviour only.**
+
+| Surface | Affected? |
+| --- | --- |
+| Initial player construction (production Builder) | **No** — the user allocates; this weight vector is never built |
+| Yearly progression, Projected Peak, OVR, archetype assignment | **No** — the logic is untouched; only the *starting build* fed to the harness was wrong |
+| Cap allocation | **No** — caps come from `emphasis_from_family` read correctly by `generate` |
+| `MatchInput` construction, saved career state, frozen receipts | **No** — `CareerSimulator` persists nothing and is not reachable from any production command |
+| Every §8.4 / §9.5 figure ever measured through the harness | **Yes** |
+
+No migration or versioning implications: nothing persisted, nothing versioned,
+and no existing save or frozen receipt is altered.
+
+#### 3. Pre-fix evidence — first divergence, fixed seeds
+
+`run_family_weight_audit.gd`, seeds 1,310,001–1,310,027, nine controlled
+prospect × maturity cells per family against a neutral (flat 0.35) control at
+identical seed, body and caps. **42 contract failures.**
+
+| Family | Declares primary | Actually above baseline | Top three weights |
+| --- | --- | --- | --- |
+| guard | handle, speed, three_point, passing | short_range, dunking, mid_range | short_range, dunking, mid_range |
+| wing | short_range, three_point, perimeter_defense, speed | short_range, dunking, mid_range | short_range, dunking, mid_range |
+| big | interior_defense, blocking, defensive_rebounding, strength | short_range, dunking, mid_range | short_range, dunking, mid_range |
+
+Creation-time attribute deltas against the neutral control, identical for all
+three families:
+
+| Attribute | Pre-fix lift vs neutral control |
+| --- | ---: |
+| short_range, dunking, mid_range | **+10.00** each |
+| three_point | **−0.33** |
+| free_throw | −8.00 |
+| handle | −11.00 |
+| passing | −11.67 |
+| vision | −13.67 |
+| offensive_iq | −8.00 |
+| perimeter_defense | −7.33 |
+
+Every family's **Overall lift against the neutral control was −0.67**: the
+defective weighting produced *worse* players than a flat vector, because it
+spent the budget on attributes whose caps the family draw had not raised.
+
+Determinism was byte-identical throughout — the defect was perfectly
+reproducible, which is why no determinism, parity or reconciliation assertion
+ever caught it. Weight sum 8.9500, no duplicates, no invalid keys.
+
+Audit fingerprint (pre-fix): `366d2eac542a92ecf1cea3668003302d5cd27cb51ae8e518270f9b68367e2eef`
+
+#### 4. The repair — smallest correct change
+
+`_family_weights` becomes `CareerSimulator.family_allocation_weights`, resolving
+the emphasis vector **by canonical index**:
+
+```gdscript
+static func weights_for_emphasis(emphasis: Array[int]) -> Array[float]:
+    var weights: Array[float] = []
+    for attribute in range(AttributeKey.COUNT):
+        weights.append(_weight_for_emphasis(emphasis[attribute]))
+    return weights
+```
+
+**No weight magnitude was tuned to reproduce a published measurement.**
+
+- `PRIMARY_WEIGHT = 1.00` and `NEUTRAL_WEIGHT = 0.35` are the two weights this
+  function already used, unchanged.
+- `SECONDARY_WEIGHT = 0.70` is the tier the defect made unreachable. It is
+  simultaneously the arithmetic midpoint of the other two and the weight
+  `tools/builder_calibration_harness.gd` has committed for the *same*
+  family-secondary tier since the Builder portfolio was written. The two
+  harnesses now describe one contract rather than two.
+- `INCOMPATIBLE` is deliberately given **no** weight and halts loudly. A body
+  tradeoff reaching creation-time *spending* rather than only the cap draw
+  would be a new balance decision, and must be taken deliberately.
+
+The catalog now validates itself (`CapGenerator.family_catalog_failures`):
+duplicate declarations, out-of-range keys, empty primary tiers, and coverage
+gaps are reported **by name**, and `emphasis_from_family` asserts on them.
+
+The family catalog itself was **not** redesigned. It was audited for internal
+contradiction and none exists: no family declares an attribute in both tiers,
+and no declaration is out of range. No owner decision is required there.
+
+#### 5. Canonical attribute coverage
+
+Seventeen of twenty attributes are emphasized by at least one family. The
+remaining three are now **declared** family-neutral in
+`CapGenerator.FAMILY_NEUTRAL_ATTRIBUTES` rather than left as an unexplained gap.
+**No family was invented to close the gap.**
+
+| Attribute | Why it is family-neutral |
+| --- | --- |
+| `free_throw` | A closed skill from a stationary line against no defender. Every family shoots them; a family emphasis would make it a positional perk |
+| `defensive_iq` | The *reading* half of defence, which §12.4 keeps equally available to every build. Families shape the *physical* half, and all four of those are emphasized |
+| `stamina` | Conditioning, which body maturation and the §9.5 season model already move. A family emphasis would double-count it |
+
+An attribute that is neither emphasized nor declared neutral is now a loud
+failure, so this partition cannot drift silently.
+
+#### 6. Post-fix contract — structural proof
+
+`run_family_weight_audit.gd` on the same seeds: **PASS, 0 failures.**
+
+| Family | Above baseline | Top three weights | Weight sum | Determinism |
+| --- | --- | --- | ---: | --- |
+| guard | exactly its 8 declared | three_point, handle, passing | 11.0000 | byte-identical |
+| wing | exactly its 8 declared | short_range, three_point, perimeter_defense | 11.0000 | byte-identical |
+| big | exactly its 8 declared | interior_defense, blocking, defensive_rebounding | 11.0000 | byte-identical |
+
+Audit fingerprint (post-fix): `a2d182ffde9da9f370c30388fa47f12aa72d51a999c18df1093970d14d239a15`
+
+#### 6a. Seed ledger for this repair
+
+Every range below is fresh: none appears in any earlier diagnosis, tuning,
+validation or regression table in this document. No range is used for two
+purposes.
+
+| Purpose | Seed range | Sample | Runner |
+| --- | --- | ---: | --- |
+| Contract audit (pre-fix and post-fix, paired) | 1,310,001–1,310,027 | 27 controlled cells × 2 arms × 3 families | `run_family_weight_audit.gd` |
+| Contract test suite | 1,320,001–1,320,999 | 30 cases | `test_family_weight_contract.gd` |
+| **Builder distribution — validation** | **1,330,001–1,333,000** | 1,000 players per family × 2 arms | `run_builder_family_distribution.gd` |
+| **Progression — validation A′ (untouched)** | **1,350,001–1,352,000** | 2,000 careers | `run_career_progression.gd`, `run_projected_peak_diagnostics.gd` |
+| **Progression — validation B′ (untouched)** | **1,360,001–1,362,000** | 2,000 careers | `run_career_progression.gd`, `run_projected_peak_diagnostics.gd` |
+| Paired causal attribution only — **not validation** | 700,001–702,000 | 2,000 careers × 2 arms | `run_career_progression.gd` |
+| Paired causal attribution only — **not validation** | 1,200,001–1,201,000 | 1,000 careers × 2 arms | `run_roster_provenance.gd` |
+
+The two paired ranges are reruns of ranges §5.9 and §5.23 already spent. They are
+used **only** to attribute a difference to the repair on identical seeds, and
+carry no validation weight. Ranges **700,001–702,000** and **900,001–902,000**
+are retired as validation ranges by this repair, exactly as §6 item 6b
+anticipated; **1,350,001–1,352,000** and **1,360,001–1,362,000** replace them.
+
+#### 7. Builder distribution — measured, below certification size
+
+`run_builder_family_distribution.gd`, **1,000 players per family**, fresh seed
+ledger **1,330,001–1,333,000**, disjoint from every range recorded above. Talent
+level (3 prospect profiles), maturity (3), and physical profile (3 body variants
+spanning each family's legal freshman height range) all vary across the sample.
+Every cell is built twice — once through the family's own §8.1 weights, once
+through a flat control at identical seed, body and caps — so the family's
+contribution is separable from position, talent and body.
+
+| Measure | guard | wing | big |
+| --- | ---: | ---: | ---: |
+| n | 1,000 | 1,000 | 1,000 |
+| Overall mean (sd) | 48.67 (1.25) | 48.67 (1.25) | 48.66 (1.25) |
+| Overall P5/P25/P50/P75/P95 | 47/47/49/50/50 | 47/47/49/50/50 | 47/47/49/50/50 |
+| **Overall lift vs neutral control** | **+0.00** | **+0.00** | **−0.00** |
+| Maximum potential mean (sd) | 85.70 (7.57) | 85.83 (7.52) | 85.69 (7.77) |
+| Projected peak low mean (sd) | 71.87 (2.53) | 71.92 (2.47) | 71.81 (2.59) |
+| Projected peak high mean (sd) | 82.29 (5.17) | 82.39 (5.03) | 82.24 (5.24) |
+| **Projected peak lift vs control** | **0.0000** | **0.0000** | **0.0000** |
+| AP spent (control) | 195.0 (195.0) | 195.0 (195.0) | 195.0 (195.0) |
+| Body height / weight / wingspan | 70.0 / 150.6 / 72.3 | 74.0 / 169.3 / 76.3 | 78.0 / 187.6 / 80.3 |
+| Physical profiles | 66/70/74 in, 334/333/333 | 70/74/78 in | 74/78/82 in |
+| Cap breaches | **0** | **0** | **0** |
+| Illegal ratings | **0** | **0** | **0** |
+| Unconfirmable builds | **0** | **0** | **0** |
+| Determinism | byte-identical | byte-identical | byte-identical |
+
+Distribution fingerprint: `180dc981a41bcf8349fa2ba4eca53f9106ad0af4d450800ae88a4370f9a6a418`
+
+**Family-emphasis lift against the controlled neutral comparison**, and the same
+attribute in the families that do not declare it:
+
+| Family | Declared primary | Mean | Control | Lift | Other families |
+| --- | --- | ---: | ---: | ---: | --- |
+| guard | handle | 62.45 | 59.00 | +3.45 | wing 59.00, big 35.00 |
+| guard | speed | 59.12 | 45.00 | +14.12 | wing 59.58, big 45.00 |
+| guard | three_point | 64.77 | 59.00 | +5.77 | wing 62.88, big 35.02 |
+| guard | passing | 61.45 | 54.67 | +6.78 | wing 35.00, big 35.00 |
+| wing | short_range | 65.55 | 59.00 | +6.55 | guard 35.44, big 59.14 |
+| wing | three_point | 62.88 | 59.00 | +3.88 | guard 64.77, big 35.02 |
+| wing | perimeter_defense | 62.23 | 42.36 | +19.87 | guard 58.33, big 35.00 |
+| wing | speed | 59.58 | 45.00 | +14.57 | guard 59.12, big 45.00 |
+| big | interior_defense | 64.80 | 35.02 | +29.77 | guard 35.00, wing 35.00 |
+| big | blocking | 62.59 | 35.00 | +27.59 | guard 35.00, wing 35.00 |
+| big | defensive_rebounding | 62.27 | 35.00 | +27.27 | guard 35.00, wing 57.89 |
+| big | strength | 60.06 | 45.00 | +15.06 | guard 45.00, wing 45.00 |
+
+Families **overlap rather than partition**: `speed` is a Guard *and* a Wing
+primary and sits at 59.12 against 59.58; `three_point` is a Guard and Wing
+primary at 64.77 against 62.88; `short_range` is a Wing primary and a Big
+secondary at 65.55 against 59.14. Each family is visibly itself without being a
+hard class.
+
+**Unrelated-attribute movement.** The largest movement in an attribute a family
+does not declare is a *reduction*, never a gain: guard `dunking` −24.00, wing
+`free_throw` −23.99, big `free_throw` −23.99. That is the creation budget being
+finite: what a family buys, it buys instead of something else. No undeclared
+attribute rises.
+
+**OVR truthfulness.** The family arm and the neutral arm spend an identical
+195.0 AP and land on an identical mean Overall to two decimal places. The family
+weighting therefore buys a *different* player, never a *better* one, and no
+family carries a hidden total-OVR advantage. Projected Peak is identical to four
+decimal places in every family, which is the expected result: Projected Peak is
+drawn from the caps, and the allocation weights never touch a cap.
+
+**Honest limitation.** At creation time the Guard arm produces a single derived
+archetype across all 1,000 builds (`Shot-Creating Playmaking Guard`), because
+weighted spending is deterministic and the Guard's declared set is narrow. Wing
+produces 14 and Big 11. Archetype variety is a *development-time* property here,
+not a creation-time one: the same contract measured at college age produces 73
+distinct archetypes (§7 below). This is reported rather than absorbed; it is not
+a regression, since the pre-fix arm was narrower still — one archetype for every
+family, because every family built the same player.
+
+#### 8. §8.4 / §9.5 progression, before and after
+
+The repair changes the *starting build* every simulated career begins from, so
+every progression figure ever measured through this harness is derived through
+the defect. The historical figures in §5.9 are **not overwritten below**; they
+are marked superseded and reproduced here as the pre-fix arm.
+
+##### 8a. Paired causal attribution — seeds 700,001–702,000
+
+Both arms run 2,000 careers plus two 2,000-career parity cohorts on **identical
+seeds**, one against the defective tree and one against the repaired tree, so
+every difference is the repair. The pre-fix arm **reproduces §5.9's published
+Validation A column exactly**, which is what makes the pairing trustworthy.
+
+| Metric | Pre-fix (= §5.9 Val A) | Post-fix | Moved? | Target |
+| --- | ---: | ---: | --- | --- |
+| Poor / injury-hit median | 66 | 66 | — | below 72 ✓ |
+| Ordinary successful median | 77 | 77 | — | 74–79 ✓ |
+| Strong, well managed median | 82 | 82 | — | 80–85 ✓ |
+| Exceptional median | 87 | 87 | — | 86–91 ✓ |
+| **Rare generational median** | **93** | **93** | — | **92–95 ✓** |
+| Share above 95 | 0.0000 | 0.0000 | — | ≤ 0.0001 ✓ |
+| Transition-gap share | 0.0155 | 0.0155 | — | 0.01–0.20 ✓ |
+| **Projected-peak coverage** | **0.7380** | **0.7380** | — | 0.70–0.85 ✓ |
+| **Projected-peak median width** | **11** | **11** | — | 6–12 ✓ |
+| **Projected-peak median signed error** | **0** | **0** | — | ±2 ✓ |
+| Parity, manual vs full detail | 0.0000 | 0.0000 | — | ±2% ✓ |
+| Parity, manual vs aggregate | 0.0000 | 0.0000 | — | ±2% ✓ |
+| AP reconciliation failures | 0 | 0 | — | exactly 0 ✓ |
+| Guardrail warnings explained | 1.0000 | 1.0000 | — | exactly 1.0 ✓ |
+| §9.5 ruling violations | 0 | 0 | — | exactly 0 ✓ |
+| Guardrail season share | 0.0569 | 0.0569 | — | informational |
+| Guardrail excess AP per career | 12.7342 | 12.7342 | — | informational |
+| Mean lifetime AP granted | 1,203.5731 | 1,203.5731 | — | informational |
+| Mean lifetime AP spent | 1,137.9305 | 1,137.9435 | **+0.0130** | informational |
+| Mean lifetime AP unspent | 62.6841 | 62.6706 | **−0.0135** | informational |
+| **Mean rating points gained** | **604.4085** | **585.7930** | **−18.6155** | informational |
+| **Mean peak Overall** | **75.9420** | **75.9735** | **+0.0315** | informational |
+| Mean cap attainment | 0.8839 | 0.8834 | −0.0005 | informational |
+| Mean peak age | 28.3305 | 28.3470 | +0.0165 | informational |
+
+**Every judged §8.4 and §9.5 contract is byte-identical.** No locked progression
+contract became a failure. Both arms report exactly one failure —
+`sample.meets_certification_size` — and it fails *identically* in both, because
+2,000 careers is not §27.1's 1,000,000. It is a sample-size statement, not a
+regression, and it was already failing before the repair.
+
+The §8.4 career-peak distribution is likewise unmoved. Cohort sizes are
+identical (513 / 795 / 457 / 196 / 39), and the only figure that moves anywhere
+in the table is the poor/injury-hit P10, 65 → 66:
+
+| Outcome | n | P10 pre → post | Median pre → post | P90 pre → post | Max pre → post |
+| --- | ---: | --- | --- | --- | --- |
+| poor_or_injury_hit | 513 | 65 → **66** | 66 → 66 | 67 → 67 | 68 → 68 |
+| ordinary_successful | 795 | 75 → 75 | 77 → 77 | 78 → 78 | 79 → 79 |
+| strong_well_managed | 457 | 76 → 76 | 82 → 82 | 83 → 83 | 84 → 84 |
+| exceptional | 196 | 79 → 79 | 87 → 87 | 88 → 88 | 89 → 89 |
+| rare_generational | 39 | 89 → 89 | **93 → 93** | 93 → 93 | 93 → 93 |
+
+##### Why the bands did not move, and what did
+
+The two figures that move are the interesting ones, and they move in opposite
+directions: the corrected careers gain **18.6 fewer rating points** while
+reaching a **marginally higher peak Overall** on an **identical** AP grant.
+
+That is the expected signature of the repair rather than a coincidence. The
+defect spent the creation budget on `short_range`, `dunking` and `mid_range`,
+which the family cap draw had *not* raised — so those attributes sat low in the
+§9.1 cost bands, where a rating point is cheap. Cheap points are plentiful and
+contribute little. The repair spends the same budget on the attributes whose
+caps the family draw *did* raise, which sit higher in the cost bands: fewer
+points, each worth more Overall.
+
+Cap attainment falls by 0.0005 for the same reason — the corrected build is
+closer to the caps that matter and further from the ones that do not.
+
+The §8.4 bands are unmoved because they are *peak Overall* bands, and peak
+Overall is bounded by Maximum Potential, which is a function of the caps. The
+weights never touch a cap. The defect wasted the creation budget; it could not
+raise or lower the ceiling that the bands are measured against.
+
+##### 8b. Fresh validation ranges
+
+Ranges 700,001–702,000 and 900,001–902,000 are **retired as validation ranges**
+by this repair, exactly as §6 item 6b anticipated, because they have now been
+looked at during it. Two untouched replacements:
+
+`run_career_progression.gd` post-fix, 2,000 careers plus two 2,000-career parity
+cohorts per range. Neither range was looked at during the repair.
+
+| Metric | Validation A′ 1,350,001–1,352,000 | Validation B′ 1,360,001–1,362,000 | Target |
+| --- | ---: | ---: | --- |
+| Poor / injury-hit median | 66 | 66 | below 72 ✓ |
+| Ordinary successful median | 77 | 77 | 74–79 ✓ |
+| Strong, well managed median | 82 | 82 | 80–85 ✓ |
+| Exceptional median | 87 | 87 | 86–91 ✓ |
+| **Rare generational median** | **92** | **93** | **92–95 ✓** |
+| Share above 95 | 0.0000 | 0.0000 | ≤ 0.0001 ✓ |
+| Transition-gap share | 0.0145 | 0.0170 | 0.01–0.20 ✓ |
+| Projected-peak coverage | 0.7320 | 0.7380 | 0.70–0.85 ✓ |
+| Projected-peak median width | 11 | 11 | 6–12 ✓ |
+| Projected-peak median signed error | −1 | 0 | ±2 ✓ |
+| Parity, manual vs full detail | 0.0000 | 0.0000 | ±2% ✓ |
+| Parity, manual vs aggregate | 0.0000 | 0.0000 | ±2% ✓ |
+| AP reconciliation failures | 0 | 0 | exactly 0 ✓ |
+| Guardrail warnings explained | 1.0000 | 1.0000 | exactly 1.0 ✓ |
+| §9.5 ruling violations | 0 | 0 | exactly 0 ✓ |
+| Mean lifetime AP granted | 1,187.1134 | 1,216.0751 | informational |
+| Mean lifetime AP spent | 1,120.2735 | 1,146.4075 | informational |
+| Mean lifetime AP unspent | 63.9854 | 66.6901 | informational |
+| Mean rating points gained | 580.9750 | 588.7570 | informational |
+| Mean peak Overall | 75.7430 | 76.0520 | informational |
+| Mean cap attainment | 0.8805 | 0.8833 | informational |
+| Mean peak age | 28.2100 | 28.3125 | informational |
+| Guardrail season share | 0.0509 | 0.0594 | informational |
+| Guardrail excess AP per career | 11.1875 | 14.4327 | informational |
+
+**Every judged §8.4 and §9.5 contract passes on both untouched ranges.** Each
+range reports exactly one failure, `sample.meets_certification_size`, which is
+the §27.1 sample-size statement and fails on every run of this length — before
+the repair as well as after it.
+
+The rare-generational median reads 92 on A′ and 93 on B′. Both are inside the
+92–95 target. That cohort is 2% of the population by construction, so each range
+carries only 39–41 careers of it, and a one-point median difference between two
+40-career samples is ordinary sampling variation rather than a signal. The
+paired pre/post arm in §8a is the evidence about *what the repair did*; these two
+ranges are evidence that the repaired model still satisfies its locked contracts
+on seeds nothing was fitted to.
+
+##### 8c. Projected Peak subgroups
+
+`run_projected_peak_diagnostics.gd`, same paired seeds, 2,000 careers per arm.
+**Both arms pass; every judged metric is byte-identical.**
+
+| Measure | Pre-fix | Post-fix | Target |
+| --- | ---: | ---: | --- |
+| `diagnostic.coverage` | 0.7380 | 0.7380 | 0.70–0.85 ✓ |
+| `diagnostic.median_width` | 11 | 11 | 6–12 ✓ |
+| `diagnostic.conversion_signed_error` | 0 | 0 | informational |
+| `diagnostic.budget_signed_error` | 0 | 0 | informational |
+| `diagnostic.total_signed_error` | 0 | 0 | informational |
+| `diagnostic.clamp_effect_on_high_bound` | 0 | 0 | informational |
+| `diagnostic.peak_age_minus_expected` | 0 | 0 | informational |
+| `diagnostic.mean_realized_lifetime_ap` | 1,203.5731 | 1,203.5731 | informational |
+| `diagnostic.mean_projected_lifetime_ap` | 1,389.9907 | 1,389.9907 | informational |
+| `projected_peak.pathological_subgroups` | **0** | **0** | exactly 0 ✓ |
+| `projected_peak.judged_subgroups` | 15 | 15 | — |
+
+Per **position family** — the subgroup this repair could most plausibly have
+damaged, since the whole defect was a family-identity defect:
+
+| Family | n | Coverage pre → post | Median signed error | Median width | Median peak | Mean starting Overall pre → post | Mean cap attainment pre → post |
+| --- | ---: | --- | ---: | ---: | ---: | --- | --- |
+| guard | 681 | 0.7327 → **0.7327** | 0.0 → 0.0 | 11 → 11 | 77 → 77 | 47.7665 → **48.4758** | 0.8868 → 0.8858 |
+| wing | 664 | 0.7349 → **0.7349** | −0.5 → −0.5 | 11 → 11 | 77 → 77 | 47.7681 → **48.4774** | 0.8824 → 0.8824 |
+| big | 655 | 0.7466 → **0.7466** | 0.0 → 0.0 | 11 → 11 | 77 → 77 | 47.8687 → **48.5374** | 0.8824 → 0.8821 |
+
+Every other judged grouping is byte-identical too — prospect profile (balanced
+0.7184, high upside 0.7497, ready now 0.7414), maturity (average 0.7484, early
+0.7352, late 0.7309), starting-Overall band, and Maximum-Potential band
+(0.7176 / 0.7408 / 0.7537 / 1.0000). No pathological subgroup appears in either
+arm.
+
+**The two figures that move are exactly the two that should.** Mean starting
+Overall rises by +0.67 to +0.71 in every family — the creation-time gain the
+repair delivers, matching the audit's pre-fix −0.67 Overall deficit against a
+neutral control. Mean cap attainment falls by 0.0003 to 0.0010, because the
+corrected build sits closer to the caps that matter.
+
+**Projected Peak itself is untouched.** Coverage, width, signed error, median
+peak and median Maximum Potential are identical to four decimal places in every
+subgroup. That is the expected result and a useful confirmation of the
+call-graph classification: Projected Peak is derived from the caps, the caps are
+drawn from `emphasis_from_family` read correctly, and the allocation weights
+never reach a cap. A repair that had leaked into the cap draw would have moved
+this table, and it does not.
+
+No previously passing locked progression contract became a repeatable failure,
+so no tuning value was touched to compensate for one.
+
+#### 9. The corrected college snapshot, and what it does to §5.23
+
+`run_roster_provenance.gd --mode=builder`, 1,000 careers, **the same seeds
+1,200,001–1,201,000 §5.23 used**, run twice: once against the defective tree and
+once against the repaired one. Paired on identical seeds, so every difference is
+the repair and nothing else. These seeds are used here **for causal attribution
+only** and are not offered as validation.
+
+The pre-fix arm reproduces §5.23's published figures exactly — Overall 67.4010
+against a recorded 67.40, standard deviation 4.6698 against 4.67 — which is what
+makes the pairing trustworthy.
+
+| Measure | Fixture college | Pre-fix production | Corrected production | Corrected − fixture |
+| --- | ---: | ---: | ---: | ---: |
+| Mean current Overall | 67.01 | 67.40 | **67.48** | +0.47 |
+| Overall standard deviation | 5.14 | 4.67 | **4.56** | −0.58 |
+| **short_range** | 67.01 | 71.60 | **68.89** | +1.88 |
+| **dunking** | 66.81 | 70.85 | **68.13** | +1.32 |
+| **mid_range** | 66.41 | 69.61 | **65.19** | **−1.22** |
+| **three_point** | 66.01 | 70.21 | **70.74** | **+4.73** |
+| **free_throw** | 63.41 | 62.78 | **63.17** | −0.24 |
+| Shooting zone mean | 66.48 | 70.47 | **68.27** | +1.79 |
+| offensive_iq | 67.21 | 65.43 | **66.29** | −0.92 |
+| passing | 66.01 | 66.38 | **66.95** | +0.94 |
+| vision | 66.61 | 65.91 | **66.30** | −0.31 |
+| defensive mean | 66.17 | 65.30 | **65.84** | −0.33 |
+| offensive_rebounding | 65.81 | 64.28 | **64.36** | −1.45 |
+| defensive_rebounding | 67.01 | 67.67 | **68.15** | +1.14 |
+| stamina | 66.21 | 61.78 | **62.66** | −3.55 |
+| Distinct derived archetypes | 6 | 82 | **73** | — |
+| Age / class year | neither field exists | 19–21 / three classes | 19–21 / three classes | — |
+
+The position and age mixtures are byte-identical across the two arms (Guard
+1023 / Wing 975 / Big 1002; ages 19/20/21 at 1000 each), because the repair
+changes what a career *buys*, never which career is drawn.
+
+##### Which §5.23 claims survive, and which are withdrawn
+
+| §5.23 claim | Verdict |
+| --- | --- |
+| Production college three-point centre **70.21** | **Preserved, revised to 70.74.** The repair moves it +0.53. The figure was very nearly right for a reason §5.23 guessed at but did not prove |
+| §5.23's stated reason: "the three-point row is cap-driven and clean" | **Preserved at college age, withdrawn at creation time.** The creation-time measurement shows `three_point` was contaminated *severely* — a Guard invested −0.33 against a neutral control where the repair gives +5.77. What §5.23 could not see is that three college seasons of development recover a cap-driven attribute regardless of its starting value. The conclusion was right; the evidence offered for it was not |
+| Fixture college three-point centre **66.01** | **Preserved unchanged.** It is a fixture property and the repair cannot touch it |
+| Fixture rating *level* corroborated (67.01 against 67.40) | **Preserved, strengthened.** 67.01 against 67.48; the gap narrows from 0.39 to 0.47 Overall — still well inside a point |
+| Production `short_range` 71.60, `mid_range` 69.61, `dunking` 70.85 | **Withdrawn.** These are the three rows the defect emphasized. Corrected: 68.89, 65.19, 68.13 |
+| "The fixture's shooting *shape* is not corroborated" | **Preserved in direction, materially revised in shape.** The gap is not a uniform ~4 points across the shooting zones. Corrected, the fixture is **4.73 low on three_point**, **1.88 low on short_range**, and **1.22 _high_ on mid_range** |
+| "Shooting-only +3 lands within 0.21 Overall of production" | **Preserved as an Overall statement** — it now lands within 0.13 of 67.48. **Withdrawn as a shape justification.** A flat +3 across all shooting attributes is no longer supported: it would overshoot `mid_range` by roughly 4 points and still leave `three_point` short |
+| **Option A as the leading owner recommendation** | **Direction preserved, exact offsets withdrawn and not re-derived here.** The corrected evidence still says the fixture's shooting shape is the defective property, and still says its rating level is right. It no longer supports a uniform shooting lift. Option A's *magnitude and per-zone shape* must be re-derived from this table, which this task does not do — that needs a justified diagnostic fixture, and §5.23's grid was run on contaminated production evidence |
+
+§5.23's decision matrix rankings (A over E, with B, C and D excluded) are **not
+disturbed**: B was excluded by the production Overall centre, which moved by
++0.08; C and D were excluded by the band arithmetic, which is untouched.
+
+The three-point gap that motivates Option A **widened** from +4.20 to +4.73, so
+the corrected evidence argues for Option A's direction slightly more strongly
+than the contaminated evidence did.
+
+##### What is still missing before a roster decision
+
+The college FG% tuning grid was **not** rerun. §5.23's grid moved a *roster*
+ladder, and translating this corrected *player* distribution into a justified
+diagnostic fixture would require inventing roster assembly — thirteen to fifteen
+players per team, a starter/bench split, and a team-strength ladder — none of
+which exists under `src/`. That is roster generation, and this task ends before
+it. The prerequisite is unchanged and now sharper: **a corrected per-zone
+shooting shape (three_point +4.73, short_range +1.88, mid_range −1.22) needs a
+roster construction to be expressed through before any FG% target can be judged
+against it.**
+
+#### 10. Mutation battery
+
+Twelve targeted mutants, applied sequentially to an isolated worktree
+(`git worktree` at the repaired tree, restored between mutants). The unmutated
+control passes 36 cases in both suites before every run, so a mutant that fails
+is failing on the mutation and not on the harness.
+
+Detection requires a **named assertion failure**. Timeouts, crashes, memory
+breaches, invalid mutations, setup failures and dead code are not detections and
+are recorded as such.
+
+| # | Mutant | Outcome | Named assertion that killed it (first listed; total detectors) |
+| --- | --- | --- | --- |
+| 1 | Restore the original "emphasis value as attribute index" defect | **KILLED** | `test_every_declared_attribute_receives_its_declared_tier_weight` (12 detectors, 102 assertion failures) |
+| 2 | Route every family back to the universal short_range/dunking/mid_range trio | **KILLED** | `test_no_family_collapses_onto_the_old_universal_trio` (12 detectors, 102 failures) |
+| 3 | Swap two canonical attribute indices while resolving identity (`three_point` ↔ `handle`) | **KILLED** | `test_a_single_emphasized_attribute_moves_only_its_own_weight` (4 detectors, 9 failures) |
+| 4 | Ignore one declared family emphasis tier — secondaries fall to neutral | **KILLED** | `test_every_declared_attribute_receives_its_declared_tier_weight` (4 detectors, 30 failures) |
+| 5 | Add an undeclared attribute to a family (`dunking` becomes a Guard primary) | **KILLED** | `test_the_guard_emphasizes_none_of_the_defect_trio` (19 detectors, 31 failures) |
+| 6 | Duplicate one emphasized attribute across both tiers of a family | **KILLED** | `test_the_committed_family_catalog_is_well_formed` (19 detectors, 32 failures) |
+| 7 | Break normalization — scale the resolved vector by 1.5 | **KILLED** | `test_the_weight_total_is_exactly_what_the_declaration_implies` (9 detectors, 540 failures) |
+| 8 | Make dictionary insertion order reach the output | **KILLED** | `test_dictionary_insertion_order_does_not_change_the_output` (8 detectors, 81 failures) |
+| 9 | Allow an unknown attribute key through the catalog validator silently | **KILLED** | `test_an_unknown_attribute_key_fails_loudly` (1 detector, 2 failures) |
+| 10 | Leak family identity into competition-specific behaviour (`three_point` +0.25 when the college rule profile resolves) | **KILLED** | `test_the_repair_introduces_no_competition_specific_behaviour` (9 detectors, 17 failures) |
+| 11 | Inflate Overall by a constant without changing any owned capability | **KILLED** | `test_empty_preview_reproduces_the_documented_derivation`, `test_scale_is_preserved_at_uniform_ratings` (2 detectors, 7 failures) — detected by the pre-existing `test_overall_calculator.gd`, not by this repair's suite |
+| 12 | Break deterministic output — make the vector depend on the wall clock | **KILLED** | `test_the_weight_vector_is_a_pure_function_of_the_family`, `test_the_same_seed_and_family_reproduce_the_builder_exactly` (14 detectors, 494 failures) |
+
+**12 of 12 killed by named assertions. None withdrawn, none equivalent.**
+
+Every mutant ran the full 36 cases (fail-fast disabled with `-c`), so the
+detector counts above are complete rather than truncated at the first failure.
+The unmutated control passes 36/36 immediately before each run.
+
+Two honesty notes:
+
+- Mutants 5 and 6 also produced 426 runtime *errors* — the catalog assertion in
+  `emphasis_from_family` firing. Those are **not** counted as detections. Both
+  mutants are credited only to the named assertion failures, which occur without
+  needing the runtime assert.
+- Mutant 10's first pass was killed only by the weight-value assertions, while
+  the competition-named test — which merely called the function repeatedly and
+  compared the results to each other — stayed green against a constant offset.
+  That test was too weak to mean what its name claimed, so it was rewritten to
+  compare against a vector rebuilt from the catalog constants alone, with each
+  competition's rule and balance profile resolved live between calls. The mutant
+  is now killed by name. The original weakness is recorded rather than quietly
+  fixed.
+
+No mutant was withdrawn and none was equivalent.
+
+#### 11. Golden ledgers, ruleset, and smoke
+
+The repair is **diagnostics-only** by the call graph in §2 above, so the match
+ruleset must not move and the golden ledgers must be byte-identical.
+
+| Artifact | Before | After |
+| --- | --- | --- |
+| `ruleset_version` | `simulation-calibrated-v3` | `simulation-calibrated-v3` — unchanged |
+| `tests/golden/match_golden_hashes.json` (file sha256) | `be8c8b19b60abcb4965d9254b335a2396d3361c9fb17ea3b38a51e23d5eb4cf5` | `be8c8b19b60abcb4965d9254b335a2396d3361c9fb17ea3b38a51e23d5eb4cf5` — **unchanged** |
+| Six per-scenario ledger hashes | verified by `run_all.gd` | all six re-verified green by `run_all.gd` on the repaired tree; **no ledger regenerated, nothing reseeded** |
+| Simulation smoke | — | **byte-identical apart from wall-clock metadata.** The pre-fix and post-fix outputs differ on exactly one line — `games: 10 (1 with overtime) in 4815 ms` against `… 4874 ms`. With that single timing figure normalized both files hash to `f32826a5ee80f392eef70e5d4246878f8ae261db3252daf3942a1bce9b4b2296` |
+
+**Why the golden fixtures do not move.** The golden scenarios build their rosters
+from `CompetitionCatalog.team_for`, a hard-coded ladder that never calls
+`BuilderService` and never reaches `CareerSimulator`. The one production file
+this change touches, `cap_generator.gd`, gains a constant, a pure validator, and
+an `assert` that reads that validator — no draw is consumed, no value is
+altered, and `emphasis_from_family` returns exactly what it returned before.
+Nothing was reseeded and no golden hash was regenerated.
+
+#### 12. Performance
+
+The one production file this change touches gains an `assert` that runs a pure
+catalog validator on **every** `emphasis_from_family` call — that is, once per
+`BuilderService.begin_build`, on the production Builder path. Asserts are live
+in the editor-debug binary every calibration and CI run uses, so the cost is
+real there and worth measuring rather than assuming.
+
+`tools/builder_calibration_harness.gd` isolates it exactly: it uses its own
+`_weights_for` and never calls `family_allocation_weights`, so it performs
+**byte-identical work** before and after the repair. The only difference on its
+path is the new assert. Three alternating runs of each arm:
+
+| Run | Pre-fix | Post-fix |
+| --- | ---: | ---: |
+| 1 | 27,163 ms | 27,880 ms |
+| 2 | 27,836 ms | 27,954 ms |
+| 3 | 28,318 ms | 27,374 ms |
+| **Mean** | **27,772 ms** | **27,736 ms** |
+
+Post-fix is **36 ms faster on average (−0.13%)**, against a run-to-run spread of
+about 1,150 ms within each arm. The validator is O(20) over constants and runs
+once per build against a build that then spends 195 AP through the cost table;
+the measurement says what the arithmetic predicts, which is that it does not
+register. No measurable performance effect.
+
+The two paired 2,000-career progression runs corroborate this at a different
+scale: 518,885 ms pre-fix against 515,719 ms post-fix for the same 6,000
+careers, and 235,072 ms against 234,356 ms for the paired projected-peak
+diagnostics.
+
+#### 13. The complete gate, single-threaded
+
+Run end to end in a throwaway worktree on the repaired tree, one step at a time,
+with the class cache built there rather than in the working tree.
+
+| # | Step | Result |
+| --- | --- | --- |
+| 1 | Class-cache build (`--import`) | exit 0 |
+| 2 | Warnings-as-errors parse check, **exit status asserted** | exit 0 — 239 scripts checked, 0 failures |
+| 3 | `tests/run_all.gd` (structure, determinism, **golden ledgers**) | **PASS** |
+| 4 | Simulation smoke | **Invariants: PASS**, byte-identical to pre-fix apart from wall-clock |
+| 5 | Builder calibration portfolio (Gate B1) | **Builder calibration: PASS** |
+| 6 | Attribute sensitivity, 100,000 resolutions | **80 metrics, 80 judged, 0 failures: PASS** |
+| 7 | Calibration smoke, 6 games | **15 metrics, 15 judged, 0 failures: PASS** |
+| 8 | Family weight audit | **PASS**, fingerprint `a2d182ff…` |
+| 9 | Full GdUnit4 suite | **553 cases / 47 suites, 0 errors, 0 failures, 0 flaky, 0 skipped, 0 orphans** — 13 min 12 s |
+| 10 | Golden ledger file hash | `be8c8b19b60abcb4965d9254b335a2396d3361c9fb17ea3b38a51e23d5eb4cf5` — unchanged |
+
+The suite grows from **523 cases across 46 suites** to **553 across 47**: the
+thirty cases of `test_family_weight_contract.gd` and nothing else. No test was
+skipped, quarantined, or relaxed.
+
+#### 14. Classification of everything in this section
+
+| Finding | Classification |
+| --- | --- |
+| The defect mechanism (emphasis level read as attribute index) | **Structural proof** — read from the source, reproduced, and pinned by 30 tests |
+| Call-graph classification as calibration-only | **Structural proof** — exhaustive `grep` over every `.gd`, plus `test_roster_provenance.gd`'s existing structural assertion |
+| Canonical attribute coverage partition (17 emphasized / 3 declared neutral) | **Structural proof** — enforced by `family_catalog_failures`, pinned by test |
+| Weight vector contract per family | **Structural proof** — exact equality assertions, all three families, all twenty attributes |
+| OVR truthfulness and no hidden family advantage | **Measured below certification size** — 3,000 builds; §27.1 sets no size for this, but it is a sample, not a proof |
+| Builder distributions (means, sd, quantiles, lift) | **Measured below certification size** — 1,000 players per family |
+| §8.4 / §9.5 progression figures | **Measured below certification size** — 2,000 careers per range; §27.1 asks 1,000,000 |
+| Corrected college snapshot | **Measured below certification size** — 1,000 careers |
+| §5.23's pre-fix college figures | **Historical contaminated evidence** — reproduced exactly, retained as the paired pre-fix arm, superseded for every purpose except causal attribution |
+| §5.23's grid, decision matrix, and Option A offsets | **Historical contaminated evidence for the shape rows; owner decision still pending.** Direction preserved, exact offsets withdrawn |
+| Which college FG% option the owner takes | **Owner decision still pending** — unchanged by this task, and still blocked behind roster generation |
+
+Nothing in this section is **certified**. §27.1 asks for 1,000,000 careers and
+100,000 games per competition; the largest sample here is 6,000 careers.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -4565,9 +5226,9 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
 | **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
 | **High-school field-goal percentage** | **Not a repeatable failure (§5.22).** Two untouched 1,000-game validation ranges pool to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band, and one of four fresh ranges passes outright. Recorded as a **measured marginal/unresolved row**, not as a failure. Not an implementation defect |
-| **College field-goal percentage** | **Confirmed as a repeatable measurement, cause now identified to the property (§5.22, §5.23).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **A fixture shape defect plus a linear-roster-against-non-linear-band specification conflict, not an implementation defect.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
+| **College field-goal percentage** | **Confirmed as a repeatable measurement, cause now identified to the property (§5.22, §5.23).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **§5.24 repairs the `_family_weights` defect those figures were measured through and re-measures on the same seeds: the level finding survives (67.01 against 67.48) and so does the three-point gap, which widens to 66.01 against 70.74; the `short_range`, `mid_range` and `dunking` rows are withdrawn, and with them the assumption that a uniform shooting lift matches production.** **A fixture shape defect plus a linear-roster-against-non-linear-band specification conflict, not an implementation defect.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
 
-What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the calibration fixture's shooting shape, its roster ladder, and §14.1's band ladder rather than as an engine defect (§5.22, §5.23)**, **the `CareerSimulator._family_weights` defect §5.23 found in the calibration harness**, the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
+What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the calibration fixture's shooting shape, its roster ladder, and §14.1's band ladder rather than as an engine defect (§5.22, §5.23)**, ~~the `CareerSimulator._family_weights` defect §5.23 found in the calibration harness~~ (**repaired in §5.24**; what remains of it is the re-derivation of Option A's per-zone shooting offsets, which is blocked behind roster generation), the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 
@@ -4683,7 +5344,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 5. ~~Resolve the rare-generational 92–95 peak miss.~~ **Done** (§5.8), and **closed** (§5.9). The band reads 93 on the development range and on two untouched validation ranges. The §9.5 tension §5.8 left open is settled by the owner ruling of 2026-08, which permits a bounded 20% exception for the rare-generational path only; enforcing it as a per-season bound made compliance structural and moved the opportunity multiplier from 1.70 to 1.85. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it is certified.
 6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
 6a. **Take the §5.23 college field-goal owner decision**, or record a deliberate deferral to §27.1. The package is complete and the evidence is delivered; what is missing is the owner's choice of which contract moves. Nothing downstream is blocked by the deferral.
-6b. **Repair `CareerSimulator._family_weights`** (§5.23). It iterates `AttributeEmphasis` *values* as attribute *indices*, so every position family weights `short_range`, `dunking` and `mid_range` at 1.0 and nothing else by its own emphasis. Calibration-harness code, not production, so no shipped behaviour is affected — but it contaminates creation-time allocation in every career the progression suites have run, and it must be repaired **before** any §5.23 Option A offsets are chosen. Needs its own fresh validation ranges, because repairing it moves recorded §8.4 figures and invalidates ranges 700,001–702,000 and 900,001–902,000.
+6b. ~~**Repair `CareerSimulator._family_weights`**~~ **Done (§5.24).** The emphasis vector now resolves by canonical index, every family emphasizes exactly what it declares, and the family catalog validates itself. Proved calibration-only by call graph; caps, OVR, Projected Peak, archetypes, `MatchInput` and saved career state are untouched, the six golden ledgers are byte-identical, and the ruleset did not move. Every judged §8.4/§9.5 contract is byte-identical on a paired pre/post run of seeds 700,001–702,000 and passes on two untouched replacement ranges, **1,350,001–1,352,000** and **1,360,001–1,362,000**; ranges 700,001–702,000 and 900,001–902,000 are retired as validation ranges as anticipated. What remains is downstream: **the §5.23 Option A per-zone offsets must be re-derived against the corrected shooting shape**, and that is blocked behind roster generation, not behind this repair.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
 8. Complete the required game-shape and parity reports at usable samples.
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.
