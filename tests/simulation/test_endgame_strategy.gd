@@ -251,6 +251,14 @@ func test_hold_stops_boosting_the_reset_once_the_shot_clock_is_late() -> void:
 
 ## Quick-two swings weight toward a two and off a three, symmetrically, only
 ## when its own gate holds.
+## The window quick-two applies in is, by construction, also inside
+## two-for-one's — both key off "trailing or tied", and quick-two's window
+## (past `endgame_possession_ms`) sits inside two-for-one's (past one shot
+## clock). Two-for-one boosts a direct shot symmetrically, whichever zone it
+## is, so its contribution cancels out of the two-versus-three *ratio* even
+## though it does not cancel out of either absolute value — which is what
+## this test asserts against, rather than an absolute value that would be
+## coupled to a strategy this test is not about.
 func test_quick_two_swings_two_point_weight_against_three_point_weight() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var balance: SimulationBalanceProfile = input.balance_profile
@@ -259,14 +267,15 @@ func test_quick_two_swings_two_point_weight_against_three_point_weight() -> void
 		input,
 		_snapshot_at(input, rules.regulation_periods, balance.endgame_possession_ms + 5000, -3),
 		input.home.team_id)
+	assert_bool(EndgameStrategy.two_for_one_active(context, balance)).is_true()
+	assert_bool(EndgameStrategy.quick_two_preferred(context, balance)).is_true()
 	var actor: StringName = input.home.starters()[0]
 	var preference: float = balance.quick_two_preference
 	var two: float = EndgameStrategy.action_multiplier(
 		context, balance, ActionFamily.Value.PULL_UP, ShotZone.Value.MIDRANGE, actor, &"")
 	var three: float = EndgameStrategy.action_multiplier(
 		context, balance, ActionFamily.Value.PULL_UP, ShotZone.Value.STANDARD_THREE, actor, &"")
-	assert_float(two).is_equal_approx(1.0 + preference, 0.0001)
-	assert_float(three).is_equal_approx(1.0 - preference, 0.0001)
+	assert_float(two / three).is_equal_approx((1.0 + preference) / (1.0 - preference), 0.0001)
 
 
 ## The designed play boosts only its own designated actor's candidates, never
