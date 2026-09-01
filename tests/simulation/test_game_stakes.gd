@@ -684,15 +684,34 @@ func test_state_transitions_stay_reducer_owned_at_the_highest_tier() -> void:
 		.is_greater(0)
 
 
-## The four consumers, named. A stakes tier that acquired a fifth reader would
+## The five consumers, named. A stakes tier that acquired a sixth reader would
 ## be a contract change, and this is the assertion that makes it one: the
 ## engine's own source is searched for the fields a tier can be read through.
+##
+## `EndgameStrategy` is the fifth, added by
+## `simulation-v11-quick-two-stakes-window`, and it is a deliberate contract
+## change rather than an incidental one. `quick_two_preferred` has to begin
+## where `GameManagement.endgame_multiplier`'s tie-seeking window ends, because
+## the two rules hold opposite preferences at a three-point deficit and both
+## multiply into the same §10.3 factor. That boundary is
+## `StakesPolicy.endgame_window_ms`, which the tier already moves — so before
+## this, quick-two was reading a stale copy of a boundary the tier had already
+## shifted, and the whole of its window sat inside the tie-seeking one at both
+## tiers above regular season.
+##
+## Routing the read through `GameManagement` would have kept this list at four
+## names while making the behaviour just as stakes-dependent, which is the one
+## thing this assertion exists to prevent. The tier still reaches only "how
+## early he starts managing the last possession" — the circumstance in which a
+## preference between two legal shots applies, never the probability that
+## either goes in.
 func test_only_the_declared_consumers_read_a_stakes_tier() -> void:
 	var allowed: PackedStringArray = [
 		"res://src/domain/basketball/model/match_input.gd",
 		"res://src/domain/basketball/model/game_stakes.gd",
 		"res://src/domain/basketball/simulation/stakes_policy.gd",
 		"res://src/domain/basketball/simulation/game_management.gd",
+		"res://src/domain/basketball/simulation/endgame_strategy.gd",
 		"res://src/domain/basketball/simulation/garbage_time_rule.gd",
 		"res://src/domain/basketball/simulation/match_session.gd",
 		"res://src/domain/basketball/simulation/rotation_resolver.gd",
