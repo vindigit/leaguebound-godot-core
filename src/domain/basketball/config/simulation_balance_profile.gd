@@ -847,7 +847,7 @@ func _init(
 	# expenditure, and the leading-by-three foul is once per possession and
 	# only in the bonus. Every one of those changes what the engine produces
 	# for the same input, so the ruleset is bumped (`PROJECT_STATUS.md` §5.26).
-	p_version: StringName = &"simulation-v10-endgame-corrections",
+	p_version: StringName = &"simulation-v11-quick-two-stakes-window",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1336,6 +1336,18 @@ func validate() -> PackedStringArray:
 			% intentional_miss_clock_ms
 			+ "floor it is measured against (%dms), or the rule can never fire "
 			% miss_floor + "in a state where the miss buys an attempt")
+	# Quick-two is defined as a span *past* the tie-seeking window rather than
+	# as an absolute clock (`EndgameStrategy.quick_two_span_ms`), because that
+	# window moves with the stakes tier. The two numbers the span is built
+	# from therefore have to leave one: equal values are a rule with nowhere
+	# to fire at any tier, which is the same class of dead window the
+	# intentional-miss check above stands against.
+	if quick_two_timeout_window_ms <= endgame_possession_ms:
+		failures.append(
+			"the quick-two window (%dms) must exceed the endgame possession "
+			% quick_two_timeout_window_ms
+			+ "length (%dms) it is measured from, or the rule has no span to "
+			% endgame_possession_ms + "occupy at any stakes tier")
 	failures.append_array(_role_opportunity_table.validate())
 	return failures
 

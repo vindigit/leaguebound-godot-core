@@ -376,6 +376,103 @@ func test_no_played_match_commits_two_leading_by_three_fouls_in_one_possession()
 				% [event.possession_id, variation, count]).is_less_equal(1)
 
 
+# --- 10. quick-two stays outside the tie-seeking window at every stakes tier ----
+
+## `EndgameStrategy.quick_two_preferred` exists to prefer a two at a
+## three-point deficit *outside* the window `GameManagement.endgame_multiplier`
+## already owns, where that rule is preferring the tying three. The two windows
+## have to be complementary for either to mean anything, and the gate drew its
+## own boundary from the raw `endgame_possession_ms` while the tie-seeking rule
+## draws its from `StakesPolicy.endgame_window_ms` — the same constant scaled by
+## the stakes tier. They agreed at regular-season stakes and nowhere else.
+##
+## A gate test could not see this, because every fixture in the suite carries
+## `GameStakes.DEFAULT`. That is the §9 item 14 pattern exactly: a predicate
+## correct at the one tier it was ever evaluated at.
+func test_quick_two_never_overlaps_the_tie_seeking_window_at_any_stakes_tier() -> void:
+	var balance := SimulationBalanceProfile.new()
+	for stakes in range(GameStakes.COUNT):
+		var input: MatchInput = MatchFixtureFactory.standard_match()
+		input.stakes = stakes
+		var rules: CompetitionRuleProfile = input.rule_profile
+		var opens_at: int = StakesPolicy.endgame_window_ms(balance, stakes)
+
+		# One millisecond inside the tie-seeking window: that rule owns this
+		# state alone, whatever the tier moved the boundary to.
+		var inside: PossessionContext = _context(
+			input, _snapshot_at(input, rules.regulation_periods, opens_at, -3),
+			input.home.team_id)
+		assert_bool(EndgameStrategy.quick_two_preferred(inside, balance))\
+			.override_failure_message(
+				"quick-two fired at %dms, inside the %s tie-seeking window (opens %dms)"
+				% [opens_at, GameStakes.id_of(stakes), opens_at]).is_false()
+
+		# Just outside it, quick-two is the rule in force.
+		var outside: PossessionContext = _context(
+			input, _snapshot_at(input, rules.regulation_periods, opens_at + 2000, -3),
+			input.home.team_id)
+		assert_bool(EndgameStrategy.quick_two_preferred(outside, balance))\
+			.override_failure_message(
+				"quick-two refused at %dms, outside the %s tie-seeking window"
+				% [opens_at + 2000, GameStakes.id_of(stakes)]).is_true()
+
+		# And it keeps its own span past that boundary rather than a fixed clock.
+		var beyond: PossessionContext = _context(
+			input,
+			_snapshot_at(
+				input, rules.regulation_periods,
+				opens_at + EndgameStrategy.quick_two_span_ms(balance) + 2000, -3),
+			input.home.team_id)
+		assert_bool(EndgameStrategy.quick_two_preferred(beyond, balance))\
+			.override_failure_message(
+				"quick-two fired beyond its own span at %s stakes"
+				% GameStakes.id_of(stakes)).is_false()
+
+
+## The regular-season window is unchanged to the millisecond, which is what
+## makes the correction safe for every committed golden and every §14
+## measurement already recorded.
+func test_regular_season_quick_two_window_is_byte_identical_to_the_shipped_one() -> void:
+	var balance := SimulationBalanceProfile.new()
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var rules: CompetitionRuleProfile = input.rule_profile
+	assert_int(input.stakes).is_equal(GameStakes.Value.REGULAR)
+	assert_int(StakesPolicy.endgame_window_ms(balance, GameStakes.Value.REGULAR))\
+		.is_equal(balance.endgame_possession_ms)
+	for clock: int in [
+		balance.endgame_possession_ms,
+		balance.endgame_possession_ms + 1000,
+		balance.quick_two_timeout_window_ms,
+		balance.quick_two_timeout_window_ms + 1000,
+	]:
+		var shipped: bool = (
+			clock > balance.endgame_possession_ms
+			and clock <= balance.quick_two_timeout_window_ms)
+		var context: PossessionContext = _context(
+			input, _snapshot_at(input, rules.regulation_periods, clock, -3),
+			input.home.team_id)
+		assert_bool(EndgameStrategy.quick_two_preferred(context, balance))\
+			.override_failure_message("clock %dms" % clock).is_equal(shipped)
+
+
+## A profile whose two quick-two numbers leave no span is a rule that can never
+## fire at any tier, and `validate()` refuses it rather than shipping a dead
+## window — the same standard the intentional-miss floor is held to.
+func test_validate_refuses_a_quick_two_window_with_no_span() -> void:
+	var balance := SimulationBalanceProfile.new()
+	assert_array(balance.validate()).is_empty()
+	balance.quick_two_timeout_window_ms = balance.endgame_possession_ms
+	var failures: PackedStringArray = balance.validate()
+	assert_int(failures.size()).override_failure_message(
+		"a zero-span quick-two window must be rejected").is_greater(0)
+	var mentioned: bool = false
+	for failure in failures:
+		if failure.contains("quick-two"):
+			mentioned = true
+	assert_bool(mentioned).override_failure_message(
+		"validate() must name the quick-two window: %s" % ", ".join(failures)).is_true()
+
+
 # --- helpers -------------------------------------------------------------------
 
 ## A snapshot in which every timeout-advance condition holds except, where the
