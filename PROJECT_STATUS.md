@@ -5819,6 +5819,202 @@ settles three separate questions:
 
 No million-scale certification was run. No pull request was opened or merged.
 
+### 5.27 The two decisions §5.26 left alone, read the way §5.26 read the others
+
+Status: **§9 item 14 discharged. `run_endgame_decision_trace.gd` reads both decisions per activation instead of per count. Quick-two had a defect and is corrected by `simulation-v11-quick-two-stakes-window`; two-for-one was measured against a matched control and left unchanged because no defect was demonstrated. A third finding, in the ledger rather than in either decision, is reported and deliberately not fixed. Full suite 603 cases, 0 failures. NO OVERTIME CLOSURE IS CLAIMED AND NOTHING HERE IS CERTIFIED.**
+
+#### The standard, and why the existing report could not meet it
+
+§9 item 14 fixed the standard: the two defects §5.26 found were "both invisible
+to a gate test and visible in an activation count", and neither two-for-one nor
+quick-two had been read that way. But an activation count is only half of what
+§5.26 actually used. A count says how often a decision fired; it never says
+whether the thing the decision fired *for* then happened. Timeout-to-advance was
+caught by a count because 491 per 200 games is absurd on its face. Nothing about
+"two-for-one fired 3.23 times per game" is absurd on its face, so a count could
+never have caught anything here.
+
+`run_endgame_decision_trace.gd` reports the other half. For every activation it
+records the clock the gate actually read, the shot clock, the margin, the action
+selected and its family and zone, the milliseconds that action was charged, the
+possession's outcome, whether the team got the ball back in the same period, the
+timeout allowance before and after, and whether the sequence the decision exists
+to set up was still arithmetically available when the possession ended.
+
+**No engine instrumentation is involved.** Each game is played normally and its
+ledger is then replayed through a second `MatchStateReducer`. The state
+immediately before an `ACTION_SELECTED` event applies is the state
+`EndgameStrategy.active_tag` read when the engine tagged it — the tag is
+evaluated as an argument to `_emit`, so it runs before the reducer advances the
+clock for that event — and the production gates are re-evaluated on it directly,
+never a copy of their arithmetic. Two clocks are involved and they are not the
+same number: the ledger records the clock *after* the action's time is charged,
+every window in `EndgameStrategy` is drawn against the clock *before*, and every
+clock quoted below is the second one.
+
+That reconstruction is checked rather than asserted. Every recomputed tag is
+compared against the tag the engine wrote: **1.000000 agreement over 39,383
+final-period selections in 200 college games and 27,240 in 200 top domestic**,
+with every mismatch accounted for by the ledger gap named below.
+
+#### Finding 1 — quick-two was complementary to the tie-seeking rule at one stakes tier and inside it at the other two
+
+`quick_two_preferred` exists to prefer a two at a three-point deficit *outside*
+the window `GameManagement.endgame_multiplier` already owns, where that rule is
+preferring the tying three. Its docstring asserted the two windows were
+complementary and the gate test proved it. Both were true of regular-season
+stakes and of nothing else.
+
+The tie-seeking window is `StakesPolicy.endgame_window_ms`, which scales
+`endgame_possession_ms` by `stakes_endgame_window_step`; quick-two was drawn
+against the unscaled constant:
+
+| stakes | tie-seeking window opens | quick-two window | overlap |
+| --- | --- | --- | --- |
+| regular | 32,000ms | (32,000, 46,000] | 0% |
+| postseason | 48,000ms | (32,000, 46,000] | **100%** |
+| championship or elimination | 64,000ms | (32,000, 46,000] | **100%** |
+
+Inside the overlap the two rules disagree by construction and both multiply into
+the same §10.3 factor, so the disagreement resolves as a product:
+
+| stakes | tie rule, three | tie rule, two | quick-two, three | quick-two, two | net three | net two |
+| --- | --- | --- | --- | --- | --- | --- |
+| postseason | 1.50 | 0.5625 | 0.70 | 1.30 | **1.05** | **0.73** |
+| championship | 1.60 | 0.4750 | 0.70 | 1.30 | **1.12** | **0.62** |
+
+The three still wins at both tiers. Quick-two therefore never reverses the
+preference it exists to reverse, and its entire effect above regular-season
+stakes is to dilute the tie-seeking rule inside exactly the games the stakes
+tiers exist to model.
+
+The window is now measured from where the tie-seeking window actually ends at
+the stakes the game carries, keeping its own span past it
+(`EndgameStrategy.quick_two_span_ms`). A regular-season game reads
+`endgame_window_ms == endgame_possession_ms` and reproduces the shipped window
+to the millisecond, so **no committed golden, no §14 measurement and no
+regular-season activation moves**; `run_stakes_diagnostics` at tiers 1 and 2
+does, which is why the balance version moves. `validate()` now refuses a profile
+whose two quick-two numbers leave no span, the same standard the
+intentional-miss floor is held to since §5.26.
+
+This was invisible to a gate test for a specific and repeatable reason: **every
+fixture in the endgame suites carries `GameStakes.DEFAULT`.** The predicate was
+correct at the one tier it was ever evaluated at. The new fixture drives all
+three tiers, and fails at two of them against the previous gate.
+
+It was equally invisible to an activation count. Both rules fire; a count cannot
+show that they cancel.
+
+#### Finding 2 — two-for-one changes what is selected and does not change what it is selected for
+
+Two-for-one was measured against a matched control rather than argued about: the
+same seeds and the same rosters, replayed with `two_for_one_urgency` zeroed and
+nothing else different, on both competitions at 200 games per arm. Roster
+generation has already happened by the time the knob is overwritten, so the arms
+differ in the decision and in nothing else.
+
+| measure | college | top domestic | pooled | 95% CI | verdict |
+| --- | --- | --- | --- | --- | --- |
+| direct-shot share | 13.9% → 17.5% | 14.4% → 17.2% | **+3.19pp** | +0.47 to +5.91 | significant (p=0.022) |
+| possession length | 19,288 → 19,092ms | 17,142 → 16,583ms | −408ms | −925 to +109 | not distinguishable from zero |
+| got the ball back again | 96.8% → 95.7% | 95.4% → 95.5% | −0.58pp | −2.07 to +0.91 | not distinguishable from zero |
+
+The multiplier is wired and does what it says at the level it operates on: it
+moves selection toward direct shots, consistently in both competitions and
+significantly when the two independent samples are pooled. What it does not do,
+at this sample, is buy the extra possession the decision exists for. The
+possession does not get meaningfully shorter and the rate of getting the ball
+back does not move at all.
+
+**That is a bounded efficacy finding, not a defect, and nothing was changed on
+the strength of it.** A decision that measurably shifts action selection is not
+broken; it is a decision whose downstream effect is smaller than the noise at
+200 games per arm. Two observations sit beside it without being acted on:
+
+- Two-for-one applies no `recoverable_deficit` gate, unlike the two sibling
+  decisions §5.26 corrected. **66.9% of college activations and 72.1% of top
+  domestic ones are at a deficit of seven or more**, worst observed −37 and −41.
+  A team down 37 with a minute left is still told to hurry. Hurrying is not
+  obviously wrong basketball at any deficit, which is exactly why this is
+  recorded rather than corrected: no defect is demonstrated.
+- At the low end of the window the tactic is arithmetically marginal.
+  Bucketing college by decision clock, only **6.4%** of activations in the
+  (30s, 35s] band ended the possession with more than one shot clock left,
+  against 98.8% in the (45s, 50s] band. The gate's lower bound is one shot
+  clock; a genuine two-for-one needs closer to one shot clock plus two
+  possessions.
+
+Two claims the code makes about itself were checked and **hold**: `hold_for_final_shot_active`
+and `two_for_one_active` never both apply (the live shot-clock cap is what saves
+it, exactly on the boundary for top domestic), and quick-two composes rather than
+conflicts with two-for-one, since one is keyed on action family and the other on
+zone.
+
+One claim does **not** hold, and is recorded without being acted on: quick-two's
+timeout condition is justified by "a timeout in reserve to stop the clock after a
+made two before fouling", and the engine has no mechanism by which a trailing
+team spends a timeout that way. `_consider_timeout` and `_consider_advance_timeout`
+are both evaluated only for the team *about to receive the ball*, and the only two
+timeout causes are `run` and `advance`. Measured: **0 of 646 college and 0 of 696
+top domestic two-for-one activations, and 0 of 3 and 0 of 17 quick-two
+activations, spent a timeout after the decision.** The gate is a condition on a
+resource that is never spent for the stated purpose. It is left in place because
+it only ever narrows activation, and §5.25's ruling is explicit that the
+repertoire is "not satisfied by a decision that fires more often".
+
+#### Finding 3 — the putback is never tagged, so the activation report undercounts
+
+Found by the reconstruction check rather than looked for.
+`PossessionEngine._resolve_rebound` emits the offensive-rebound putback's
+`ACTION_SELECTED` with a hardcoded empty `detail_id` instead of
+`EndgameStrategy.active_tag`, so a putback taken while a decision was in force is
+recorded in the ledger as though no decision was. It is **11 of 646** two-for-one
+activations per 200 college games and **15 of 696** per 200 top domestic.
+
+It is reported and **deliberately not fixed here**. It changes no played game —
+no resolver reads that slot, and the putback is chosen by
+`ReboundResolver.attempts_putback` on a path the §10.3 weight product never
+touches — but `detail_id` is inside `MatchDomainEvent.signature()`, so correcting
+it moves every committed golden hash. That is a deliberate act deserving its own
+change, not something an audit should carry in silently. §5.26's conclusions do
+not rest on it: none of the five decisions it corrected is an `ACTION_SELECTED`
+event.
+
+#### Contract change
+
+`EndgameStrategy` is now the fifth declared reader of a stakes tier.
+`test_only_the_declared_consumers_read_a_stakes_tier` failed on the correction,
+which is that assertion doing its job, and the reader is declared rather than
+routed around — passing the read through `GameManagement` would have kept the
+list at four names while leaving the behaviour exactly as stakes-dependent. The
+grant stays inside what `GameStakes` already permits a tier to change, "how early
+he starts managing the last possession": the tier moves the circumstance in which
+a preference between two legal shots applies, and reaches no probability, no
+rating and no result.
+
+#### Classification
+
+- **ESTABLISHED.** Quick-two's window was inside the tie-seeking window at both
+  stakes tiers above regular season, the two rules disagree there by
+  construction, and the three wins anyway. Corrected, regression-fixtured across
+  all three tiers, and mutation-checked: the fixture fails at two tiers against
+  the previous gate.
+- **ESTABLISHED.** Regular-season behaviour is unchanged to the millisecond, so
+  every §14 figure recorded under `simulation-v10-endgame-corrections` remains
+  comparable.
+- **ESTABLISHED.** Two-for-one's multiplier shifts direct-shot selection by
+  +3.19pp pooled (95% CI +0.47 to +5.91).
+- **NOT ESTABLISHED.** That two-for-one buys the possession it exists for. The
+  effect on possession length and on regaining the ball is indistinguishable
+  from zero at 200 games per arm. This is a limit of the sample as much as a
+  statement about the decision.
+- **NOT ESTABLISHED — and not claimed.** That either finding moves the §14.2
+  overtime band. Quick-two fires 0.015 times per game in college and 0.085 in
+  top domestic at regular-season stakes; a decision at that rate cannot move a
+  4-8% band whatever it does, and the correction is to its stakes behaviour,
+  which no regular-season measurement sees at all.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -5957,8 +6153,9 @@ Work should proceed in this order unless new evidence changes a dependency:
 11. After simulation readiness, resume the remaining Godot Foundation Gate work: SQLite, three slots, minimal application flow, transition harness, and Android/iOS proof.
 12. Leave the **full five-level game-stakes calibration deferred** until real schedules and postseason matchups exist (§5.14). The contract, its tests, its mutation battery, and a two-level matched diagnostic are done; what is missing is a population in which a tier means something, and calibrating against fixtures that assign a tier arbitrarily would certify a band for a league that does not exist. The measurement most likely to make the stakes/overtime question answerable at all is a fuller end-of-regulation repertoire, which §5.13 already identifies as the reason the §14.2 overtime band is unreachable.
 13. **Re-put the §5.13 overtime question to the owner, now that the repertoire is correctly gated (§5.26).** The 2026-09-01 ruling chose Option 1 — build the missing repertoire — and §5.25 reported back that building it did not clearly move the band. That report is no longer the answer to the question that was asked: five of the seven decisions were pointed the wrong way, so what §5.25 measured was not the repertoire the ruling directed. §5.26 has now measured the corrected one, on the same ranges and at the same sample, and reaches the same verdict for a different and more honest reason: **200 games per point cannot settle a 4% rate**, whatever the repertoire does. The decision the owner now faces is not "did Option 1 work" but which of these to fund: a §27.1-scale run on CI hardware (§6.4) that could answer it, or Option 2's band amendment. **Nothing in §5.26 is evidence for either.**
-14. **Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch**, against the same standard it applied: two-for-one and quick-two-vs-tying-three were left unchanged because no defect was found in them, not because either was re-derived from the basketball. The two corrections that were found (a decision firing for the wrong side, and one firing on every possession it was eligible for) were both invisible to a gate test and visible in an activation count, and neither of those two decisions has yet been read that way.
+14. ~~**Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch.**~~ **Done (§5.27).** Both were read per activation rather than per count, by replaying each game's ledger through a second reducer and re-evaluating the production gates on the reconstructed state (reconstruction verified at 1.000000 tag agreement over 66,623 final-period selections). **Quick-two had a defect**: its window was drawn against the unscaled `endgame_possession_ms` while the tie-seeking window it must stay outside of is that constant scaled by the stakes tier, so the two were complementary at regular-season stakes and the whole of quick-two sat inside the tie-seeking window at both tiers above it, where the two rules disagree by construction and the three wins anyway. Corrected by `simulation-v11-quick-two-stakes-window`; regular season is unchanged to the millisecond. **Two-for-one was validated and left unchanged**: a matched A/B on identical seeds and rosters shows the multiplier shifts direct-shot selection by +3.19pp pooled (95% CI +0.47 to +5.91) but moves neither possession length nor the rate of regaining the ball beyond noise. No defect demonstrated, so nothing changed.
 
+15. **Tag the offensive-rebound putback with the endgame decision in force, and regenerate the golden ledgers deliberately when doing so (§5.27, finding 3).** `PossessionEngine._resolve_rebound` emits the putback's `ACTION_SELECTED` with a hardcoded empty `detail_id` instead of `EndgameStrategy.active_tag`, so every activation report undercounts by the putbacks taken while a decision was in force — 11 of 646 two-for-one activations per 200 college games, 15 of 696 per 200 top domestic. It changes no played game, but `detail_id` is inside `MatchDomainEvent.signature()`, so the fix moves every committed golden hash and must be its own change with its own divergence audit rather than a side effect of one.
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 
 ## 10. Status maintenance rules
