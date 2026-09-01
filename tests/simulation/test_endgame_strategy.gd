@@ -351,13 +351,22 @@ func test_intentional_miss_never_touches_free_throw_probability() -> void:
 	var shooter: StringName = input.home.starters()[0]
 
 	var eligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 2000, 2)
-	var ineligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 2000, 20)
+	# Margin 5, not margin 20: the comparison point has to sit inside §20.1's
+	# own `|margin| <= 5.0` pressure window too, or the two probabilities would
+	# differ for a reason that has nothing to do with the intentional miss.
+	# Margin 5 is outside EndgameStrategy's own [2, 3] eligibility window while
+	# staying inside §20.1's, which is what isolates the one term this test is
+	# actually about.
+	var ineligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 2000, 5)
+	assert_bool(EndgameStrategy.should_intentionally_miss_final_free_throw(
+		_context(input, eligible_snapshot, input.home.team_id), input.balance_profile, 1, 2)
+	).is_true()
+	assert_bool(EndgameStrategy.should_intentionally_miss_final_free_throw(
+		_context(input, ineligible_snapshot, input.home.team_id), input.balance_profile, 1, 2)
+	).is_false()
 	var eligible: float = resolver.probability(_context(input, eligible_snapshot, input.home.team_id), shooter)
 	var ineligible: float = resolver.probability(
 		_context(input, ineligible_snapshot, input.home.team_id), shooter)
-	# The margins differ by enough to move the intentional-miss decision but not
-	# enough to move §20.1's own absolute-margin pressure term, which is already
-	# saturated at both points — so any difference here would be new, not §20.1's.
 	assert_float(eligible).is_equal(ineligible)
 
 
