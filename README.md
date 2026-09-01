@@ -107,12 +107,14 @@ The match engine consumes structurally valid match inputs. It never creates or c
 godot --headless --path . --import
 ```
 
-`tools/run_checks.sh` does all of this — resolve or install the pinned binary, import, then run the gated checks in CI order. It is the single entry point used by CI and by managed sessions:
+`tools/run_checks.sh` does all of this — resolve or install the pinned binary, import, then run the Stage 4 pull-request fast gate in the same order and with the same command arguments as `.github/workflows/headless-tests.yml`. It is the single entry point for running that gate locally or in a managed session:
 
 ```bash
-tools/run_checks.sh                    # import, parse, acceptance, smoke, calibration, gdunit
+tools/run_checks.sh                    # import, parse, acceptance, smoke, builder, attribute_sensitivity, calibration_smoke, gdunit
 tools/run_checks.sh acceptance gdunit  # a subset; the import always runs first
 ```
+
+It does not run `nightly-calibration.yml` or `deep-verification.yml`. Those own the `BALANCE_SPEC.md` §27.1 certifying sample sizes on their own sharding and schedule, and no run at PR-gate time reaches them.
 
 Set `GODOT_BIN` to use an already-installed binary instead of the one `tools/install_godot.sh` manages.
 

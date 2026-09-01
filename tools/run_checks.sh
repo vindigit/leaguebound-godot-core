@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run every headless check this repository gates on, in CI order.
+# Run the Stage 4 pull-request fast gate headlessly, in the same order and
+# with the same command arguments as .github/workflows/headless-tests.yml.
 #
 # The import step is not optional. Godot resolves `class_name` identifiers from
 # .godot/global_script_class_cache.cfg, which only the importer writes. On a
@@ -8,11 +9,21 @@
 # the warnings-as-errors settings in project.godot. The symptom looks like a
 # broken engine build rather than a missing cache, so import first, always.
 #
-# Usage:
-#   tools/run_checks.sh              # every check
-#   tools/run_checks.sh gdunit       # one or more named checks
+# The default sequence is the fast, always-on gate only: structure, parsing,
+# determinism, reconciliation, the Builder smoke portfolio, attribute
+# sensitivity at the PR-gate sample, and a small deterministic calibration
+# smoke with broad control limits. It does not certify a statistical band —
+# BALANCE_SPEC.md §27.1 sets the certifying sample sizes, and nightly-
+# calibration.yml and deep-verification.yml own reaching them on their own
+# sharding and schedule. This script does not run those and never should:
+# certification sample sizes do not fit ordinary PR-gate time.
 #
-# Checks: import, parse, acceptance, smoke, calibration, gdunit
+# Usage:
+#   tools/run_checks.sh                    # the full fast gate
+#   tools/run_checks.sh acceptance gdunit  # one or more named checks
+#
+# Checks: import, parse, acceptance, smoke, builder, attribute_sensitivity,
+#         calibration_smoke, gdunit
 
 set -euo pipefail
 
@@ -64,9 +75,32 @@ check_smoke() {
 	godot_script res://tools/simulation_smoke.gd
 }
 
-check_calibration() {
-	log "Builder calibration harness (BALANCE_SPEC 7.3.2 bands)"
+check_builder() {
+	# Gate B1: completed builds must satisfy the owner-locked BALANCE_SPEC
+	# §7.3.2 bands.
+	log "Builder smoke portfolio (BALANCE_SPEC §7.3.2 bands)"
 	godot_script res://tools/builder_calibration_harness.gd
+}
+
+check_attribute_sensitivity() {
+	# Gate B1 / §29.2 item 3: all twenty attributes monotonic with a
+	# meaningful observable effect, and no IQ rating substituting for a
+	# primary skill. Same script and PR-gate sample as the CI fast gate.
+	log "Attribute sensitivity suite (PR-gate sample: 100000 resolutions)"
+	"$GODOT_BIN" --headless --path "$project_dir" \
+		--script res://calibration/runners/run_attribute_sensitivity.gd -- \
+		--resolutions=100000 --label=pr
+}
+
+check_calibration_smoke() {
+	# A small deterministic calibration run with broad control limits. It
+	# exists to catch a structural regression — an event family that stopped
+	# firing, a possession count that collapsed — not to certify a band.
+	# Same script and PR-gate sample as the CI fast gate.
+	log "Calibration smoke (PR-gate sample: 6 games)"
+	"$GODOT_BIN" --headless --path "$project_dir" \
+		--script res://calibration/runners/run_calibration_smoke.gd -- \
+		--games=6 --label=pr
 }
 
 check_gdunit() {
@@ -80,7 +114,7 @@ check_gdunit() {
 
 requested=("$@")
 if [ ${#requested[@]} -eq 0 ]; then
-	requested=(import parse acceptance smoke calibration gdunit)
+	requested=(import parse acceptance smoke builder attribute_sensitivity calibration_smoke gdunit)
 elif [[ " ${requested[*]} " != *" import "* ]]; then
 	# Every other check depends on the class cache, so never skip the import.
 	requested=(import "${requested[@]}")
@@ -88,7 +122,7 @@ fi
 
 for name in "${requested[@]}"; do
 	case "$name" in
-		import | parse | acceptance | smoke | calibration | gdunit) "check_${name}" ;;
+		import | parse | acceptance | smoke | builder | attribute_sensitivity | calibration_smoke | gdunit) "check_${name}" ;;
 		*) die "unknown check '${name}'" ;;
 	esac
 done
