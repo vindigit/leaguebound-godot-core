@@ -6015,6 +6015,198 @@ rating and no result.
   4-8% band whatever it does, and the correction is to its stakes behaviour,
   which no regular-season measurement sees at all.
 
+### 5.28 Ten thousand games on a frozen ruleset: the overtime shortfall is no longer a sampling question
+
+Status: **10,000 complete games per competition for college and top domestic, four seed-disjoint shards each, aggregated by `ReportAggregator` with every shard present and no seed overlap, plus 5,000 games per competition on a second disjoint range measuring the regulation margin distribution directly. NOT CERTIFIED AND NO CERTIFICATION IS CLAIMED — 10,000 games is one tenth of the §27.1 requirement and both aggregations ran under `--allow-uncertified`. The §14.2 overtime band is missed by both competitions on both ranges, 6.4 and 14.6 standard errors below the floor pooled over 15,000 games each, with the interval excluding the band. The margin curve is peaked at zero but not peaked enough, and the two competitions are short by very different amounts. No target was changed.**
+
+#### What was run, and on what
+
+The ruleset was frozen at `e55d015` before the run and not touched during it. The
+two aggregate reports carry different commit stamps — `e55d015` for college and
+`39fe2001` for top domestic — because §5.27 was committed to `PROJECT_STATUS.md`
+while the run was in progress. **The diff between those two commits is
+`PROJECT_STATUS.md` and nothing else; no `.gd` file differs**, so both
+competitions were measured on the same engine, the same rules and the same
+`simulation-v11-quick-two-stakes-window` balance. That is stated here rather
+than papered over, because a report whose provenance line has to be explained is
+worth exactly as much as the explanation.
+
+Four shards of 2,500 games per competition, seeds 1..10,000, aggregated by
+pooling numerators and denominators rather than averaging shard rates.
+`certification.all_shards_present` passes; `certification.sample_reached` fails
+by design and the report says so in its own notes.
+
+`run_regulation_margin_shape.gd` then measured the regulation margin
+distribution over four shards of 1,250 games per competition on seed range
+970,001 onward, disjoint from the calibration run and from every other section's
+range. The endgame activation audit was re-run at 2,000 games per competition on
+its own 950,001 range.
+
+#### §14.2 game shape, with intervals
+
+| competition | metric | estimate | 95% CI | band | verdict |
+| --- | --- | --- | --- | --- | --- |
+| college | overtime | 0.0290 | [0.0257, 0.0323] | 0.04–0.08 | **below, 6.6 SE, CI excludes** |
+| college | close game | 0.2671 | [0.2584, 0.2758] | 0.22–0.34 | inside |
+| college | blowout | 0.1474 | [0.1405, 0.1543] | 0.08–0.18 | inside |
+| college | home win | 0.5436 | [0.5338, 0.5534] | 0.53–0.56 | inside |
+| top domestic | overtime | 0.0216 | [0.0188, 0.0244] | 0.04–0.08 | **below, 12.7 SE, CI excludes** |
+| top domestic | close game | 0.2179 | [0.2098, 0.2260] | 0.22–0.34 | marginal, 0.5 SE, CI straddles |
+| top domestic | blowout | 0.2262 | [0.2180, 0.2344] | 0.08–0.18 | **above, 11.0 SE, CI excludes** |
+| top domestic | home win | 0.5413 | [0.5315, 0.5511] | 0.53–0.56 | inside |
+
+#### §14.1, with intervals
+
+Top domestic passes **every** §14.1 metric: field goal 0.4576 ±0.0007, three
+point 0.3774 ±0.0011, three-point rate 0.3641 ±0.0007, free throw 0.8006
+±0.0012, free-throw rate 0.2200 ±0.0006, turnovers 13.88 per 100, offensive
+rebound 0.2532 ±0.0009, assist 0.5845 ±0.0010, possessions 101.75 ±0.05, points
+per possession 1.1675. **The §5.5 points-per-possession miss is closed** — 1.1675
+against a 1.08–1.18 band, where §5.5 measured 1.2084 — and so is the assist
+percentage that §5.5 reported at 0.4815.
+
+College passes every §14.1 metric **except field goal percentage**: 0.4114
+[0.4106, 0.4122] against a 0.42–0.49 band, **21.1 standard errors below the
+floor**. Possessions 72.12 ±0.04, points per possession 1.0486, three point
+0.3301, turnovers 15.42 per 100, assist 0.5265, offensive rebound 0.2535 all
+pass. The §5.23 college field-goal package is the open owner decision that
+already names this, and this run measures it at a sample that removes any
+remaining doubt that it is real.
+
+#### The finding that matters for §9 item 13
+
+§5.26 closed with the honest verdict that **200 games per point cannot settle a
+4% rate**, and put the choice to the owner as "fund a §27.1-scale run that could
+answer it, or amend the band". Ten thousand games per competition answers it
+without a §27.1-scale run:
+
+- College overtime is **6.6 standard errors** below the band floor.
+- Top domestic overtime is **12.7 standard errors** below it.
+- Both intervals exclude the entire 4–8% band. Neither is within reach of
+  sampling noise.
+
+**The shortfall is a mechanism gap, and it is established.** This is measured on
+the corrected repertoire — every §5.26 shape invariant passes on both
+competitions at 2,000 games (no leading team intentionally missed, no repeated
+leading foul, no advance below reserve, no unpermitted advance), with
+timeout-to-advance now at 0.0000 per game in college where the grant was revoked
+and 0.1315 in top domestic where the rule is real, against the 2.46 and 4.18 per
+game that §5.25 measured. So the repertoire is present, correctly gated, and
+firing at plausible rates, **and the band is still missed decisively**. Building
+it did not close the gap. That is a direct answer to the question §5.13 raised
+and §5.25 could not settle, and it is worth more than the correction that
+produced it.
+
+#### Where the gap is *not*, and what its shape actually is
+
+College is the informative case, because it now satisfies both of the other
+§14.2 shape bands: close games 0.2671 (inside 0.22–0.34) and blowouts 0.1474
+(inside 0.08–0.18). **A margin distribution of the right width still produces
+less than three quarters of the overtime the band asks for.** So the overtime
+shortfall is not the §5.5/§5.6 over-dispersion seen from another angle — that
+defect is fixed for college and the overtime miss survived it.
+
+The three §14.2 shape metrics are three points on one curve: overtime is the
+mass at exactly zero, close game the mass within five, blowout the mass at
+twenty or beyond. Two rates cannot distinguish a curve of the wrong *width* from
+one of the wrong *shape*, so `run_regulation_margin_shape.gd` measures the curve
+directly over 5,000 games per competition on its own seed range.
+
+**The measurement corrects the inference that produced it.** Reasoning from the
+two aggregate rates alone suggested a locally flat distribution, because zero's
+share of the close-game mass (college 12.1%, top domestic 10.1%) sits near the
+9.1% a flat curve would give. That statistic is misleading on its own: `|margin|`
+folds two signed buckets into one for every non-zero value and one into one at
+zero, so a flat *signed* distribution mechanically produces 1-in-11. Read in
+signed density, both curves are genuinely peaked at zero:
+
+| signed density, share of games | college | top domestic |
+| --- | --- | --- |
+| margin = 0 | 0.03500 | 0.02380 |
+| mean over margin = ±1…±5 | 0.02532 | 0.02130 |
+| **peak ratio at zero** | **1.38** | **1.12** |
+
+So the engine does concentrate the margin on zero; it does not concentrate it
+*enough*, and the two competitions are short by very different amounts. College's
+zero bucket holds 175 games of 5,000 where the 4% floor needs 200 — **14% more
+mass at exactly zero**. Top domestic's holds 119 where it needs 200 — **68%
+more**. Within the close band the mass also rises with margin in both (college
+175, 174, 263, 274, 263, 292 across |margin| 0 to 5), so the peak at zero is
+narrow: one bucket above a rising shoulder rather than a broad mode.
+
+That splits the remaining work rather than merging it. **College needs a modest
+increase in zero-concentration and nothing else** — its width is right and its
+peak is already 1.38x its neighbourhood. **Top domestic needs both**: its
+distribution is still too wide (blowouts 0.2262, 11.0 SE above band, improved
+from §5.5's 34.5% but not closed) and its zero peak is much weaker at 1.12x.
+Treating the two competitions' overtime misses as one defect would be a mistake.
+
+#### A caution the second range raises
+
+The shape run used a disjoint seed range, which means a different synthetic
+roster population, and the two ranges do not agree as closely as sampling alone
+predicts:
+
+| competition | seeds 1..10,000 | seeds 970,001..975,000 | difference | pooled (n=15,000) |
+| --- | --- | --- | --- | --- |
+| college overtime | 0.0290 [0.0257, 0.0323] | 0.0350 [0.0299, 0.0401] | +0.0060, p=0.052 | 0.0310 [0.0282, 0.0338] |
+| top domestic overtime | 0.0216 [0.0188, 0.0244] | 0.0238 [0.0196, 0.0280] | +0.0022, p=0.397 | 0.0223 [0.0200, 0.0247] |
+
+Top domestic is consistent across ranges. **College is borderline** — a 0.6
+percentage point swing at p=0.052, which is large relative to a band floor of 4%
+and is a roster-population effect rather than a sampling one, since both samples
+are large. Neither range brings college inside the band, and pooled over 15,000
+games it sits 6.4 standard errors below the floor while top domestic sits 14.6
+below, so the conclusion is unaffected. But it means **a single seed range is not
+a safe basis for a §14.2 verdict at this precision**, and any §27.1 run should
+draw across ranges rather than extend one.
+
+#### What this says about funding §27.1
+
+Recorded as evidence for the owner, not as a decision:
+
+A 100,000-game certification would narrow every interval above by a factor of
+about 3.2. It would not bring any of the four decisive misses inside its band —
+college overtime, top domestic overtime, top domestic blowout, and college field
+goal percentage are excluded by 6.4, 14.6, 11.0 and 21.1 standard errors
+respectively (the two overtime figures pooled over 15,000 games), and a 3.2x
+narrowing moves none of them. **A §27.1 run funded
+today would spend ten times this run's compute to certify a ruleset that already
+fails four bands with the failure established.** The evidence supports spending
+the next increment on the zero-concentration mechanism and on the §5.23 college
+field-goal decision, then certifying.
+
+#### Classification
+
+- **ESTABLISHED.** College and top domestic miss the §14.2 overtime band, on two
+  disjoint seed ranges and pooled over 15,000 games each (college 0.0310, 6.4 SE
+  below; top domestic 0.0223, 14.6 SE below), with the interval excluding the
+  band. The shortfall is not sampling noise, and §5.26's open question about
+  sample size is closed.
+- **ESTABLISHED.** The corrected endgame repertoire is present and correctly
+  gated at 2,000 games per competition — all four §5.26 shape invariants pass —
+  and the overtime band is missed anyway.
+- **ESTABLISHED.** College's §14.2 margin *width* is now inside band on both
+  close-game and blowout rates while its overtime rate is not, so the two are
+  separable defects.
+- **ESTABLISHED.** Top domestic closes the §5.5 points-per-possession and
+  assist-percentage misses and passes all of §14.1; its blowout rate does not.
+- **ESTABLISHED.** College field goal percentage is 21.1 SE below its §14.1
+  floor.
+- **ESTABLISHED.** The regulation margin distribution is peaked at zero rather
+  than flat — signed density ratio 1.38 for college, 1.12 for top domestic — and
+  the deficiency is the size of that peak, not its absence. College needs 14%
+  more mass at exactly zero, top domestic 68%.
+- **ESTABLISHED.** College's overtime rate differs between two large disjoint
+  seed ranges by 0.6 percentage points at p=0.052. A single range is not a safe
+  basis for a §14.2 verdict at this precision.
+- **NOT ESTABLISHED.** What mechanism produces the missing zero-concentration in
+  real basketball and is underweight here. The measurement localizes and sizes
+  the gap; it does not name the mechanism.
+- **NOT CLAIMED.** Certification of anything. 10,000 games is a tenth of §27.1
+  and both aggregations ran under `--allow-uncertified`.
+- **NOT CHANGED.** The 4–8% overtime target, and every other §14 band.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -6152,10 +6344,12 @@ Work should proceed in this order unless new evidence changes a dependency:
 10. Merge Stage 4 only when its reports and CI evidence support every claim made at merge time.
 11. After simulation readiness, resume the remaining Godot Foundation Gate work: SQLite, three slots, minimal application flow, transition harness, and Android/iOS proof.
 12. Leave the **full five-level game-stakes calibration deferred** until real schedules and postseason matchups exist (§5.14). The contract, its tests, its mutation battery, and a two-level matched diagnostic are done; what is missing is a population in which a tier means something, and calibrating against fixtures that assign a tier arbitrarily would certify a band for a league that does not exist. The measurement most likely to make the stakes/overtime question answerable at all is a fuller end-of-regulation repertoire, which §5.13 already identifies as the reason the §14.2 overtime band is unreachable.
-13. **Re-put the §5.13 overtime question to the owner, now that the repertoire is correctly gated (§5.26).** The 2026-09-01 ruling chose Option 1 — build the missing repertoire — and §5.25 reported back that building it did not clearly move the band. That report is no longer the answer to the question that was asked: five of the seven decisions were pointed the wrong way, so what §5.25 measured was not the repertoire the ruling directed. §5.26 has now measured the corrected one, on the same ranges and at the same sample, and reaches the same verdict for a different and more honest reason: **200 games per point cannot settle a 4% rate**, whatever the repertoire does. The decision the owner now faces is not "did Option 1 work" but which of these to fund: a §27.1-scale run on CI hardware (§6.4) that could answer it, or Option 2's band amendment. **Nothing in §5.26 is evidence for either.**
+13. **Re-put the §5.13 overtime question to the owner — and it is now answerable without a §27.1 run (§5.28).** §5.26 reported that 200 games per point cannot settle a 4% rate. 10,000 games per competition on a frozen ruleset, plus 5,000 more on a second disjoint range, settle it: college sits at 0.0310 pooled over 15,000 games (6.4 SE below the 4% floor) and top domestic at 0.0223 (14.6 SE below), with the interval excluding the band on both ranges. **The shortfall is a mechanism gap and it is established**, measured on the corrected repertoire with all four §5.26 shape invariants passing. Building the repertoire did not close it. The choice the owner faces is therefore no longer "fund a run that could answer it or amend the band" — the run has been done at a tenth of §27.1 scale and answered it. What is open is whether to spend the next increment on the zero-concentration mechanism §5.28 localizes and sizes, or to amend §14.2. A §27.1 run funded today would narrow every interval by about 3.2x and move none of the four decisive misses inside its band.
 14. ~~**Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch.**~~ **Done (§5.27).** Both were read per activation rather than per count, by replaying each game's ledger through a second reducer and re-evaluating the production gates on the reconstructed state (reconstruction verified at 1.000000 tag agreement over 66,623 final-period selections). **Quick-two had a defect**: its window was drawn against the unscaled `endgame_possession_ms` while the tie-seeking window it must stay outside of is that constant scaled by the stakes tier, so the two were complementary at regular-season stakes and the whole of quick-two sat inside the tie-seeking window at both tiers above it, where the two rules disagree by construction and the three wins anyway. Corrected by `simulation-v11-quick-two-stakes-window`; regular season is unchanged to the millisecond. **Two-for-one was validated and left unchanged**: a matched A/B on identical seeds and rosters shows the multiplier shifts direct-shot selection by +3.19pp pooled (95% CI +0.47 to +5.91) but moves neither possession length nor the rate of regaining the ball beyond noise. No defect demonstrated, so nothing changed.
 
 15. **Tag the offensive-rebound putback with the endgame decision in force, and regenerate the golden ledgers deliberately when doing so (§5.27, finding 3).** `PossessionEngine._resolve_rebound` emits the putback's `ACTION_SELECTED` with a hardcoded empty `detail_id` instead of `EndgameStrategy.active_tag`, so every activation report undercounts by the putbacks taken while a decision was in force — 11 of 646 two-for-one activations per 200 college games, 15 of 696 per 200 top domestic. It changes no played game, but `detail_id` is inside `MatchDomainEvent.signature()`, so the fix moves every committed golden hash and must be its own change with its own divergence audit rather than a side effect of one.
+16. **Raise the regulation margin distribution's concentration at exactly zero, per competition rather than globally (§5.28).** The curve is already peaked at zero — signed density ratio 1.38 for college, 1.12 for top domestic — so this is a question of how much, not whether. College needs 14% more mass at exactly zero and its margin width is already inside both other §14.2 bands; top domestic needs 68% more and is also still 11.0 SE too wide at the blowout end. They are not one defect and a single global change will not fit both.
+17. **Draw any §27.1 certification across seed ranges rather than extending one (§5.28).** College's overtime rate differs between two large disjoint ranges by 0.6 percentage points at p=0.052 — a roster-population effect, not sampling, since both samples are large. At a 4% band floor that is material, and a certification resting on one range would not be reproducible on another.
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 
 ## 10. Status maintenance rules
