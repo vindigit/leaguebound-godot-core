@@ -349,6 +349,14 @@ func test_timeouts_are_spent_and_never_replenished() -> void:
 ## distinguishes them (`&"run"` versus `&"advance"`), and each is checked
 ## against its own contract rather than one loop assuming every timeout is a
 ## run-stopping one.
+##
+## The seed set is wider than the three games this needs for the *run-stopping*
+## half. `simulation-v10-endgame-corrections` turned the advance timeout from
+## something called on every trailing possession of a close finish into a
+## coaching decision made about 0.14 times a game (`PROJECT_STATUS.md` §5.26),
+## and at that rate a three-game reachability assertion is a coin flip rather
+## than a test. Twenty games is the smallest set that makes finding one a
+## property of the engine instead of a property of the seeds.
 func test_timeouts_trigger_only_under_valid_conditions() -> void:
 	var input: MatchInput = CompetitionCatalog.mirrored_match_for(
 		CalibrationTargets.Competition.TOP_DOMESTIC_PRO, 32, 0.5)
@@ -358,7 +366,7 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 
 	var found: int = 0
 	var found_advance: int = 0
-	for seed_value: int in [9201, 9202, 9203]:
+	for seed_value: int in range(9201, 9221):
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(seed_value))
 		var run_team: StringName = &""
@@ -393,7 +401,9 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 		"no run-stopping timeout was called in three full games; the trigger is unreachable"
 	).is_greater(0)
 	assert_int(found_advance).override_failure_message(
-		"no advance timeout was called in three full games at a competition that grants it"
+		"no advance timeout was called in twenty full games at a competition that "
+		+ "grants it; the §5.26 narrowing turned the decision off rather than "
+		+ "making it a decision"
 	).is_greater(0)
 
 

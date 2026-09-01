@@ -149,7 +149,7 @@ func test_widening_the_capability_span_shifts_contest_pressure_upward() -> void:
 func test_the_shipped_capability_span_is_the_corrected_value() -> void:
 	var shipped := SimulationBalanceProfile.new()
 	assert_float(shipped.contest_capability_span).is_equal_approx(0.46, TOLERANCE)
-	assert_str(String(shipped.version)).is_equal("simulation-v9-endgame-strategy")
+	assert_str(String(shipped.version)).is_equal("simulation-v10-endgame-corrections")
 	# The other three contest tunables were not touched by the correction.
 	assert_float(shipped.contest_base_pressure).is_equal_approx(0.38, TOLERANCE)
 	assert_float(shipped.contest_advantage_relief).is_equal_approx(0.55, TOLERANCE)

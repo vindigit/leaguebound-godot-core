@@ -176,6 +176,24 @@ func resolve_intentional_foul(
 ## (`leading_foul_share`) rather than a certainty the way the desperation foul
 ## above effectively is inside its own window — this is the "optional" of the
 ## production brief, not the "necessary" of the intentional free-throw miss.
+##
+## **The bonus gate is what makes the tactic the tactic.** "Send them to the
+## line for two" is the entire reason a coach gives up a foul here, and it is
+## only what happens when the fouling team is already over the team-foul
+## threshold. Below it the whistle awards no free throws at all: the offence
+## keeps the ball, inbounds it with a fresh shot clock, and can still shoot the
+## three the foul was meant to prevent — so the defence has paid a team foul
+## and bought the opposite of what it wanted. Worse, nothing about the state
+## changes, so the same eligibility held again on the next action of the same
+## possession, and again after that: one leading-by-three "decision" could
+## become a run of whistles inside a single possession. The count read here is
+## the same `defense_state().team_fouls` the consequence branch in
+## `PossessionEngine` reads, so the decision and its outcome cannot disagree
+## about whether anybody is going to the line.
+##
+## `PossessionEngine` additionally allows this at most once per possession; the
+## two guards are independent, and the once-per-possession one holds even where
+## a rule profile's bonus makes every whistle a trip to the line.
 func resolve_leading_by_three_foul(
 	context: PossessionContext,
 	random_source: RandomSource,
@@ -186,6 +204,10 @@ func resolve_leading_by_three_foul(
 		return FoulCall.none()
 	var defense_margin: int = -context.offense_margin()
 	if defense_margin != GameManagement.TIE_SEEKING_MAXIMUM_DEFICIT:
+		return FoulCall.none()
+	if context.input.rule_profile.bonus_free_throws_for(
+		context.defense_state().team_fouls
+	) <= 0:
 		return FoulCall.none()
 	if random_source.next_float() >= _balance.leading_foul_share:
 		return FoulCall.none()

@@ -91,6 +91,11 @@ static func seed_for(scenario: StringName) -> int:
 			# `tests/simulation/test_endgame_strategy.gd` instead.
 			# `PROJECT_STATUS.md` records the first divergence for each
 			# scenario.
+			#
+			# `simulation-v10-endgame-corrections` did *not* move it again:
+			# this seed still finishes level, and this scenario's ledger is
+			# byte-identical across the correction, because the possessions
+			# it turns on never reach a decision v10 changed (§5.26).
 			return 31676
 		OFFENSIVE_REBOUND:
 			return 7001

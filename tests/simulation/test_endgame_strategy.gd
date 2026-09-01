@@ -74,12 +74,12 @@ func test_hold_is_off_outside_its_window() -> void:
 		_snapshot_at(input, rules.regulation_periods, balance.hold_for_final_shot_window_ms + 5000, 4),
 		input.home.team_id)
 	assert_bool(EndgameStrategy.hold_for_final_shot_active(too_early, balance)).is_false()
-	# Not for a trailing or exactly tied team: holding gives away the extra
-	# possession two-for-one describes.
-	for margin: int in [0, -1, -6]:
-		var not_leading: PossessionContext = _context(
+	# Never for a trailing team, at any clock: a team that has to score cannot
+	# also be running time off.
+	for margin: int in [-1, -3, -6]:
+		var trailing: PossessionContext = _context(
 			input, _snapshot_at(input, rules.regulation_periods, 20000, margin), input.home.team_id)
-		assert_bool(EndgameStrategy.hold_for_final_shot_active(not_leading, balance))\
+		assert_bool(EndgameStrategy.hold_for_final_shot_active(trailing, balance))\
 			.override_failure_message("margin %d" % margin).is_false()
 
 
@@ -90,6 +90,44 @@ func test_hold_is_on_for_a_leading_team_with_the_game_in_hand() -> void:
 	var context: PossessionContext = _context(
 		input, _snapshot_at(input, rules.regulation_periods, 15000, 3), input.home.team_id)
 	assert_bool(EndgameStrategy.hold_for_final_shot_active(context, balance)).is_true()
+
+
+## Holding for the last shot of a tied game is the most ordinary
+## end-of-regulation decision there is, and the first version of this rule
+## refused it outright. It is admitted now, but only where the two clocks make
+## it a real plan: the shot clock has to outlast the game clock, or the hold
+## ends in a shot-clock violation rather than at the horn.
+func test_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+
+	var snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 14000, 0)
+	snapshot.shot_clock_ms = 20000
+	var can_hold: PossessionContext = _context(input, snapshot, input.home.team_id)
+	assert_int(GameManagement.remaining_ms(snapshot, rules)).is_less_equal(snapshot.shot_clock_ms)
+	assert_bool(EndgameStrategy.hold_for_final_shot_active(can_hold, balance)).is_true()
+
+	# The same tie and the same game clock, with a shot clock that will expire
+	# first: holding would hand the ball back, so the rule refuses and
+	# two-for-one's extra possession is what the team wants instead.
+	snapshot.shot_clock_ms = 9000
+	var would_violate: PossessionContext = _context(input, snapshot, input.home.team_id)
+	assert_bool(EndgameStrategy.hold_for_final_shot_active(would_violate, balance)).is_false()
+
+
+## The shot-clock condition binds only the tied case. A leading team holds on
+## the game clock alone — it is content to shoot late, or to shoot poorly, and
+## a shot-clock violation still leaves the opponent less time than an early
+## made basket would have.
+func test_the_shot_clock_condition_binds_only_the_tied_team() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 20000, 4)
+	snapshot.shot_clock_ms = 6000
+	var leading: PossessionContext = _context(input, snapshot, input.home.team_id)
+	assert_bool(EndgameStrategy.hold_for_final_shot_active(leading, balance)).is_true()
 
 
 ## Two-for-one and hold partition every margin exactly: never both at once, at
@@ -146,22 +184,70 @@ func test_quick_two_needs_the_exact_deficit_a_timeout_and_the_outer_window() -> 
 
 # --- the designed final possession ---------------------------------------------
 
+## Inside the window, for a tie and for a deficit the possession can still
+## close — and outside it for nobody.
 func test_designed_play_is_on_only_for_the_truly_final_possession() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var balance: SimulationBalanceProfile = input.balance_profile
 	var rules: CompetitionRuleProfile = input.rule_profile
-	for margin: int in ORDINARY_MARGINS + PackedInt32Array([-4, -8]):
+	var inside_clock: int = balance.designed_play_window_ms - 2000
+	var recoverable: int = EndgameStrategy.recoverable_deficit(inside_clock, balance)
+	for margin: int in [0, -1, -recoverable]:
 		var inside: PossessionContext = _context(
 			input,
-			_snapshot_at(input, rules.regulation_periods, balance.designed_play_window_ms - 2000, margin),
+			_snapshot_at(input, rules.regulation_periods, inside_clock, margin),
 			input.home.team_id)
 		assert_bool(EndgameStrategy.designed_play_active(inside, balance))\
 			.override_failure_message("margin %d" % margin).is_true()
 	var outside: PossessionContext = _context(
 		input,
-		_snapshot_at(input, rules.regulation_periods, balance.designed_play_window_ms + 2000, -4),
+		_snapshot_at(input, rules.regulation_periods, balance.designed_play_window_ms + 2000, -1),
 		input.home.team_id)
 	assert_bool(EndgameStrategy.designed_play_active(outside, balance)).is_false()
+
+
+## A team with a safe lead wants the clock, not its closer's best look. The
+## first version of this rule boosted the closer at every margin, which pushed
+## a winning team toward an early shot in the games it had already won.
+func test_designed_play_refuses_a_leading_team_at_every_lead() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	for margin: int in [1, 2, 6, 14]:
+		var leading: PossessionContext = _context(
+			input,
+			_snapshot_at(input, rules.regulation_periods, balance.designed_play_window_ms - 2000, margin),
+			input.home.team_id)
+		assert_bool(EndgameStrategy.designed_play_active(leading, balance))\
+			.override_failure_message("lead %d" % margin).is_false()
+
+
+## And it refuses a deficit the clock cannot close, which is the other half of
+## "realistically recoverable".
+func test_designed_play_refuses_a_deficit_the_clock_cannot_close() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var clock: int = balance.designed_play_window_ms - 2000
+	var recoverable: int = EndgameStrategy.recoverable_deficit(clock, balance)
+	var unreachable: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, clock, -(recoverable + 1)),
+		input.home.team_id)
+	assert_bool(EndgameStrategy.designed_play_active(unreachable, balance)).is_false()
+
+
+## The recoverable deficit is the possession in hand plus one per further
+## `endgame_possession_ms`, each worth at most a three — arithmetic, not a
+## tuning knob, and monotone in the time left.
+func test_recoverable_deficit_grows_one_possession_at_a_time() -> void:
+	var balance := SimulationBalanceProfile.new()
+	var swing: int = EndgameStrategy.MAXIMUM_PLANNED_POSSESSION_SWING
+	assert_int(EndgameStrategy.recoverable_deficit(0, balance)).is_equal(0)
+	assert_int(EndgameStrategy.recoverable_deficit(1000, balance)).is_equal(swing)
+	assert_int(EndgameStrategy.recoverable_deficit(
+		balance.endgame_possession_ms, balance)).is_equal(2 * swing)
+	assert_int(EndgameStrategy.recoverable_deficit(
+		balance.endgame_possession_ms * 3, balance)).is_equal(4 * swing)
 
 
 ## The designated closer is a read of one existing capability, not a new
@@ -298,43 +384,166 @@ func test_designed_play_boosts_only_the_designated_actor() -> void:
 
 # --- the intentional final free-throw miss --------------------------------------
 
-func test_intentional_miss_applies_only_to_the_final_attempt_of_a_close_lead() -> void:
+## The one state the tactic exists for: the offence trailing by exactly two
+## immediately before the last attempt of a trip, where the point cannot tie
+## and a live rebound can. Every neighbouring margin refuses.
+func test_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var balance: SimulationBalanceProfile = input.balance_profile
 	var rules: CompetitionRuleProfile = input.rule_profile
 
-	for margin: int in [1, 2, 3]:
-		var eligible: PossessionContext = _context(
-			input,
-			_snapshot_at(input, rules.regulation_periods, 2000, margin),
-			input.home.team_id)
-		var expected: bool = margin == 2 or margin == 3
+	# Margins here are the possession's *starting* margin with no points yet
+	# scored in it, so the margin before the attempt is the margin itself.
+	for margin: int in [-4, -3, -2, -1, 0, 1, 2, 3]:
+		var context: PossessionContext = _context(
+			input, _snapshot_at(input, rules.regulation_periods, 5000, margin), input.home.team_id)
 		assert_bool(
-			EndgameStrategy.should_intentionally_miss_final_free_throw(eligible, balance, 1, 2)
-		).override_failure_message("margin %d" % margin).is_equal(expected)
+			EndgameStrategy.should_intentionally_miss_final_free_throw(context, balance, 1, 2)
+		).override_failure_message("margin %d" % margin).is_equal(margin == -2)
 
-	var context: PossessionContext = _context(
-		input, _snapshot_at(input, rules.regulation_periods, 2000, 2), input.home.team_id)
+	var eligible: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, 5000, -2), input.home.team_id)
 	# Not the first attempt of a trip — only the last one is ever missed on
 	# purpose.
 	assert_bool(
-		EndgameStrategy.should_intentionally_miss_final_free_throw(context, balance, 0, 2)
+		EndgameStrategy.should_intentionally_miss_final_free_throw(eligible, balance, 0, 2)
 	).is_false()
 	# Not outside the narrow clock window: too much time still left to matter,
 	# or none left at all to matter for.
 	var too_early: PossessionContext = _context(
 		input,
-		_snapshot_at(input, rules.regulation_periods, balance.intentional_miss_clock_ms + 3000, 2),
+		_snapshot_at(input, rules.regulation_periods, balance.intentional_miss_clock_ms + 3000, -2),
 		input.home.team_id)
 	assert_bool(
 		EndgameStrategy.should_intentionally_miss_final_free_throw(too_early, balance, 1, 2)
 	).is_false()
-	# Not before the last period.
+	# Not before the final period.
 	var early_period: PossessionContext = _context(
-		input, _snapshot_at(input, 1, 2000, 2), input.home.team_id)
+		input, _snapshot_at(input, 1, 5000, -2), input.home.team_id)
 	assert_bool(
 		EndgameStrategy.should_intentionally_miss_final_free_throw(early_period, balance, 1, 2)
 	).is_false()
+
+
+## The canonical trip: down three, awarded two, first one made. The margin the
+## rule has to read is the one after that make — down two — and it gets it
+## without being told, because `PossessionEngine._emit` reduces each attempt
+## into the possession's own snapshot as it is written. The state the rule sees
+## at the second attempt is the live scoreboard, not the possession's opening
+## one.
+func test_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+
+	# The first attempt of the pair, down three: a point is worth having, and
+	# it is not the last attempt anyway.
+	var down_three: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, 5000, -3), input.home.team_id)
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(down_three, balance, 0, 2)
+	).is_false()
+	# That one missed: still down three with one to shoot, and the point is
+	# still worth having.
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(down_three, balance, 1, 2)
+	).is_false()
+	# That one went in, so the board now reads down two with one to shoot.
+	# This is the state the rule exists for.
+	var down_two: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, 5000, -2), input.home.team_id)
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(down_two, balance, 1, 2)
+	).is_true()
+
+
+## A leading team never misses on purpose, at any lead, clock, or attempt
+## index. The first version of this rule fired for a team ahead by two or
+## three, which inverted the tactic: a leading team wants every point it can
+## add, and a deliberate miss hands a live ball to the only side that needs one.
+func test_a_leading_team_never_intentionally_misses() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	for margin: int in [1, 2, 3, 4, 8]:
+		for attempts: int in [1, 2, 3]:
+			# Clocks inside the eligible band, so a refusal here is the margin
+			# gate doing the work rather than the window floor doing it.
+			for clock: int in [3000, 4000, 5500, 7000]:
+				var context: PossessionContext = _context(
+					input, _snapshot_at(input, rules.regulation_periods, clock, margin),
+					input.home.team_id)
+				assert_bool(
+					EndgameStrategy.should_intentionally_miss_final_free_throw(
+						context, balance, attempts - 1, attempts)
+				).override_failure_message(
+					"lead %d, %d attempts, clock %d" % [margin, attempts, clock]).is_false()
+
+
+## The plan is the rebound, so a rule profile where a missed final attempt is
+## dead kills the plan rather than merely changing what follows it. Under such
+## a profile the miss is a plain surrender of the ball — strictly worse than
+## the point — and the rule must refuse.
+func test_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var context: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, 5000, -2), input.home.team_id)
+	assert_bool(rules.final_free_throw_reboundable).is_true()
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(context, balance, 1, 2)
+	).is_true()
+
+	rules.final_free_throw_reboundable = false
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(context, balance, 1, 2)
+	).is_false()
+
+
+## The window has a floor as well as a ceiling, and the floor is what makes the
+## rule about a plan rather than about a gesture. A miss buys a rebound and the
+## shot after it; below the clock those two will actually be charged, it buys
+## neither, and the free point is worth more.
+func test_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var floor_ms: int = EndgameStrategy.minimum_miss_window_ms(balance)
+	assert_int(floor_ms).is_equal(
+		(balance.rebound_seconds_max + balance.action_seconds_min) * 1000)
+
+	# At the floor exactly, the plan still fits.
+	var at_floor: PossessionContext = _context(
+		input, _snapshot_at(input, rules.regulation_periods, floor_ms, -2), input.home.team_id)
+	assert_bool(
+		EndgameStrategy.should_intentionally_miss_final_free_throw(at_floor, balance, 1, 2)
+	).is_true()
+
+	# One millisecond under it, and at the millisecond a free-throw trip
+	# actually leaves on the clock, it does not.
+	for clock: int in [floor_ms - 1, 1]:
+		var too_late: PossessionContext = _context(
+			input, _snapshot_at(input, rules.regulation_periods, clock, -2), input.home.team_id)
+		assert_bool(
+			EndgameStrategy.should_intentionally_miss_final_free_throw(too_late, balance, 1, 2)
+		).override_failure_message("clock %d" % clock).is_false()
+
+
+## And the profile refuses to ship a window that cannot contain that floor,
+## which is how the rule shipped at v9 once the floor was known: an eligible
+## band half a second wide is a rule that never fires.
+func test_the_shipped_profile_keeps_the_miss_window_above_its_own_floor() -> void:
+	var balance := SimulationBalanceProfile.new()
+	assert_int(balance.intentional_miss_clock_ms).is_greater(
+		EndgameStrategy.minimum_miss_window_ms(balance))
+	assert_array(balance.validate()).is_empty()
+
+	# And the validation is real: a window at the floor is rejected by name.
+	balance.intentional_miss_clock_ms = EndgameStrategy.minimum_miss_window_ms(balance)
+	var failures: PackedStringArray = balance.validate()
+	assert_int(failures.size()).is_equal(1)
+	assert_str(failures[0]).contains("intentional-miss window")
 
 
 ## The decision never reaches the make-probability table: `FreeThrowResolver`
@@ -350,14 +559,14 @@ func test_intentional_miss_never_touches_free_throw_probability() -> void:
 	var resolver := FreeThrowResolver.new(capability, input.balance_profile)
 	var shooter: StringName = input.home.starters()[0]
 
-	var eligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 2000, 2)
-	# Margin 5, not margin 20: the comparison point has to sit inside §20.1's
-	# own `|margin| <= 5.0` pressure window too, or the two probabilities would
+	var eligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 5000, -2)
+	# Margin -5, not -20: the comparison point has to sit inside §20.1's own
+	# `|margin| <= 5.0` pressure window too, or the two probabilities would
 	# differ for a reason that has nothing to do with the intentional miss.
-	# Margin 5 is outside EndgameStrategy's own [2, 3] eligibility window while
-	# staying inside §20.1's, which is what isolates the one term this test is
+	# -5 is outside EndgameStrategy's own single eligible deficit while staying
+	# inside §20.1's window, which is what isolates the one term this test is
 	# actually about.
-	var ineligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 2000, 5)
+	var ineligible_snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, 5000, -5)
 	assert_bool(EndgameStrategy.should_intentionally_miss_final_free_throw(
 		_context(input, eligible_snapshot, input.home.team_id), input.balance_profile, 1, 2)
 	).is_true()
@@ -372,56 +581,106 @@ func test_intentional_miss_never_touches_free_throw_probability() -> void:
 
 # --- timeout to advance ---------------------------------------------------------
 
+## The rule flag is a §4 fact about the competition. Exactly one profile grants
+## it, and the state that is eligible under that profile is ineligible under
+## every other one — including college, which had the grant and should not have
+## (see `CompetitionRuleProfile.timeout_advance_permitted`).
 func test_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window() -> void:
 	var balance := SimulationBalanceProfile.new()
 	var permitted: CompetitionRuleProfile = CompetitionCatalog.rules_for(
-		CalibrationTargets.Competition.COLLEGE)
+		CalibrationTargets.Competition.TOP_DOMESTIC_PRO)
+	assert_bool(permitted.timeout_advance_permitted).is_true()
+	for competition: int in CalibrationTargets.all_competitions():
+		if competition == CalibrationTargets.Competition.TOP_DOMESTIC_PRO:
+			continue
+		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+		assert_bool(rules.timeout_advance_permitted).override_failure_message(
+			"%s grants timeout-advance" % CalibrationTargets.competition_id(competition)
+		).is_false()
+
+	var snapshot: MatchSnapshot = _advance_snapshot(permitted, balance)
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		snapshot, permitted, balance, &"home", false, false)).is_true()
+
+	# The same state under a profile that does not grant the rule.
 	var not_permitted: CompetitionRuleProfile = CompetitionCatalog.rules_for(
 		CalibrationTargets.Competition.DEVELOPMENT)
-	assert_bool(permitted.timeout_advance_permitted).is_true()
-	assert_bool(not_permitted.timeout_advance_permitted).is_false()
-
-	var snapshot := MatchSnapshot.new(
-		MatchFixtureFactory.match_between(
-			MatchFixtureFactory.uniform_team(&"home", 70),
-			MatchFixtureFactory.uniform_team(&"away", 70),
-			permitted, balance))
-	snapshot.period = permitted.regulation_periods
-	snapshot.clock_ms = balance.timeout_advance_window_ms - 5000
-	snapshot.home.score = 60
-	snapshot.away.score = 64
-	assert_bool(
-		EndgameStrategy.timeout_advance_eligible(snapshot, permitted, balance, &"home")
-	).is_true()
-
-	# The flag is what a competition's own rule profile controls; the same
-	# state under a profile that does not grant it is never eligible.
-	assert_bool(
-		EndgameStrategy.timeout_advance_eligible(snapshot, not_permitted, balance, &"home")
-	).is_false()
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		snapshot, not_permitted, balance, &"home", false, false)).is_false()
 
 	# Not while leading: the rule exists to help a team get back in position,
 	# not to spot a comfortable one an extra timeout's worth of rest.
 	snapshot.home.score = 70
 	snapshot.away.score = 60
-	assert_bool(
-		EndgameStrategy.timeout_advance_eligible(snapshot, permitted, balance, &"home")
-	).is_false()
-	snapshot.home.score = 60
-	snapshot.away.score = 64
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		snapshot, permitted, balance, &"home", false, false)).is_false()
 
 	# Not with no timeout left to call.
+	snapshot = _advance_snapshot(permitted, balance)
 	snapshot.home.timeouts_remaining = 0
-	assert_bool(
-		EndgameStrategy.timeout_advance_eligible(snapshot, permitted, balance, &"home")
-	).is_false()
-	snapshot.home.timeouts_remaining = permitted.timeouts_per_team
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		snapshot, permitted, balance, &"home", false, false)).is_false()
 
 	# Not outside the final window.
+	snapshot = _advance_snapshot(permitted, balance)
 	snapshot.clock_ms = balance.timeout_advance_window_ms + 5000
-	assert_bool(
-		EndgameStrategy.timeout_advance_eligible(snapshot, permitted, balance, &"home")
-	).is_false()
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		snapshot, permitted, balance, &"home", false, false)).is_false()
+
+
+## The four conditions that turned the advance from an expenditure into a
+## decision, each proven to refuse on its own with everything else eligible.
+func test_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure() -> void:
+	var balance := SimulationBalanceProfile.new()
+	var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(
+		CalibrationTargets.Competition.TOP_DOMESTIC_PRO)
+
+	# There is no ball to inbound after a live transfer, so there is no
+	# frontcourt advance to buy — only a break to interrupt.
+	var live: MatchSnapshot = _advance_snapshot(rules, balance)
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		live, rules, balance, &"home", true, false)).is_false()
+
+	# One possession is advanced at most once.
+	var repeat: MatchSnapshot = _advance_snapshot(rules, balance)
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		repeat, rules, balance, &"home", false, true)).is_false()
+
+	# A deficit the clock cannot close is not worth an allowance.
+	var buried: MatchSnapshot = _advance_snapshot(rules, balance)
+	var recoverable: int = EndgameStrategy.recoverable_deficit(buried.clock_ms, balance)
+	buried.away.score = buried.home.score + recoverable + 1
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		buried, rules, balance, &"home", false, false)).is_false()
+	buried.away.score = buried.home.score + recoverable
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		buried, rules, balance, &"home", false, false)).is_true()
+
+	# A coach keeps allowances in hand. At exactly the reserve he declines; one
+	# above it he calls.
+	var reserve: int = balance.timeout_advance_reserve_timeouts
+	assert_int(reserve).is_greater(0)
+	var thin: MatchSnapshot = _advance_snapshot(rules, balance)
+	thin.home.timeouts_remaining = reserve
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		thin, rules, balance, &"home", false, false)).is_false()
+	thin.home.timeouts_remaining = reserve + 1
+	assert_bool(EndgameStrategy.timeout_advance_eligible(
+		thin, rules, balance, &"home", false, false)).is_true()
+
+
+## The window is derived rather than picked: skipping the backcourt walk only
+## decides anything while the game clock, not the shot clock, is what limits
+## the possession. That is one shot clock plus about one walk, and the window
+## has to stay inside it for the profile that grants the rule.
+func test_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys() -> void:
+	var balance := SimulationBalanceProfile.new()
+	var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(
+		CalibrationTargets.Competition.TOP_DOMESTIC_PRO)
+	var one_walk_ms: int = 5000
+	assert_int(balance.timeout_advance_window_ms).is_less_equal(
+		rules.shot_clock_seconds * 1000 + one_walk_ms)
+	assert_int(balance.timeout_advance_window_ms).is_greater(rules.shot_clock_seconds * 1000)
 
 
 ## A timeout-advance possession still emits exactly one `ADVANCE` event — the
@@ -515,6 +774,34 @@ func test_leading_by_three_foul_refuses_when_ineligible() -> void:
 	).is_false()
 
 
+## The tactic is "send them to the line for two". Below the team-foul
+## threshold the whistle awards nothing: the offence keeps the ball, inbounds
+## with a fresh shot clock, and can still shoot the three the foul was meant to
+## prevent. The defence would have paid a team foul for the opposite of what it
+## wanted, so the decision refuses outside the bonus.
+func test_leading_by_three_foul_refuses_outside_the_bonus() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var capability := CapabilityCalculator.new(input.ratings_profile, input.balance_profile)
+	var resolver := FoulResolver.new(
+		capability, BodyEffects.new(input.balance_profile), input.balance_profile)
+	input.balance_profile.leading_foul_share = 1.0
+	var window: int = input.balance_profile.leading_foul_clock_ms
+
+	var context: PossessionContext = _foul_context(
+		input, rules.regulation_periods, window - 1000, -3)
+	# `_foul_context` puts the defence in the bonus, which is why the eligible
+	# case above fires at all.
+	assert_int(rules.bonus_free_throws_for(context.defense_state().team_fouls)).is_greater(0)
+
+	for team_fouls: int in range(0, rules.team_foul_bonus_threshold):
+		context.defense_state().team_fouls = team_fouls
+		assert_int(rules.bonus_free_throws_for(team_fouls)).is_equal(0)
+		assert_bool(
+			resolver.resolve_leading_by_three_foul(context, SeededRandomSource.new(1)).occurred
+		).override_failure_message("team fouls %d" % team_fouls).is_false()
+
+
 # --- reachability in a real simulated game ---------------------------------------
 
 ## Every strategy above is provably reachable through the public `MatchSession`
@@ -573,6 +860,28 @@ func _context(
 	return PossessionContext.new(input, snapshot, team_id, MatchupState.new({}), 1)
 
 
+## A snapshot in which every timeout-advance condition holds: the final period,
+## inside the window, trailing by a deficit the clock can still close, and with
+## allowances above the reserve. Each test then breaks exactly one of them.
+func _advance_snapshot(
+	rules: CompetitionRuleProfile,
+	balance: SimulationBalanceProfile,
+) -> MatchSnapshot:
+	var snapshot := MatchSnapshot.new(
+		MatchFixtureFactory.match_between(
+			MatchFixtureFactory.uniform_team(&"home", 70),
+			MatchFixtureFactory.uniform_team(&"away", 70),
+			rules, balance))
+	snapshot.period = rules.regulation_periods
+	snapshot.clock_ms = balance.timeout_advance_window_ms - 5000
+	snapshot.shot_clock_ms = rules.shot_clock_seconds * 1000
+	snapshot.home.score = 60
+	snapshot.away.score = 62
+	snapshot.home.timeouts_remaining = rules.timeouts_per_team
+	snapshot.away.timeouts_remaining = rules.timeouts_per_team
+	return snapshot
+
+
 func _half_court_entered_clock(events: Array[MatchDomainEvent]) -> int:
 	for event in events:
 		if event.event_type == MatchDomainEvent.HALF_COURT_ENTERED:
@@ -592,6 +901,10 @@ func _foul_context(
 	margin: int,
 ) -> PossessionContext:
 	var snapshot: MatchSnapshot = _snapshot_at(input, period, clock_ms, margin)
+	# The defence is in the bonus, because "send them to the line for two" is
+	# the tactic and a whistle that awards nothing is not it. A late-period
+	# team-foul count is the ordinary state for this decision anyway.
+	snapshot.away.team_fouls = input.rule_profile.team_foul_bonus_threshold
 	var context: PossessionContext = _context(input, snapshot, input.home.team_id)
 	context.ball_handler_id = input.home.starters()[0]
 	return context

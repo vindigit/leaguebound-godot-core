@@ -54,6 +54,14 @@ var _writer: MatchEventWriter
 var _context: PossessionContext
 var _points_scored: int
 var _terminated: bool
+## Whether this possession has already spent its one leading-by-three foul.
+## The tactic is a single decision — send them to the line rather than let them
+## shoot the tying three — and once the whistle has gone the possession the
+## decision was about is a free-throw trip, not a three-point attempt waiting
+## to happen. Without this, the eligibility that produced the first whistle
+## still held on the action after it, and the same defence could foul the same
+## possession repeatedly.
+var _leading_foul_called: bool
 var _end_reason: int
 var _next_team_id: StringName
 var _live_transfer: bool
@@ -100,6 +108,7 @@ func simulate(
 		input.match_id, snapshot.event_sequence, snapshot.period, snapshot.clock_ms)
 	_points_scored = 0
 	_terminated = false
+	_leading_foul_called = false
 	_end_reason = PossessionEndReason.Value.TURNOVER
 	_next_team_id = &""
 	_live_transfer = false
@@ -769,12 +778,21 @@ func _resolve_intentional_foul(random_source: RandomSource) -> bool:
 	return true
 
 
+## At most one per possession. `FoulResolver` owns the eligibility — final
+## period, up exactly three, inside the window, and in the bonus so the whistle
+## actually sends the offence to the line — and this owns the fact that it is
+## one decision rather than a standing condition. Both are needed: the bonus
+## gate stops the foul that buys nothing, and this stops the second, third and
+## fourth foul that would follow the one that bought something.
 func _resolve_leading_by_three_foul(random_source: RandomSource) -> bool:
+	if _leading_foul_called:
+		return false
 	if _context.ball_handler_id.is_empty():
 		return false
 	var call: FoulCall = _foul_resolver.resolve_leading_by_three_foul(_context, random_source)
 	if not call.occurred:
 		return false
+	_leading_foul_called = true
 	_resolve_defensive_foul(call, random_source.derive(&"leading_by_three_consequences"))
 	return true
 
@@ -843,10 +861,17 @@ func _resolve_free_throws(
 		# took, which §13.2 forbids — attempts are attributed exactly once, and
 		# zero is not once.
 		_advance_dead_ball(_clock.free_throw_ms())
-		# `EndgameStrategy`'s intentional miss: a leading team's final attempt of
-		# the trip, deliberately missed rather than shot to make. The resolver is
+		# `EndgameStrategy`'s intentional miss: a *trailing* team's final attempt
+		# of the trip, deliberately missed rather than shot to make, in the one
+		# state where the point cannot tie and the rebound can. The resolver is
 		# never consulted for this one attempt, so there is no make-probability
 		# table for the decision to touch.
+		#
+		# The margin the decision reads is live: `_emit` reduces each attempt
+		# into `_state` as it is written, so an earlier make of this same trip
+		# is already on the scoreboard by the time the last attempt comes up.
+		# That is what lets "down three, first of two made" arrive here as the
+		# down-two state the rule is actually about.
 		var intentional_miss: bool = EndgameStrategy.should_intentionally_miss_final_free_throw(
 			_context, _balance, index, attempts)
 		var made: bool = (
@@ -863,6 +888,14 @@ func _resolve_free_throws(
 		if one_and_one and index == 0 and not made:
 			break
 
+	# A missed last attempt is a live ball where the rules say so, and an
+	# intentionally missed one is a missed one. It goes into the same
+	# `_resolve_rebound` every other miss goes into, contested by the same
+	# rebound resolver against the same defence, and the offence keeps the ball
+	# only when it actually wins the board — the decision buys a live rebound,
+	# never the rebound itself. `EndgameStrategy` refuses the intentional miss
+	# outright under a profile where `final_free_throw_reboundable` is false,
+	# so this branch is the only one it can reach.
 	if not last_made and _rules.final_free_throw_reboundable:
 		_resolve_rebound(shooter_id, ShotZone.Value.RESTRICTED_RIM, false, random_source)
 		return

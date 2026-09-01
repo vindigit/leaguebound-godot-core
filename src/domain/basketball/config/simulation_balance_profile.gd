@@ -700,16 +700,56 @@ var leading_foul_share: float = 0.30
 ## is the last meaningful possession, not the last few of a close game. Units:
 ## milliseconds of regulation remaining. Safe range 3000-20000.
 var leading_foul_clock_ms: int = 10000
-## Below this much regulation time, a leading team's final free throw of a trip
-## is intentionally missed rather than shot to make, when doing so denies the
-## trailing team a possession a make would have granted it. Units:
-## milliseconds of regulation remaining. Safe range 1000-8000.
-var intentional_miss_clock_ms: int = 3500
-## Inside the final regulation window a rule profile's timeout-advance flag
-## covers, how much time still counts as "the endgame" for gaining the ball in
-## the frontcourt rather than the backcourt. Units: milliseconds of regulation
-## remaining. Safe range 30000-180000.
-var timeout_advance_window_ms: int = 120000
+## The **emergency window**: at or below this much regulation time, a team
+## trailing by exactly two deliberately misses the last free throw of a trip
+## rather than shooting it to make, because the point cannot tie the game and a
+## live rebound can (`EndgameStrategy.should_intentionally_miss_final_free_throw`).
+##
+## Raised from 3500 by `simulation-v10-endgame-corrections`, and derived from
+## the clock model rather than picked. Above this window the offence has a real
+## alternative to missing: take the free point, concede the ball, foul
+## immediately and get it back. That plan needs the opponent's inbound
+## (`inbound_seconds_min`, 2s), the two-shot trip the foul buys them
+## (2 x `free_throw_event_seconds`, 4s), and one attempt of its own
+## (`action_seconds_min`, 1s) — seven seconds. Inside seven seconds the plan
+## does not fit and the miss is the only thing left; outside it the point is
+## worth more.
+##
+## 3500 was not wrong so much as unreachable once
+## `EndgameStrategy.minimum_miss_window_ms` put a floor underneath it: a
+## free-throw trip charges two seconds of event time per attempt, so a trip
+## beginning inside 3.5 seconds arrives at its last attempt with almost nothing
+## left, and the eligible band between the floor and 3500 was about half a
+## second wide. Measured across 2,000 games at 3500, every intentional miss the
+## engine took had its possession end on the horn before the rebound it was
+## taken for (`PROJECT_STATUS.md` §5.26).
+##
+## Units: milliseconds of regulation remaining. Safe range 1000-8000.
+var intentional_miss_clock_ms: int = 7000
+## The most regulation time that can remain for gaining the ball in the
+## frontcourt to be worth an allowance.
+##
+## This is a derived number, not a preference. Skipping the backcourt walk buys
+## the offence the seconds that walk would have cost. Those seconds only decide
+## anything while the *game* clock is the binding constraint on the possession;
+## once there is a full shot clock plus a walk left, the offence can walk the
+## ball up and still run everything it wanted to run, and the timeout has
+## bought it nothing it did not already have. One 24-second shot clock plus one
+## four-second walk is 28 seconds, and that is the boundary.
+##
+## It was 120000 — two minutes — which is a description of "the endgame" rather
+## than of the benefit, and under which the call was worth making on every
+## possession of every close finish. See
+## `EndgameStrategy.timeout_advance_eligible`.
+##
+## Units: milliseconds of regulation remaining. Safe range 8000-45000.
+var timeout_advance_window_ms: int = 28000
+## Allowances a coach keeps in hand *after* calling a timeout to advance the
+## ball. One, because the possession after an advanced one is the one he needs
+## to stop the clock for, and a coach who has spent everything to save four
+## seconds has bought the smaller of the two things.
+## Units: timeouts. Safe range 0-3.
+var timeout_advance_reserve_timeouts: int = 1
 
 # --- §4/§5 coaching timeouts -------------------------------------------------
 ## Unanswered points by the opponent at which a coach stops the run.
@@ -797,13 +837,17 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	# Bumped from `simulation-v8-contest-capability`: `EndgameStrategy` adds
-	# two-for-one clock management, holding for the final shot, a
-	# timeout-aware quick-two-vs-tying-three preference, a designed
-	# final-possession play, a leading-by-three foul, an intentional final
-	# free-throw miss, and timeout-to-advance. The production simulation
-	# contract changed, so the ruleset is bumped (`PROJECT_STATUS.md`).
-	p_version: StringName = &"simulation-v9-endgame-strategy",
+	# Bumped from `simulation-v9-endgame-strategy`, which had bumped from
+	# `simulation-v8-contest-capability` to ship `EndgameStrategy` at all.
+	# v10 corrects five of that subsystem's decisions rather than adding a new
+	# one: the intentional free-throw miss becomes a trailing team's decision
+	# instead of a leading team's, a tied team may hold for the last shot, the
+	# designed final possession refuses a safe lead, the timeout-to-advance
+	# becomes a coaching choice with a reserve instead of an automatic
+	# expenditure, and the leading-by-three foul is once per possession and
+	# only in the bonus. Every one of those changes what the engine produces
+	# for the same input, so the ruleset is bumped (`PROJECT_STATUS.md` §5.26).
+	p_version: StringName = &"simulation-v10-endgame-corrections",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1226,7 +1270,8 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"endgame.leading_foul_share", &"probability", leading_foul_share, 0.0, 1.0)
 	_add(tunables, &"endgame.leading_foul_clock_ms", &"milliseconds", float(leading_foul_clock_ms), 3000.0, 20000.0)
 	_add(tunables, &"endgame.intentional_miss_clock_ms", &"milliseconds", float(intentional_miss_clock_ms), 1000.0, 8000.0)
-	_add(tunables, &"endgame.timeout_advance_window_ms", &"milliseconds", float(timeout_advance_window_ms), 30000.0, 180000.0)
+	_add(tunables, &"endgame.timeout_advance_window_ms", &"milliseconds", float(timeout_advance_window_ms), 8000.0, 45000.0)
+	_add(tunables, &"endgame.timeout_advance_reserve_timeouts", &"timeouts", float(timeout_advance_reserve_timeouts), 0.0, 3.0)
 	_add(tunables, &"timeout.run_points", &"points", float(timeout_run_points), 4.0, 15.0)
 	_add(tunables, &"timeout.recovery_points", &"fatigue_points", timeout_recovery_points, 0.0, 20.0)
 	_add(tunables, &"timeout.run_reserve_ms", &"milliseconds", float(timeout_run_reserve_ms), 0.0, 180000.0)
@@ -1278,6 +1323,19 @@ func validate() -> PackedStringArray:
 	_require_monotonic(failures, &"baseline_free_throw", baseline_free_throw)
 	if absf(player_preference_share + coach_preference_share - 1.0) > 0.000001:
 		failures.append("the Â§12.3 player and coach shares must sum to 1.0")
+	# The intentional-miss window has to be wide enough to contain the plan it
+	# exists for. `EndgameStrategy.minimum_miss_window_ms` is the clock the
+	# rebound and the shot after it will actually be charged, so a window at or
+	# below that floor is a rule that can never usefully fire — which is how it
+	# shipped at v9 once the floor was added (`PROJECT_STATUS.md` §5.26). This
+	# keeps the two numbers related by validation rather than by a comment.
+	var miss_floor: int = EndgameStrategy.minimum_miss_window_ms(self)
+	if intentional_miss_clock_ms <= miss_floor:
+		failures.append(
+			"the intentional-miss window (%dms) must exceed the rebound-and-shot "
+			% intentional_miss_clock_ms
+			+ "floor it is measured against (%dms), or the rule can never fire "
+			% miss_floor + "in a state where the miss buys an attempt")
 	failures.append_array(_role_opportunity_table.validate())
 	return failures
 

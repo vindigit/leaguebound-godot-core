@@ -85,11 +85,23 @@ var credited_assist_families: PackedInt32Array = PassCreation.DELIVERED_FAMILIES
 
 ## Whether a timeout called in `EndgameStrategy`'s final-regulation window
 ## lets the calling team inbound in the frontcourt instead of walking the ball
-## up, real leagues differ on this rule and the engine had no representation
-## of it at all before Stage 4's endgame work: a timeout was always a pure
-## rest. Off by default, matching every profile's behaviour before this field
-## existed; the two competitions granted it are a deliberate, named choice
-## rather than a blanket default (see `PROJECT_STATUS.md`).
+## up. Real leagues differ on this rule and the engine had no representation of
+## it at all before Stage 4's endgame work: a timeout was always a pure rest.
+##
+## Off by default, matching every profile's behaviour before this field
+## existed. Exactly one profile grants it — `top_domestic_profile()` — because
+## the top domestic professional rule set is the one this repertoire is modelled
+## on. It is granted on that ground alone.
+##
+## It was briefly granted to `college_profile()` as well. That was a mistake of
+## reasoning rather than of code: the 2026-09-01 owner ruling named college and
+## top domestic as the two competitions whose *measured overtime rate* was to be
+## treated as missing end-of-regulation behaviour, and the grant read that
+## ruling as though it had also decided a §4 rule question. It had not. A
+## competition's rules are fixed by §4 and by what the competition is, never by
+## which §14.2 band a measurement is short of — deriving one from the other is
+## the same as letting a calibration target reach into production data, which
+## §5.25's own pre-implementation confirmation 3 exists to forbid.
 var timeout_advance_permitted: bool = false
 
 
@@ -260,17 +272,16 @@ static func high_school_profile() -> CompetitionRuleProfile:
 ## from the fifth team foul of the half, five personal fouls. Â§14.1 asks for
 ## 64-73 possessions, which over 40 minutes is 16.4-18.8 seconds per possession.
 ##
-## Timeout-advance is granted here: the 2026-09-01 owner ruling names college
-## and top domestic as the two competitions whose measured overtime rate
-## (1.00% and 1.75% before `EndgameStrategy`) is treated as missing
-## end-of-regulation behaviour rather than an unreachable target, and this is
-## one of the four named systems.
+## Timeout-advance is **not** granted here. The college rule set does not
+## advance the ball on a timeout, and the owner ruling that named college
+## alongside top domestic was a ruling about how to read an overtime
+## measurement, not a grant of a §4 rule (see `timeout_advance_permitted`).
 static func college_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
 		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"college_pace",
-		&"standard_officiating", &"standard_roster", 1.00, 4, true)
+		&"standard_officiating", &"standard_roster", 1.00, 4)
 
 
 ## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
@@ -301,7 +312,10 @@ static func overseas_profile() -> CompetitionRuleProfile:
 ## fouls. Â§14.1 asks for 96-103 possessions, which over 48 minutes is 14.0-15.0
 ## seconds per possession.
 ##
-## Timeout-advance is granted here; see `college_profile()` for the ruling.
+## Timeout-advance is granted here, and here only: this is the rule set the
+## frontcourt-inbound rule belongs to. See `timeout_advance_permitted` for why
+## the grant is a §4 fact about the competition rather than a response to a
+## §14.2 measurement.
 static func top_domestic_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
 		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,

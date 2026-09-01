@@ -37,6 +37,11 @@ var _run_points: int
 ## for the one possession that follows it, and consumed the same way
 ## `_live_start` is.
 var _advance_start: bool
+## The possession sequence an advance timeout was last called at, so the
+## "at most once for the same possession" condition is state the session
+## actually holds rather than an accident of the order `advance_possession`
+## happens to call things in. -1 is "never".
+var _advance_timeout_possession: int
 
 const MAX_POSSESSIONS: int = 2000
 
@@ -59,6 +64,7 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_run_team_id = &""
 	_run_points = 0
 	_advance_start = false
+	_advance_timeout_possession = -1
 
 
 func snapshot() -> MatchSnapshot:
@@ -295,18 +301,31 @@ func _consider_timeout() -> void:
 ## everybody on the floor rested, on both sides — with a different cause, and
 ## a session-level flag that tells the possession engine to skip the backcourt
 ## walk for the one possession that follows it.
+##
+## Whether it is worth an allowance at all is `EndgameStrategy`'s decision, and
+## the two facts only this session knows are handed to it: whether the coming
+## possession starts from a dead ball (there is no ball to inbound after a live
+## transfer, so there is no advance to buy), and whether this same possession
+## has already been advanced. Everything else — margin, clock, reserve — the
+## snapshot carries.
 func _consider_advance_timeout() -> void:
 	var team_id: StringName = _snapshot.possession_team_id
 	if team_id.is_empty():
 		return
 	if not EndgameStrategy.timeout_advance_eligible(
-		_snapshot, _input.rule_profile, _input.balance_profile, team_id
+		_snapshot,
+		_input.rule_profile,
+		_input.balance_profile,
+		team_id,
+		_live_start,
+		_advance_timeout_possession == _snapshot.possession_sequence,
 	):
 		return
 	var writer := _writer()
 	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"advance")
 	_commit(writer)
 	_advance_start = true
+	_advance_timeout_possession = _snapshot.possession_sequence
 	# A timeout is a dead ball whatever its cause.
 	_live_start = false
 
