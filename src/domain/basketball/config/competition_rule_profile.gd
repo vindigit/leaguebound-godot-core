@@ -83,6 +83,15 @@ var timeouts_per_team: int
 var assist_rule_id: StringName = &"delivered-shot-v1"
 var credited_assist_families: PackedInt32Array = PassCreation.DELIVERED_FAMILIES
 
+## Whether a timeout called in `EndgameStrategy`'s final-regulation window
+## lets the calling team inbound in the frontcourt instead of walking the ball
+## up, real leagues differ on this rule and the engine had no representation
+## of it at all before Stage 4's endgame work: a timeout was always a pure
+## rest. Off by default, matching every profile's behaviour before this field
+## existed; the two competitions granted it are a deliberate, named choice
+## rather than a blanket default (see `PROJECT_STATUS.md`).
+var timeout_advance_permitted: bool = false
+
 
 func _init(
 	p_profile_id: StringName = &"five_on_five_baseline",
@@ -108,6 +117,7 @@ func _init(
 	p_roster_rule_profile_id: StringName = &"standard_roster",
 	p_pace_multiplier: float = 1.0,
 	p_timeouts_per_team: int = 6,
+	p_timeout_advance_permitted: bool = false,
 ) -> void:
 	assert(p_timeouts_per_team >= 0 and p_timeouts_per_team <= 12,
 		"a timeout allowance must be a small non-negative count")
@@ -156,6 +166,7 @@ func _init(
 	officiating_profile_id = p_officiating_profile_id
 	roster_rule_profile_id = p_roster_rule_profile_id
 	timeouts_per_team = p_timeouts_per_team
+	timeout_advance_permitted = p_timeout_advance_permitted
 
 
 func period_length_ms(period: int) -> int:
@@ -248,12 +259,18 @@ static func high_school_profile() -> CompetitionRuleProfile:
 ## College: twenty-minute halves (40 minutes), 30-second shot clock, two shots
 ## from the fifth team foul of the half, five personal fouls. Â§14.1 asks for
 ## 64-73 possessions, which over 40 minutes is 16.4-18.8 seconds per possession.
+##
+## Timeout-advance is granted here: the 2026-09-01 owner ruling names college
+## and top domestic as the two competitions whose measured overtime rate
+## (1.00% and 1.75% before `EndgameStrategy`) is treated as missing
+## end-of-regulation behaviour rather than an unreachable target, and this is
+## one of the four named systems.
 static func college_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
 		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"college_pace",
-		&"standard_officiating", &"standard_roster", 1.00, 4)
+		&"standard_officiating", &"standard_roster", 1.00, 4, true)
 
 
 ## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
@@ -283,9 +300,11 @@ static func overseas_profile() -> CompetitionRuleProfile:
 ## shot clock, two shots from the fifth team foul of the quarter, six personal
 ## fouls. Â§14.1 asks for 96-103 possessions, which over 48 minutes is 14.0-15.0
 ## seconds per possession.
+##
+## Timeout-advance is granted here; see `college_profile()` for the ruling.
 static func top_domestic_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
 		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"top_domestic_pace",
-		&"standard_officiating", &"standard_roster", 0.855, 7)
+		&"standard_officiating", &"standard_roster", 0.855, 7, true)

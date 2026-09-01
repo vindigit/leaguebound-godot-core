@@ -168,6 +168,34 @@ func resolve_intentional_foul(
 		true, FoulType.Value.INTENTIONAL, fouler_id, context.ball_handler_id, 0)
 
 
+## `EndgameStrategy`'s leading-by-three foul: the mirror image of the
+## intentional foul above, for the side that is *ahead*. A defence up exactly
+## three with little time left may prefer sending the offence to the line for
+## two over letting them attempt the tying three at all. Real coaching staffs
+## disagree about this one, which is why it is a probability
+## (`leading_foul_share`) rather than a certainty the way the desperation foul
+## above effectively is inside its own window — this is the "optional" of the
+## production brief, not the "necessary" of the intentional free-throw miss.
+func resolve_leading_by_three_foul(
+	context: PossessionContext,
+	random_source: RandomSource,
+) -> FoulCall:
+	if context.state.period < context.input.rule_profile.regulation_periods:
+		return FoulCall.none()
+	if context.state.clock_ms > _balance.leading_foul_clock_ms:
+		return FoulCall.none()
+	var defense_margin: int = -context.offense_margin()
+	if defense_margin != GameManagement.TIE_SEEKING_MAXIMUM_DEFICIT:
+		return FoulCall.none()
+	if random_source.next_float() >= _balance.leading_foul_share:
+		return FoulCall.none()
+	var fouler_id: StringName = _least_protected_defender(context)
+	if fouler_id.is_empty() or context.ball_handler_id.is_empty():
+		return FoulCall.none()
+	return FoulCall.new(
+		true, FoulType.Value.LEADING_PROTECT, fouler_id, context.ball_handler_id, 0)
+
+
 ## The shared contact model. §14.3's 20% is the rate at which a *valid*
 ## illegal-contact opportunity becomes a whistle, so `contact_load` — how much
 ## contact the action actually generated — is the opportunity term and the base

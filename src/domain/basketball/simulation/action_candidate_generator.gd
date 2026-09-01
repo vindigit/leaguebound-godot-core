@@ -116,6 +116,10 @@ var _frame_spacing: float = 0.5
 ## `generate` is weighted from one state, so this is resolved once beside the
 ## spacing rather than once per candidate.
 var _frame_pressure: float = 0.0
+## `EndgameStrategy`'s designated final-possession shot-creator for this call,
+## or empty when no designed play is active. A possession-level fact like
+## `_frame_pressure` above, resolved once rather than once per candidate.
+var _frame_designated_closer_id: StringName = &""
 var _frame_usage: Dictionary = {}
 var _frame_on_court: Array[StringName] = []
 ## Pooled actor scratch, keyed by player id and reused across actions.
@@ -192,6 +196,14 @@ func _begin_frame(context: PossessionContext) -> void:
 	_frame_usage = _participants.usage_damping_table(context)
 	_frame_live.clear()
 	_frame_pressure = GameManagement.pressure(context)
+	# Cheap outside the one truly final possession of the game — the eligibility
+	# check below is the same O(1) clock read `EndgameStrategy` uses everywhere
+	# else, so ordinary basketball never reaches the capability scan that finds
+	# the closer.
+	_frame_designated_closer_id = (
+		EndgameStrategy.designated_closer_id(context, _capability)
+		if EndgameStrategy.designed_play_active(context, _balance)
+		else &"")
 	if _frame_on_court.is_empty():
 		_frame_spacing = 0.5
 		return
@@ -376,7 +388,7 @@ func _build(
 		_balance.coach_instruction_max)
 	var tactical_fit: float = _tactical_fit(context, actor, runtime, family, zone)
 	var matchup: float = _matchup_opportunity(context, frame, family, zone)
-	var score_clock: float = _score_clock(context, family, zone)
+	var score_clock: float = _score_clock(context, family, zone, actor_id)
 	var confidence: float = _capability_confidence(context, frame, family, zone)
 	var fatigue: float = frame.fatigue
 	var usage: float = 1.0
@@ -620,7 +632,7 @@ func _assignment_execution(context: PossessionContext, runtime: PlayerMatchRunti
 
 ## §10.3 score and clock context, using the wider §12.2 late-clock band when the
 ## shot clock forces the issue.
-func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
+func _score_clock(context: PossessionContext, family: int, zone: int, actor_id: StringName) -> float:
 	var value: float = 1.0
 	var shot_clock_share: float = clampf(
 		float(context.state.shot_clock_ms) / float(context.input.rule_profile.shot_clock_seconds * 1000),
@@ -635,6 +647,14 @@ func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
 	# actions as a team in a tie game.
 	var management: float = GameManagement.action_multiplier_at(
 		context, _balance, family, zone, _frame_pressure)
+	# `EndgameStrategy` owns the coaching decisions `GameManagement` does not:
+	# two-for-one, holding for the final shot, quick-two-vs-tying-three past
+	# `GameManagement`'s own window, and the designed final possession's actor
+	# preference. Folded in beside `management` inside the same §12.2 clamp
+	# below, so this can never push a candidate's weight outside the guardrail
+	# the rest of the factor already lives under.
+	var endgame: float = EndgameStrategy.action_multiplier(
+		context, _balance, family, zone, actor_id, _frame_designated_closer_id)
 	if late:
 		if ActionFamily.is_direct_shot(family) or family == ActionFamily.Value.DRIVE:
 			value = lerpf(_balance.late_clock_max, 1.0, shot_clock_share)
@@ -642,14 +662,14 @@ func _score_clock(context: PossessionContext, family: int, zone: int) -> float:
 			value = _balance.late_clock_min
 		else:
 			value = lerpf(0.85, 1.0, shot_clock_share)
-		return clampf(value * management, _balance.late_clock_min, _balance.late_clock_max)
+		return clampf(value * management * endgame, _balance.late_clock_min, _balance.late_clock_max)
 
 	if family == ActionFamily.Value.RESET:
 		value = lerpf(0.75, 1.25, shot_clock_share)
 	elif ActionFamily.is_direct_shot(family):
 		value = lerpf(1.20, 0.85, shot_clock_share)
 
-	return clampf(value * management, _balance.score_clock_min, _balance.score_clock_max)
+	return clampf(value * management * endgame, _balance.score_clock_min, _balance.score_clock_max)
 
 
 ## §10.3 capability confidence: a player attempts what he can actually do a

@@ -643,6 +643,74 @@ var endgame_tie_gain: float = 0.40
 ## Units: share of the §10.3 score-and-clock factor. Safe range 0.0-0.70.
 var endgame_tie_relief: float = 0.35
 
+# --- end-of-regulation strategy (`EndgameStrategy`) -------------------------
+#
+# The tie-seeking rule above is one possession-ending decision: which shot
+# value to prefer once the last possession has already arrived. §5.13 of
+# `PROJECT_STATUS.md` names four possession-management and coaching decisions
+# that are still missing and that a fuller end-of-regulation repertoire needs:
+# two-for-one clock management, a designed final-possession play, fouling
+# while leading by three, and timeout-to-advance. `EndgameStrategy` owns them.
+# Every one changes which action, actor or clock decision a coach prefers, or
+# rides an existing whistle/free-throw/timeout event with a new cause; none
+# reaches a shot, free-throw, or contact probability.
+
+## Beyond one shot clock, how much additional remaining time still counts as a
+## two-for-one opportunity for the team that does not have the ball safely
+## ahead. Units: milliseconds beyond `shot_clock_seconds * 1000`. Safe range
+## 0-20000.
+var two_for_one_window_ms: int = 10000
+## Extra urgency a team in a two-for-one window adds to a quick, decisive shot
+## and takes off a reset. Units: share of the §10.3 score-and-clock factor.
+## Safe range 0.0-0.60.
+var two_for_one_urgency: float = 0.30
+## How much regulation has to be left for a leading or tied team to start
+## holding for the final shot of the game. Units: milliseconds of regulation
+## remaining. Safe range 15000-40000.
+var hold_for_final_shot_window_ms: int = 26000
+## Extra weight a holding team adds to a reset, on top of the ordinary
+## protecting preference, while the shot clock still has time to spend.
+## Units: share of the §10.3 score-and-clock factor. Safe range 0.0-0.60.
+var hold_reset_gain: float = 0.30
+## Outside `endgame_possession_ms`, how much further remaining time still
+## supports a quick-two-then-foul plan for a team down exactly three. Units:
+## milliseconds of regulation remaining. Safe range 32000-70000.
+var quick_two_timeout_window_ms: int = 46000
+## Weight added to a two-point shot value, and taken off a three, for a team
+## down exactly three with a timeout in reserve and enough time for a second
+## possession. Units: share of the §10.3 score-and-clock factor. Safe range
+## 0.0-0.60.
+var quick_two_preference: float = 0.30
+## How much regulation has to be left for a designed final-possession play to
+## select its actor. Narrower than the tie-seeking window: this is the
+## possession itself, not the window in which one might still arrive. Units:
+## milliseconds of regulation remaining. Safe range 8000-24000.
+var designed_play_window_ms: int = 15000
+## Extra weight a designed final possession adds to its designated
+## shot-creator's own candidates. Units: share of the §10.3 score-and-clock
+## factor. Safe range 0.0-0.60.
+var designed_play_actor_gain: float = 0.35
+## Probability a leading-by-three defence fouls before the tying three can be
+## attempted, once eligible. Deliberately lower than the trailing team's
+## desperation-foul share: it is a live coaching debate rather than a
+## last-resort necessity. Units: probability. Safe range 0.0-1.00.
+var leading_foul_share: float = 0.30
+## How much regulation has to be left for the leading-by-three foul to be
+## considered. Shorter than the trailing team's intentional-foul window: this
+## is the last meaningful possession, not the last few of a close game. Units:
+## milliseconds of regulation remaining. Safe range 3000-20000.
+var leading_foul_clock_ms: int = 10000
+## Below this much regulation time, a leading team's final free throw of a trip
+## is intentionally missed rather than shot to make, when doing so denies the
+## trailing team a possession a make would have granted it. Units:
+## milliseconds of regulation remaining. Safe range 1000-8000.
+var intentional_miss_clock_ms: int = 3500
+## Inside the final regulation window a rule profile's timeout-advance flag
+## covers, how much time still counts as "the endgame" for gaining the ball in
+## the frontcourt rather than the backcourt. Units: milliseconds of regulation
+## remaining. Safe range 30000-180000.
+var timeout_advance_window_ms: int = 120000
+
 # --- §4/§5 coaching timeouts -------------------------------------------------
 ## Unanswered points by the opponent at which a coach stops the run.
 ## Units: points. Safe range 4-15.
@@ -729,7 +797,13 @@ var _role_opportunity_table: RoleOpportunityTable
 
 func _init(
 	p_profile_id: StringName = &"simulation_baseline",
-	p_version: StringName = &"simulation-v8-contest-capability",
+	# Bumped from `simulation-v8-contest-capability`: `EndgameStrategy` adds
+	# two-for-one clock management, holding for the final shot, a
+	# timeout-aware quick-two-vs-tying-three preference, a designed
+	# final-possession play, a leading-by-three foul, an intentional final
+	# free-throw miss, and timeout-to-advance. The production simulation
+	# contract changed, so the ruleset is bumped (`PROJECT_STATUS.md`).
+	p_version: StringName = &"simulation-v9-endgame-strategy",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1141,6 +1215,18 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"management.endgame_possession_ms", &"milliseconds", float(endgame_possession_ms), 8000.0, 60000.0)
 	_add(tunables, &"management.endgame_tie_gain", &"share", endgame_tie_gain, 0.0, 0.80)
 	_add(tunables, &"management.endgame_tie_relief", &"share", endgame_tie_relief, 0.0, 0.70)
+	_add(tunables, &"endgame.two_for_one_window_ms", &"milliseconds", float(two_for_one_window_ms), 0.0, 20000.0)
+	_add(tunables, &"endgame.two_for_one_urgency", &"share", two_for_one_urgency, 0.0, 0.60)
+	_add(tunables, &"endgame.hold_for_final_shot_window_ms", &"milliseconds", float(hold_for_final_shot_window_ms), 15000.0, 40000.0)
+	_add(tunables, &"endgame.hold_reset_gain", &"share", hold_reset_gain, 0.0, 0.60)
+	_add(tunables, &"endgame.quick_two_timeout_window_ms", &"milliseconds", float(quick_two_timeout_window_ms), 32000.0, 70000.0)
+	_add(tunables, &"endgame.quick_two_preference", &"share", quick_two_preference, 0.0, 0.60)
+	_add(tunables, &"endgame.designed_play_window_ms", &"milliseconds", float(designed_play_window_ms), 8000.0, 24000.0)
+	_add(tunables, &"endgame.designed_play_actor_gain", &"share", designed_play_actor_gain, 0.0, 0.60)
+	_add(tunables, &"endgame.leading_foul_share", &"probability", leading_foul_share, 0.0, 1.0)
+	_add(tunables, &"endgame.leading_foul_clock_ms", &"milliseconds", float(leading_foul_clock_ms), 3000.0, 20000.0)
+	_add(tunables, &"endgame.intentional_miss_clock_ms", &"milliseconds", float(intentional_miss_clock_ms), 1000.0, 8000.0)
+	_add(tunables, &"endgame.timeout_advance_window_ms", &"milliseconds", float(timeout_advance_window_ms), 30000.0, 180000.0)
 	_add(tunables, &"timeout.run_points", &"points", float(timeout_run_points), 4.0, 15.0)
 	_add(tunables, &"timeout.recovery_points", &"fatigue_points", timeout_recovery_points, 0.0, 20.0)
 	_add(tunables, &"timeout.run_reserve_ms", &"milliseconds", float(timeout_run_reserve_ms), 0.0, 180000.0)

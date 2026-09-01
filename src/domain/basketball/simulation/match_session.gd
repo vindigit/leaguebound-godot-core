@@ -33,6 +33,10 @@ var _opened: bool
 ## trigger is a function of the committed ledger like everything else.
 var _run_team_id: StringName
 var _run_points: int
+## `EndgameStrategy`'s timeout-to-advance: set by `_consider_advance_timeout`
+## for the one possession that follows it, and consumed the same way
+## `_live_start` is.
+var _advance_start: bool
 
 const MAX_POSSESSIONS: int = 2000
 
@@ -54,6 +58,7 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_opened = false
 	_run_team_id = &""
 	_run_points = 0
+	_advance_start = false
 
 
 func snapshot() -> MatchSnapshot:
@@ -104,7 +109,22 @@ func advance_possession() -> PossessionResult:
 	assert(_snapshot.possession_sequence < MAX_POSSESSIONS,
 		"match exceeded the possession safety bound")
 	_consider_garbage_time()
+	# A team calls at most one timeout in this gap. The run-stopping timeout is
+	# considered first because it is the older, more general trigger; the
+	# advance timeout only gets a turn when the same team did not just spend an
+	# allowance answering a run — comparing the calling team's own allowance
+	# before and after is what detects that without `_consider_timeout` having
+	# to say so itself.
+	var pre_timeout_team: StringName = _snapshot.possession_team_id
+	var pre_timeout_remaining: int = (
+		_snapshot.state_for(pre_timeout_team).timeouts_remaining
+		if not pre_timeout_team.is_empty() else 0)
 	_consider_timeout()
+	var run_timeout_called: bool = (
+		not pre_timeout_team.is_empty()
+		and _snapshot.state_for(pre_timeout_team).timeouts_remaining < pre_timeout_remaining)
+	if not run_timeout_called:
+		_consider_advance_timeout()
 	_apply_substitutions()
 	_rotation.validate(_snapshot, _input)
 
@@ -113,11 +133,12 @@ func advance_possession() -> PossessionResult:
 		_snapshot.possession_sequence,
 	])
 	var possession: PossessionResult = _possession_engine.simulate(
-		_snapshot, _input, _random_source.derive(stream_label), _live_start)
+		_snapshot, _input, _random_source.derive(stream_label), _live_start, _advance_start)
 	_ledger.append_all(possession.events)
 	_snapshot = _reducer.apply_events(_snapshot, possession.events)
 	_possessions.append(possession.record)
 	_live_start = possession.record.live_transfer
+	_advance_start = false
 	_record_run(possession.record)
 	return possession
 
@@ -195,8 +216,9 @@ func _advance_period() -> void:
 		MatchDomainEvent.PERIOD_STARTED, &"", &"", &"", &"", &"", &"", &"", 0, next_period)
 	_commit(writer)
 	# A new period starts from a dead ball, so the next possession is never a
-	# transition opportunity.
+	# transition opportunity, and never a leftover advance-timeout either.
 	_live_start = false
+	_advance_start = false
 
 
 ## §18.2 score and time: each coach decides, from the shared scoreboard, whether
@@ -263,6 +285,29 @@ func _consider_timeout() -> void:
 	_run_team_id = &""
 	# A timeout is a dead ball, so the possession that follows it is never a
 	# transition opportunity.
+	_live_start = false
+
+
+## `EndgameStrategy`'s timeout-to-advance (§4, gated by
+## `CompetitionRuleProfile.timeout_advance_permitted`): a trailing or tied team
+## late in regulation calls a timeout to gain the ball in the frontcourt rather
+## than walk it up. It is still an ordinary `TIMEOUT` — one allowance spent,
+## everybody on the floor rested, on both sides — with a different cause, and
+## a session-level flag that tells the possession engine to skip the backcourt
+## walk for the one possession that follows it.
+func _consider_advance_timeout() -> void:
+	var team_id: StringName = _snapshot.possession_team_id
+	if team_id.is_empty():
+		return
+	if not EndgameStrategy.timeout_advance_eligible(
+		_snapshot, _input.rule_profile, _input.balance_profile, team_id
+	):
+		return
+	var writer := _writer()
+	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"advance")
+	_commit(writer)
+	_advance_start = true
+	# A timeout is a dead ball whatever its cause.
 	_live_start = false
 
 

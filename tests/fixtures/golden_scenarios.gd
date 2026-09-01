@@ -64,22 +64,34 @@ static func seed_for(scenario: StringName) -> int:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			# Moved from 39595 by the `simulation-v6-pass-creation` ruleset,
-			# from 31676 by `simulation-v4-management` before that, and from
-			# 126704 by `simulation-v3-margin` before that. Every ruleset that
-			# changes the action mix changes which fixed seeds finish level, and
-			# a game that finishes level is by definition one that reached a
-			# managed score state — so this seed stopped reaching overtime,
-			# which is the one thing the fixture exists to cover.
-			# `find_scenario_seeds.gd` derived the replacement over a 4,000-seed
-			# search.
+			# Moved from 190056 by the `simulation-v9-endgame-strategy`
+			# ruleset, from 39595 by `simulation-v6-pass-creation` before
+			# that, from 31676 by `simulation-v4-management` before that, and
+			# from 126704 by `simulation-v3-margin` before that. Every
+			# ruleset that changes the action mix changes which fixed seeds
+			# finish level, and a game that finishes level is by definition
+			# one that reached a managed score state — so this seed stopped
+			# reaching overtime, which is the one thing the fixture exists to
+			# cover. `find_scenario_seeds.gd` derived the replacement over a
+			# 2,000-seed search.
 			#
-			# That this is the *only* seed that moved is the blast-radius
-			# evidence: the other five scenarios still exercise their named
-			# behaviour at the seeds they always had, including the
-			# offensive-rebound continuation and the foul-out substitution that
-			# the §11.3 event-chain change runs straight through.
-			return 190056
+			# That this is the *only* seed `EndgameStrategy` moved is part of
+			# the blast-radius evidence recorded in `PROJECT_STATUS.md`: the
+			# other five scenarios still exercise their named behaviour at
+			# the seeds they always had. Every one of the six ledgers still
+			# changed — in all six, `EndgameStrategy` tags one or more
+			# `ACTION_SELECTED` events with `endgame_two_for_one`,
+			# `endgame_hold`, or `endgame_designed_play` wherever the two-for-
+			# one, hold-for-the-final-shot, or designed-final-possession
+			# decision applies, which is a real behaviour change and not a
+			# hash regenerated to silence a failing test. None of these six
+			# fixed-seed games happens to reach the leading-by-three foul,
+			# the intentional free-throw miss, quick-two-vs-timeout, or a
+			# timeout-advance-eligible rule profile — those are covered by
+			# `tests/simulation/test_endgame_strategy.gd` instead.
+			# `PROJECT_STATUS.md` records the first divergence for each
+			# scenario.
+			return 31676
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

@@ -89,6 +89,7 @@ func simulate(
 	input: MatchInput,
 	random_source: RandomSource,
 	live_start: bool = false,
+	advance_start: bool = false,
 ) -> PossessionResult:
 	assert(input == _input, "this engine was constructed for a different match input")
 	assert(not snapshot.completed, "a completed match cannot resolve another possession")
@@ -125,7 +126,7 @@ func simulate(
 		MatchDomainEvent.POSSESSION_STARTED, offense_team_id, initiator_id, &"", &"",
 		&"live" if live_start else &"dead_ball")
 
-	_open_possession(random_source.derive(&"open"), live_start)
+	_open_possession(random_source.derive(&"open"), live_start, advance_start)
 	_run_action_loop(random_source)
 
 	if not _terminated:
@@ -149,18 +150,26 @@ func simulate(
 
 # --- §9.2 opening states ----------------------------------------------------
 
-func _open_possession(random_source: RandomSource, live_start: bool) -> void:
+func _open_possession(random_source: RandomSource, live_start: bool, advance_start: bool) -> void:
 	if not live_start:
 		# DEAD_BALL -> INBOUND
 		_consume(_clock.inbound_ms(random_source.derive(&"inbound")))
 		if _terminated:
 			return
 		_emit(MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id)
-	# ADVANCE
-	_consume(_clock.advance_ms(_context, random_source.derive(&"advance")))
-	if _terminated:
-		return
-	_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
+	# ADVANCE. A timeout-advance possession (§4's rule-profile-gated
+	# `timeout_advance_permitted`) already inbounds in the frontcourt, so there
+	# is no backcourt walk left to charge for — the event still emits, tagged,
+	# so the possession's shape is unchanged and the decision stays auditable.
+	if advance_start:
+		_emit(
+			MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", &"timeout_advanced")
+	else:
+		_consume(_clock.advance_ms(_context, random_source.derive(&"advance")))
+		if _terminated:
+			return
+		_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
 	# TRANSITION_DECISION
 	if live_start and _enters_transition(random_source.derive(&"transition")):
 		_context.in_transition = true
@@ -203,6 +212,8 @@ func _run_action_loop(random_source: RandomSource) -> void:
 
 		if _resolve_intentional_foul(action_stream.derive(&"intentional_foul")):
 			continue
+		if _resolve_leading_by_three_foul(action_stream.derive(&"leading_by_three_foul")):
+			continue
 
 		var candidates: Array[ActionCandidate] = _generator.generate(_context)
 		var selected: ActionCandidate = _selector.select(
@@ -212,7 +223,8 @@ func _run_action_loop(random_source: RandomSource) -> void:
 			return
 		_emit(
 			MatchDomainEvent.ACTION_SELECTED, _context.offense.team_id, selected.actor_id,
-			selected.target_id, &"", selected.action_id(), &"",
+			selected.target_id, &"", selected.action_id(),
+			EndgameStrategy.active_tag(_context, _balance),
 			ShotZone.id_of(selected.zone) if selected.is_shot() else &"")
 		_resolve_action(selected, action_stream)
 
@@ -757,6 +769,16 @@ func _resolve_intentional_foul(random_source: RandomSource) -> bool:
 	return true
 
 
+func _resolve_leading_by_three_foul(random_source: RandomSource) -> bool:
+	if _context.ball_handler_id.is_empty():
+		return false
+	var call: FoulCall = _foul_resolver.resolve_leading_by_three_foul(_context, random_source)
+	if not call.occurred:
+		return false
+	_resolve_defensive_foul(call, random_source.derive(&"leading_by_three_consequences"))
+	return true
+
+
 func _resolve_defensive_foul(call: FoulCall, random_source: RandomSource) -> void:
 	if _record_foul(call, _context.defense.team_id):
 		# The replacement enters before the free throws, as the rules require.
@@ -821,14 +843,23 @@ func _resolve_free_throws(
 		# took, which §13.2 forbids — attempts are attributed exactly once, and
 		# zero is not once.
 		_advance_dead_ball(_clock.free_throw_ms())
-		var made: bool = _free_throw_resolver.resolve(
-			_context, shooter_id, random_source.derive(StringName("attempt:%d" % (index + 1))))
+		# `EndgameStrategy`'s intentional miss: a leading team's final attempt of
+		# the trip, deliberately missed rather than shot to make. The resolver is
+		# never consulted for this one attempt, so there is no make-probability
+		# table for the decision to touch.
+		var intentional_miss: bool = EndgameStrategy.should_intentionally_miss_final_free_throw(
+			_context, _balance, index, attempts)
+		var made: bool = (
+			false if intentional_miss
+			else _free_throw_resolver.resolve(
+				_context, shooter_id, random_source.derive(StringName("attempt:%d" % (index + 1)))))
 		last_made = made
 		if made:
 			_points_scored += 1
 		_emit(
 			MatchDomainEvent.FREE_THROW_MADE if made else MatchDomainEvent.FREE_THROW_MISSED,
-			_context.offense.team_id, shooter_id, &"", &"", &"", &"", &"", 0, index + 1)
+			_context.offense.team_id, shooter_id, &"", &"", &"",
+			&"intentional" if intentional_miss else &"", &"", 0, index + 1)
 		if one_and_one and index == 0 and not made:
 			break
 
