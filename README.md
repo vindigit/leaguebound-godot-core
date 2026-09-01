@@ -97,7 +97,30 @@ The match engine consumes structurally valid match inputs. It never creates or c
 
 ## Headless verification
 
-From the repository root:
+### Toolchain setup
+
+`tools/install_godot.sh` installs the pinned Godot 4.7.1-stable build on Linux and verifies the download against the SHA-512 digest the Godot project publishes for that release. A digest mismatch discards the archive and installs nothing. The script is idempotent and prints the installed binary's path.
+
+**The project must be imported before any script is run.** Godot resolves `class_name` identifiers from `.godot/global_script_class_cache.cfg`, and only the importer writes that file. On a fresh clone it does not exist, so `godot --script` treats every global class as an undeclared identifier and each typed script fails to parse under the warnings-as-errors settings in `project.godot`. The resulting wall of parse errors is a missing cache, not a broken engine build:
+
+```bash
+godot --headless --path . --import
+```
+
+`tools/run_checks.sh` does all of this — resolve or install the pinned binary, import, then run the gated checks in CI order. It is the single entry point used by CI and by managed sessions:
+
+```bash
+tools/run_checks.sh                    # import, parse, acceptance, smoke, calibration, gdunit
+tools/run_checks.sh acceptance gdunit  # a subset; the import always runs first
+```
+
+Set `GODOT_BIN` to use an already-installed binary instead of the one `tools/install_godot.sh` manages.
+
+In Claude Code on the web, `.claude/hooks/session-start.sh` runs both steps at session start and exports `GODOT_BIN`, so a session begins with a verified engine and a populated class cache.
+
+### Individual checks
+
+From the repository root, after importing:
 
 ```powershell
 Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tests/run_all.gd
