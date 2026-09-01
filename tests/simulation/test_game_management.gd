@@ -340,9 +340,15 @@ func test_timeouts_are_spent_and_never_replenished() -> void:
 		assert_int(final_state.home.timeouts_remaining).is_greater_equal(0)
 
 
-## Every timeout in a played game answers a run at least as long as the
-## threshold, is called by the team that was *not* on the run, and is called
-## with enough regulation left for the coach to still want it.
+## Every run-stopping timeout in a played game answers a run at least as long
+## as the threshold, is called by the team that was *not* on the run, and is
+## called with enough regulation left for the coach to still want it.
+##
+## Top domestic also grants `EndgameStrategy`'s timeout-to-advance, so not
+## every `TIMEOUT` event in these games is this rule's — `detail_id`
+## distinguishes them (`&"run"` versus `&"advance"`), and each is checked
+## against its own contract rather than one loop assuming every timeout is a
+## run-stopping one.
 func test_timeouts_trigger_only_under_valid_conditions() -> void:
 	var input: MatchInput = CompetitionCatalog.mirrored_match_for(
 		CalibrationTargets.Competition.TOP_DOMESTIC_PRO, 32, 0.5)
@@ -351,6 +357,7 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 	assert_int(balance.timeout_run_points).is_less_equal(12)
 
 	var found: int = 0
+	var found_advance: int = 0
 	for seed_value: int in [9201, 9202, 9203]:
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(seed_value))
@@ -371,6 +378,11 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 				continue
 			if event.event_type != MatchDomainEvent.TIMEOUT:
 				continue
+			if event.detail_id == &"advance":
+				found_advance += 1
+				assert_bool(input.rule_profile.timeout_advance_permitted).is_true()
+				assert_int(event.period).is_less_equal(input.rule_profile.regulation_periods)
+				continue
 			found += 1
 			assert_int(run_points).is_greater_equal(balance.timeout_run_points)
 			assert_str(String(event.team_id)).is_not_equal(String(run_team))
@@ -378,7 +390,11 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 			run_team = &""
 			run_points = 0
 	assert_int(found).override_failure_message(
-		"no timeout was called in three full games; the trigger is unreachable").is_greater(0)
+		"no run-stopping timeout was called in three full games; the trigger is unreachable"
+	).is_greater(0)
+	assert_int(found_advance).override_failure_message(
+		"no advance timeout was called in three full games at a competition that grants it"
+	).is_greater(0)
 
 
 ## A timeout rests everybody on the floor, on both sides, by the same amount. A

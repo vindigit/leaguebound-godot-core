@@ -15,8 +15,11 @@ const SEED: int = 20260815
 
 ## The seed at which `MatchFixtureFactory.even_match()` finishes regulation level
 ## and plays overtime — the same fixture and seed the `overtime` golden scenario
-## pins, so this suite and the ledger exercise one agreed overtime game.
-const OVERTIME_SEED: int = 190056
+## pins, so this suite and the ledger exercise one agreed overtime game. Kept in
+## step with `GoldenScenarios.seed_for(GoldenScenarios.OVERTIME)` by hand rather
+## than by reference, so a ruleset change that moves the golden seed fails this
+## assertion loudly instead of silently drifting.
+const OVERTIME_SEED: int = 31676
 
 
 ## Stepping possession by possession produces exactly the ledger a full Sim
