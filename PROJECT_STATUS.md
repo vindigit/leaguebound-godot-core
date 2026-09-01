@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6.
+**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -94,6 +94,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - `GarbageTimeRule`'s possession-based settled-rotation safety, its asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20, the `GARBAGE_TIME` ledger event and `TeamMatchState.settled_mode`, and the `simulation-v5-garbage-time` ruleset (§5.12). The §14.2 amendment in §5.13 is a **proposal awaiting owner decision**, not accepted work.
 - The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
 - The §11.3 passer-to-shot event chain: `PassCreation`, the corrected pass beneficiary, the creator stamped on every shot attempt and make, the catch-and-shoot and spot-up continuations, the competition-scoped credited-assist rule, the restored §14.3 conditional baseline, the assist-chain audit and its diagnostics runner, and the `simulation-v6-pass-creation` ruleset the regenerated golden ledgers belong to (§5.15).
+- `EndgameStrategy`'s two-for-one clock management, hold-for-the-final-shot, a timeout-aware quick-two-vs-tying-three preference past `GameManagement`'s own window, a designed final-possession play, a leading-by-three foul (`FoulType.Value.LEADING_PROTECT`), an intentional final free-throw miss, and timeout-to-advance (`CompetitionRuleProfile.timeout_advance_permitted`, granted to college and top domestic only), under the `simulation-v9-endgame-strategy` ruleset the regenerated golden ledgers belong to (§5.25). **Measured, not certified, and not decisive** — §5.25's six-point calibration comparison does not confidently move either competition's overtime rate into band at the sample size this environment can run.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -5213,6 +5214,121 @@ skipped, quarantined, or relaxed.
 
 Nothing in this section is **certified**. §27.1 asks for 1,000,000 careers and
 100,000 games per competition; the largest sample here is 6,000 careers.
+
+### 5.25 The four missing end-of-regulation systems, built and measured — the owner ruling classified rather than closed
+
+Status: **`EndgameStrategy` implements the four missing systems §5.13 named plus three requested alongside them. Every pre-implementation invariant §5.13 asked for is confirmed. The full gate is green, including a full GdUnit4 rerun at 573 cases. Golden ledgers were regenerated and every changed hash is explained. Calibration measurement on six range/competition samples finds the mechanism correctly implemented, correctly bounded, and reachable, but does not find a clean, confident move of college or top domestic into the §14.2 overtime band — the honest result is "measured, mixed, and too small a sample to be a verdict," not a pass.**
+
+#### The ruling
+
+On 2026-09-01 the owner ruled, for college and top domestic only: keep the §14.2 4-8% overtime band; treat the measured overtime rates as missing end-of-regulation behaviour rather than as evidence the band is unreachable; keep the already-passing close-game and blowout bands for college; do not touch college's field-goal shortfall, which §5.22/§5.23 already attributed to the roster/rule-profile ladder mismatch and not to a production defect; and do not retune top domestic's blowout contract until this isolated endgame run reports. This is Option 1 from §5.13's three costed options — build the missing repertoire — applied to the two competitions whose overtime rate was worst, rather than Option 2's band amendment.
+
+#### Pre-implementation confirmations, as required before any production code changed
+
+1. **Architecture.** `GameManagement` (§5.11) already owns score-and-clock pace and action-family preference, and the tie-seeking shot-value rule for the last possession of regulation; `TimeoutState`/`timeouts_remaining` already exists and is spent only by `MatchSession._consider_timeout`'s run-stopping trigger. What was actually missing, checked against §5.13's own list: two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final-possession play. None of the four existed; all four do now.
+2. **Shot and contact probability read no score or margin**, checked by inspection of every resolver: `ShotResolver` has zero score/margin reads. `FoulResolver`'s contact-probability core (`_contact_probability`) reads capability, tendency, body, and officiating — never score. The one pre-existing exception is `FreeThrowResolver.probability`'s §20.1 late-and-close composure term, documented and unchanged by this task.
+3. **No production code under `src/domain` reads anything under `calibration/`.** Grepped exhaustively; the only related mechanism, `ShotResolver`'s `probe: Callable`, is null by default, set only by an external calibration runner, invoked only after the real draw is decided, and its return value is discarded.
+4. **Scoreboard state affected only strategy/action-selection weighting before this task** — `GameManagement`'s own documented invariant, re-verified rather than assumed.
+
+#### What was built
+
+`src/domain/basketball/simulation/endgame_strategy.gd`, a new stateless class beside `GameManagement`, reusing every existing seam rather than adding new ones:
+
+| Decision | Mechanism | Ledger signal |
+| --- | --- | --- |
+| Two-for-one | Trailing-or-tied, one to two shot clocks of regulation left: urgency added to a direct shot, taken off a reset, inside `ActionCandidateGenerator`'s existing §10.3 factor | `ACTION_SELECTED.detail_id = endgame_two_for_one` |
+| Hold for the final shot | Leading, inside a short final-regulation window, shot clock not yet late: extra weight on a reset, on top of `GameManagement`'s ordinary protecting preference | `ACTION_SELECTED.detail_id = endgame_hold` |
+| Quick-two vs. a timeout-backed tying three | Down exactly three, *outside* `GameManagement.endgame_multiplier`'s own tie-seeking window but with regulation time and a timeout in reserve: weight swings toward the two and off the three | `ACTION_SELECTED.detail_id = endgame_quick_two` |
+| Designed final possession | Inside a narrow final-possession window: extra weight on the offence's own best `SHOT_SELECTION` capability on the floor — a capability read, not a comparison against the defence | `ACTION_SELECTED.detail_id = endgame_designed_play` |
+| Leading-by-three foul | A defence up exactly three, inside its own (short, separately tunable) window, fouls before the tying three can be attempted — probabilistic (`leading_foul_share`), because this is coaching debate rather than necessity | `FOUL.detail_id`, new `FoulType.Value.LEADING_PROTECT` |
+| Intentional final free-throw miss | A leading team's last attempt of a trip, inside a short window, where a make would still leave the trailing team a single-shot answer: deliberately missed — `FreeThrowResolver` is never consulted for this attempt, so there is no probability for the decision to touch | `FREE_THROW_MISSED.detail_id = intentional` |
+| Timeout-to-advance | A trailing-or-tied team inside the final regulation window calls a timeout to inbound in the frontcourt rather than walk the ball up — gated by a new `CompetitionRuleProfile.timeout_advance_permitted` flag, a genuine rule difference rather than a coaching tendency, granted only to college and top domestic (the ruling's two named competitions); every other profile is unchanged | `TIMEOUT.detail_id = advance`; `ADVANCE.detail_id = timeout_advanced`, zero clock consumed for that one possession |
+
+Eleven new balance tunables, every one registered through `describe_tunables()`/Gate B0 with a name, unit, and safe range, following the existing convention exactly. Ruleset bumped from `simulation-v8-contest-capability` to **`simulation-v9-endgame-strategy`**, because the production simulation contract changed.
+
+#### Golden-ledger impact
+
+All six committed hashes changed. Every scenario's first divergence was located by inspecting its full dump for the new tags rather than assumed:
+
+| Scenario | Cause |
+| --- | --- |
+| `regulation`, `offensive_rebound`, `foul_free_throw`, `substitution_foul_out`, `late_game` | `ACTION_SELECTED` tagged `endgame_two_for_one` (all five), and `endgame_hold` or `endgame_designed_play` in most of them — confirmed by grepping each dump's `detail_id` field, not inferred from the hash alone |
+| `overtime` | The old seed (190056) stopped finishing level and needed a reseed — `find_scenario_seeds.gd` derived 31676 over a 2,000-seed search. The `test_play_sim_skip_parity.gd` suite duplicated this seed as a second hardcoded constant rather than reading `GoldenScenarios`, and needed the same fix by hand |
+
+None of the six reaches `leading_protect`, the intentional miss, quick-two, or a timeout-advance-eligible rule profile — those four are covered by `tests/simulation/test_endgame_strategy.gd` and by direct reachability search instead, not by the golden set.
+
+#### Tests and regression
+
+`tests/simulation/test_endgame_strategy.gd`: every decision's eligibility gate (fires when eligible, refuses when ineligible), the two-for-one/hold mutual exclusion, the designated closer as a plain capability read, a real-game reachability search, and — the load-bearing one — `test_intentional_miss_never_touches_free_throw_probability`, which asserts `FreeThrowResolver.probability` is bit-identical whether or not the intentional-miss condition holds.
+
+Writing this suite found three defects, all fixed and none in `EndgameStrategy` itself:
+
+1. `test_game_management.gd`'s `test_timeouts_trigger_only_under_valid_conditions` treated every ledger `TIMEOUT` as a run-stopping one; top domestic now also grants timeout-to-advance, so it needed to branch on `detail_id`.
+2. `test_play_sim_skip_parity.gd` duplicated the golden overtime seed as a second hardcoded constant instead of reading `GoldenScenarios`, and needed the same reseed by hand.
+3. Two of this task's own new tests picked comparison points that crossed a *different*, pre-existing effect (two-for-one's window overlapping quick-two's; §20.1's `|margin| <= 5.0` free-throw pressure term) — both were test-isolation bugs, fixed by comparing a ratio and by choosing a same-window comparison margin respectively, not by touching production code.
+
+Full GdUnit4 suite after every fix: **573 test cases, 0 errors, 0 failures, 48 suites**. Complete fast gate from a clean `.godot`: import, parse (242 scripts, 0 failures), project acceptance PASS, simulation smoke PASS, Builder calibration PASS, attribute sensitivity 80/80 judged 0 failures, calibration smoke 15/15 judged 0 failures, GdUnit4 573/573 — **every stage PASS**.
+
+#### Calibration re-measurement
+
+200 games per point, `run_competition_calibration.gd`, three seed ranges per competition — the same range before and after (700,000-700,199) plus two further untouched ranges (710,000-710,199 and 720,000-720,199), each range measured before *and* after so an apparent regression could be told apart from range-specific sampling variance rather than guessed at.
+
+**College** (§14.1 field-goal percentage carried through unmoved, as required — 0.4104 before and after on the shared range, to four decimal places):
+
+| Range | Metric | Before | After |
+| --- | --- | ---: | ---: |
+| Same (700k) | Overtime | 3.00% ±2.50 | 3.50% ±2.67 |
+| Same (700k) | Close game | 24.00% | 24.00% |
+| Same (700k) | Blowout | 13.00% | 12.50% |
+| Same (700k) | Home win | 52.00% | 52.50% |
+| Validation A (710k) | Overtime | 1.50% | 2.00% |
+| Validation A (710k) | Close game | 20.50% FAIL | 24.50% PASS |
+| Validation A (710k) | Blowout | 19.50% FAIL | 20.50% FAIL |
+| Validation B (720k) | Overtime | 4.00% PASS | 4.00% PASS |
+| Validation B (720k) | Close game | 26.50% PASS | 27.50% PASS |
+| Validation B (720k) | Blowout | 14.00% PASS | 14.00% PASS |
+
+**Top domestic:**
+
+| Range | Metric | Before | After |
+| --- | --- | ---: | ---: |
+| Same (700k) | Overtime | 4.50% PASS | 1.50% FAIL |
+| Same (700k) | Close game | 22.50% PASS | 22.50% PASS |
+| Same (700k) | Blowout | 16.50% PASS | 15.50% PASS |
+| Same (700k) | Home win | 57.50% FAIL | 56.50% FAIL |
+| Validation A (710k) | Overtime | 4.50% PASS | 4.00% PASS |
+| Validation A (710k) | Close game | 21.00% FAIL | 21.50% FAIL |
+| Validation A (710k) | Blowout | 22.00% FAIL | 22.00% FAIL |
+| Validation B (720k) | Overtime | 1.50% FAIL | 2.00% FAIL |
+| Validation B (720k) | Close game | 18.00% FAIL | 17.00% FAIL |
+| Validation B (720k) | Blowout | 28.00% FAIL | 27.00% FAIL |
+
+**Reading this honestly.** The validation-range blowout and close-game failures are not new: measured before this task's code existed, on the identical seed range, they are the same within sampling noise (top domestic validation B blowout 28.00% before, 27.00% after; college validation A blowout 19.50% before, 20.50% after). These two ranges' rosters produce wide margins for reasons this task did not touch and did not introduce — confirmed by measuring the "before" arm specifically to settle it rather than assuming it. Overtime moved by less than one standard error in five of the six range/competition points and outside it in one (top domestic, same range: 9 of 200 games to 3 of 200) — within what a rate this rare produces run to run at n=200. **No range shows a confident pass of the 4-8% band that was not already at or near it before.** College reaches the floor on two of three ranges after (2.0%, 3.5%, 4.0%) against one of three before (1.5%, 3.0%, 4.0%) — a small, favourable, and not statistically decisive shift. Top domestic shows no consistent direction at all (4.5→1.5, 4.5→4.0, 1.5→2.0).
+
+**Home-court estimator recheck** (`run_home_court_diagnostics.gd`, mirror mode, top domestic, `validation_c`, 200 matched pairs): `attributable_home_win_rate` 0.5450 ±0.0327, inside the 0.53-0.56 band; `canonical_form_agrees`, `reversal_agrees`, `cap_respected`, `sample_well_formed`, `sample_complete` all 1.0000. **The §5.19 result is not regressed.**
+
+**Activation counts**, 200 games each, a fresh untouched range (950,000+), confirming every decision actually fires rather than being eligible-but-unreachable:
+
+| Decision | College | Top domestic |
+| --- | ---: | ---: |
+| Two-for-one | 683 | 652 |
+| Hold for the final shot | 145 | 152 |
+| Quick-two vs. timeout-backed three | 6 | 9 |
+| Designed final possession | 366 | 448 |
+| Leading-by-three foul | 3 | 3 |
+| Intentional free-throw miss | 5 | 6 |
+| Timeout-to-advance | 491 | 836 |
+
+Every one of the seven fires in real games at both competitions. The four §5.13 named as missing (two-for-one, the leading-by-three foul, timeout-to-advance, the designed play) are all reachable; three are common, one (the leading-by-three foul) is rare by design — `leading_foul_share` is deliberately smaller than the trailing team's desperation-foul share, because this is a live coaching debate rather than a last resort.
+
+#### What this task did and did not establish
+
+- **Built, structurally proven:** all seven decisions exist, are gated correctly (proven by the eligibility tests, not inferred), never reach a shot, free-throw, or contact probability (proven directly, not by absence of evidence), reconcile through the existing box-score projection unchanged, and are auditable in the ledger by construction.
+- **Measured, not certified, and not decisive:** the six-point before/after comparison above. §27.1 asks for 100,000 games per competition; this task ran 200 per point, chosen to fit this environment rather than to settle the question, exactly as `run_competition_calibration.gd` itself reports every time it runs below certification size.
+- **Not moved:** college's field-goal percentage (byte-identical on the shared range), college's or top domestic's blowout or close-game contracts (this task's brief explicitly forbade touching top domestic's blowout contract, and did not touch either), the home-court estimator's already-passing result.
+- **Not answered:** whether the four-to-eight-percent band is reachable *at scale* with this repertoire. The honest read of six 200-game points is that the mechanism is real, bounded, and firing, and that it has not been shown — on the sample this environment can run — to close the gap §5.13 quantified as needing "roughly 30% of one-score finishes converted to exact ties against a current 20%". A future task with §27.1-scale compute, or CI hardware per §6.4, would settle this; this one could not.
+
+No target in `BALANCE_SPEC.md` was changed. No million-scale certification was run. No pull request was opened or merged.
 
 ## 6. Certification and workflow blockers
 
