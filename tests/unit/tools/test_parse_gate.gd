@@ -67,7 +67,30 @@ static var _without_fixture: GateRun = null
 func after_test() -> void:
 	# Unconditional: a malformed script left behind would break every later run
 	# of the gate, which is exactly the failure this suite exists to detect.
+	_acquire_fixture_lock()
 	_remove_fixture()
+	_release_fixture_lock()
+
+
+func _fixture_lock_path() -> String:
+	# GdUnit may execute cases from this suite concurrently. A process-scoped
+	# directory gives every case one filesystem-visible critical section without
+	# leaving a reusable stale lock after the parent process exits.
+	return ProjectSettings.globalize_path(
+		"user://leaguebound-parse-gate-%d.lock" % OS.get_process_id())
+
+
+func _acquire_fixture_lock() -> void:
+	var deadline: int = Time.get_ticks_msec() + 30_000
+	while DirAccess.make_dir_absolute(_fixture_lock_path()) != OK:
+		if Time.get_ticks_msec() >= deadline:
+			fail("timed out waiting for the parse-gate fixture lock")
+			return
+		OS.delay_msec(10)
+
+
+func _release_fixture_lock() -> void:
+	DirAccess.remove_absolute(_fixture_lock_path())
 
 
 func _remove_fixture() -> void:
@@ -89,6 +112,13 @@ func _write_fixture(source: String) -> void:
 ## and combined output. `OS.get_executable_path()` is the engine currently
 ## running this suite, so the subprocess is the same build CI would use.
 func _run_gate() -> GateRun:
+	# The shipped entry point imports before it parses so Godot's virtual
+	# filesystem reflects files added or removed since the previous run.
+	OS.execute(OS.get_executable_path(), [
+		"--headless",
+		"--path", ProjectSettings.globalize_path("res://"),
+		"--import",
+	], [], true)
 	var output: Array = []
 	var code: int = OS.execute(OS.get_executable_path(), [
 		"--headless",
@@ -103,16 +133,20 @@ func _run_gate() -> GateRun:
 
 func _gate_with_fixture() -> GateRun:
 	if _with_fixture == null:
+		_acquire_fixture_lock()
 		_write_fixture(BROKEN_SYNTAX)
 		_with_fixture = _run_gate()
 		_remove_fixture()
+		_release_fixture_lock()
 	return _with_fixture
 
 
 func _gate_without_fixture() -> GateRun:
 	if _without_fixture == null:
+		_acquire_fixture_lock()
 		_remove_fixture()
 		_without_fixture = _run_gate()
+		_release_fixture_lock()
 	return _without_fixture
 
 
@@ -157,9 +191,12 @@ func test_the_gate_verifies_its_own_detector_before_walking() -> void:
 ## A script that compiles must not be reported, or the gate is noise rather than
 ## evidence.
 func test_a_valid_script_is_not_reported() -> void:
+	_acquire_fixture_lock()
 	_write_fixture(VALID_SOURCE)
 
 	assert_str(ScriptValidity.failure_for(FIXTURE_PATH)).is_empty()
+	_remove_fixture()
+	_release_fixture_lock()
 
 
 ## Every root the gate is configured to walk must exist and contain scripts. A

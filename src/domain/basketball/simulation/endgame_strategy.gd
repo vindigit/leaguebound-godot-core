@@ -158,15 +158,16 @@ static func hold_for_final_shot_active(
 ## `endgame_possession_ms` — the span reproduces the shipped window to the
 ## millisecond.
 static func quick_two_span_ms(balance: SimulationBalanceProfile) -> int:
-	return maxi(balance.quick_two_timeout_window_ms - balance.endgame_possession_ms, 0)
+	return maxi(balance.quick_two_window_ms - balance.endgame_possession_ms, 0)
 
 
 ## Down exactly three, outside the plain tie-seeking window
 ## `GameManagement.endgame_multiplier` already owns but still with regulation
-## time for a second possession, and a timeout in reserve to stop the clock
-## after a made two before fouling. The timeout is the ingredient that makes a
-## quick-two-then-foul plan realistic this far out; without one, a made two
-## still leaves the clock running against the team that just used it.
+## time for a second possession. The plan after a make is to foul on the
+## opponent's inbound; it does not spend a timeout and therefore must not be
+## gated on one. The earlier gate required a timeout while no production path
+## could spend it for the stated purpose, making roster state suppress a legal
+## coaching choice without modelling any corresponding benefit.
 ##
 ## **"Outside the tie-seeking window" was true of one stakes tier and asserted
 ## of all three.** That window is not a constant:
@@ -203,7 +204,7 @@ static func quick_two_preferred(
 	var opens_at: int = StakesPolicy.endgame_window_ms(balance, context.input.stakes)
 	if remaining <= opens_at or remaining > opens_at + quick_two_span_ms(balance):
 		return false
-	return context.offense_state().timeouts_remaining > 0
+	return true
 
 
 ## The single truly final possession of regulation, for a team a designed play
@@ -236,6 +237,22 @@ static func designed_play_active(
 	if remaining > balance.designed_play_window_ms:
 		return false
 	return -margin <= recoverable_deficit(remaining, balance)
+
+
+## Whether the designed possession has reached its existing desperation
+## threshold. `MatchStateReducer` already clamps the shot clock to the period
+## clock when a possession begins, so this is the one live deadline both clocks
+## share; the defect was not clock identity but letting the selected action's
+## duration cross that deadline before the action could be emitted.
+static func final_release_due(
+	context: PossessionContext,
+	balance: SimulationBalanceProfile,
+	threshold_ms: int,
+) -> bool:
+	return (
+		designed_play_active(context, balance)
+		and context.state.shot_clock_ms <= maxi(threshold_ms, 0)
+	)
 
 
 ## The offence's own best shot-creator on the floor, read the same way every

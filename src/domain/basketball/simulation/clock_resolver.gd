@@ -52,23 +52,38 @@ func half_court_entry_ms(context: PossessionContext, random_source: RandomSource
 
 
 func action_ms(context: PossessionContext, action_family: int, random_source: RandomSource) -> int:
+	var elapsed: int = 0
 	match action_family:
 		ActionFamily.Value.RESET:
-			return _draw(
+			elapsed = _draw(
 				_balance.reset_seconds_min, _balance.reset_seconds_max,
 				_pace(context), random_source)
 		ActionFamily.Value.POST_ACTION:
-			return _draw(
+			elapsed = _draw(
 				_balance.post_action_seconds_min, _balance.post_action_seconds_max,
 				_pace(context), random_source)
 		ActionFamily.Value.TRANSITION_ATTACK:
-			return _draw(
+			elapsed = _draw(
 				_balance.transition_seconds_min, _balance.transition_seconds_max,
 				_pace(context), random_source)
 		_:
-			return _draw(
+			elapsed = _draw(
 				_balance.action_seconds_min, _balance.action_seconds_max,
 				_pace(context), random_source)
+
+	# A selected final action is already under way. If its ordinary bounded draw
+	# would cross the horn, schedule its release immediately before the horn so
+	# the action can resolve. This applies only once the existing desperation
+	# threshold says the designed play must commit; it never changes which shot
+	# succeeds and cannot manufacture an attempt from a possession that has not
+	# reached action selection.
+	if EndgameStrategy.final_release_due(
+		context, _balance, _balance.desperation_clock_ms
+	):
+		var deadline: int = context.state.shot_clock_ms
+		if deadline > 1:
+			return mini(elapsed, deadline - 1)
+	return elapsed
 
 
 func rebound_ms(random_source: RandomSource) -> int:

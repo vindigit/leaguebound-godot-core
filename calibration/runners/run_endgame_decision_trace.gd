@@ -95,7 +95,8 @@ func _run() -> void:
 
 
 func _commit() -> String:
-	return "c6e4949"
+	var ci_sha: String = OS.get_environment("GITHUB_SHA")
+	return ci_sha if not ci_sha.is_empty() else "working-tree"
 
 
 func _competitions(selection: String) -> Array[int]:
@@ -189,7 +190,6 @@ class Trace:
 	var qt_fail_margin: int = 0
 	var qt_fail_window_low: int = 0
 	var qt_fail_window_high: int = 0
-	var qt_fail_timeouts: int = 0
 	var qt_passed: int = 0
 
 	## The same census for two-for-one.
@@ -342,10 +342,9 @@ func _census(
 		trace.qt_fail_margin += 1
 	elif remaining <= balance.endgame_possession_ms:
 		trace.qt_fail_window_low += 1
-	elif remaining > balance.quick_two_timeout_window_ms:
+	elif remaining > StakesPolicy.endgame_window_ms(balance, context.input.stakes) \
+			+ EndgameStrategy.quick_two_span_ms(balance):
 		trace.qt_fail_window_high += 1
-	elif context.offense_state().timeouts_remaining <= 0:
-		trace.qt_fail_timeouts += 1
 	else:
 		trace.qt_passed += 1
 
@@ -487,7 +486,8 @@ func _report(trace: Trace, rows: int) -> void:
 		rules.shot_clock_seconds * 1000,
 		rules.shot_clock_seconds * 2000 + balance.two_for_one_window_ms,
 		balance.endgame_possession_ms,
-		balance.quick_two_timeout_window_ms])
+		StakesPolicy.endgame_window_ms(balance, GameStakes.Value.REGULAR)
+			+ EndgameStrategy.quick_two_span_ms(balance)])
 	print("  final-period action selections: %d (deficit-exactly-3: %d)" % [
 		trace.final_period_selections, trace.deficit_three_selections])
 
@@ -495,8 +495,8 @@ func _report(trace: Trace, rows: int) -> void:
 	print("    margin != -3 .......... %d" % trace.qt_fail_margin)
 	print("    remaining <= %6d ... %d" % [balance.endgame_possession_ms, trace.qt_fail_window_low])
 	print("    remaining >  %6d ... %d" % [
-		balance.quick_two_timeout_window_ms, trace.qt_fail_window_high])
-	print("    no timeout in hand .... %d" % trace.qt_fail_timeouts)
+		StakesPolicy.endgame_window_ms(balance, GameStakes.Value.REGULAR)
+			+ EndgameStrategy.quick_two_span_ms(balance), trace.qt_fail_window_high])
 	print("    PASSED ................ %d" % trace.qt_passed)
 
 	print("  two_for_one gate census (partitioned, in gate order):")

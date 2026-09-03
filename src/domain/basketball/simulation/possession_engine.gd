@@ -995,7 +995,8 @@ func _resolve_rebound(
 	var putback: ActionCandidate = _generator.putback_candidate(_context, outcome.rebounder_id)
 	_emit(
 		MatchDomainEvent.ACTION_SELECTED, _context.offense.team_id, putback.actor_id,
-		&"", &"", putback.action_id(), &"", ShotZone.id_of(putback.zone))
+		&"", &"", putback.action_id(),
+		EndgameStrategy.active_tag(_context, _balance), ShotZone.id_of(putback.zone))
 	_resolve_shot(
 		putback.actor_id, putback.zone, putback.dunk, ActionFamily.Value.PUTBACK,
 		AdvantageResult.new(AdvantageLevel.Value.SMALL, putback.actor_id, putback.actor_id),

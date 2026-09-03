@@ -675,11 +675,10 @@ var hold_reset_gain: float = 0.30
 ## Outside `endgame_possession_ms`, how much further remaining time still
 ## supports a quick-two-then-foul plan for a team down exactly three. Units:
 ## milliseconds of regulation remaining. Safe range 32000-70000.
-var quick_two_timeout_window_ms: int = 46000
+var quick_two_window_ms: int = 46000
 ## Weight added to a two-point shot value, and taken off a three, for a team
-## down exactly three with a timeout in reserve and enough time for a second
-## possession. Units: share of the §10.3 score-and-clock factor. Safe range
-## 0.0-0.60.
+## down exactly three with enough time for a second possession. Units: share
+## of the §10.3 score-and-clock factor. Safe range 0.0-0.60.
 var quick_two_preference: float = 0.30
 ## How much regulation has to be left for a designed final-possession play to
 ## select its actor. Narrower than the tie-seeking window: this is the
@@ -847,7 +846,11 @@ func _init(
 	# expenditure, and the leading-by-three foul is once per possession and
 	# only in the bonus. Every one of those changes what the engine produces
 	# for the same input, so the ruleset is bumped (`PROJECT_STATUS.md` §5.26).
-	p_version: StringName = &"simulation-v11-quick-two-stakes-window",
+	# v11 then made quick-two's outer window complementary to the stakes-scaled
+	# tie-seeking window. v12 removes the false timeout dependency, preserves
+	# putback decision tags, and lets an already-selected designed-play action
+	# release before the horn inside the existing desperation threshold (§5.29).
+	p_version: StringName = &"simulation-v12-endgame-ledger-and-resource-contract",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1263,7 +1266,7 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"endgame.two_for_one_urgency", &"share", two_for_one_urgency, 0.0, 0.60)
 	_add(tunables, &"endgame.hold_for_final_shot_window_ms", &"milliseconds", float(hold_for_final_shot_window_ms), 15000.0, 40000.0)
 	_add(tunables, &"endgame.hold_reset_gain", &"share", hold_reset_gain, 0.0, 0.60)
-	_add(tunables, &"endgame.quick_two_timeout_window_ms", &"milliseconds", float(quick_two_timeout_window_ms), 32000.0, 70000.0)
+	_add(tunables, &"endgame.quick_two_window_ms", &"milliseconds", float(quick_two_window_ms), 32000.0, 70000.0)
 	_add(tunables, &"endgame.quick_two_preference", &"share", quick_two_preference, 0.0, 0.60)
 	_add(tunables, &"endgame.designed_play_window_ms", &"milliseconds", float(designed_play_window_ms), 8000.0, 24000.0)
 	_add(tunables, &"endgame.designed_play_actor_gain", &"share", designed_play_actor_gain, 0.0, 0.60)
@@ -1342,10 +1345,10 @@ func validate() -> PackedStringArray:
 	# from therefore have to leave one: equal values are a rule with nowhere
 	# to fire at any tier, which is the same class of dead window the
 	# intentional-miss check above stands against.
-	if quick_two_timeout_window_ms <= endgame_possession_ms:
+	if quick_two_window_ms <= endgame_possession_ms:
 		failures.append(
 			"the quick-two window (%dms) must exceed the endgame possession "
-			% quick_two_timeout_window_ms
+			% quick_two_window_ms
 			+ "length (%dms) it is measured from, or the rule has no span to "
 			% endgame_possession_ms + "occupy at any stakes tier")
 	failures.append_array(_role_opportunity_table.validate())

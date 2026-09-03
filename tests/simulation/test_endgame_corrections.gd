@@ -429,10 +429,10 @@ func test_quick_two_never_overlaps_the_tie_seeking_window_at_any_stakes_tier() -
 				% GameStakes.id_of(stakes)).is_false()
 
 
-## The regular-season window is unchanged to the millisecond, which is what
-## makes the correction safe for every committed golden and every §14
-## measurement already recorded.
-func test_regular_season_quick_two_window_is_byte_identical_to_the_shipped_one() -> void:
+## The regular-season clock boundaries remain unchanged to the millisecond.
+## Timeout inventory is tested separately because it was never a real input to
+## the follow-up sequence and is intentionally no longer part of this gate.
+func test_regular_season_quick_two_clock_boundaries_are_unchanged() -> void:
 	var balance := SimulationBalanceProfile.new()
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var rules: CompetitionRuleProfile = input.rule_profile
@@ -442,17 +442,53 @@ func test_regular_season_quick_two_window_is_byte_identical_to_the_shipped_one()
 	for clock: int in [
 		balance.endgame_possession_ms,
 		balance.endgame_possession_ms + 1000,
-		balance.quick_two_timeout_window_ms,
-		balance.quick_two_timeout_window_ms + 1000,
+		balance.quick_two_window_ms,
+		balance.quick_two_window_ms + 1000,
 	]:
 		var shipped: bool = (
 			clock > balance.endgame_possession_ms
-			and clock <= balance.quick_two_timeout_window_ms)
+			and clock <= balance.quick_two_window_ms)
 		var context: PossessionContext = _context(
 			input, _snapshot_at(input, rules.regulation_periods, clock, -3),
 			input.home.team_id)
 		assert_bool(EndgameStrategy.quick_two_preferred(context, balance))\
 			.override_failure_message("clock %dms" % clock).is_equal(shipped)
+
+
+func test_quick_two_does_not_depend_on_an_unspent_timeout() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var clock: int = balance.endgame_possession_ms + 5000
+	var with_timeout: MatchSnapshot = _snapshot_at(
+		input, rules.regulation_periods, clock, -3)
+	var without_timeout: MatchSnapshot = with_timeout.copy()
+	without_timeout.home.timeouts_remaining = 0
+	assert_bool(EndgameStrategy.quick_two_preferred(
+		_context(input, with_timeout, input.home.team_id), balance)).is_true()
+	assert_bool(EndgameStrategy.quick_two_preferred(
+		_context(input, without_timeout, input.home.team_id), balance)).is_true()
+
+
+## An immediate putback is still an action selected while the same endgame
+## decision is in force. Its ledger tag must agree with every other action in
+## that possession so activation reconstruction never silently drops it.
+func test_putbacks_carry_the_endgame_decision_in_force() -> void:
+	var found: int = 0
+	# The committed offensive-rebound scenario contains the exact divergence
+	# this repair is for: a fourth-quarter putback while two-for-one is active.
+	# Using it keeps the gate deterministic and avoids an expensive reachability
+	# search for an event the golden fixture already guarantees.
+	var output: MatchSimulationOutput = GoldenScenarios.simulate(&"offensive_rebound")
+	for event in output.events:
+		if (
+			event.event_type == MatchDomainEvent.ACTION_SELECTED
+			and event.action_id == ActionFamily.id_of(ActionFamily.Value.PUTBACK)
+			and event.detail_id == EndgameStrategy.TAG_TWO_FOR_ONE
+		):
+			found += 1
+	assert_int(found).override_failure_message(
+		"the known endgame putback lost its two-for-one ledger tag").is_equal(1)
 
 
 ## A profile whose two quick-two numbers leave no span is a rule that can never
@@ -461,7 +497,7 @@ func test_regular_season_quick_two_window_is_byte_identical_to_the_shipped_one()
 func test_validate_refuses_a_quick_two_window_with_no_span() -> void:
 	var balance := SimulationBalanceProfile.new()
 	assert_array(balance.validate()).is_empty()
-	balance.quick_two_timeout_window_ms = balance.endgame_possession_ms
+	balance.quick_two_window_ms = balance.endgame_possession_ms
 	var failures: PackedStringArray = balance.validate()
 	assert_int(failures.size()).override_failure_message(
 		"a zero-span quick-two window must be rejected").is_greater(0)

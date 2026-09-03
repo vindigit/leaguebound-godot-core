@@ -86,7 +86,7 @@ static func seed_for(scenario: StringName) -> int:
 			# decision applies, which is a real behaviour change and not a
 			# hash regenerated to silence a failing test. None of these six
 			# fixed-seed games happens to reach the leading-by-three foul,
-			# the intentional free-throw miss, quick-two-vs-timeout, or a
+			# the intentional free-throw miss, quick-two-vs-tying-three, or a
 			# timeout-advance-eligible rule profile — those are covered by
 			# `tests/simulation/test_endgame_strategy.gd` instead.
 			# `PROJECT_STATUS.md` records the first divergence for each

@@ -147,9 +147,9 @@ func test_two_for_one_and_hold_are_mutually_exclusive() -> void:
 				.override_failure_message("margin %d clock %d" % [margin, clock]).is_false()
 
 
-# --- quick two vs. a timeout-backed tying three --------------------------------
+# --- quick two vs. a tying three ------------------------------------------------
 
-func test_quick_two_needs_the_exact_deficit_a_timeout_and_the_outer_window() -> void:
+func test_quick_two_needs_the_exact_deficit_and_the_outer_window() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var balance: SimulationBalanceProfile = input.balance_profile
 	var rules: CompetitionRuleProfile = input.rule_profile
@@ -174,12 +174,13 @@ func test_quick_two_needs_the_exact_deficit_a_timeout_and_the_outer_window() -> 
 		input.home.team_id)
 	assert_bool(EndgameStrategy.quick_two_preferred(too_late, balance)).is_false()
 
-	# Not with no timeout in reserve: the plan needs one to survive.
+	# Timeout inventory is irrelevant: the plan after a make is to foul the
+	# opponent, and the engine has no quick-two timeout expenditure.
 	var no_timeout_snapshot: MatchSnapshot = _snapshot_at(
 		input, rules.regulation_periods, window, -3)
 	no_timeout_snapshot.home.timeouts_remaining = 0
 	var no_timeout: PossessionContext = _context(input, no_timeout_snapshot, input.home.team_id)
-	assert_bool(EndgameStrategy.quick_two_preferred(no_timeout, balance)).is_false()
+	assert_bool(EndgameStrategy.quick_two_preferred(no_timeout, balance)).is_true()
 
 
 # --- the designed final possession ---------------------------------------------
@@ -234,6 +235,43 @@ func test_designed_play_refuses_a_deficit_the_clock_cannot_close() -> void:
 		input, _snapshot_at(input, rules.regulation_periods, clock, -(recoverable + 1)),
 		input.home.team_id)
 	assert_bool(EndgameStrategy.designed_play_active(unreachable, balance)).is_false()
+
+
+## Once a legal designed-play action has been selected inside the desperation
+## threshold, its bounded duration cannot erase the action before it reaches
+## the ledger. The release is scheduled one millisecond before the horn; the
+## shot/contact resolvers remain completely untouched.
+func test_selected_designed_play_action_releases_before_the_horn() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var context: PossessionContext = _context(
+		input,
+		_snapshot_at(input, rules.regulation_periods, 500, -2),
+		input.home.team_id)
+	assert_bool(EndgameStrategy.final_release_due(
+		context, balance, balance.desperation_clock_ms)).is_true()
+	var elapsed: int = ClockResolver.new(balance, rules).action_ms(
+		context, ActionFamily.Value.PULL_UP, SeededRandomSource.new(4242))
+	assert_int(elapsed).is_equal(499)
+
+
+## The deadline is not a universal clock compression rule. A leading team has
+## no designed play to save the game, so the same draw retains its ordinary
+## minimum duration and is allowed to expire naturally.
+func test_final_release_deadline_is_scoped_to_a_tieable_designed_play() -> void:
+	var input: MatchInput = MatchFixtureFactory.standard_match()
+	var balance: SimulationBalanceProfile = input.balance_profile
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var context: PossessionContext = _context(
+		input,
+		_snapshot_at(input, rules.regulation_periods, 500, 2),
+		input.home.team_id)
+	assert_bool(EndgameStrategy.final_release_due(
+		context, balance, balance.desperation_clock_ms)).is_false()
+	var elapsed: int = ClockResolver.new(balance, rules).action_ms(
+		context, ActionFamily.Value.PULL_UP, SeededRandomSource.new(4242))
+	assert_int(elapsed).is_greater_equal(balance.action_seconds_min * 1000)
 
 
 ## The recoverable deficit is the possession in hand plus one per further
