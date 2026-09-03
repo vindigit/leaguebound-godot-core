@@ -149,12 +149,48 @@ static func hold_for_final_shot_active(
 	return true
 
 
+## How far past the tie-seeking window a quick-two-then-foul plan stays
+## realistic. A span rather than an absolute clock, so it can be measured from
+## wherever that window actually ends.
+##
+## The balance profile carries the two absolute numbers this is derived from,
+## and at regular-season stakes — where the tie-seeking window opens at exactly
+## `endgame_possession_ms` — the span reproduces the shipped window to the
+## millisecond.
+static func quick_two_span_ms(balance: SimulationBalanceProfile) -> int:
+	return maxi(balance.quick_two_timeout_window_ms - balance.endgame_possession_ms, 0)
+
+
 ## Down exactly three, outside the plain tie-seeking window
 ## `GameManagement.endgame_multiplier` already owns but still with regulation
 ## time for a second possession, and a timeout in reserve to stop the clock
 ## after a made two before fouling. The timeout is the ingredient that makes a
 ## quick-two-then-foul plan realistic this far out; without one, a made two
 ## still leaves the clock running against the team that just used it.
+##
+## **"Outside the tie-seeking window" was true of one stakes tier and asserted
+## of all three.** That window is not a constant:
+## `StakesPolicy.endgame_window_ms` scales it by `stakes_endgame_window_step`,
+## because a Final's ending is played as an ending earlier than a
+## regular-season game's. This gate was drawn against the *unscaled*
+## `endgame_possession_ms`, so the two rules were complementary only at
+## regular-season stakes; above it the whole of this window sat inside the
+## tie-seeking one — 100% of it at both higher tiers, which open at 48,000ms
+## and 64,000ms against a quick-two ceiling of 46,000ms.
+##
+## Where they overlap they disagree by construction. At a three-point deficit
+## the tie-seeking rule boosts the three and relieves the two while this rule
+## does the exact opposite, and the two multiply into the same §10.3 factor: a
+## postseason game reaches 1.05 for the three against 0.73 for the two, a Final
+## 1.12 against 0.62. The three still wins, so this rule never reverses the
+## preference it exists to reverse; all it achieves is to dilute the
+## tie-seeking rule inside exactly the games the stakes tiers exist to model.
+##
+## So the window is measured from where the tie-seeking window actually ends at
+## whatever stakes this game carries, and keeps its own span past it. A
+## regular-season game reads `endgame_window_ms == endgame_possession_ms` and
+## reproduces the shipped window exactly, which is why no committed golden and
+## no regular-season measurement moves.
 static func quick_two_preferred(
 	context: PossessionContext,
 	balance: SimulationBalanceProfile,
@@ -164,7 +200,8 @@ static func quick_two_preferred(
 	if -context.offense_margin() != GameManagement.TIE_SEEKING_MAXIMUM_DEFICIT:
 		return false
 	var remaining: int = _remaining_ms(context)
-	if remaining <= balance.endgame_possession_ms or remaining > balance.quick_two_timeout_window_ms:
+	var opens_at: int = StakesPolicy.endgame_window_ms(balance, context.input.stakes)
+	if remaining <= opens_at or remaining > opens_at + quick_two_span_ms(balance):
 		return false
 	return context.offense_state().timeouts_remaining > 0
 
