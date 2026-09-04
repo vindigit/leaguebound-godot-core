@@ -6664,7 +6664,7 @@ Run from a clean generated state (`.godot` removed) with `tools/run_checks.sh`:
 | Builder smoke | pass |
 | attribute sensitivity | **80/80 judged, 0 failures** |
 | calibration smoke | **15/15 judged, 0 failures** |
-| GdUnit4 | **623/623 cases, 50/50 suites, 0 errors, 0 failures** |
+| GdUnit4 | **624/624 cases, 50/50 suites, 0 errors, 0 failures** |
 
 `git diff --check` is clean. Gate evidence, not §27.1 certification.
 
