@@ -429,6 +429,8 @@ Each state transition consumes time from a bounded distribution defined by actio
 - Late-clock state restricts legal action choices.
 - Offensive rebounds use the rule profileâ€™s reset behavior.
 - Dead-ball fouls and free throws use separate event time without incorrectly consuming shot-clock time.
+- **The game clock restarts on the throw-in's legal touch, not on the whistle before it.** A possession that begins from a stopped clock — a foul, a violation, a ball out of bounds, the start of a period — charges nothing for retrieving the ball, for the official's administration, or for the throw-in itself, so its `INBOUND` carries the possession's own starting clock. A possession that begins while the clock is still running, which in this model is the restart after a made basket in open play, charges the throw-in as elapsed time because the clock never stopped. Whether the clock was stopped is a fact the session supplies to the possession; the possession does not infer it.
+- **A possession that begins with almost no time left does not run the ordinary opening.** Below a bounded game-clock threshold the offense advances the ball if the clock allows and then commits to an attempt from wherever it stands, without a half-court set. It is not given that set for free: the attempt carries the `TacticalLocation` it was actually taken from, and §12.6 charges it for the distance.
 
 ## 10. Action Selection
 
@@ -1498,7 +1500,7 @@ Also completed since that list was written:
 
 Outstanding:
 
-- Add tactical coordinates to resolution. `TacticalLocation` exists as a type but no resolver reads it, so tactical movement frames are not yet part of possession resolution.
+- Add tactical coordinates to resolution. `TacticalLocation` now has exactly one production reader: §12.6 make resolution charges an attempt for the distance between where it was actually taken and the distance its own shot zone implies, which is what stops a backcourt heave resolving on arc odds. That is the whole of it. Tactical movement frames are still not part of possession resolution — rebound positioning, contest arrival and help distance do not read a location, and a possession that runs the ordinary opening does not carry one. This item stays outstanding.
 - Remove career money, morale, and Ink state from the match adapter. (No such coupling exists in the new repository; this remains a rule for future adapters rather than a migration task.)
 - Prevent match-initialization drift by using `MatchSessionService` after legal-roster preflight and any authorized automatic replacement. `MatchSession` exists and is the single session behind Play, Sim, and Skip; the upstream preflight does not, because no career or world domain is implemented.
 

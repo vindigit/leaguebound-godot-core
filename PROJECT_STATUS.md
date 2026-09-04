@@ -94,7 +94,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - `GarbageTimeRule`'s possession-based settled-rotation safety, its asymmetric leading and trailing thresholds under the owner ruling of 2026-08-20, the `GARBAGE_TIME` ledger event and `TeamMatchState.settled_mode`, and the `simulation-v5-garbage-time` ruleset (§5.12). The §14.2 amendment in §5.13 is a **proposal awaiting owner decision**, not accepted work.
 - The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
 - The §11.3 passer-to-shot event chain: `PassCreation`, the corrected pass beneficiary, the creator stamped on every shot attempt and make, the catch-and-shoot and spot-up continuations, the competition-scoped credited-assist rule, the restored §14.3 conditional baseline, the assist-chain audit and its diagnostics runner, and the `simulation-v6-pass-creation` ruleset the regenerated golden ledgers belong to (§5.15).
-- `EndgameStrategy`'s two-for-one clock management, hold-for-the-final-shot, quick-two-vs-tying-three preference past `GameManagement`'s own window, a designed final-possession play, a leading-by-three foul (`FoulType.Value.LEADING_PROTECT`), an intentional final free-throw miss, and timeout-to-advance (`CompetitionRuleProfile.timeout_advance_permitted`), first built under `simulation-v9-endgame-strategy`, corrected through v10/v11 (§5.25–§5.27), and instrumented and deadline-corrected under `simulation-v12-endgame-ledger-and-resource-contract` (§5.29). The v9 measurements in §5.25 remain pre-correction diagnostics. **Measured, not certified:** the repertoire is real and auditable, but no version yet closes the overtime band.
+- `EndgameStrategy`'s two-for-one clock management, hold-for-the-final-shot, quick-two-vs-tying-three preference past `GameManagement`'s own window, a designed final-possession play, a leading-by-three foul (`FoulType.Value.LEADING_PROTECT`), an intentional final free-throw miss, and timeout-to-advance (`CompetitionRuleProfile.timeout_advance_permitted`), first built under `simulation-v9-endgame-strategy`, corrected through v10/v11 (§5.25–§5.27), and instrumented and deadline-corrected under `simulation-v12-endgame-ledger-and-resource-contract` (§5.29), and joined by the opening-state clock and location contract of `simulation-v13-opening-clock-and-location-contract` (§5.30). The v9 measurements in §5.25 remain pre-correction diagnostics. **Measured, not certified:** the repertoire is real and auditable, but no version yet closes the overtime band.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -6333,6 +6333,373 @@ certification.
   beginning with no more than five seconds.
 - **NOT CLAIMED.** Overtime closure or certification. The 4–8% band is unchanged.
 
+### 5.30 The opening-state clock contract: the inbound restarts the clock, and a five-second possession commits from where it stands
+
+Status: **`simulation-v13-opening-clock-and-location-contract` implements the
+2026-09-04 owner ruling on possession openings. A throw-in onto a stopped clock
+no longer consumes game time; a possession beginning inside five seconds commits
+to an attempt from its actual court location instead of running a half-court set
+it has no time for; and that location enters shot resolution as a bounded §12.6
+distance term — `TacticalLocation`'s first production reader. On the frozen
+250-game paired range, college's expired-without-attempt possessions fall 16 → 9
+and top domestic's 7 → 6, with the 0–5s bucket falling 11 → 6 and 7 → 4. It does
+not close the 4–8% overtime band, change a target, or claim certification. It
+does move §14.1 possessions per game out of band in both competitions, which is
+reported below as a regression rather than compensated for.**
+
+#### The owner ruling
+
+Six clauses, quoted in substance:
+
+1. Dead-ball inbound setup does not consume live game-clock time; the clock
+   starts on the legal touch, so `INBOUND` emits at the possession's starting
+   game clock.
+2. After the touch, ordinary advancement and half-court setup still consume live
+   clock. Normal possessions keep their bounded behaviour.
+3. A possession beginning with five seconds or less must not have to complete the
+   whole inbound → advance → half-court-entry sequence before action selection.
+4. The desperation path must be location-aware, using the existing
+   `TacticalLocation` rather than a parallel `is_heave` boolean.
+5. A backcourt or unusually deep attempt must not receive ordinary arc odds; the
+   distance consequence enters through the existing shot contract as a bounded,
+   auditable term that cannot inspect the score, the band, or the desired result.
+6. The system may create an opportunity, never an outcome.
+
+#### Previous behaviour, and why the defect was structural
+
+`PossessionEngine._open_possession` charged three draws before any action could
+be chosen: `inbound_ms` (2–4s), `advance_ms` (2–5s) and `half_court_entry_ms`
+(2–4s). Their minimum is **six seconds**. A possession that began with five or
+fewer therefore expired in the opening states *whatever it drew* — not often,
+not usually, but always. §5.29's selected-action deadline could not reach these
+possessions because no action had been selected to release.
+
+#### Exact implementation
+
+- **`ClockResolver.inbound_ms` is renamed `running_clock_inbound_ms`** and the
+  caller, not the resolver, decides whether to charge it.
+- **`MatchSession._clock_stopped`** is a new session fact: true after any whistle
+  restart and at every period start, false after a made basket in open play. It
+  is written from the committed possession record and read only by the engine.
+- **`PossessionEngine._open_possession`** takes `clock_stopped` and emits
+  `INBOUND` at the possession's own clock whenever the clock was stopped, or
+  whenever the possession is inside the desperation window. Otherwise it charges
+  the running-clock inbound exactly as before.
+- **`PossessionEngine._open_desperate`** runs when the possession begins at or
+  below `desperation_opening_clock_ms` (5,000). It draws and charges the advance
+  exactly as the ordinary path does — this is not free time — and *skips*
+  half-court entry rather than discounting it. If the advance completes, the ball
+  is `DEEP`; if it would cross the horn, the offence never gets it across and the
+  ball is `BACKCOURT`.
+- **`PossessionContext.ball_location`** carries that `TacticalLocation`, and is
+  `null` on every possession that ran the ordinary opening.
+- **`PossessionContext.desperation_opening`** records how the possession opened.
+  `EndgameStrategy.final_release_due` returns true for such a possession, so the
+  first action it manages to select is released before the horn instead of
+  disappearing one state later.
+- **`ShotResolver._location_distance_penalty`** subtracts a bounded term equal to
+  the attempt's *excess* rim distance over the distance its own zone implies,
+  normalized so one full arc-to-backcourt step costs
+  `location_distance_penalty_max` (0.25). It is published in the shot probe and
+  accumulated by `ShotTermAccumulator`.
+
+#### Clock ownership
+
+| Fact | Written by | Read by |
+| --- | --- | --- |
+| `_clock_stopped` | `MatchSession` only, from the committed record | `PossessionEngine._open_possession` only |
+| `desperation_opening` | `PossessionEngine._open_possession` only | `EndgameStrategy.final_release_due` only |
+| `ball_location` | `PossessionEngine._open_desperate` only | `ShotResolver` only |
+
+None is folded into `live_start` or `advance_start`, which answer different
+questions — whether there is anything to inbound, and whether a timeout bought
+the frontcourt — and would have become ambiguous carrying a second meaning.
+
+#### TacticalLocation ownership
+
+§30.2 carried "`TacticalLocation` exists as a type but no resolver reads it" as
+outstanding. It is now read by exactly one resolver, for exactly one purpose, on
+possessions that genuinely produce a location. The type gained one static
+accessor (`rim_distance_for_depth`) and nothing else. **The §30.2 item is not
+closed**: tactical coordinates still do not drive rebound positioning, contest
+arrival, or help distance, and this task deliberately did not expand them there.
+
+#### A correction the measurement forced, and the assumption it rests on
+
+Clause 1 applied to *every* dead-ball restart produces a decisive regression.
+The engine calls every non-live possession start a dead ball, including the
+restart after a made basket — but in real basketball the clock does not stop
+after a made field goal in open play, and the throw-in happens on a running
+clock. Charging nothing there frees roughly three and a half minutes of game time
+per game:
+
+| college, 200 games, seeds 0–199 | baseline | clause 1 applied to every restart |
+| --- | ---: | ---: |
+| possessions per game (target 64–73) | 71.89 ±0.30 **PASS** | **79.10 ±0.34 FAIL** |
+
+So the ruling is implemented where the clock is genuinely stopped — after a
+whistle, and at every period start — and the running-clock inbound is kept where
+the clock never stopped. Inside the desperation window the clock is treated as
+stopped whatever the cause, because every dead-ball restart stops it and a made
+basket in the last five seconds is inside every modelled competition's late-game
+stop. **Stated as an assumption rather than hidden:** `PossessionEndReason` does
+not separate a made field goal from a made free throw, and a made final free
+throw does stop the clock. Both are treated as running. The error is in the
+direction that preserves the possessions band rather than inflating it, and
+inside the last five seconds the desperation path already treats the clock as
+stopped. Closing it needs a new end reason and is not taken here.
+
+#### Matched measurement — the regulation-tie decomposition
+
+`run_regulation_tie_decomposition.gd`, 250 games per competition, seeds
+990,001–990,250, identical rosters and seeds in all three columns. Phase A
+reproduces §5.29's published counts exactly.
+
+**College**
+
+| | A: baseline | B: stopped-clock inbound only | C: full contract |
+| --- | ---: | ---: | ---: |
+| regulation ties | 6 | 6 | 5 |
+| final-30s opportunities | 47 | 38 | 42 |
+| tying field goals | 1/6 | 3/6 | 0/6 |
+| tying free throws | 1/2 | — | 1/1 |
+| tieable possessions without attempt | 20 | 15 | **13** |
+| expired without attempt | 16 | 11 | **9** |
+| no-attempt start clock 0–5s | 11 | 9 | **6** |
+| no-attempt end reasons | expired 16, turnover 4 | expired 11, turnover 4 | expired 9, turnover 4 |
+
+**Top domestic**
+
+| | A: baseline | B: stopped-clock inbound only | C: full contract |
+| --- | ---: | ---: | ---: |
+| regulation ties | 2 | 7 | 5 |
+| final-30s opportunities | 41 | 54 | 54 |
+| tying field goals | 2/10 | 4/11 | 5/12 |
+| tying free throws | 2/3 | — | 1/2 |
+| tieable possessions without attempt | 9 | 13 | 9 |
+| expired without attempt | 7 | 10 | **6** |
+| no-attempt start clock 0–5s | 7 | 6 | **4** |
+| no-attempt end reasons | expired 7, turnover 2 | expired 10, turnover 3 | expired 6, turnover 3 |
+
+Phase B is column B in isolation — the inbound contract with the desperation
+window set to zero — and it is reported because it is the half of the change that
+moves possession count. It is not the shipped configuration.
+
+The mechanism does what it was built to do: **possessions dying before action
+selection fall, and the 0–5s bucket that §5.29 localized falls hardest.** It does
+not empty: the remainder are possessions that reach action selection and then
+turn the ball over, or genuinely fail to release, which is the contract working
+rather than failing.
+
+#### Backcourt and deep attempts remain rare
+
+`run_opening_state_audit.gd`, a new diagnostic runner, 100 games per competition
+on seeds 990,001–990,100. The opening a possession ran is reconstructed from its
+own events, so no new ledger field was needed.
+
+| | college | top domestic |
+| --- | ---: | ---: |
+| possessions per game (both teams) | 147.38 | 206.88 |
+| dead-ball openings still charged a running clock | 81.40% | 83.31% |
+| desperation openings per game | 0.870 | 1.930 |
+| — of which backcourt / deep | 65 / 22 | 128 / 65 |
+| desperation share of all possessions | 0.590% | 0.933% |
+| **desperation attempts as a share of all field-goal attempts** | **0.25%** | **0.41%** |
+| desperation attempts made | 5 / 34 (0.1471) | 20 / 80 (0.2500) |
+| desperation possessions ending in a turnover | 2 | 3 |
+| desperation possessions expiring without transfer | 75 of 87 | 164 of 193 |
+
+A quarter to four tenths of one percent of attempts, made at 15–25% rather than
+at the arc's ~37%, with most such possessions still ending with no attempt at
+all. That is an opportunity, not an outcome.
+
+#### §14.1 and §14.2, matched at 200 games per competition
+
+Seeds 0–199, identical rosters. **Every verdict change is named.**
+
+| college | baseline | v13 | change |
+| --- | ---: | ---: | --- |
+| possessions per game (64–73) | 71.89 ±0.30 PASS | 73.16 ±0.29 | **PASS → FAIL** |
+| points per possession (0.98–1.10) | 1.0445 PASS | 1.0491 PASS | — |
+| field goal % (0.42–0.49) | 0.4099 FAIL | 0.4095 FAIL | already failing (§5.23) |
+| three point % (0.31–0.38) | 0.3203 PASS | 0.3204 PASS | — |
+| three-point rate (0.32–0.46) | 0.3473 PASS | 0.3467 PASS | — |
+| free throw % (0.67–0.79) | 0.7139 PASS | 0.7080 PASS | — |
+| free-throw rate (0.20–0.38) | 0.2469 PASS | 0.2495 PASS | — |
+| turnovers per 100 (15–21) | 15.37 PASS | 15.28 PASS | — |
+| offensive rebound % (0.24–0.34) | 0.2544 PASS | 0.2565 PASS | — |
+| assist % (0.48–0.68) | 0.5181 PASS | 0.5162 PASS | — |
+| home win (0.53–0.56) | 0.4500 FAIL | 0.4850 FAIL | already failing |
+| overtime (0.04–0.08) | 0.0200 FAIL | 0.0200 FAIL | unmoved |
+| close game (0.22–0.34) | 0.2750 PASS | 0.2800 PASS | — |
+| blowout (0.08–0.18) | 0.1200 PASS | 0.1250 PASS | — |
+
+| top domestic | baseline | v13 | change |
+| --- | ---: | ---: | --- |
+| possessions per game (96–103) | 101.91 ±0.38 PASS | 103.66 ±0.31 | **PASS → FAIL** |
+| points per possession (1.08–1.18) | 1.1701 PASS | 1.1658 PASS | — |
+| field goal % (0.45–0.51) | 0.4587 PASS | 0.4559 PASS | — |
+| three point % (0.34–0.40) | — | 0.3743 PASS | — |
+| turnovers per 100 (11–16) | — | 14.08 PASS | — |
+| offensive rebound % (0.20–0.31) | — | 0.2502 PASS | — |
+| assist % (0.52–0.72) | — | 0.5831 PASS | — |
+| home win (0.53–0.56) | — | 0.5350 PASS | — |
+| overtime (0.04–0.08) | 0.0250 FAIL | 0.0150 FAIL | still failing |
+| close game (0.22–0.34) | 0.1850 FAIL | 0.1850 FAIL | unmoved |
+| blowout (0.08–0.18) | 0.2850 FAIL | 0.2550 FAIL | still failing |
+
+**The possessions regression is real and is this change's doing.** Freeing the
+throw-in on whistle restarts — 18.6% of college's dead-ball openings, 16.7% of
+top domestic's — returns roughly three seconds each, which buys about 1.3 and 1.8
+extra possessions per game. Both point estimates now sit just outside a band
+ceiling their intervals still straddle (college [72.87, 73.44] against 73.0; top
+domestic [103.34, 103.97] against 103.0).
+
+It is **not compensated for here.** The pace environment
+(`CompetitionRuleProfile.pace_multiplier`) was calibrated against a clock model
+that charged a throw-in the rules do not charge, so it now absorbs an error that
+no longer exists. Re-deriving it per competition against the corrected contract
+is the honest response and is a calibration decision, not an opening-state
+defect; making it inside this task would have tuned a band to hide a mechanism.
+**Recorded as the open item this change creates.**
+
+Overtime: college unmoved at 0.0200, top domestic 0.0250 → 0.0150. At 200 games
+either figure is four or five games; **no overtime movement is claimed in either
+direction**, and none of this brings either competition near the 4–8% band.
+
+#### Tests and mutation checks
+
+`tests/simulation/test_opening_clock_contract.gd`, 17 cases, all passing, one per
+clause of the ruling plus the invariants the ruling must not break. The five
+mutations the brief names were run against it; every one is caught:
+
+| mutation | caught by |
+| --- | --- |
+| reintroduce inbound game-clock consumption | `test_a_dead_ball_possession_emits_inbound_without_reducing_the_game_clock` |
+| remove the desperation-opening branch | 7 cases, first `test_a_possession_below_five_thousand_ms_gets_no_free_half_court_setup` |
+| treat a backcourt attempt like an ordinary arc attempt | `test_a_backcourt_attempt_does_not_receive_ordinary_arc_shot_odds` |
+| guarantee the outcome of a located attempt | `test_no_desperation_path_guarantees_an_attempt_a_make_or_a_tie` |
+| let the selected action cross the horn | `test_a_possession_shorter_than_any_action_draw_still_selects_one` |
+
+**Two of those five initially survived, and the tests were strengthened rather
+than the mutations softened.** A guaranteed make survived a possession-level
+"some attempt was missed", because blocked attempts satisfy it on their own; the
+assertion is now a per-attempt make-rate ceiling. A selected action crossing the
+horn survived "every `ACTION_SELECTED` sits before the horn", because an action
+that crosses the horn is never emitted and the assertion passed vacuously; a new
+case starts a possession with less time than the shortest action draw, so only
+the release clamp can produce an action at all.
+
+#### Golden ledgers
+
+All six hashes moved, deliberately, with the ruleset bumped to
+`simulation-v13-opening-clock-and-location-contract`. Dumps were diffed against
+`451dda8` per scenario.
+
+**In all six, the first differing event is the same one**: the game's opening
+`INBOUND`. The last identical event is `possession_started` at the period's full
+clock; the inbound then emits at that same clock instead of two to four seconds
+into it. Every later difference is downstream clock realignment and the different
+game that follows from it — not a separate cause.
+
+| scenario | last identical | first divergence | cause |
+| --- | --- | --- | --- |
+| regulation | `possession_started` @300000 | `inbound` 296000 → **300000** | inbound timestamp |
+| overtime | `possession_started` @180000 | `inbound` 177000 → **180000** | inbound timestamp |
+| offensive_rebound | `possession_started` @300000 | `inbound` 297000 → **300000** | inbound timestamp |
+| foul_free_throw | `possession_started` @240000 | `inbound` 237000 → **240000** | inbound timestamp |
+| substitution_foul_out | `possession_started` @240000 | `inbound` 236000 → **240000** | inbound timestamp |
+| late_game | `possession_started` @240000 | `inbound` 236000 → **240000** | inbound timestamp |
+
+Possessions rise in every scenario (regulation 78 → 80, offensive_rebound 73 →
+74, substitution_foul_out 60 → 65), which is the same freed clock the §14.1 table
+above measures.
+
+The **overtime scenario's seed moved 31676 → 7919**, derived by
+`find_scenario_seeds.gd` over a 600-seed search: 31676 no longer finishes level,
+and a golden overtime scenario that reaches no overtime tests nothing. It is
+again the only seed that moved; the other five still exercise their named
+behaviour at the seeds they have always had.
+
+#### Fixtures re-derived, and what was deliberately not weakened
+
+Four suites outside the new one needed work. None had its assertion loosened:
+
+- **`test_play_sim_skip_parity`** tracks the golden overtime seed by design, so
+  its `OVERTIME_SEED` moved with it to 7919. **Skip/play parity itself never
+  failed** — the failure was the fixture guard reporting that its game no longer
+  reached overtime.
+- **`test_endgame_corrections`** piggybacked on the `offensive_rebound` golden
+  scenario for a fourth-quarter putback taken while two-for-one was active. At
+  seed 7001 those two no longer coincide, though the scenario still has both its
+  endgame tags and its five putbacks. The golden seed was **not** moved for an
+  unrelated suite's convenience; the test now owns seed 7043 on the same fixture,
+  found by reachability search.
+- **`test_home_environment`**'s venue turnover edge was reading a signed mean of a
+  per-game count over **12 games**. Measured over the same seeds, the forward
+  arm's running mean is +0.250 at 12, −0.056 at 36, +0.233 at 60, −0.362 at 80
+  and −0.890 at 200; the pre-v13 tree gave −0.380 at 200. **The venue effect is
+  intact and at 200 games larger than before** — the 12-game fixture was reading
+  noise and passed previously by luck. Its sample is raised to 100 per arm, which
+  strengthens the assertion. A paired estimator over the same games would reach
+  the same verdict far cheaper and is recorded as the better future shape.
+- **`test_fg_decomposition`** re-pins the assisted share 0.6387 → 0.6571 and names
+  why: the clock every possession starts on is an input to §10.3 through
+  `GameManagement.remaining_ms`, so the action mix shifts. The other four pinned
+  compensation channels are unmoved on the same fixture, which is the
+  discrimination that test exists to provide. `ShotTermAccumulator` also gained
+  the `location_penalty` term, because its own residual test correctly caught a
+  term going missing from the attribution.
+
+#### Validation
+
+Run from a clean generated state (`.godot` removed) with `tools/run_checks.sh`:
+
+| check | result |
+| --- | --- |
+| import | pass |
+| parse gate | **248 scripts, 0 failures** |
+| project acceptance | pass |
+| simulation smoke | pass |
+| Builder smoke | pass |
+| attribute sensitivity | **80/80 judged, 0 failures** |
+| calibration smoke | **15/15 judged, 0 failures** |
+| GdUnit4 | **623/623 cases, 50/50 suites, 0 errors, 0 failures** |
+
+`git diff --check` is clean. Gate evidence, not §27.1 certification.
+
+#### Classification
+
+- **CLOSED.** A throw-in onto a stopped clock consumes no game time, and
+  `INBOUND` emits at the possession's starting clock. Work-queue item 18's first
+  question — which opening stages consume live game clock — is answered.
+- **CLOSED.** A possession beginning inside five seconds reaches action selection
+  and can release a legal attempt before the horn. Item 18's second question —
+  how a full-court desperation possession is represented — is answered: it
+  advances if it can, commits from where it stands, and is charged for the
+  distance.
+- **CLOSED.** `TacticalLocation` has a production reader, and a backcourt or deep
+  attempt no longer resolves on arc odds.
+- **ESTABLISHED.** The opening-state loss §5.29 localized falls by 44% for
+  college (16 → 9) and 14% for top domestic (7 → 6) on matched seeds, with the
+  0–5s bucket falling 45% and 43%.
+- **ESTABLISHED.** Backcourt and deep attempts are 0.25% and 0.41% of all
+  field-goal attempts and go in at 15–25%.
+- **REGRESSION, REPORTED NOT COMPENSATED.** §14.1 possessions per game moves out
+  of band in both competitions (college 71.89 → 73.16 against 64–73; top domestic
+  101.91 → 103.66 against 96–103) as the direct arithmetic consequence of not
+  charging a throw-in the rules do not charge. The pace environment was
+  calibrated against the old clock model and now needs re-deriving.
+- **NOT ESTABLISHED.** Any overtime movement. College is unmoved at 0.0200 and
+  top domestic moves 0.0250 → 0.0150 on 200 games, which is noise in both
+  directions.
+- **NOT CLAIMED.** Overtime closure, Stage 4 closure, or certification of
+  anything. No §27.1 sample was run.
+- **NOT CHANGED.** Every `BALANCE_SPEC.md` target and tolerance, including the
+  4–8% overtime band. No shot accuracy, contact, free-throw, rebound or turnover
+  probability was touched, no score was mutated, and no production path reads a
+  calibration output.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -6474,9 +6841,11 @@ Work should proceed in this order unless new evidence changes a dependency:
 14. ~~**Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch.**~~ **Done (§5.27).** Both were read per activation rather than per count, by replaying each game's ledger through a second reducer and re-evaluating the production gates on the reconstructed state (reconstruction verified at 1.000000 tag agreement over 66,623 final-period selections). **Quick-two had a defect**: its window was drawn against the unscaled `endgame_possession_ms` while the tie-seeking window it must stay outside of is that constant scaled by the stakes tier, so the two were complementary at regular-season stakes and the whole of quick-two sat inside the tie-seeking window at both tiers above it, where the two rules disagree by construction and the three wins anyway. Corrected by `simulation-v11-quick-two-stakes-window`; regular season is unchanged to the millisecond. **Two-for-one was validated and left unchanged**: a matched A/B on identical seeds and rosters shows the multiplier shifts direct-shot selection by +3.19pp pooled (95% CI +0.47 to +5.91) but moves neither possession length nor the rate of regaining the ball beyond noise. No defect demonstrated, so nothing changed.
 
 15. ~~**Tag the offensive-rebound putback with the endgame decision in force, and regenerate the golden ledgers deliberately.**~~ **Done (§5.29).** The putback now reads `EndgameStrategy.active_tag`; one known `offensive_rebound` golden hash moves for that field alone while seed, score, event count and played result remain unchanged.
-16. **Continue the regulation-tie diagnosis per competition, without injecting ties (§5.28, §5.29).** The curve is already peaked at zero — signed density ratio 1.38 for college, 1.12 for top domestic — and the new decomposition proves that a material share of late tieable possessions never reaches an attempt. The selected-action deadline is corrected and reduces that loss without changing overtime on its 250-game paired range. College still needs a modest zero-concentration increase with its width otherwise inside band; top domestic also remains too wide at the blowout end. Do not solve either by altering make probability or directly moving a final score to zero.
+16. **Continue the regulation-tie diagnosis per competition, without injecting ties (§5.28, §5.29, §5.30).** The curve is already peaked at zero — signed density ratio 1.38 for college, 1.12 for top domestic — and the decomposition proved that a material share of late tieable possessions never reaches an attempt. **Two mechanisms have now been repaired against that finding and neither closed the band.** §5.29 corrected the selected-action deadline; §5.30 corrected the opening-state clock and added the location-aware desperation opening. Together they take college's expired-without-attempt possessions from 20 to 9 and top domestic's from 16 to 6 on the frozen 250-game range, and overtime does not move: college sits at 0.0200 before and after on 200 matched games, top domestic at 0.0250 → 0.0150, both noise at that sample. **The attempt-creation explanation for the overtime shortfall is now substantially exhausted** — the possessions that were dying before an attempt largely no longer die, and the band is still missed by the margins §5.28 established at 15,000 games. The remaining zero-concentration gap is therefore unlikely to be found in end-of-regulation attempt creation, and the next diagnosis should look at the margin process itself rather than at the last possession. College still needs a modest zero-concentration increase with its width otherwise inside band; top domestic also remains too wide at the blowout end. Do not solve either by altering make probability or directly moving a final score to zero.
 17. **Draw any §27.1 certification across seed ranges rather than extending one (§5.28).** College's overtime rate differs between two large disjoint ranges by 0.6 percentage points at p=0.052 — a roster-population effect, not sampling, since both samples are large. At a 4% band floor that is material, and a certification resting on one range would not be reproducible on another.
-18. **Resolve the sub-five-second opening-state clock contract before another overtime calibration run (§5.29).** After the selected-action repair, 11 of college's 16 and all 7 of top domestic's 7 remaining expired no-attempt possessions on the paired 250-game range began with 0–5 seconds. They terminate in inbound/advance/half-court setup before action selection. Decide from the basketball contract which opening stages consume live game clock and how a full-court desperation possession is represented; then test that path directly. Do not compensate with shot accuracy or a forced tie.
+18. ~~**Resolve the sub-five-second opening-state clock contract before another overtime calibration run (§5.29).**~~ **Done (§5.30).** The 2026-09-04 owner ruling is implemented as `simulation-v13-opening-clock-and-location-contract`. A throw-in onto a stopped clock consumes no game time and `INBOUND` emits at the possession's starting clock; a possession beginning inside five seconds skips the half-court set it has no time for and commits from its actual `TacticalLocation`, which then costs it a bounded §12.6 distance term rather than giving it arc odds. On the same paired 250-game range, expired-without-attempt falls 16 → 9 for college and 7 → 6 for top domestic, and the 0–5s bucket falls 11 → 6 and 7 → 4. Backcourt and deep attempts are 0.25% and 0.41% of all field-goal attempts, made at 15–25%. Neither shot accuracy nor any tie was touched, and no overtime movement is claimed. **What it opens is item 19**, below: the correction moves §14.1 possessions per game out of band in both competitions.
+19. **Re-derive each competition's `pace_multiplier` against the corrected clock contract (§5.30).** `simulation-v13` stopped charging a throw-in that a stopped clock does not charge, which returns roughly three seconds on 17–19% of possessions and moves §14.1 possessions per game from 71.89 to 73.16 for college (band 64–73) and from 101.91 to 103.66 for top domestic (band 96–103). Both are marginal — each interval still straddles its ceiling — and both are the direct arithmetic consequence of the correction rather than a defect in it. The pace environment was calibrated against a clock model that charged time the rules do not, so it now absorbs an error that no longer exists. This is a calibration decision and was deliberately not taken inside §5.30, because retuning pace in the same change would have hidden the mechanism behind the band it moved. Re-derive it per competition on untouched ranges, then re-measure §14.1 as a whole; do not widen the band instead.
+
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 
 ## 10. Status maintenance rules
