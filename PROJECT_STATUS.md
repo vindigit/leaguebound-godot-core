@@ -95,6 +95,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
 - The §11.3 passer-to-shot event chain: `PassCreation`, the corrected pass beneficiary, the creator stamped on every shot attempt and make, the catch-and-shoot and spot-up continuations, the competition-scoped credited-assist rule, the restored §14.3 conditional baseline, the assist-chain audit and its diagnostics runner, and the `simulation-v6-pass-creation` ruleset the regenerated golden ledgers belong to (§5.15).
 - `EndgameStrategy`'s two-for-one clock management, hold-for-the-final-shot, quick-two-vs-tying-three preference past `GameManagement`'s own window, a designed final-possession play, a leading-by-three foul (`FoulType.Value.LEADING_PROTECT`), an intentional final free-throw miss, and timeout-to-advance (`CompetitionRuleProfile.timeout_advance_permitted`), first built under `simulation-v9-endgame-strategy`, corrected through v10/v11 (§5.25–§5.27), and instrumented and deadline-corrected under `simulation-v12-endgame-ledger-and-resource-contract` (§5.29), and joined by the opening-state clock and location contract of `simulation-v13-opening-clock-and-location-contract` (§5.30). The v9 measurements in §5.25 remain pre-correction diagnostics. **Measured, not certified:** the repertoire is real and auditable, but no version yet closes the overtime band.
+- The explicit restart contract of `simulation-v14-restart-contract` (§5.31): `RestartCause` and `RestartClockMode` as domain types, `RestartClockPolicy` as the single cause-to-clock-mode policy, `CompetitionRuleProfile.made_basket_clock_stop_ms` and `..._late_periods_only` as the competition rule, `PossessionRecord.restart_cause` and the restart cause on every `INBOUND` event. It removes the §5.30 ambiguity between a made field goal and a made free throw, corrects an unrecorded timeout defect, and relocates a competition clock rule out of `PossessionEngine` without changing what it did. Six golden hashes regenerated with the first behavioural divergence located in each.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -6696,9 +6697,317 @@ Run from a clean generated state (`.godot` removed) with `tools/run_checks.sh`:
 - **NOT CLAIMED.** Overtime closure, Stage 4 closure, or certification of
   anything. No §27.1 sample was run.
 - **NOT CHANGED.** Every `BALANCE_SPEC.md` target and tolerance, including the
-  4–8% overtime band. No shot accuracy, contact, free-throw, rebound or turnover
-  probability was touched, no score was mutated, and no production path reads a
-  calibration output.
+  4–8% overtime band. **No existing baseline shooting probability was retuned:
+  no shot, contact, free-throw, rebound or turnover base rate, curve, floor or
+  ceiling was altered.** What changed is an *input* to shot resolution —
+  possession location is now an explicit bounded term
+  (`ShotResolver._location_distance_penalty`, at most
+  `location_distance_penalty_max` = 0.25), so an attempt from `DEEP` or
+  `BACKCOURT` no longer resolves on the odds of an attempt at the arc. No score
+  was mutated and no production path reads a calibration output.
+
+  *Corrected by §5.31.* This bullet previously read "no shot accuracy, contact,
+  free-throw, rebound or turnover probability was touched", which contradicted
+  this section's own description of the §12.6 distance term four paragraphs
+  above: a bounded term subtracted from a make probability is a probability
+  being moved. The measurement was right and the claim about it was wrong, so the
+  claim is corrected and the correction is recorded here rather than the sentence
+  being quietly deleted. No measurement in this section changed.
+
+### 5.31 The restart contract: a named cause, a single clock policy, and the competition rule that was hiding in the engine
+
+Status: **`simulation-v14-restart-contract` removes the ambiguity §5.30
+recorded and left. A possession's restart is now a typed `RestartCause` named at
+the point the previous possession ends, `RestartClockPolicy` is the only thing
+that turns a cause into a clock mode, and the made-basket rule lives on
+`CompetitionRuleProfile` where §4 puts a competition rule. Two restarts change
+as a result — a made free throw and a charged timeout both stop the clock and no
+longer charge their throw-in — and both are corrections of defects rather than
+new rules. All six golden ledgers move. It does not close the overtime band,
+change a target or a tolerance, or claim certification. It deepens the §14.1
+possessions regression §5.30 opened, which §5.32 then re-derives.**
+
+#### The ambiguity, stated exactly
+
+§5.30 shipped `MatchSession._clock_stopped`, written once per possession as:
+
+```gdscript
+_clock_stopped = possession.record.end_reason != PossessionEndReason.Value.MADE_SCORE
+```
+
+`PossessionEndReason` has four values and `MADE_SCORE` is returned by **two**
+terminal paths in `PossessionEngine`: the made field goal, and the made final
+free throw of a trip (an and-one's single attempt included). Those two restart
+under different rules in every competition this engine models — the clock runs
+through a made basket in open play and is dead through a free-throw trip — so
+the derivation could not express the distinction. §5.30 recorded it honestly as
+a known conservatism, chose the direction that under-counted possessions rather
+than inflating them, and left it. This section closes it.
+
+The audit found a **second case that was not recorded anywhere**.
+`_consider_timeout` set `_live_start = false` and left `_clock_stopped` alone, so
+a possession that ended in a made basket and was then answered by a run-stopping
+timeout still charged the next throw-in — even though a timeout stops the clock
+in every ruleset. It is not an edge case: the run trigger fires only after a
+scoring run, so *every* run-stopping timeout in the ledgers examined followed a
+made basket, and every one of them charged.
+
+And a **competition rule was being decided inside the possession engine**.
+`_open_possession` read `if not (clock_stopped or desperate)`, where `desperate`
+is `clock_ms <= SimulationBalanceProfile.desperation_opening_clock_ms`. The
+comment beside it asserted that "a made basket in the last five seconds is inside
+every modeled competition's late-game stop" — an unsourced rule claim, expressed
+as a coupling to a balance constant, in the class §4 says must not infer rules.
+
+#### Phase 1 audit: every writer and reader, before the change
+
+| Fact | Written by | Read by |
+| --- | --- | --- |
+| `MatchSession._live_start` | `MatchSession` only (`_init`, `advance_possession`, `_advance_period`, `_consider_timeout`, `_consider_advance_timeout`) | `PossessionEngine.simulate`; `EndgameStrategy.timeout_advance_eligible` |
+| `MatchSession._advance_start` | `MatchSession` only | `PossessionEngine._open_possession`, `_open_desperate` |
+| `MatchSession._clock_stopped` | `MatchSession` only, derived from `end_reason` | `PossessionEngine._open_possession` only |
+| `PossessionRecord.end_reason` | `PossessionEngine._terminate` only | `MatchSession`; `BoxScoreProjector`; calibration runners |
+| `PossessionRecord.live_transfer` | `PossessionEngine._terminate` only | `MatchSession` only |
+| `PossessionContext.ball_location` | `PossessionEngine._open_desperate` only | `ShotResolver` only |
+| `PossessionContext.desperation_opening` | `PossessionEngine._open_possession` only | `EndgameStrategy.final_release_due` only |
+| game-clock running/stopped | **nowhere as a fact** — inferred at the read site from `_clock_stopped or desperate` | — |
+
+`MatchSession` is the only production caller of `PossessionEngine.simulate`;
+`MatchEngine` is a front door onto it. There was exactly one production reader of
+`PossessionEndReason` for clock purposes, and it is the line quoted above.
+
+#### Phase 1 audit: how each situation opened the next possession
+
+"Before" is `simulation-v13`; "after" is this change. Only the two bold rows move.
+
+| Situation | `live_start` | Restart cause (v14) | Clock before | Clock after |
+| --- | --- | --- | --- | --- |
+| Opening tip / period start | false | `period_start` | stopped | stopped |
+| Made field goal, open play | false | `made_field_goal` | running | running |
+| Made field goal, ≤5,000ms left | false | `made_field_goal` | stopped, via `desperate` | stopped, via the rule profile |
+| **Made free throw (trip or and-one)** | false | `made_free_throw` | **running** | **stopped** |
+| Missed final free throw, reboundable | true (rebound) | `live_ball` | — | — |
+| Missed final free throw, not reboundable | false | `foul` | stopped | stopped |
+| Offensive foul | false | `foul` | stopped | stopped |
+| **Timeout after a made basket** | false | `timeout` | **running** | **stopped** |
+| Timeout after any whistle | false | `timeout` | stopped | stopped |
+| Shot-clock or travelling violation | false | `violation` | stopped | stopped |
+| Bad pass / lost handle / out of bounds | false | `out_of_bounds` | stopped | stopped |
+| Steal | true | `live_ball` | — | — |
+| Defensive rebound | true | `live_ball` | — | — |
+| Overtime start | false | `period_start` | stopped | stopped |
+
+The missed-final-free-throw dead-ball row is **unreachable in all five launch
+profiles**, which all set `final_free_throw_reboundable`;
+`TestRestartContract` asserts that rather than assuming it.
+
+#### Phase 1 audit: what the sources actually rule
+
+`SIMULATION_SPEC.md` §4's `CompetitionRuleProfile` interface has **no
+clock-stoppage member at all**. §9.4 states the legal-touch rule and names "the
+restart after a made basket in open play" as the running-clock case, without
+scoping it by competition, period or remaining time. `BALANCE_SPEC.md` and
+`GODOT_TDD.md` state no made-basket clock rule. **There is no authoritative
+ruling on competition-specific made-basket clock stoppage**, and none is invented
+here.
+
+#### The contract
+
+| Fact | Written by | Read by |
+| --- | --- | --- |
+| `PossessionRecord.restart_cause` | `PossessionEngine._terminate` **only** — the seven terminal call sites each name a cause, and `simulate` seeds a defensive default that `_terminate` always overwrites | `MatchSession.advance_possession`; calibration runners |
+| `MatchSession._restart_cause` | `MatchSession` **only** — from the committed record, overridden by the two dead-ball events that supersede it (a charged timeout, a period transition) | `PossessionEngine._open_possession` **only** |
+| `RestartClockMode` | never stored; derived by `RestartClockPolicy.mode_for` **only** | `PossessionEngine._open_possession` **only** |
+| `CompetitionRuleProfile.made_basket_clock_stop_ms` / `..._late_periods_only` | profile data, declared explicitly by all five launch profiles | `CompetitionRuleProfile.stops_clock_after_made_basket`, called by `RestartClockPolicy` **only** |
+| `INBOUND.detail_id` | `PossessionEngine._open_possession` **only** | the ledger; `TestRestartContract`; the pace runner |
+
+`RestartCause` has eight values: `period_start`, `made_field_goal`,
+`made_free_throw`, `foul`, `timeout`, `violation`, `out_of_bounds`, `live_ball`.
+The seven the brief names, plus `live_ball` — which the engine genuinely
+requires, because it makes the fact **total**. Every possession has exactly one
+restart cause, so "one writer, one value, always" is a property that can be
+asserted rather than a convention that can drift, and
+`PossessionEngine.simulate` asserts that `live_start` and a `LIVE_BALL` cause
+never disagree.
+
+Nothing was overloaded to carry it. `live_start` and `advance_start` still answer
+their own questions and are unchanged. `TacticalLocation` gained nothing. The
+`INBOUND` event's `detail_id` was **empty** before this change and now carries the
+cause, which gives an unused field its first meaning rather than giving a used
+one a second — and it is what makes a restart auditable from the ledger instead
+of reconstructible from timestamps.
+
+Separating the two made-basket causes required exactly the narrow addition the
+brief anticipated: `_terminate` takes the cause as a parameter, and the
+free-throw terminal path names `MADE_FREE_THROW` where the field-goal path names
+`MADE_FIELD_GOAL`. No heuristic replaced the old one.
+
+#### Competition-specific clock behaviour
+
+`stops_clock_after_made_basket(period, remaining_ms)` is false when the window is
+zero, false in an early period when the window is scoped to late periods, and
+otherwise `remaining_ms <= made_basket_clock_stop_ms`. A made **free throw**
+never reaches it: a free-throw trip is dead-ball time in every ruleset this
+engine models, so it is basketball rather than a competition rule and the policy
+answers it directly.
+
+| profile | periods | window | late periods only | source of the value |
+| --- | --- | ---: | --- | --- |
+| `high_school` | 4 × 480s | 5,000ms | no | relocated from `_open_possession` |
+| `college` | 2 × 1200s | 5,000ms | no | relocated from `_open_possession` |
+| `domestic_development` | 4 × 720s | 5,000ms | no | relocated from `_open_possession` |
+| `overseas` | 4 × 600s | 5,000ms | no | relocated from `_open_possession` |
+| `top_domestic_pro` | 4 × 720s | 5,000ms | no | relocated from `_open_possession` |
+
+**Every value is the behaviour that already shipped.** The engine already stopped
+the clock after a made basket inside the last five seconds of every period; that
+rule is now data on the profile instead of a coupling to
+`desperation_opening_clock_ms` inside the engine. Made-field-goal restarts are
+therefore byte-identical across this change, and the boundary matrix below is a
+statement about behaviour that has not moved.
+
+| condition | period 1 | last regulation period | overtime |
+| --- | --- | --- | --- |
+| remaining = 5,001ms (before the boundary) | charged | charged | charged |
+| remaining = 5,000ms (at the boundary) | free | free | free |
+| remaining = 4,999ms (after the boundary) | free | free | free |
+
+Proved for all five profiles at all three periods, and separately on two
+constructed profiles: one declaring a 120,000ms window scoped to late periods
+only (which charges throughout period 1 at every clock, and observes the
+boundary in the last regulation period and in overtime), and one declaring no
+window at all (which never stops, at any clock, while still stopping for a made
+free throw).
+
+#### The open owner decision, not taken
+
+**Whether any competition should declare a longer late-game made-basket window —
+the final two minutes of the fourth period, say — is ruled on by nothing in this
+repository.** The representation supports it, `RestartClockPolicy` reads it, and
+`test_a_profile_may_scope_a_longer_window_to_late_periods_only` proves both sides
+of its boundary on a constructed profile. No launch profile declares one, because
+declaring one would be a rule change disguised as a calibration fix: it would
+move possessions per game, which is the band this branch is already short of.
+**This is recorded as the missing decision, not as a defect and not as work
+avoided.**
+
+The narrow default that *is* taken, stated explicitly: **a made free throw stops
+the clock in every competition.** It is not a competition rule — no ruleset this
+engine models runs the clock during a free-throw trip — so it lives in the policy
+rather than in a profile, and it is the correction §5.30 named and deferred.
+
+#### Golden ledgers
+
+All six hashes move, deliberately, with the ruleset bumped to
+`simulation-v14-restart-contract`. Dumps were taken from a worktree at `5f011a1`
+and diffed per scenario.
+
+The **first differing event in all six is the game's opening `INBOUND`**, and the
+only difference there is the new `detail_id` — the clock is identical. With that
+audit field normalized away, the **first behavioural divergence in all six is the
+same mechanism**: the throw-in after a made free throw, which used to be charged
+two to four seconds and is now free.
+
+| scenario | first behavioural divergence | before → after | preceding ledger |
+| --- | --- | --- | --- |
+| regulation | `inbound` seq 40, period 1 | 272000 → **274000** | and-one `free_throw_made`, `possession_ended made_score` |
+| overtime | `inbound` seq 27, period 1 | 158000 → **162000** | two `free_throw_made`, `possession_ended made_score` |
+| offensive_rebound | `inbound` seq 65, period 1 | 241000 → **243000** | `free_throw_missed` then `free_throw_made`, `made_score` |
+| foul_free_throw | `inbound` seq 68, period 1 | 174000 → **178000** | two `free_throw_made`, `possession_ended made_score` |
+| substitution_foul_out | `inbound` seq 50, period 1 | 196000 → **198000** | and-one `free_throw_made`, `made_score` |
+| late_game | `inbound` seq 27, period 1 | 218000 → **221000** | two `free_throw_made`, `possession_ended made_score` |
+
+Restart accounting across the six regenerated ledgers, read from the events:
+**86 made-field-goal throw-ins charged**, 3 free (all at 2,000ms, 1,544ms and
+2,555ms remaining — inside the declared 5,000ms window, and only there), **32
+made-free-throw throw-ins free and none charged**, **6 timeout throw-ins free and
+none charged** (all six followed a made basket and all six were charged before),
+and every `foul`, `violation`, `out_of_bounds` and `period_start` restart free as
+before.
+
+The **overtime scenario's seed moved 7919 → 71271**, derived by
+`find_scenario_seeds.gd` over an 800-seed search: 7919 no longer finishes level.
+It is again the **only** seed that moved; the other five still exercise their
+named behaviour at the seeds they have always had.
+
+#### Fixtures re-derived, and what was deliberately not weakened
+
+Three suites outside the new one needed work. None had its assertion loosened.
+
+- **`test_endgame_corrections`**'s tagged-putback seed moved 7043 → 7095, by the
+  same reachability search §5.30 used. The search found five qualifying seeds in
+  7001–12000, **7001 among them** — the golden scenario's own seed satisfies this
+  again — and 7095 was taken anyway, to keep the decoupling §5.30 established.
+- **`test_identity_and_usage`**'s shot-mix sweep was five fixed seeds on a
+  2 × 180-second fixture, which is about **55 attempts per arm**. The tendency
+  contract's own gap is about three percentage points, so at 55 attempts the
+  assertion was reading noise: it passed before v14 and failed after it *without
+  the mechanism having moved*. Measured over a widening sweep, the
+  interior-minus-perimeter paint gap is **+0.0182 at 5 seeds (19/55 against
+  18/55), +0.0307 at 20, +0.0401 at 60, +0.0287 at 120 (586/1354 against
+  548/1356), +0.0299 at 150** — positive at every size. Raised to 120 seeds,
+  which **strengthens** the assertion: the same claim, against about 1,350
+  attempts per arm instead of 55. 240 games of this fixture cost 33 seconds.
+- **`test_fg_decomposition`** re-pins the assisted share 0.6571 → 0.6642 and
+  possessions per game 144.58 → 148.33, and names why. Both contracts move the
+  game clock every possession begins on, which is an input to §10.3 through
+  `GameManagement.remaining_ms`, so the action mix shifts. **The other three
+  pinned channels — turnover rate, offensive-rebound extension, offensive-rebound
+  share — are unmoved inside the same tolerance on the same fixture**, which is
+  the discrimination that test exists to provide. The possessions pin is not
+  incidental: it is the §14.1 regression, and §5.32 answers it.
+
+#### Focused tests and mutation checks
+
+`tests/simulation/test_restart_contract.gd`, **22 cases, all passing**, plus the
+17 in `test_opening_clock_contract.gd` which are unchanged in intent.
+
+The six mutations the brief names were run against them. **Every one is caught**,
+and the tree was verified clean before and after each.
+
+| mutation | caught by | failures |
+| --- | --- | ---: |
+| every restart forced to `CLOCK_ALREADY_RUNNING` | `test_every_whistle_restart_emits_its_throw_in_at_the_starting_clock`; `test_a_dead_ball_possession_emits_inbound_without_reducing_the_game_clock` | 7 |
+| every restart forced to `STARTS_ON_LEGAL_TOUCH` | `test_a_made_field_goal_in_open_play_still_charges_its_throw_in` | 2 |
+| `MADE_FIELD_GOAL` and `MADE_FREE_THROW` collapsed | `test_every_throw_in_carries_the_cause_the_preceding_ledger_implies` | 96 |
+| the competition/time boundary removed | `test_a_made_field_goal_in_open_play_still_charges_its_throw_in` | 2 |
+| the `TacticalLocation` shot term bypassed | `test_a_backcourt_attempt_does_not_receive_ordinary_arc_shot_odds` | 2 |
+| a horn-crossing action permitted | `test_a_possession_shorter_than_any_action_draw_still_selects_one` | 1 |
+
+**One mutation was initially mis-specified and is reported rather than quietly
+fixed.** The first "force everything to start-on-touch" also flipped
+`PERIOD_START` to a running clock, so it was caught — by the *period-start* tests,
+for the wrong reason. It was corrected to change only what it claims to change,
+and is now caught by the made-field-goal test, which is the assertion that
+actually stands against it. A mutation caught for the wrong reason is not
+evidence.
+
+The strongest of these is the collapse: `test_every_throw_in_carries_the_cause_
+the_preceding_ledger_implies` replays whole committed ledgers and re-derives, from
+the events alone, the cause each throw-in should carry — resolving `made_score`
+the way basketball resolves it, by which kind of basket was last scored. It
+disagrees 96 times when the two causes are collapsed.
+
+#### Classification
+
+- **CLOSED.** The §5.30 ambiguity. `PossessionEndReason` is no longer consulted
+  about the clock anywhere in production, and a made field goal and a made free
+  throw restart differently within a single game.
+- **CLOSED.** The unrecorded timeout defect: a charged timeout stops the clock
+  whatever ended the possession before it.
+- **CLOSED.** The competition rule that was inside `PossessionEngine`. The
+  made-basket window is profile data, read through one policy, with no behaviour
+  change.
+- **ESTABLISHED.** The restart contract has one writer per fact and the declared
+  readers, asserted over whole games rather than by convention.
+- **NOT TAKEN.** Whether any competition declares a longer late-game made-basket
+  window. No source rules on it; the representation supports it; no launch
+  profile declares one.
+- **NOT CLAIMED.** Overtime movement, Stage 4 closure, or certification of
+  anything. No §27.1 sample was run.
+- **NOT CHANGED.** Every `BALANCE_SPEC.md` target and tolerance. No shot,
+  contact, free-throw, rebound or turnover probability was touched, and no score
+  was mutated.
 
 ## 6. Certification and workflow blockers
 

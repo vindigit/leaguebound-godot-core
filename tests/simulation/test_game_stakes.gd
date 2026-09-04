@@ -618,11 +618,22 @@ func test_championship_games_still_blow_out_and_still_reach_garbage_time() -> vo
 ## ruleset. §14.2 puts overtime at 4-8% of games, so forty fixtures expect one
 ## or two, and *which* forty finish level is a property of the scoring shape —
 ## any ruleset that changes the action mix moves it. The replacement block was
-## searched for the same way the golden overtime seed is, and it carries two
-## overtimes rather than one so the check has a margin instead of hanging on a
-## single game. Nothing about the assertion was weakened: it still requires a
+## searched for the same way the golden overtime seed is, and it carries more
+## than one overtime so the check has a margin instead of hanging on a single
+## game. Nothing about the assertion was weakened: it still requires a
 ## regular-season overtime to actually occur.
-const OVERTIME_SEED_BLOCK: int = 6140
+##
+## Moved again from 6140 to 6380 by `simulation-v14-restart-contract`
+## (`PROJECT_STATUS.md` §5.31), for the same reason and by the same search: a
+## made free throw and a charged timeout no longer charge their throw-ins, so
+## every possession after one starts on a different clock and 6140's forty
+## fixtures stopped containing an overtime. The search over sixty consecutive
+## blocks found 6220 and 6260 carrying one each and **6380 carrying three**,
+## which is the widest margin available and the block taken. This is fixture
+## maintenance, not overtime tuning: no overtime probability, window or
+## threshold was touched, and §14.2's overtime rate is measured by the
+## competition calibration runner, never here.
+const OVERTIME_SEED_BLOCK: int = 6380
 
 
 func test_regular_season_games_still_reach_overtime() -> void:
