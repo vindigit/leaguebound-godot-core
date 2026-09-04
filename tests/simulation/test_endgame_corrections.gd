@@ -475,11 +475,23 @@ func test_quick_two_does_not_depend_on_an_unspent_timeout() -> void:
 ## that possession so activation reconstruction never silently drops it.
 func test_putbacks_carry_the_endgame_decision_in_force() -> void:
 	var found: int = 0
-	# The committed offensive-rebound scenario contains the exact divergence
-	# this repair is for: a fourth-quarter putback while two-for-one is active.
-	# Using it keeps the gate deterministic and avoids an expensive reachability
-	# search for an event the golden fixture already guarantees.
-	var output: MatchSimulationOutput = GoldenScenarios.simulate(&"offensive_rebound")
+	# The offensive-rebound *fixture* at seed 7043 contains the exact case this
+	# repair is for: a fourth-quarter putback while two-for-one is active.
+	#
+	# It used to be the committed `offensive_rebound` golden scenario, at that
+	# scenario's own seed 7001. `simulation-v13` moved the clock every possession
+	# starts on, and at 7001 the fourth-quarter putback now falls at a moment
+	# when no endgame decision is in force — the scenario still has its
+	# two-for-one and hold tags, and still has five putbacks, but the two no
+	# longer coincide. The golden seed is deliberately *not* moved for this: 7001
+	# still satisfies the requirement that scenario is named for, and rewriting a
+	# golden fixture to keep an unrelated suite green would be the wrong way
+	# round. This test owns its own seed instead, on the same fixture, found by
+	# reachability search over 7001-9001 (`PROJECT_STATUS.md` §5.30).
+	const TAGGED_PUTBACK_SEED: int = 7043
+	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
+		MatchFixtureFactory.offensive_rebound_match(),
+		SeededRandomSource.new(TAGGED_PUTBACK_SEED))
 	for event in output.events:
 		if (
 			event.event_type == MatchDomainEvent.ACTION_SELECTED

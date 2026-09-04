@@ -19,7 +19,11 @@ const SEED: int = 20260815
 ## step with `GoldenScenarios.seed_for(GoldenScenarios.OVERTIME)` by hand rather
 ## than by reference, so a ruleset change that moves the golden seed fails this
 ## assertion loudly instead of silently drifting.
-const OVERTIME_SEED: int = 31676
+## Tracks `GoldenScenarios.seed_for(OVERTIME)`, which the comment above requires:
+## the ledger and this suite must agree on which overtime game is the reference.
+## Moved from 31676 with it by `simulation-v13-opening-clock-and-location-contract`,
+## because that seed no longer finishes level (`PROJECT_STATUS.md` §5.30).
+const OVERTIME_SEED: int = 7919
 
 
 ## Stepping possession by possession produces exactly the ledger a full Sim

@@ -96,7 +96,19 @@ static func seed_for(scenario: StringName) -> int:
 			# this seed still finishes level, and this scenario's ledger is
 			# byte-identical across the correction, because the possessions
 			# it turns on never reach a decision v10 changed (§5.26).
-			return 31676
+			#
+			# `simulation-v13-opening-clock-and-location-contract` moved it
+			# from 31676. The opening throw-in of every period now emits on a
+			# stopped clock instead of three seconds into it, so each period
+			# carries a little more live time and the action mix shifts —
+			# which is again exactly the thing that decides whether a fixed
+			# seed finishes level. It stopped reaching overtime, so
+			# `find_scenario_seeds.gd` derived 7919 over a 600-seed search.
+			# It is once more the *only* seed v13 moved: the other five still
+			# exercise their named behaviour at the seeds they always had,
+			# while all six ledgers changed, first at the game's opening
+			# `INBOUND` timestamp (§5.30).
+			return 7919
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

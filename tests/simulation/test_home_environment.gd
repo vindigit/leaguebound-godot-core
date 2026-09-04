@@ -33,6 +33,26 @@ const SUITE_BASE: int = 770000
 ## never a band: a band at this sample would be a coin flip.
 const SAMPLE: int = 12
 
+## The turnover-edge assertion below needs far more games than `SAMPLE`, because
+## it reads a *signed mean* of a per-game count rather than a structural fact.
+##
+## Measured on the `simulation-v13` tree over the same seeds, the forward arm's
+## running mean is +0.250 at 12 games, −1.583 at 24, −0.056 at 36, +0.229 at 48,
+## +0.233 at 60, −0.362 at 80, −0.630 at 100 and −0.890 at 200; the reversed arm
+## is −1.333, +0.458, −0.944, −1.167, −1.117, −0.963, −0.800 and −0.360 across
+## the same checkpoints. The effect is real and correctly signed — at 200 games
+## it is *larger* than the pre-v13 tree's −0.380 and −0.470 — but it does not
+## dominate game-to-game turnover variance until about 80 games per arm, and at
+## 12 either arm can land on either side of zero. The pre-v13 tree passed at 12
+## by −1.000 in the forward arm, which was luck rather than margin.
+##
+## So this is raised to the first checkpoint where both arms are clear of zero
+## with room, and nothing about the assertion is weakened: it still requires the
+## venue side to hold a turnover edge in both arms (`PROJECT_STATUS.md` §5.30).
+## A paired estimator over these same games would reach the same verdict at a
+## fraction of the sample and is recorded there as the better future shape.
+const VENUE_EDGE_SAMPLE: int = 100
+
 const PRODUCTION_STRENGTH: float = 0.5
 
 
@@ -578,7 +598,7 @@ func _venue_match(
 ## sample. Negative means the venue side turned it over less.
 func _mean_venue_turnover_edge(reversed_venue: bool) -> float:
 	var total: float = 0.0
-	for index in range(SAMPLE):
+	for index in range(VENUE_EDGE_SAMPLE):
 		var variation: int = SUITE_BASE + 300 + index
 		var input: MatchInput = _venue_match(PRODUCTION_STRENGTH, reversed_venue, variation)
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
@@ -587,7 +607,7 @@ func _mean_venue_turnover_edge(reversed_venue: bool) -> float:
 		total += float(
 			statistics.team_line(input.home.team_id).turnovers
 			- statistics.team_line(input.away.team_id).turnovers)
-	return total / float(SAMPLE)
+	return total / float(VENUE_EDGE_SAMPLE)
 
 
 ## Splits the home side's live-ball turnovers by whether it was behind or ahead
