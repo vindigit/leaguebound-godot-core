@@ -6996,6 +6996,16 @@ the events alone, the cause each throw-in should carry — resolving `made_score
 the way basketball resolves it, by which kind of basket was last scored. It
 disagrees 96 times when the two causes are collapsed.
 
+#### Validation
+
+The gate for this change is the one recorded in §5.32, because the two changes
+ship on the same head and re-running it twice would be reporting the same run
+twice: **253 scripts parsed with 0 failures, the six golden ledgers verifying,
+80/80 attribute-sensitivity metrics, 15/15 calibration-smoke metrics, and
+646/646 GdUnit4 cases over 51/51 suites with 0 errors and 0 failures**, with
+`git diff --check` clean. The 22 cases of `test_restart_contract.gd` and the 17
+of `test_opening_clock_contract.gd` are inside that count.
+
 #### Classification
 
 - **CLOSED.** The §5.30 ambiguity. `PossessionEndReason` is no longer consulted
@@ -7487,6 +7497,32 @@ discount a red verdict. **It is listed as a remaining blocker**, and the honest
 statement is that a 200-pair mirror cannot separate a +1.7-point one-armed move
 from noise — settling it needs a larger paired sample, not an adjustment.
 
+#### Two fixtures that were passing on luck, strengthened rather than re-seeded
+
+- **`test_game_management`'s advance-timeout reachability.** Its twenty-game
+  window stopped containing an advance timeout. The decision is not turned off:
+  measured over 200 seeds on that fixture the rate is **28 in 200 games (0.140
+  per game), carried by 15 of the 200** — identical to the 0.14 §5.26 recorded —
+  and the population diagnostic moves the other way, **41 → 58 activations per
+  250 games** on the frozen range. The fixture was the problem: a decision firing
+  in 7.5% of games leaves a twenty-game window empty about **21% of the time**, so
+  the assertion had been passing on a one-in-five coin flip since it was written.
+  Raised to a hundred games, where it is empty with probability about 0.0004.
+  Nothing was weakened; it still requires an advance timeout to occur.
+- **`test_fg_decomposition`'s pinned compensation channels.** Four of the five
+  move: turnover rate 0.1510 → 0.1465, offensive-rebound share 0.2445 → 0.2376,
+  assisted share 0.6642 → 0.6449, possessions per game 148.33 → 144.17. Only the
+  offensive-rebound extension rate is unmoved. **They are re-pinned and the cause
+  is named, which is what that test is for.** Every one of these channels is a
+  function of the action mix, and the action mix reads the game clock through
+  §10.3's score-and-clock factor and the shot clock; a possession about 4% longer
+  moves the mix. **No turnover, rebound or assist parameter was touched.** The
+  check that this is a fixture-scale shift rather than a channel being paid off is
+  the population measurement: on the matched 200-game cell, across all five
+  competitions, turnover rate, offensive-rebound percentage and assist percentage
+  each stay inside their §14.1 bands and move by about one interval half-width or
+  less.
+
 #### What did not change, and what is still open
 
 - **`intentional_miss_clock_ms` is untouched at 7000.** §5.30 recorded that the
@@ -7499,6 +7535,27 @@ from noise — settling it needs a larger paired sample, not an adjustment.
   tuned for it, and the one overtime verdict that moved is noise (above).
 - **College field-goal percentage is untouched** and remains the §5.22/§5.23
   owner decision. It is 0.4099 on the anchor and moves only with sampling here.
+
+#### Validation
+
+Run from a clean generated state (`.godot` removed) with `tools/run_checks.sh`,
+which mirrors `.github/workflows/headless-tests.yml` step for step and argument
+for argument:
+
+| check | result |
+| --- | --- |
+| import | pass |
+| parse gate | **253 scripts, 0 failures** |
+| project acceptance | pass — the six golden ledgers verify unchanged |
+| simulation smoke | pass, invariants pass |
+| Builder smoke | pass |
+| attribute sensitivity (`--resolutions=100000 --label=pr`) | **80/80 judged, 0 failures** |
+| calibration smoke (`--games=6 --label=pr`) | **15/15 judged, 0 failures** |
+| GdUnit4 | **646/646 cases, 51/51 suites, 0 errors, 0 failures** |
+
+`git diff --check` is clean. Gate evidence, not §27.1 certification: every
+competition run in this section reports `sample.meets_certification_size` as
+FAIL, which is the runner saying so.
 
 #### Classification
 
