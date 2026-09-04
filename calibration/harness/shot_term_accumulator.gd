@@ -49,6 +49,10 @@ var catch_penalty_sum: float = 0.0
 var movement_penalty_sum: float = 0.0
 var fatigue_penalty_sum: float = 0.0
 var clock_penalty_sum: float = 0.0
+## §12.6 distance consequence for an attempt taken from further out than its own
+## zone assumes (`PROJECT_STATUS.md` §5.30). Zero on every attempt that ran an
+## ordinary half-court opening, which is all but a fraction of a percent of them.
+var location_penalty_sum: float = 0.0
 var selection_bonus_sum: float = 0.0
 var probability_sum: float = 0.0
 var unclamped_probability_sum: float = 0.0
@@ -132,6 +136,7 @@ func _record_shot(payload: Dictionary) -> void:
 	movement_penalty_sum += payload["movement_penalty"]
 	fatigue_penalty_sum += payload["fatigue_penalty"]
 	clock_penalty_sum += payload["clock_penalty"]
+	location_penalty_sum += payload["location_penalty"]
 	selection_bonus_sum += payload["selection_bonus"]
 	probability_sum += probability
 	unclamped_probability_sum += payload["unclamped_probability"]
@@ -196,6 +201,7 @@ func term_means() -> Dictionary:
 		"movement_penalty": -_mean(movement_penalty_sum, shots),
 		"fatigue_penalty": -_mean(fatigue_penalty_sum, shots),
 		"clock_penalty": -_mean(clock_penalty_sum, shots),
+		"location_penalty": -_mean(location_penalty_sum, shots),
 		"selection_bonus": _mean(selection_bonus_sum, shots),
 	}
 
