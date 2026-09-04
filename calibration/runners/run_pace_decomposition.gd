@@ -181,6 +181,18 @@ func _measure(
 ## clock for "did this throw-in cost anything" is the possession's own
 ## `POSSESSION_STARTED`, so the answer comes from the events rather than from a
 ## reconstruction of what the engine should have done.
+##
+## The stage buckets are exact rather than approximate, because the engine
+## consumes a stage's time immediately *before* emitting that stage's event: the
+## interval between two markers is the draw that separates them. That holds for
+## the putback path too, where `ACTION_SELECTED` follows a `REBOUND` whose own
+## time was already consumed, so a putback contributes zero to the action bucket
+## rather than absorbing the rebound before it.
+##
+## What lands in the residual is therefore exactly what is not marked by a stage
+## event: rebound time, free-throw event time, and dead-ball event time. Only the
+## first of those three is scaled by the pace environment, which is why the
+## residual is reported rather than folded into the others.
 func _measure_events(tally: Tally, output: MatchSimulationOutput) -> void:
 	var possession_clock: int = -1
 	var stage_clock: int = -1

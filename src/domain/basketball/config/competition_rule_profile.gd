@@ -55,6 +55,28 @@ var pace_environment_id: StringName
 ## game were a pure function of period length. Â§14.1 states a different
 ## possessions band for each competition, and this is the knob that reaches
 ## them without moving the shared time bands underneath all five.
+##
+## **Re-derived for all five competitions by §5.32**, against the corrected clock
+## contract. `simulation-v13` and `simulation-v14` between them stopped charging
+## a throw-in on every restart the rules do not charge, which returns about three
+## seconds on roughly a fifth of possessions and moved possessions per team up by
+## +2.77 to +3.70 at every level on matched seeds. These values were calibrated
+## against the old model, so they were absorbing an error that no longer exists.
+##
+## The re-derivation is a measurement, not an offset. A possession's mean
+## duration is `A·p + B`, where `A·p` is every draw that passes through
+## `ClockResolver._draw` and `B` is the free-throw and dead-ball event time no
+## pace value can reach; `A` and `B` were measured per competition by running
+## identical variations at two pace scales, and each new value is the `p` that
+## restores the possessions that competition produced under the clock model these
+## numbers were calibrated against. Every level needed between +4.12% and +4.68%
+## — one mechanism, one magnitude — and the ordering between the five is
+## unchanged, which is what says the pace *environment* did not move and only its
+## accounting did.
+##
+## `B` is 6.6% of possession duration at college and 14.3% at top domestic, so
+## this parameter still reaches 86-93% of a possession. It remains the correct
+## calibration surface; §5.32 records the evidence rather than assuming it.
 var pace_multiplier: float
 var officiating_profile_id: StringName
 var roster_rule_profile_id: StringName
@@ -335,7 +357,7 @@ static func high_school_profile() -> CompetitionRuleProfile:
 		&"high_school", &"competition-v1", 4, 480, 240, 30, 5, 20, 10,
 		7, BonusKind.ONE_AND_ONE, 10, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"school_pace",
-		&"standard_officiating", &"standard_roster", 0.80, 5, false, 5000, false)
+		&"standard_officiating", &"standard_roster", 0.834, 5, false, 5000, false)
 
 
 ## College: twenty-minute halves (40 minutes), 30-second shot clock, two shots
@@ -351,7 +373,7 @@ static func college_profile() -> CompetitionRuleProfile:
 		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"college_pace",
-		&"standard_officiating", &"standard_roster", 1.00, 4, false, 5000, false)
+		&"standard_officiating", &"standard_roster", 1.041, 4, false, 5000, false)
 
 
 ## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
@@ -363,7 +385,7 @@ static func development_profile() -> CompetitionRuleProfile:
 		&"domestic_development", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"development_pace",
-		&"standard_officiating", &"standard_roster", 0.915, 7, false, 5000, false)
+		&"standard_officiating", &"standard_roster", 0.955, 7, false, 5000, false)
 
 
 ## Overseas: ten-minute quarters (40 minutes), 24-second shot clock, two shots
@@ -374,7 +396,7 @@ static func overseas_profile() -> CompetitionRuleProfile:
 		&"overseas", &"competition-v1", 4, 600, 300, 24, 5, 14, 8,
 		4, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"overseas_pace",
-		&"standard_officiating", &"standard_roster", 0.985, 5, false, 5000, false)
+		&"standard_officiating", &"standard_roster", 1.031, 5, false, 5000, false)
 
 
 ## Top domestic professional: twelve-minute quarters (48 minutes), 24-second
@@ -391,4 +413,4 @@ static func top_domestic_profile() -> CompetitionRuleProfile:
 		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"top_domestic_pace",
-		&"standard_officiating", &"standard_roster", 0.855, 7, true, 5000, false)
+		&"standard_officiating", &"standard_roster", 0.891, 7, true, 5000, false)

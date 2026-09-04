@@ -355,8 +355,20 @@ func test_timeouts_are_spent_and_never_replenished() -> void:
 ## something called on every trailing possession of a close finish into a
 ## coaching decision made about 0.14 times a game (`PROJECT_STATUS.md` §5.26),
 ## and at that rate a three-game reachability assertion is a coin flip rather
-## than a test. Twenty games is the smallest set that makes finding one a
-## property of the engine instead of a property of the seeds.
+## than a test.
+##
+## **Twenty games was not enough, and that was luck rather than design.** Raised
+## to a hundred by `simulation-v14-restart-contract` (§5.32), after the first
+## twenty seeds stopped carrying one. Measured over 200 seeds on this fixture the
+## rate is **28 advance timeouts in 200 games (0.140 per game), carried by 15 of
+## the 200 games** — so the decision fires in about 7.5% of games, a twenty-game
+## window contains none about **21%** of the time, and the assertion had been
+## passing on a one-in-five coin flip since it was written. The rate itself is
+## unchanged by the pace re-derivation — 0.140 per game here against the 0.14
+## §5.26 recorded — and the population diagnostic moves the other way (41 → 58
+## activations per 250 games on the frozen range), so nothing turned the decision
+## off. A hundred games contains one with probability about 0.9996. Nothing was
+## weakened: the assertion still requires an advance timeout to actually occur.
 func test_timeouts_trigger_only_under_valid_conditions() -> void:
 	var input: MatchInput = CompetitionCatalog.mirrored_match_for(
 		CalibrationTargets.Competition.TOP_DOMESTIC_PRO, 32, 0.5)
@@ -366,7 +378,7 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 
 	var found: int = 0
 	var found_advance: int = 0
-	for seed_value: int in range(9201, 9221):
+	for seed_value: int in range(9201, 9301):
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(seed_value))
 		var run_team: StringName = &""
@@ -401,9 +413,9 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 		"no run-stopping timeout was called in three full games; the trigger is unreachable"
 	).is_greater(0)
 	assert_int(found_advance).override_failure_message(
-		"no advance timeout was called in twenty full games at a competition that "
-		+ "grants it; the §5.26 narrowing turned the decision off rather than "
-		+ "making it a decision"
+		"no advance timeout was called in a hundred full games at a competition "
+		+ "that grants it; at the measured 0.14 per game that is not luck, so the "
+		+ "decision has been turned off rather than made a decision"
 	).is_greater(0)
 
 

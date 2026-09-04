@@ -641,31 +641,42 @@ func test_the_compensation_channels_are_pinned_on_a_fixed_fixture() -> void:
 
 	assert_float(totals.turnover_rate()).override_failure_message(
 		"turnover rate moved to %.4f on a fixed fixture" % totals.turnover_rate()
-	).is_equal_approx(0.1510, CHANNEL_TOLERANCE)
+	).is_equal_approx(0.1465, CHANNEL_TOLERANCE)
 	assert_float(totals.extension_rate()).override_failure_message(
 		"offensive-rebound extension rate moved to %.4f on a fixed fixture"
 		% totals.extension_rate()).is_equal_approx(0.1179, CHANNEL_TOLERANCE)
 	assert_float(totals.offensive_rebound_rate()).override_failure_message(
 		"offensive-rebound share moved to %.4f on a fixed fixture"
-		% totals.offensive_rebound_rate()).is_equal_approx(0.2445, CHANNEL_TOLERANCE)
-	# Re-pinned from 0.6387 by `simulation-v13-opening-clock-and-location-contract`
-	# and from 0.6571 by `simulation-v14-restart-contract` (`PROJECT_STATUS.md`
-	# §5.30, §5.31), and named here rather than absorbed into a wider tolerance.
-	# Both contracts change the game clock every possession begins on, which is
-	# an input to §10.3's score-and-clock factor through
-	# `GameManagement.remaining_ms`, so the action mix shifts slightly and with it
-	# the share of makes that arrive off a pass. It is not compensation, and this
-	# test is what establishes that: turnover rate, offensive-rebound extension
-	# and offensive-rebound share are **unmoved inside the same tolerance on the
-	# same fixture** across v14, which is exactly the discrimination it exists to
-	# provide. Possessions per game moved with it, and that one is not incidental
-	# — it is the §14.1 regression v14 deepens and work-queue item 19 answers.
+		% totals.offensive_rebound_rate()).is_equal_approx(0.2376, CHANNEL_TOLERANCE)
+	# **Four of the five pins move under `simulation-v14-restart-contract` and
+	# §5.32's pace re-derivation, and they are re-pinned rather than absorbed into
+	# a wider tolerance — which is what this test is for.**
+	#
+	# Assisted share: 0.6387 -> 0.6571 (v13) -> 0.6642 (v14) -> **0.6449** (pace).
+	# Turnover rate 0.1510 -> 0.1465, offensive-rebound share 0.2445 -> 0.2376,
+	# possessions per game 144.58 -> 148.33 -> 144.17. Only the offensive-rebound
+	# *extension* rate is unmoved.
+	#
+	# The cause is one thing, and it is not compensation. Every one of these
+	# channels is a function of the action mix, and the action mix reads the game
+	# clock through §10.3's score-and-clock factor
+	# (`GameManagement.remaining_ms`) and the shot clock. The clock contracts
+	# changed what a possession begins on and the pace re-derivation made a
+	# possession about 4% longer, so the mix shifts. **No turnover, rebound or
+	# assist parameter was touched** — the only production values §5.32 writes are
+	# the five `pace_multiplier` numbers.
+	#
+	# The population measurement is the check that this is a fixture-scale shift
+	# rather than a channel being paid off: on the matched 200-game cell across
+	# all five competitions, turnover rate, offensive-rebound percentage and
+	# assist percentage every one stay **inside their §14.1 bands** and move by
+	# about one interval half-width or less (`PROJECT_STATUS.md` §5.32).
 	assert_float(totals.assisted_share()).override_failure_message(
 		"assisted share moved to %.4f on a fixed fixture" % totals.assisted_share()
-	).is_equal_approx(0.6642, CHANNEL_TOLERANCE)
+	).is_equal_approx(0.6449, CHANNEL_TOLERANCE)
 	assert_float(totals.possessions_per_game()).override_failure_message(
 		"possessions per game moved to %.2f on a fixed fixture"
-		% totals.possessions_per_game()).is_equal_approx(148.33, 2.0)
+		% totals.possessions_per_game()).is_equal_approx(144.17, 2.0)
 
 
 # --- helpers -----------------------------------------------------------------
