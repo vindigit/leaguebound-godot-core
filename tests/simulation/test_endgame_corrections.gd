@@ -488,7 +488,17 @@ func test_putbacks_carry_the_endgame_decision_in_force() -> void:
 	# golden fixture to keep an unrelated suite green would be the wrong way
 	# round. This test owns its own seed instead, on the same fixture, found by
 	# reachability search over 7001-9001 (`PROJECT_STATUS.md` §5.30).
-	const TAGGED_PUTBACK_SEED: int = 7043
+	#
+	# Moved again from 7043 by `simulation-v14-restart-contract` for the same
+	# reason: a made free throw and a charged timeout no longer charge their
+	# throw-ins, so every possession after one starts on a different clock and
+	# 7043's putback again falls outside an active decision. The search over
+	# 7001-12000 found five qualifying seeds, 7001 among them — that is, the
+	# golden scenario's own seed satisfies this again — and 7095 is taken
+	# instead, deliberately, to keep the decoupling §5.30 established: this suite
+	# owns its seed so that a future ruleset moving the golden cannot break it
+	# for an unrelated reason (`PROJECT_STATUS.md` §5.31).
+	const TAGGED_PUTBACK_SEED: int = 7095
 	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 		MatchFixtureFactory.offensive_rebound_match(),
 		SeededRandomSource.new(TAGGED_PUTBACK_SEED))

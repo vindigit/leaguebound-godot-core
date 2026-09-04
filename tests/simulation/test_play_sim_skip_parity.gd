@@ -21,9 +21,12 @@ const SEED: int = 20260815
 ## assertion loudly instead of silently drifting.
 ## Tracks `GoldenScenarios.seed_for(OVERTIME)`, which the comment above requires:
 ## the ledger and this suite must agree on which overtime game is the reference.
-## Moved from 31676 with it by `simulation-v13-opening-clock-and-location-contract`,
-## because that seed no longer finishes level (`PROJECT_STATUS.md` §5.30).
-const OVERTIME_SEED: int = 7919
+## Moved from 31676 by `simulation-v13-opening-clock-and-location-contract` and
+## from 7919 by `simulation-v14-restart-contract`, each time because that seed no
+## longer finishes level (`PROJECT_STATUS.md` §5.30, §5.31). Parity itself has
+## never failed here: what fails is the fixture guard reporting that its game
+## stopped reaching the state the fixture is named for.
+const OVERTIME_SEED: int = 71271
 
 
 ## Stepping possession by possession produces exactly the ledger a full Sim

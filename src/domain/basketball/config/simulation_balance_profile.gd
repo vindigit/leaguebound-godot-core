@@ -896,7 +896,13 @@ func _init(
 	# commits to an attempt from its actual court location instead of running an
 	# ordinary half-court set it has no time for (§5.30). Both change what the
 	# engine produces for the same input, so the ruleset is bumped.
-	p_version: StringName = &"simulation-v13-opening-clock-and-location-contract",
+	# v14 replaces the boolean v13 shipped with an explicit restart contract:
+	# `RestartCause` is named at each terminal path, `RestartClockPolicy` is the
+	# only thing that turns one into a clock mode, and the made-basket rule moves
+	# onto `CompetitionRuleProfile` (§5.31). Two restarts change as a result — a
+	# made free throw and a charged timeout both stop the clock and no longer
+	# charge the throw-in — so the ruleset is bumped again.
+	p_version: StringName = &"simulation-v14-restart-contract",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")

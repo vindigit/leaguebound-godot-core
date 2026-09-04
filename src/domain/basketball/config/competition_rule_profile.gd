@@ -104,6 +104,42 @@ var credited_assist_families: PackedInt32Array = PassCreation.DELIVERED_FAMILIES
 ## §5.25's own pre-implementation confirmation 3 exists to forbid.
 var timeout_advance_permitted: bool = false
 
+## The remaining game clock, in milliseconds, at or below which a made **field
+## goal** leaves the clock stopped, so the throw-in that follows restarts it on
+## the legal touch. Zero disables the rule: the clock never stops after a basket
+## in that competition.
+##
+## **This relocates an existing rule rather than introducing one.** Before §5.31
+## the engine already stopped the clock after a made basket inside the last five
+## seconds of every period — but it did so inside
+## `PossessionEngine._open_possession`, by reading
+## `SimulationBalanceProfile.desperation_opening_clock_ms` and treating the
+## desperation window as a clock-stoppage window. That is a competition rule
+## expressed as a coupling to a balance constant, in the class §4 says must not
+## infer rules. Every profile therefore ships 5,000ms, which reproduces the
+## previous behaviour exactly, and the rule is now data where §4 puts it.
+##
+## **Open owner decision, not taken here.** Whether any competition should
+## declare a *longer* late-game window — the final two minutes of the fourth
+## period, say — is ruled on by nothing in this repository.
+## `SIMULATION_SPEC.md` §4's `CompetitionRuleProfile` interface has no
+## clock-stoppage member at all and `BALANCE_SPEC.md` states no such rule, so
+## inventing one here would be a rule change disguised as a calibration fix.
+## The representation supports it, `RestartClockPolicy` reads it,
+## `TestRestartContract` proves both sides of its boundary on a constructed
+## profile, and `PROJECT_STATUS.md` §5.31 carries it as the missing decision.
+var made_basket_clock_stop_ms: int = 5000
+
+## Whether that window applies only to the last period of regulation and to
+## overtime, rather than to every period.
+##
+## False in every profile, because that is what the previous behaviour was. It
+## exists because a competition that adopts a late-game rule almost certainly
+## scopes it to late periods, and a representation that could not say so would
+## force the eventual owner ruling to change engine code rather than profile
+## data.
+var made_basket_clock_stop_late_periods_only: bool = false
+
 
 func _init(
 	p_profile_id: StringName = &"five_on_five_baseline",
@@ -130,6 +166,8 @@ func _init(
 	p_pace_multiplier: float = 1.0,
 	p_timeouts_per_team: int = 6,
 	p_timeout_advance_permitted: bool = false,
+	p_made_basket_clock_stop_ms: int = 5000,
+	p_made_basket_clock_stop_late_periods_only: bool = false,
 ) -> void:
 	assert(p_timeouts_per_team >= 0 and p_timeouts_per_team <= 12,
 		"a timeout allowance must be a small non-negative count")
@@ -155,6 +193,10 @@ func _init(
 		"a double bonus cannot begin before the ordinary bonus"
 	)
 	assert(p_double_bonus_free_throws > 0, "the double bonus must award at least one attempt")
+	assert(p_made_basket_clock_stop_ms >= 0,
+		"a made-basket clock-stop window is never negative")
+	assert(p_made_basket_clock_stop_ms <= p_period_seconds * 1000,
+		"a made-basket clock-stop window cannot outlast the period it is drawn against")
 	profile_id = p_profile_id
 	version = p_version
 	regulation_periods = p_regulation_periods
@@ -179,11 +221,30 @@ func _init(
 	roster_rule_profile_id = p_roster_rule_profile_id
 	timeouts_per_team = p_timeouts_per_team
 	timeout_advance_permitted = p_timeout_advance_permitted
+	made_basket_clock_stop_ms = p_made_basket_clock_stop_ms
+	made_basket_clock_stop_late_periods_only = p_made_basket_clock_stop_late_periods_only
 
 
 func period_length_ms(period: int) -> int:
 	assert(period > 0, "periods are one-based")
 	return (period_seconds if period <= regulation_periods else overtime_seconds) * 1000
+
+
+## Whether a made field goal leaves the game clock stopped, given the period and
+## the game clock remaining **as the next possession begins**.
+##
+## `RestartClockPolicy` is the only caller, and a made *free throw* never
+## reaches here: a free-throw trip is dead-ball time in every ruleset this
+## engine models, so it is basketball rather than a competition rule and the
+## policy answers it without asking a profile.
+func stops_clock_after_made_basket(period: int, remaining_ms: int) -> bool:
+	assert(period > 0, "periods are one-based")
+	assert(remaining_ms >= 0, "a remaining game clock is never negative")
+	if made_basket_clock_stop_ms <= 0:
+		return false
+	if made_basket_clock_stop_late_periods_only and period < regulation_periods:
+		return false
+	return remaining_ms <= made_basket_clock_stop_ms
 
 
 ## The **maximum** free throws a non-shooting defensive foul awards, given the
@@ -254,6 +315,15 @@ static func professional_profile() -> CompetitionRuleProfile:
 # These are the profiles the competition calibration report certifies. They are
 # versioned with the engine, not with the calibration harness, because they are
 # shipping rules rather than test scaffolding.
+#
+# All five declare the same made-basket clock rule — the last 5,000ms of every
+# period, `made_basket_clock_stop_late_periods_only` off — and they declare it
+# explicitly rather than by default so that a competition which needs a
+# different one is a visible edit to this file. That value is not a new ruling:
+# it is what `PossessionEngine` already did through the desperation threshold
+# before §5.31 moved the rule here. Whether any of them should declare a longer
+# late-game window is an open owner decision recorded on
+# `made_basket_clock_stop_ms`; nothing below invents an answer to it.
 
 
 ## High school: eight-minute quarters (32 minutes), 30-second shot clock,
@@ -265,7 +335,7 @@ static func high_school_profile() -> CompetitionRuleProfile:
 		&"high_school", &"competition-v1", 4, 480, 240, 30, 5, 20, 10,
 		7, BonusKind.ONE_AND_ONE, 10, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"school_pace",
-		&"standard_officiating", &"standard_roster", 0.80, 5)
+		&"standard_officiating", &"standard_roster", 0.80, 5, false, 5000, false)
 
 
 ## College: twenty-minute halves (40 minutes), 30-second shot clock, two shots
@@ -281,7 +351,7 @@ static func college_profile() -> CompetitionRuleProfile:
 		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"college_pace",
-		&"standard_officiating", &"standard_roster", 1.00, 4)
+		&"standard_officiating", &"standard_roster", 1.00, 4, false, 5000, false)
 
 
 ## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
@@ -293,7 +363,7 @@ static func development_profile() -> CompetitionRuleProfile:
 		&"domestic_development", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"development_pace",
-		&"standard_officiating", &"standard_roster", 0.915, 7)
+		&"standard_officiating", &"standard_roster", 0.915, 7, false, 5000, false)
 
 
 ## Overseas: ten-minute quarters (40 minutes), 24-second shot clock, two shots
@@ -304,7 +374,7 @@ static func overseas_profile() -> CompetitionRuleProfile:
 		&"overseas", &"competition-v1", 4, 600, 300, 24, 5, 14, 8,
 		4, BonusKind.TWO_SHOT, -1, 2, true, true, true,
 		&"standard_arc", &"standard_restricted", &"overseas_pace",
-		&"standard_officiating", &"standard_roster", 0.985, 5)
+		&"standard_officiating", &"standard_roster", 0.985, 5, false, 5000, false)
 
 
 ## Top domestic professional: twelve-minute quarters (48 minutes), 24-second
@@ -321,4 +391,4 @@ static func top_domestic_profile() -> CompetitionRuleProfile:
 		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"top_domestic_pace",
-		&"standard_officiating", &"standard_roster", 0.855, 7, true)
+		&"standard_officiating", &"standard_roster", 0.855, 7, true, 5000, false)

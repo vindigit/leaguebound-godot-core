@@ -37,32 +37,39 @@ var _run_points: int
 ## for the one possession that follows it, and consumed the same way
 ## `_live_start` is.
 var _advance_start: bool
-## Whether the game clock is stopped as the next possession begins
-## (`PROJECT_STATUS.md` §5.30).
+## Why the next possession restarts (`RestartCause`, `PROJECT_STATUS.md` §5.31).
 ##
-## **Ownership.** Written here and nowhere else, from the committed record of the
-## possession that just ended; read by `PossessionEngine._open_possession` to
-## decide whether the throw-in restarts the clock or happens on a running one.
+## **Ownership.** This session is the single authoritative writer. It is set from
+## the committed record of the possession that just ended, and overridden by the
+## two dead-ball events that happen *after* a possession ends and genuinely
+## supersede its cause: a charged timeout, and a period transition. It is read by
+## `PossessionEngine._open_possession` and by nothing else — the session itself
+## never asks what the cause implies about the clock, because that is a
+## competition rule and `RestartClockPolicy` owns it.
 ##
-## A whistle stops the clock and it restarts on the legal touch, so a possession
-## following a turnover, a violation or the start of a period is charged nothing
-## for its inbound. A made basket in open play does not stop it, so that restart
-## still costs what it always cost. This is a separate fact from `_live_start`,
-## which answers whether there is anything to inbound at all, and it is
-## deliberately not folded into it: a live transfer has no throw-in, while a
-## dead-ball restart may have either a stopped or a running clock.
+## It replaces the `_clock_stopped` boolean §5.30 shipped. That flag was derived
+## as `end_reason != MADE_SCORE`, and §5.30 recorded the resulting ambiguity as a
+## known conservatism: `PossessionEndReason` returns `MADE_SCORE` for a made
+## field goal and for a made final free throw alike, so a free-throw restart was
+## charged a running clock the rules do not charge. Deriving the fact from an end
+## reason that cannot express it was the defect; naming the cause at the point
+## the possession ends is the fix.
 ##
-## The session opens with the clock stopped, because a game starts stopped.
+## It also closes a second, unrecorded case. `_consider_timeout` set
+## `_live_start = false` and left `_clock_stopped` alone, so a made basket
+## followed by a charged timeout still charged the next throw-in — even though a
+## timeout stops the clock in every ruleset. The override below is that
+## correction.
 ##
-## **Known conservatism.** `PossessionEndReason` does not separate a made field
-## goal from a made free throw, and a made final free throw does stop the clock.
-## Treating both as running keeps the inbound charged in a case where basketball
-## would not charge it. It is left that way deliberately: the alternative is a
-## new end reason, the error is in the direction that preserves the §14.1
-## possessions band rather than inflating it, and inside the last five seconds —
-## where it could decide anything — the desperation opening already treats the
-## clock as stopped.
-var _clock_stopped: bool
+## This stays a separate fact from `_live_start`, which answers whether there is
+## anything to inbound at all. The two are required to agree about the live case
+## and `PossessionEngine.simulate` asserts that they do; they are not folded
+## together because a dead-ball restart still has two possible clock modes and
+## only the rule profile can say which.
+##
+## The session opens on `PERIOD_START`, because a game starts with a stopped
+## clock and an opening throw-in.
+var _restart_cause: int
 ## The possession sequence an advance timeout was last called at, so the
 ## "at most once for the same possession" condition is state the session
 ## actually holds rather than an accident of the order `advance_possession`
@@ -91,7 +98,7 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_run_points = 0
 	_advance_start = false
 	_advance_timeout_possession = -1
-	_clock_stopped = true
+	_restart_cause = RestartCause.Value.PERIOD_START
 
 
 func snapshot() -> MatchSnapshot:
@@ -167,14 +174,15 @@ func advance_possession() -> PossessionResult:
 	])
 	var possession: PossessionResult = _possession_engine.simulate(
 		_snapshot, _input, _random_source.derive(stream_label), _live_start, _advance_start,
-		_clock_stopped)
+		_restart_cause)
 	_ledger.append_all(possession.events)
 	_snapshot = _reducer.apply_events(_snapshot, possession.events)
 	_possessions.append(possession.record)
 	_live_start = possession.record.live_transfer
-	# Everything except a made basket in open play arrives through a whistle, and
-	# a whistle stops the clock until the next legal touch.
-	_clock_stopped = possession.record.end_reason != PossessionEndReason.Value.MADE_SCORE
+	# The engine named the cause at the moment it terminated the possession; the
+	# session carries it forward rather than re-deriving it from an end reason
+	# that cannot express it.
+	_restart_cause = possession.record.restart_cause
 	_advance_start = false
 	_record_run(possession.record)
 	return possession
@@ -258,7 +266,7 @@ func _advance_period() -> void:
 	# before it.
 	_live_start = false
 	_advance_start = false
-	_clock_stopped = true
+	_restart_cause = RestartCause.Value.PERIOD_START
 
 
 ## §18.2 score and time: each coach decides, from the shared scoreboard, whether
@@ -324,8 +332,11 @@ func _consider_timeout() -> void:
 	_run_points = 0
 	_run_team_id = &""
 	# A timeout is a dead ball, so the possession that follows it is never a
-	# transition opportunity.
+	# transition opportunity — and the clock is stopped, whatever ended the
+	# possession before it. A made basket followed by a timeout used to keep the
+	# running-clock restart it no longer has (§5.31).
 	_live_start = false
+	_restart_cause = RestartCause.Value.TIMEOUT
 
 
 ## `EndgameStrategy`'s timeout-to-advance (§4, gated by
@@ -360,8 +371,10 @@ func _consider_advance_timeout() -> void:
 	_commit(writer)
 	_advance_start = true
 	_advance_timeout_possession = _snapshot.possession_sequence
-	# A timeout is a dead ball whatever its cause.
+	# A timeout is a dead ball whatever its cause, and it stops the clock whatever
+	# its cause.
 	_live_start = false
+	_restart_cause = RestartCause.Value.TIMEOUT
 
 
 func _record_run(record: PossessionRecord) -> void:

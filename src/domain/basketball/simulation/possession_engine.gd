@@ -63,6 +63,14 @@ var _terminated: bool
 ## possession repeatedly.
 var _leading_foul_called: bool
 var _end_reason: int
+## How the next possession restarts, decided at the moment this one ends.
+##
+## **Ownership.** Written only by `_terminate`, which every terminal path goes
+## through, and every one of those paths names its cause explicitly rather than
+## letting one be derived from `_end_reason`. That is the whole point: a made
+## field goal and a made free throw are both `MADE_SCORE`, and they restart
+## differently (`PROJECT_STATUS.md` §5.31).
+var _restart_cause: int
 var _next_team_id: StringName
 var _live_transfer: bool
 
@@ -92,17 +100,28 @@ func _init(input: MatchInput) -> void:
 ## Resolves one complete team possession. `live_start` is true when the previous
 ## possession ended with a live ball — a steal or a defensive rebound — which is
 ## what makes a transition opportunity possible (§9.2, §16).
+##
+## `restart_cause` is the typed reason this possession is beginning, supplied by
+## `MatchSession` and read by the opening path alone. It replaces the
+## `clock_stopped` boolean §5.30 shipped, which could only be derived from an
+## end reason that cannot tell a made field goal from a made free throw. The
+## default is `PERIOD_START` because a possession simulated from a fresh
+## snapshot, as the fixtures do, genuinely is one: a stopped clock that starts
+## on the opening touch.
 func simulate(
 	snapshot: MatchSnapshot,
 	input: MatchInput,
 	random_source: RandomSource,
 	live_start: bool = false,
 	advance_start: bool = false,
-	clock_stopped: bool = true,
+	restart_cause: int = RestartCause.Value.PERIOD_START,
 ) -> PossessionResult:
 	assert(input == _input, "this engine was constructed for a different match input")
 	assert(not snapshot.completed, "a completed match cannot resolve another possession")
 	assert(snapshot.clock_ms > 0, "a possession cannot begin after period expiration")
+	assert(RestartCause.is_valid(restart_cause), "unknown restart cause")
+	assert(live_start == (restart_cause == RestartCause.Value.LIVE_BALL),
+		"a live start and a LIVE_BALL restart cause are the same fact and must agree")
 
 	_state = snapshot.copy()
 	_writer = MatchEventWriter.new(
@@ -111,6 +130,7 @@ func simulate(
 	_terminated = false
 	_leading_foul_called = false
 	_end_reason = PossessionEndReason.Value.TURNOVER
+	_restart_cause = RestartCause.Value.VIOLATION
 	_next_team_id = &""
 	_live_transfer = false
 
@@ -136,7 +156,7 @@ func simulate(
 		MatchDomainEvent.POSSESSION_STARTED, offense_team_id, initiator_id, &"", &"",
 		&"live" if live_start else &"dead_ball")
 
-	_open_possession(random_source.derive(&"open"), live_start, advance_start, clock_stopped)
+	_open_possession(random_source.derive(&"open"), live_start, advance_start, restart_cause)
 	_run_action_loop(random_source)
 
 	if not _terminated:
@@ -150,6 +170,7 @@ func simulate(
 		_writer.period, _writer.clock_ms, _end_reason, _points_scored,
 		_context.action_count, _context.offensive_rebounds, _next_team_id)
 	record.live_transfer = _live_transfer
+	record.restart_cause = _restart_cause
 	var result := PossessionResult.new(
 		_writer.events, start_clock - _writer.clock_ms, _next_team_id,
 		PossessionNode.Value.POSSESSION_END, record)
@@ -164,41 +185,53 @@ func _open_possession(
 	random_source: RandomSource,
 	live_start: bool,
 	advance_start: bool,
-	clock_stopped: bool,
+	restart_cause: int,
 ) -> void:
 	# A possession that begins with almost nothing on the clock cannot run the
 	# ordinary opening, and requiring it to was killing the possession before it
 	# ever chose an action. It commits from where it stands instead.
+	#
+	# This is a question about the *shape* of the opening, not about the clock
+	# contract, and §5.31 separates the two. Before it, `desperate` was also
+	# doing duty as "a made basket in the last five seconds does not charge the
+	# throw-in" — a competition clock rule, decided in this class, out of a
+	# balance constant. That rule now lives on `CompetitionRuleProfile` and is
+	# read through `RestartClockPolicy`, so this line means one thing again.
 	var desperate: bool = _state.clock_ms <= _balance.desperation_opening_clock_ms
 	if not live_start:
 		# DEAD_BALL -> INBOUND.
 		#
+		# **The restart contract is read here and nowhere else** (§9.4,
+		# `PROJECT_STATUS.md` §5.31). `MatchSession` supplies the typed cause;
+		# `RestartClockPolicy` turns it into a clock mode, consulting the
+		# competition rule profile for the one cause competitions differ on.
+		#
 		# **A stopped clock restarts on the legal touch.** After a whistle — a
-		# foul, a violation, a ball out of bounds, the start of a period — the
-		# game clock is not running, so retrieving the ball, the official's
-		# administration, and the throw-in itself cost the offence nothing. The
-		# event that records the touch therefore emits at the possession's own
-		# starting clock (`PROJECT_STATUS.md` §5.30).
+		# foul, a violation, a ball out of bounds, a charged timeout, the start
+		# of a period, a made free throw — the game clock is not running, so
+		# retrieving the ball, the official's administration, and the throw-in
+		# itself cost the offence nothing. The event that records the touch
+		# therefore emits at the possession's own starting clock.
 		#
-		# **A clock that never stopped keeps running.** The common restart in this
-		# engine is the one after a made basket in open play, and there no
-		# competition modeled here stops the clock: the opponent takes the ball
-		# out with it running and the seconds are genuinely spent. Charging every
-		# restart as though it were a stopped clock frees roughly three and a half
-		# minutes of game time per game and moves college possessions from 71.9 to
-		# 79.1 against a 64-73 band, which is why the caller supplies the fact
-		# rather than the engine assuming it.
+		# **A clock that never stopped keeps running.** The restart after a made
+		# field goal in open play is the one case where the opponent takes the
+		# ball out with the clock running and the seconds are genuinely spent.
+		# Charging every restart as though it were a stopped clock frees roughly
+		# three and a half minutes of game time per game and moves college
+		# possessions from 71.9 to 79.1 against a 64-73 band, which is why this
+		# is a rule decision rather than a simplification.
 		#
-		# Inside the desperation window the clock is stopped whatever the cause:
-		# every dead-ball restart stops it unconditionally, and a made basket in
-		# the last five seconds is inside every modeled competition's late-game
-		# stop. So `desperate` reaches the same conclusion without needing the
-		# caller to have derived it.
-		if not (clock_stopped or desperate):
+		# The cause travels onto the `INBOUND` event, so a ledger reader can see
+		# why a throw-in was free without re-deriving it from the timestamps.
+		var clock_mode: int = RestartClockPolicy.mode_for(
+			restart_cause, _rules, _state.period, _state.clock_ms)
+		if RestartClockMode.charges_game_clock(clock_mode):
 			_consume(_clock.running_clock_inbound_ms(random_source.derive(&"inbound")))
 			if _terminated:
 				return
-		_emit(MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id)
+		_emit(
+			MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", RestartCause.id_of(restart_cause))
 	if desperate:
 		_context.desperation_opening = true
 		_open_desperate(random_source, advance_start)
@@ -770,7 +803,9 @@ func _resolve_shot(
 				_resolve_disqualification(_context.defense.team_id, foul.fouler_id)
 			_resolve_free_throws(shooter_id, 1, false, action_stream.derive(&"and_one"))
 			return
-		_terminate(PossessionEndReason.Value.MADE_SCORE, _context.defense.team_id, false)
+		_terminate(
+			PossessionEndReason.Value.MADE_SCORE, RestartCause.Value.MADE_FIELD_GOAL,
+			_context.defense.team_id, false)
 		return
 
 	_emit(
@@ -978,9 +1013,22 @@ func _resolve_free_throws(
 		_resolve_rebound(shooter_id, ShotZone.Value.RESTRICTED_RIM, false, random_source)
 		return
 	if not last_made:
-		_terminate(PossessionEndReason.Value.DEFENSIVE_REBOUND, _context.defense.team_id, false)
+		# A missed final attempt under a ruleset that does not make it live. The
+		# ball is dead and the defence takes it out; the whistle that stopped the
+		# clock was the foul that created the trip, which is the cause named
+		# here. No launch profile reaches this branch — all five set
+		# `final_free_throw_reboundable` — and `TestRestartContract` asserts that.
+		_terminate(
+			PossessionEndReason.Value.DEFENSIVE_REBOUND, RestartCause.Value.FOUL,
+			_context.defense.team_id, false)
 		return
-	_terminate(PossessionEndReason.Value.MADE_SCORE, _context.defense.team_id, false)
+	# The made *free throw*, which `PossessionEndReason` cannot tell apart from
+	# the made field goal above. Naming it here is the whole of §5.31's
+	# correction: the clock is dead through a free-throw trip in every ruleset
+	# this engine models, so the restart after it is never charged.
+	_terminate(
+		PossessionEndReason.Value.MADE_SCORE, RestartCause.Value.MADE_FREE_THROW,
+		_context.defense.team_id, false)
 
 
 ## Records the whistle and reports whether it disqualified the fouler.
@@ -1037,7 +1085,9 @@ func _resolve_rebound(
 		&"", outcome.side_id(), ShotZone.id_of(zone))
 
 	if not outcome.offensive:
-		_terminate(PossessionEndReason.Value.DEFENSIVE_REBOUND, _context.defense.team_id, true)
+		_terminate(
+			PossessionEndReason.Value.DEFENSIVE_REBOUND, RestartCause.Value.LIVE_BALL,
+			_context.defense.team_id, true)
 		return
 
 	# §9.4 / §14.4: the possession continues. Same id, no new start event, no
@@ -1093,11 +1143,17 @@ func _emit_turnover(turnover: TurnoverOutcome) -> void:
 			turnover.offender_id, &"", &"", turnover.cause_id())
 
 
+## Every turnover terminates through here, and its restart cause comes from the
+## §11.2 cause already attributed to it rather than from a second judgement:
+## `RestartCause.for_turnover` owns that mapping. A credited steal leaves the
+## ball live; everything else arrived through a whistle or through the ball
+## leaving the floor.
 func _terminate_turnover(turnover: TurnoverOutcome) -> void:
 	_context.clear_pass_creation()
 	_emit_turnover(turnover)
 	_terminate(
-		PossessionEndReason.Value.TURNOVER, _context.defense.team_id, turnover.credits_steal())
+		PossessionEndReason.Value.TURNOVER, RestartCause.for_turnover(turnover),
+		_context.defense.team_id, turnover.credits_steal())
 
 
 ## An offensive foul: the whistle, then the turnover it caused, then any
@@ -1108,14 +1164,29 @@ func _terminate_offensive_foul(call: FoulCall, offender_id: StringName) -> void:
 	_emit_turnover(TurnoverResolver.offensive_foul_turnover(offender_id))
 	if disqualified:
 		_resolve_disqualification(_context.offense.team_id, call.fouler_id)
-	_terminate(PossessionEndReason.Value.TURNOVER, _context.defense.team_id, false)
+	_terminate(
+		PossessionEndReason.Value.TURNOVER, RestartCause.Value.FOUL,
+		_context.defense.team_id, false)
 
 
-func _terminate(reason: int, next_team_id: StringName, live_transfer: bool) -> void:
+## The single writer of both terminal facts. Every path names its restart cause
+## explicitly; none is derived from `reason`, which is what removes the §5.30
+## ambiguity rather than relocating it.
+func _terminate(
+	reason: int,
+	restart_cause: int,
+	next_team_id: StringName,
+	live_transfer: bool,
+) -> void:
 	if _terminated:
 		return
+	assert(RestartCause.is_valid(restart_cause), "unknown restart cause")
+	assert(live_transfer == (restart_cause == RestartCause.Value.LIVE_BALL),
+		"a live transfer and a LIVE_BALL restart cause are the same fact, "
+		+ "so a terminal path may not claim one without the other")
 	_terminated = true
 	_end_reason = reason
+	_restart_cause = restart_cause
 	_live_transfer = live_transfer
 	_next_team_id = (
 		next_team_id
@@ -1158,7 +1229,13 @@ func _consume(elapsed_ms: int) -> void:
 		return
 	_writer.consume(elapsed_ms)
 	if _writer.clock_ms <= 0:
-		_terminate(PossessionEndReason.Value.PERIOD_EXPIRED, _context.offense.team_id, false)
+		# The horn. `MatchSession` runs a period transition before anything else
+		# can happen, and that transition writes `PERIOD_START` again — but the
+		# record still has to carry a truthful cause of its own, because the
+		# ledger and the calibration runners read it.
+		_terminate(
+			PossessionEndReason.Value.PERIOD_EXPIRED, RestartCause.Value.PERIOD_START,
+			_context.offense.team_id, false)
 
 
 ## Advances event time across a dead ball without letting the buzzer interrupt

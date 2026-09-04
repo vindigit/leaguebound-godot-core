@@ -649,21 +649,23 @@ func test_the_compensation_channels_are_pinned_on_a_fixed_fixture() -> void:
 		"offensive-rebound share moved to %.4f on a fixed fixture"
 		% totals.offensive_rebound_rate()).is_equal_approx(0.2445, CHANNEL_TOLERANCE)
 	# Re-pinned from 0.6387 by `simulation-v13-opening-clock-and-location-contract`
-	# (`PROJECT_STATUS.md` §5.30), and named here rather than absorbed into a
-	# wider tolerance. The clock contract changes the game clock every possession
-	# begins on, which is an input to §10.3's score-and-clock factor through
+	# and from 0.6571 by `simulation-v14-restart-contract` (`PROJECT_STATUS.md`
+	# §5.30, §5.31), and named here rather than absorbed into a wider tolerance.
+	# Both contracts change the game clock every possession begins on, which is
+	# an input to §10.3's score-and-clock factor through
 	# `GameManagement.remaining_ms`, so the action mix shifts slightly and with it
-	# the share of makes that arrive off a pass. It is not compensation: the
-	# other four channels below and above — turnover rate, offensive-rebound
-	# extension, offensive-rebound share, possessions per game — are unmoved
-	# inside the same tolerance on the same fixture, which is exactly the
-	# discrimination this test exists to provide.
+	# the share of makes that arrive off a pass. It is not compensation, and this
+	# test is what establishes that: turnover rate, offensive-rebound extension
+	# and offensive-rebound share are **unmoved inside the same tolerance on the
+	# same fixture** across v14, which is exactly the discrimination it exists to
+	# provide. Possessions per game moved with it, and that one is not incidental
+	# — it is the §14.1 regression v14 deepens and work-queue item 19 answers.
 	assert_float(totals.assisted_share()).override_failure_message(
 		"assisted share moved to %.4f on a fixed fixture" % totals.assisted_share()
-	).is_equal_approx(0.6571, CHANNEL_TOLERANCE)
+	).is_equal_approx(0.6642, CHANNEL_TOLERANCE)
 	assert_float(totals.possessions_per_game()).override_failure_message(
 		"possessions per game moved to %.2f on a fixed fixture"
-		% totals.possessions_per_game()).is_equal_approx(144.58, 2.0)
+		% totals.possessions_per_game()).is_equal_approx(148.33, 2.0)
 
 
 # --- helpers -----------------------------------------------------------------

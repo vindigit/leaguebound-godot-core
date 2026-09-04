@@ -108,7 +108,20 @@ static func seed_for(scenario: StringName) -> int:
 			# exercise their named behaviour at the seeds they always had,
 			# while all six ledgers changed, first at the game's opening
 			# `INBOUND` timestamp (§5.30).
-			return 7919
+			#
+			# `simulation-v14-restart-contract` moved it again, from 7919, for
+			# the same structural reason and a different mechanism: a made free
+			# throw and a charged timeout both stop the clock, so neither
+			# restart charges its throw-in any more (§5.31). That returns two to
+			# four seconds on every free-throw trip and every run-stopping
+			# timeout, the action mix shifts, and this seed stopped finishing
+			# level. `find_scenario_seeds.gd` derived 71271 over an 800-seed
+			# search, and it is once again the *only* seed that moved: the other
+			# five still exercise their named behaviour at the seeds they have
+			# always had. All six ledgers changed; in all six the first
+			# behavioural divergence is the throw-in after a made free throw,
+			# and `PROJECT_STATUS.md` §5.31 names the event for each.
+			return 71271
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

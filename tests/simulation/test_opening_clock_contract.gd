@@ -120,7 +120,8 @@ func test_a_timeout_advanced_possession_skips_only_the_backcourt_it_purchased() 
 func test_a_live_ball_transfer_neither_emits_nor_charges_a_dead_ball_inbound() -> void:
 	var input: MatchInput = _fixture_input()
 	var snapshot: MatchSnapshot = _snapshot_at(input, 1, FULL_CLOCK_MS)
-	var possession: PossessionResult = _possession(input, snapshot, 11, true, false)
+	var possession: PossessionResult = _possession(
+		input, snapshot, 11, true, false, RestartCause.Value.LIVE_BALL)
 
 	assert_int(_count_of(possession.events, MatchDomainEvent.INBOUND)).override_failure_message(
 		"there is nothing to inbound after a live transfer").is_equal(0)
@@ -443,9 +444,11 @@ func _possession(
 	seed_value: int,
 	live_start: bool,
 	advance_start: bool,
+	restart_cause: int = RestartCause.Value.PERIOD_START,
 ) -> PossessionResult:
 	return PossessionEngine.new(input).simulate(
-		snapshot, input, SeededRandomSource.new(seed_value), live_start, advance_start)
+		snapshot, input, SeededRandomSource.new(seed_value), live_start, advance_start,
+		restart_cause)
 
 
 func _context(input: MatchInput, home_score: int = 80, away_score: int = 80) -> PossessionContext:
