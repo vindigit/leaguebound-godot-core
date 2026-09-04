@@ -54,7 +54,23 @@ var _writer: MatchEventWriter
 var _context: PossessionContext
 var _points_scored: int
 var _terminated: bool
+## Whether this possession has already spent its one leading-by-three foul.
+## The tactic is a single decision — send them to the line rather than let them
+## shoot the tying three — and once the whistle has gone the possession the
+## decision was about is a free-throw trip, not a three-point attempt waiting
+## to happen. Without this, the eligibility that produced the first whistle
+## still held on the action after it, and the same defence could foul the same
+## possession repeatedly.
+var _leading_foul_called: bool
 var _end_reason: int
+## How the next possession restarts, decided at the moment this one ends.
+##
+## **Ownership.** Written only by `_terminate`, which every terminal path goes
+## through, and every one of those paths names its cause explicitly rather than
+## letting one be derived from `_end_reason`. That is the whole point: a made
+## field goal and a made free throw are both `MADE_SCORE`, and they restart
+## differently (`PROJECT_STATUS.md` §5.31).
+var _restart_cause: int
 var _next_team_id: StringName
 var _live_transfer: bool
 
@@ -77,29 +93,44 @@ func _init(input: MatchInput) -> void:
 	_foul_resolver = FoulResolver.new(_capability, _body, _balance)
 	_free_throw_resolver = FreeThrowResolver.new(_capability, _balance)
 	_rebound_resolver = ReboundResolver.new(_capability, _body, _balance)
-	_clock = ClockResolver.new(_balance)
+	_clock = ClockResolver.new(_balance, _rules)
 	_rotation = RotationResolver.new(_balance)
 
 
 ## Resolves one complete team possession. `live_start` is true when the previous
 ## possession ended with a live ball — a steal or a defensive rebound — which is
 ## what makes a transition opportunity possible (§9.2, §16).
+##
+## `restart_cause` is the typed reason this possession is beginning, supplied by
+## `MatchSession` and read by the opening path alone. It replaces the
+## `clock_stopped` boolean §5.30 shipped, which could only be derived from an
+## end reason that cannot tell a made field goal from a made free throw. The
+## default is `PERIOD_START` because a possession simulated from a fresh
+## snapshot, as the fixtures do, genuinely is one: a stopped clock that starts
+## on the opening touch.
 func simulate(
 	snapshot: MatchSnapshot,
 	input: MatchInput,
 	random_source: RandomSource,
 	live_start: bool = false,
+	advance_start: bool = false,
+	restart_cause: int = RestartCause.Value.PERIOD_START,
 ) -> PossessionResult:
 	assert(input == _input, "this engine was constructed for a different match input")
 	assert(not snapshot.completed, "a completed match cannot resolve another possession")
 	assert(snapshot.clock_ms > 0, "a possession cannot begin after period expiration")
+	assert(RestartCause.is_valid(restart_cause), "unknown restart cause")
+	assert(live_start == (restart_cause == RestartCause.Value.LIVE_BALL),
+		"a live start and a LIVE_BALL restart cause are the same fact and must agree")
 
 	_state = snapshot.copy()
 	_writer = MatchEventWriter.new(
 		input.match_id, snapshot.event_sequence, snapshot.period, snapshot.clock_ms)
 	_points_scored = 0
 	_terminated = false
+	_leading_foul_called = false
 	_end_reason = PossessionEndReason.Value.TURNOVER
+	_restart_cause = RestartCause.Value.VIOLATION
 	_next_team_id = &""
 	_live_transfer = false
 
@@ -125,7 +156,7 @@ func simulate(
 		MatchDomainEvent.POSSESSION_STARTED, offense_team_id, initiator_id, &"", &"",
 		&"live" if live_start else &"dead_ball")
 
-	_open_possession(random_source.derive(&"open"), live_start)
+	_open_possession(random_source.derive(&"open"), live_start, advance_start, restart_cause)
 	_run_action_loop(random_source)
 
 	if not _terminated:
@@ -139,6 +170,7 @@ func simulate(
 		_writer.period, _writer.clock_ms, _end_reason, _points_scored,
 		_context.action_count, _context.offensive_rebounds, _next_team_id)
 	record.live_transfer = _live_transfer
+	record.restart_cause = _restart_cause
 	var result := PossessionResult.new(
 		_writer.events, start_clock - _writer.clock_ms, _next_team_id,
 		PossessionNode.Value.POSSESSION_END, record)
@@ -149,18 +181,74 @@ func simulate(
 
 # --- §9.2 opening states ----------------------------------------------------
 
-func _open_possession(random_source: RandomSource, live_start: bool) -> void:
+func _open_possession(
+	random_source: RandomSource,
+	live_start: bool,
+	advance_start: bool,
+	restart_cause: int,
+) -> void:
+	# A possession that begins with almost nothing on the clock cannot run the
+	# ordinary opening, and requiring it to was killing the possession before it
+	# ever chose an action. It commits from where it stands instead.
+	#
+	# This is a question about the *shape* of the opening, not about the clock
+	# contract, and §5.31 separates the two. Before it, `desperate` was also
+	# doing duty as "a made basket in the last five seconds does not charge the
+	# throw-in" — a competition clock rule, decided in this class, out of a
+	# balance constant. That rule now lives on `CompetitionRuleProfile` and is
+	# read through `RestartClockPolicy`, so this line means one thing again.
+	var desperate: bool = _state.clock_ms <= _balance.desperation_opening_clock_ms
 	if not live_start:
-		# DEAD_BALL -> INBOUND
-		_consume(_clock.inbound_ms(random_source.derive(&"inbound")))
+		# DEAD_BALL -> INBOUND.
+		#
+		# **The restart contract is read here and nowhere else** (§9.4,
+		# `PROJECT_STATUS.md` §5.31). `MatchSession` supplies the typed cause;
+		# `RestartClockPolicy` turns it into a clock mode, consulting the
+		# competition rule profile for the one cause competitions differ on.
+		#
+		# **A stopped clock restarts on the legal touch.** After a whistle — a
+		# foul, a violation, a ball out of bounds, a charged timeout, the start
+		# of a period, a made free throw — the game clock is not running, so
+		# retrieving the ball, the official's administration, and the throw-in
+		# itself cost the offence nothing. The event that records the touch
+		# therefore emits at the possession's own starting clock.
+		#
+		# **A clock that never stopped keeps running.** The restart after a made
+		# field goal in open play is the one case where the opponent takes the
+		# ball out with the clock running and the seconds are genuinely spent.
+		# Charging every restart as though it were a stopped clock frees roughly
+		# three and a half minutes of game time per game and moves college
+		# possessions from 71.9 to 79.1 against a 64-73 band, which is why this
+		# is a rule decision rather than a simplification.
+		#
+		# The cause travels onto the `INBOUND` event, so a ledger reader can see
+		# why a throw-in was free without re-deriving it from the timestamps.
+		var clock_mode: int = RestartClockPolicy.mode_for(
+			restart_cause, _rules, _state.period, _state.clock_ms)
+		if RestartClockMode.charges_game_clock(clock_mode):
+			_consume(_clock.running_clock_inbound_ms(random_source.derive(&"inbound")))
+			if _terminated:
+				return
+		_emit(
+			MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", RestartCause.id_of(restart_cause))
+	if desperate:
+		_context.desperation_opening = true
+		_open_desperate(random_source, advance_start)
+		return
+	# ADVANCE. A timeout-advance possession (§4's rule-profile-gated
+	# `timeout_advance_permitted`) already inbounds in the frontcourt, so there
+	# is no backcourt walk left to charge for — the event still emits, tagged,
+	# so the possession's shape is unchanged and the decision stays auditable.
+	if advance_start:
+		_emit(
+			MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", &"timeout_advanced")
+	else:
+		_consume(_clock.advance_ms(_context, random_source.derive(&"advance")))
 		if _terminated:
 			return
-		_emit(MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id)
-	# ADVANCE
-	_consume(_clock.advance_ms(_context, random_source.derive(&"advance")))
-	if _terminated:
-		return
-	_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
+		_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
 	# TRANSITION_DECISION
 	if live_start and _enters_transition(random_source.derive(&"transition")):
 		_context.in_transition = true
@@ -173,6 +261,47 @@ func _open_possession(random_source: RandomSource, live_start: bool) -> void:
 	if _terminated:
 		return
 	_emit(MatchDomainEvent.HALF_COURT_ENTERED, _context.offense.team_id, _context.ball_handler_id)
+
+
+## The desperation opening (§9.2, `PROJECT_STATUS.md` §5.30).
+##
+## With five seconds or less the offence still has to advance the ball, and
+## still has to do it against a defence, but it does not walk it up and it does
+## not run a half-court set. So the advance is drawn exactly as it always was and
+## charged exactly as it always was — this is not free time — and the half-court
+## entry is *skipped rather than discounted*: the possession does not get a
+## set-up offence it had no time to run. What it gets instead is the fact of
+## where it actually is, which `ShotResolver` then charges for.
+##
+## Two outcomes, and the clock picks between them without anybody's help:
+##
+## - The advance completes. The ball is in the frontcourt with no set drawn, so
+##   the attempt comes from `DEEP`.
+## - The advance would cross the horn. The offence never gets it across, so the
+##   attempt comes from the `BACKCOURT` and is a heave.
+##
+## Neither branch reads the score, the margin, the period, or what result would
+## be convenient. A team four points ahead inbounding with three seconds runs
+## exactly this path, because that is what happens on a basketball court.
+func _open_desperate(random_source: RandomSource, advance_start: bool) -> void:
+	var depth: int = TacticalLocation.Depth.DEEP
+	if advance_start:
+		# The timeout already bought the frontcourt inbound; there is no
+		# backcourt walk left to skip, and none left to charge for either.
+		_emit(
+			MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", &"timeout_advanced")
+	else:
+		var advance_ms: int = _clock.advance_ms(_context, random_source.derive(&"advance"))
+		if advance_ms < _writer.clock_ms:
+			_consume(advance_ms)
+			if _terminated:
+				return
+			_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
+		else:
+			depth = TacticalLocation.Depth.BACKCOURT
+	_context.ball_location = TacticalLocation.new(
+		TacticalLocation.Lane.CENTER, depth, MovementIntent.Value.ADVANCE_BALL)
 
 
 func _enters_transition(random_source: RandomSource) -> bool:
@@ -203,6 +332,8 @@ func _run_action_loop(random_source: RandomSource) -> void:
 
 		if _resolve_intentional_foul(action_stream.derive(&"intentional_foul")):
 			continue
+		if _resolve_leading_by_three_foul(action_stream.derive(&"leading_by_three_foul")):
+			continue
 
 		var candidates: Array[ActionCandidate] = _generator.generate(_context)
 		var selected: ActionCandidate = _selector.select(
@@ -212,7 +343,8 @@ func _run_action_loop(random_source: RandomSource) -> void:
 			return
 		_emit(
 			MatchDomainEvent.ACTION_SELECTED, _context.offense.team_id, selected.actor_id,
-			selected.target_id, &"", selected.action_id(), &"",
+			selected.target_id, &"", selected.action_id(),
+			EndgameStrategy.active_tag(_context, _balance),
 			ShotZone.id_of(selected.zone) if selected.is_shot() else &"")
 		_resolve_action(selected, action_stream)
 
@@ -234,22 +366,28 @@ func _resolve_action(candidate: ActionCandidate, action_stream: RandomSource) ->
 			_resolve_shot(candidate.actor_id, candidate.zone, candidate.dunk,
 				candidate.action_family, advantage, action_stream)
 		ActionFamily.Value.DRIVE, ActionFamily.Value.TRANSITION_ATTACK:
-			_resolve_attack(candidate, advantage, action_stream, _balance.drive_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.drive_finish_share, _balance.drive_kick_out_share)
 		ActionFamily.Value.POST_ACTION:
-			_resolve_attack(candidate, advantage, action_stream, _balance.post_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.post_finish_share, _balance.post_kick_out_share)
 		ActionFamily.Value.PICK_ACTION:
-			_resolve_attack(candidate, advantage, action_stream, _balance.pick_finish_share)
+			_resolve_attack(
+				candidate, advantage, action_stream,
+				_balance.pick_finish_share, _balance.pick_kick_out_share)
 		ActionFamily.Value.OFF_BALL_CUT:
 			_resolve_cut(candidate, advantage, action_stream)
 		ActionFamily.Value.SCREEN:
 			_resolve_screen(candidate, advantage, action_stream)
 		ActionFamily.Value.RELOCATION:
-			_emit(
-				MatchDomainEvent.OFF_BALL_ACTION, _context.offense.team_id, candidate.actor_id,
-				candidate.target_id, &"", candidate.action_id(), advantage.level_id())
+			_resolve_relocation(candidate, advantage, action_stream)
 		ActionFamily.Value.RESET:
+			# A reset is the offence starting again: whatever the last delivery
+			# had created is over.
 			_context.advantage = AdvantageResult.new()
-			_context.last_passer_id = &""
+			_context.clear_pass_creation()
 		_:
 			assert(false, "unhandled action family")
 
@@ -266,12 +404,70 @@ func _resolve_pass(
 	if turnover.occurred:
 		_terminate_turnover(turnover)
 		return
+	_record_completed_pass(candidate.actor_id, candidate.target_id, advantage, candidate.action_id())
+
+	# §11.3 pass continuation. A delivery that beat the denial and the help left
+	# the receiver open, and an open receiver shoots — he does not wait for the
+	# next independent action draw, by which time the rotation has recovered.
+	# This is the branch every other creating family already had, and its
+	# absence is why the openness a pass created was computed and thrown away.
+	if (
+		not _context.is_late_clock()
+		and action_stream.derive(&"catch_and_shoot").next_float()
+			< _balance.pass_catch_and_shoot_share * advantage.quality_share()
+	):
+		_resolve_catch_and_shoot(candidate.target_id, advantage, action_stream)
+
+
+## Records a completed delivery and everything §11.3 requires it to carry:
+## passer, receiver, risk family, the openness it produced, the catch quality
+## the passer's execution earned, and the defender it moved. The record is the
+## live passer-to-shot relationship; whether it *directly created* the eventual
+## shot is settled when a shot resolves, by `PassCreation`.
+func _record_completed_pass(
+	passer_id: StringName,
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	action_id: StringName,
+) -> void:
+	var rotated_defender_id: StringName = _context.defender_of(receiver_id)
+	var creation := PassCreation.new(
+		passer_id, receiver_id, advantage.level,
+		_delivered_catch_quality(passer_id), rotated_defender_id,
+		_rules.credited_assist_families)
 	_emit(
-		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, candidate.actor_id,
-		candidate.target_id, &"", candidate.action_id(), advantage.level_id())
-	_context.last_passer_id = candidate.actor_id
-	_context.last_pass_created_advantage = advantage.is_material()
-	_context.ball_handler_id = candidate.target_id
+		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, passer_id,
+		receiver_id, rotated_defender_id, action_id, advantage.level_id(), &"", 0,
+		int(roundf(creation.catch_quality * 100.0)))
+	_context.pass_creation = creation
+	_context.ball_handler_id = receiver_id
+
+
+## The catch-and-shoot the delivery created. The receiver shoots the zone his
+## own capability supports, which is what makes this the shooter's shot and the
+## passer's creation rather than a shot the passer chose.
+func _resolve_catch_and_shoot(
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> void:
+	# §9.4: the catch and the release are their own state transition and consume
+	# their own time. Resolving them for free would have let an offence reach a
+	# shot in fewer seconds than it takes to take one, which shortens every
+	# possession the branch touches and raises pace by the rate the branch
+	# fires.
+	var menu: Array[ActionCandidate] = _generator.catch_and_shoot_candidates(
+		_context, receiver_id)
+	if menu.is_empty():
+		return
+	_consume(_clock.action_ms(
+		_context, ActionFamily.Value.PULL_UP, action_stream.derive(&"catch_time")))
+	if _terminated:
+		return
+	var shot: ActionCandidate = _selector.select(menu, action_stream.derive(&"catch_zone"))
+	_resolve_shot(
+		receiver_id, shot.zone, false, ActionFamily.Value.PULL_UP,
+		advantage.after_closeout(), action_stream.derive(&"catch_shot"))
 
 
 func _resolve_attack(
@@ -279,6 +475,7 @@ func _resolve_attack(
 	advantage: AdvantageResult,
 	action_stream: RandomSource,
 	finish_share: float,
+	kick_out_share: float,
 ) -> void:
 	var offensive_foul: FoulCall = _foul_resolver.resolve_offensive_foul(
 		_context, candidate, action_stream.derive(&"offensive_foul"))
@@ -303,13 +500,35 @@ func _resolve_attack(
 		_resolve_defensive_foul(contact, action_stream.derive(&"contact_consequences"))
 		return
 
+	# §11.1 advantage continuation. A collapsed defence has three real endings,
+	# not one: the attacker finishes, he kicks to the player the help left open,
+	# or — on a pick action — the screener rolls behind the help and finishes the
+	# handler's pass. Resolving only the first made a material advantage
+	# synonymous with a rim attempt and put the §14.1 three-point-attempt and
+	# assist bands out of reach structurally.
+	if advantage.is_material() and not _context.is_late_clock():
+		if (
+			candidate.action_family == ActionFamily.Value.PICK_ACTION
+			and not candidate.target_id.is_empty()
+			and action_stream.derive(&"roll").next_float() < _balance.roll_finish_share
+			and _resolve_roll_finish(candidate, advantage, action_stream)
+		):
+			return
+		if (
+			action_stream.derive(&"kick_out").next_float() < kick_out_share
+			and _resolve_kick_out(candidate, advantage, action_stream)
+		):
+			return
+
 	var finishes: bool = (
 		advantage.is_material()
 		or _context.is_late_clock()
 		or action_stream.derive(&"finish").next_float() < finish_share
 	)
 	if not finishes:
-		_context.last_passer_id = &""
+		# The attack fizzled and the ball is back out front. Whatever delivery
+		# preceded it created a touch, not this possession's shot.
+		_context.clear_pass_creation()
 		return
 
 	var zone: int = _attack_zone(candidate, advantage)
@@ -319,6 +538,93 @@ func _resolve_attack(
 		and _body.dunk_is_available(shooter.body, shooter.attributes.vertical)
 	)
 	_resolve_shot(candidate.actor_id, zone, dunk, candidate.action_family, advantage, action_stream)
+
+
+## The kick-out. The attacker passes to the best-spaced team-mate, who shoots a
+## catch-and-shoot three carrying the advantage the attack created.
+##
+## Returns false when nobody is spaced for it, in which case the caller falls
+## through to the ordinary finish. The pass is a real pass: it can be turned
+## over, and it is the assist candidate if the shot drops.
+func _resolve_kick_out(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> bool:
+	var receiver_id: StringName = _best_spacer(candidate.actor_id)
+	if receiver_id.is_empty():
+		return false
+	var kick_stream: RandomSource = action_stream.derive(&"kick_pass")
+	if not _deliver_advantage_pass(candidate.actor_id, receiver_id, advantage, kick_stream):
+		return true
+	_resolve_shot(
+		receiver_id, ShotZone.Value.STANDARD_THREE, false,
+		ActionFamily.Value.PULL_UP, advantage, kick_stream)
+	return true
+
+
+## The roll finish. The screener rolls behind the help and finishes the
+## handler's pass at the rim.
+func _resolve_roll_finish(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> bool:
+	var roller_id: StringName = candidate.target_id
+	if roller_id == candidate.actor_id or not _context.offense_state().is_on_court(roller_id):
+		return false
+	var roll_stream: RandomSource = action_stream.derive(&"roll_pass")
+	if not _deliver_advantage_pass(candidate.actor_id, roller_id, advantage, roll_stream):
+		return true
+	var roller: PlayerMatchProfile = _context.offense_profile(roller_id)
+	var dunk: bool = _body.dunk_is_available(roller.body, roller.attributes.vertical)
+	_resolve_shot(
+		roller_id, ShotZone.Value.RESTRICTED_RIM, dunk,
+		ActionFamily.Value.OFF_BALL_CUT, advantage, roll_stream)
+	return true
+
+
+## Delivers an advantage pass and reports whether it arrived. A turnover
+## terminates the possession, exactly as any other failed pass does.
+func _deliver_advantage_pass(
+	passer_id: StringName,
+	receiver_id: StringName,
+	advantage: AdvantageResult,
+	stream: RandomSource,
+) -> bool:
+	var pass_candidate := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, passer_id, 1.0, receiver_id)
+	var turnover: TurnoverOutcome = _turnover_resolver.resolve_pass(
+		_context, pass_candidate, advantage, stream.derive(&"turnover"))
+	if turnover.occurred:
+		_terminate_turnover(turnover)
+		return false
+	_record_completed_pass(passer_id, receiver_id, advantage, pass_candidate.action_id())
+	return true
+
+
+## The team-mate best placed to punish a collapsed defence: the highest
+## three-point shotmaking on the floor, excluding the attacker, and only if he
+## clears the spacer threshold. Ties break on player id so the choice is
+## canonical before any draw is consumed.
+func _best_spacer(actor_id: StringName) -> StringName:
+	var best_id: StringName = &""
+	var best_capability: float = _balance.kick_out_spacer_threshold
+	for player_id in _context.offense_on_court():
+		if player_id == actor_id:
+			continue
+		var player: PlayerMatchProfile = _context.offense_profile(player_id)
+		var runtime: PlayerMatchRuntime = _context.offense_runtime(player_id)
+		var shooting: float = _capability.capability_of(
+			CapabilityKey.Value.THREE_POINT_SHOTMAKING, player, runtime)
+		if shooting > best_capability + 0.000001 or (
+			absf(shooting - best_capability) <= 0.000001
+			and not best_id.is_empty()
+			and String(player_id) < String(best_id)
+		):
+			best_capability = shooting
+			best_id = player_id
+	return best_id
 
 
 func _attack_zone(candidate: ActionCandidate, advantage: AdvantageResult) -> int:
@@ -363,17 +669,53 @@ func _resolve_cut(
 	if turnover.occurred:
 		_terminate_turnover(turnover)
 		return
-	_emit(
-		MatchDomainEvent.PASS_COMPLETED, _context.offense.team_id, feed.actor_id,
-		candidate.actor_id, &"", feed.action_id(), advantage.level_id())
-	_context.last_passer_id = feed.actor_id
-	_context.last_pass_created_advantage = true
-	_context.ball_handler_id = candidate.actor_id
+	_record_completed_pass(feed.actor_id, candidate.actor_id, advantage, feed.action_id())
 	var cutter: PlayerMatchProfile = _context.offense_profile(candidate.actor_id)
 	var dunk: bool = _body.dunk_is_available(cutter.body, cutter.attributes.vertical)
 	_resolve_shot(
 		candidate.actor_id, ShotZone.Value.RESTRICTED_RIM, dunk,
 		ActionFamily.Value.OFF_BALL_CUT, advantage, action_stream)
+
+
+## The spot-up. §10.1 names the family "Relocation or spot-up", and a spot-up
+## exists to become a catch-and-shoot: the shooter relocates into space the
+## defence has left, the ball finds him, and he shoots it.
+##
+## This family previously emitted an off-ball event and changed nothing at all —
+## it could not produce a shot, a pass, or an advantage anyone consumed, so a
+## quarter of every possession's off-ball work was inert. That is the other half
+## of the missing creation: `OFF_BALL_CUT` had its feed-and-finish and
+## `RELOCATION` had nothing, so the only catch-and-shoot the engine could build
+## was one the ball handler happened to select a pass into.
+##
+## The feed is a real pass. It can be turned over, and it is the creator of the
+## shot if it arrives.
+func _resolve_relocation(
+	candidate: ActionCandidate,
+	advantage: AdvantageResult,
+	action_stream: RandomSource,
+) -> void:
+	_emit(
+		MatchDomainEvent.OFF_BALL_ACTION, _context.offense.team_id, candidate.actor_id,
+		candidate.target_id, &"", candidate.action_id(), advantage.level_id())
+	if _context.is_late_clock():
+		return
+	if (
+		action_stream.derive(&"spot_up").next_float()
+		>= _balance.relocation_spot_up_share * advantage.quality_share()
+	):
+		return
+	var feed := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, _context.ball_handler_id, 1.0, candidate.actor_id)
+	if feed.actor_id.is_empty() or feed.actor_id == candidate.actor_id:
+		return
+	var turnover: TurnoverOutcome = _turnover_resolver.resolve_pass(
+		_context, feed, advantage, action_stream.derive(&"spot_up_turnover"))
+	if turnover.occurred:
+		_terminate_turnover(turnover)
+		return
+	_record_completed_pass(feed.actor_id, candidate.actor_id, advantage, feed.action_id())
+	_resolve_catch_and_shoot(candidate.actor_id, advantage, action_stream)
 
 
 func _resolve_screen(
@@ -408,13 +750,24 @@ func _resolve_shot(
 ) -> void:
 	var shot_stream: RandomSource = action_stream.derive(&"shot")
 	var contest: ShotContest = _shot_resolver.build_contest(_context, shooter_id, zone, advantage)
-	var assisted_state: StringName = _assisted_state(shooter_id, action_family)
+	# The creation relationship is settled *before* the shot resolves and is
+	# carried on the attempt, not invented after the ball goes in. §12.1 makes
+	# the assisted state part of the shot intent, so the ledger records it on
+	# the attempt; a made basket then carries the same creator, and the assist
+	# is a function of that recorded evidence rather than of the outcome.
+	var creation: PassCreation = _context.pass_creation
+	var assisted_state: StringName = creation.assisted_state(shooter_id, action_family)
+	var creator_id: StringName = creation.creator_for(shooter_id, action_family)
+	var catch_quality: float = creation.catch_quality if creation.reaches(shooter_id) else 1.0
 	var defender_id: StringName = contest.primary_defender_id
 
 	_emit(
 		MatchDomainEvent.FIELD_GOAL_ATTEMPT, _context.offense.team_id, shooter_id,
-		defender_id, &"", ActionFamily.id_of(action_family), contest.band_id(),
+		defender_id, creator_id, ActionFamily.id_of(action_family), contest.band_id(),
 		ShotZone.id_of(zone), 0, 1 if dunk else 0)
+	# A shot consumes the delivery that produced it, whatever it does next. The
+	# same pass cannot create two attempts.
+	_context.clear_pass_creation()
 
 	var blocker_id: StringName = _shot_resolver.resolve_block(
 		_context, shooter_id, zone, dunk, contest, advantage, shot_stream.derive(&"block"))
@@ -433,23 +786,26 @@ func _resolve_shot(
 		_context, shooter_id, zone, contest, shot_stream.derive(&"shooting_foul"))
 	var outcome: ShotOutcome = _shot_resolver.resolve(
 		_context, shooter_id, zone, dunk, contest, advantage,
-		_catch_quality(shooter_id), _movement_load(action_family),
+		catch_quality, _movement_load(action_family),
 		shot_stream.derive(&"make"))
 
 	if outcome.made:
 		_points_scored += outcome.points
 		_emit(
 			MatchDomainEvent.FIELD_GOAL_MADE, _context.offense.team_id, shooter_id,
-			defender_id, &"", ActionFamily.id_of(action_family), assisted_state,
+			defender_id, creator_id, ActionFamily.id_of(action_family), assisted_state,
 			ShotZone.id_of(zone), outcome.points, 1 if dunk else 0)
-		_credit_assist(shooter_id, action_family, zone, shot_stream.derive(&"assist"))
+		_credit_assist(
+			creator_id, shooter_id, action_family, zone, shot_stream.derive(&"assist"))
 		if foul.occurred:
 			# And-one: the basket counts and one free throw follows (§13).
 			if _record_foul(foul, _context.defense.team_id):
 				_resolve_disqualification(_context.defense.team_id, foul.fouler_id)
 			_resolve_free_throws(shooter_id, 1, false, action_stream.derive(&"and_one"))
 			return
-		_terminate(PossessionEndReason.Value.MADE_SCORE, _context.defense.team_id, false)
+		_terminate(
+			PossessionEndReason.Value.MADE_SCORE, RestartCause.Value.MADE_FIELD_GOAL,
+			_context.defense.team_id, false)
 		return
 
 	_emit(
@@ -465,58 +821,51 @@ func _resolve_shot(
 	_resolve_rebound(shooter_id, zone, false, action_stream)
 
 
-## §11.3 assist attribution. The pass must have been the delivery that created
-## this attempt; a receiver who then created his own shot is unassisted.
+## §11.3 assist attribution.
+##
+## The eligibility decision is already made and already in the ledger: the
+## attempt carried a creator, or it did not. Nothing here inspects the score,
+## the target band, the shooter's team-mates, or how the shot went in — only
+## whether this basket has a recorded creator and whether the passer's
+## execution converts it under the §14.3 curve.
+##
+## §8 assigns "assist conversion support" to Passing and "open-target
+## recognition" to Vision, and §11.3 puts execution on Passing. Vision has
+## already been spent earning the opportunity, in the advantage roll that made
+## the delivery a creating pass at all; Passing decides whether the delivery is
+## what the basket is credited to.
 func _credit_assist(
+	creator_id: StringName,
 	shooter_id: StringName,
 	action_family: int,
 	zone: int,
 	random_source: RandomSource,
 ) -> void:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
+	if creator_id.is_empty():
 		return
-	if not _pass_created_shot(action_family):
-		return
-	var passer: PlayerMatchProfile = _context.offense_profile(_context.last_passer_id)
-	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(_context.last_passer_id)
-	var read: float = _capability.capability_of(
-		CapabilityKey.Value.PASS_READ_QUALITY, passer, passer_runtime)
-	var units: float = _capability.differential_units(read, 0.5)
+	assert(creator_id != shooter_id, "a player cannot assist his own basket")
+	var passer: PlayerMatchProfile = _context.offense_profile(creator_id)
+	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(creator_id)
+	var accuracy: float = _capability.capability_of(
+		CapabilityKey.Value.PASS_ACCURACY, passer, passer_runtime)
+	var units: float = _capability.differential_units(accuracy, 0.5)
 	var probability: float = _balance.opposed_probability(
 		_balance.assist_base, units, _balance.assist_floor, _balance.assist_ceiling)
 	if random_source.next_float() >= probability:
 		return
 	_emit(
-		MatchDomainEvent.ASSIST, _context.offense.team_id, _context.last_passer_id,
+		MatchDomainEvent.ASSIST, _context.offense.team_id, creator_id,
 		shooter_id, &"", ActionFamily.id_of(action_family), &"", ShotZone.id_of(zone))
-	_context.last_passer_id = &""
 
 
-func _pass_created_shot(action_family: int) -> bool:
-	return (
-		action_family == ActionFamily.Value.PULL_UP
-		or action_family == ActionFamily.Value.OFF_BALL_CUT
-		or action_family == ActionFamily.Value.POST_ACTION
-	)
-
-
-func _assisted_state(shooter_id: StringName, action_family: int) -> StringName:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
-		return &"unassisted"
-	if _pass_created_shot(action_family):
-		return &"catch_and_shoot"
-	return &"created"
-
-
-func _catch_quality(shooter_id: StringName) -> float:
-	if _context.last_passer_id.is_empty() or _context.last_passer_id == shooter_id:
-		return 1.0
-	var passer: PlayerMatchProfile = _context.offense_profile(_context.last_passer_id)
-	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(_context.last_passer_id)
+## §12.2 catch/pass quality, settled at delivery rather than at the shot. A pass
+## that was completed at all is mostly a clean catch; the passer's accuracy
+## moves the remainder, and §19.1 lets chemistry add a modest bounded amount.
+func _delivered_catch_quality(passer_id: StringName) -> float:
+	var passer: PlayerMatchProfile = _context.offense_profile(passer_id)
+	var passer_runtime: PlayerMatchRuntime = _context.offense_runtime(passer_id)
 	var accuracy: float = _capability.capability_of(
 		CapabilityKey.Value.PASS_ACCURACY, passer, passer_runtime)
-	# A pass that was completed at all is mostly a clean catch; accuracy moves
-	# the remainder. §19.1 lets chemistry add a modest bounded amount on top.
 	var floor_share: float = _balance.catch_quality_floor
 	return clampf(
 		floor_share
@@ -539,6 +888,25 @@ func _resolve_intentional_foul(random_source: RandomSource) -> bool:
 	if not call.occurred:
 		return false
 	_resolve_defensive_foul(call, random_source.derive(&"intentional_consequences"))
+	return true
+
+
+## At most one per possession. `FoulResolver` owns the eligibility — final
+## period, up exactly three, inside the window, and in the bonus so the whistle
+## actually sends the offence to the line — and this owns the fact that it is
+## one decision rather than a standing condition. Both are needed: the bonus
+## gate stops the foul that buys nothing, and this stops the second, third and
+## fourth foul that would follow the one that bought something.
+func _resolve_leading_by_three_foul(random_source: RandomSource) -> bool:
+	if _leading_foul_called:
+		return false
+	if _context.ball_handler_id.is_empty():
+		return false
+	var call: FoulCall = _foul_resolver.resolve_leading_by_three_foul(_context, random_source)
+	if not call.occurred:
+		return false
+	_leading_foul_called = true
+	_resolve_defensive_foul(call, random_source.derive(&"leading_by_three_consequences"))
 	return true
 
 
@@ -580,6 +948,9 @@ func _resolve_free_throws(
 	random_source: RandomSource,
 ) -> void:
 	assert(attempts > 0, "a free-throw sequence needs at least one attempt")
+	# §11.3 / §14.1: free throws are not field goals and never carry an assist.
+	# A whistle ends the play the delivery had created.
+	_context.clear_pass_creation()
 	var on_court: Array[StringName] = _context.offense_on_court()
 	if shooter_id.is_empty() or not _context.offense_state().is_on_court(shooter_id):
 		# The fouled player left the floor on the same whistle. The rules give
@@ -593,27 +964,71 @@ func _resolve_free_throws(
 	for index in range(attempts):
 		# §9.4: free throws use separate event time and do not consume the shot
 		# clock; the possession either ends or resets after the sequence.
-		_consume(_clock.free_throw_ms())
-		if _terminated:
-			return
-		var made: bool = _free_throw_resolver.resolve(
-			_context, shooter_id, random_source.derive(StringName("attempt:%d" % (index + 1))))
+		#
+		# The buzzer cannot cancel an awarded attempt. A foul drawn before the
+		# horn is shot after it, so free-throw event time advances the stamped
+		# clock but is never allowed to expire the period mid-sequence. Running
+		# it through `_consume` did exactly that: a two-shot foul drawn with one
+		# second left terminated the possession before the first attempt was
+		# emitted, leaving a FREE_THROW_AWARDED in the ledger that nothing ever
+		# took, which §13.2 forbids — attempts are attributed exactly once, and
+		# zero is not once.
+		_advance_dead_ball(_clock.free_throw_ms())
+		# `EndgameStrategy`'s intentional miss: a *trailing* team's final attempt
+		# of the trip, deliberately missed rather than shot to make, in the one
+		# state where the point cannot tie and the rebound can. The resolver is
+		# never consulted for this one attempt, so there is no make-probability
+		# table for the decision to touch.
+		#
+		# The margin the decision reads is live: `_emit` reduces each attempt
+		# into `_state` as it is written, so an earlier make of this same trip
+		# is already on the scoreboard by the time the last attempt comes up.
+		# That is what lets "down three, first of two made" arrive here as the
+		# down-two state the rule is actually about.
+		var intentional_miss: bool = EndgameStrategy.should_intentionally_miss_final_free_throw(
+			_context, _balance, index, attempts)
+		var made: bool = (
+			false if intentional_miss
+			else _free_throw_resolver.resolve(
+				_context, shooter_id, random_source.derive(StringName("attempt:%d" % (index + 1)))))
 		last_made = made
 		if made:
 			_points_scored += 1
 		_emit(
 			MatchDomainEvent.FREE_THROW_MADE if made else MatchDomainEvent.FREE_THROW_MISSED,
-			_context.offense.team_id, shooter_id, &"", &"", &"", &"", &"", 0, index + 1)
+			_context.offense.team_id, shooter_id, &"", &"", &"",
+			&"intentional" if intentional_miss else &"", &"", 0, index + 1)
 		if one_and_one and index == 0 and not made:
 			break
 
+	# A missed last attempt is a live ball where the rules say so, and an
+	# intentionally missed one is a missed one. It goes into the same
+	# `_resolve_rebound` every other miss goes into, contested by the same
+	# rebound resolver against the same defence, and the offence keeps the ball
+	# only when it actually wins the board — the decision buys a live rebound,
+	# never the rebound itself. `EndgameStrategy` refuses the intentional miss
+	# outright under a profile where `final_free_throw_reboundable` is false,
+	# so this branch is the only one it can reach.
 	if not last_made and _rules.final_free_throw_reboundable:
 		_resolve_rebound(shooter_id, ShotZone.Value.RESTRICTED_RIM, false, random_source)
 		return
 	if not last_made:
-		_terminate(PossessionEndReason.Value.DEFENSIVE_REBOUND, _context.defense.team_id, false)
+		# A missed final attempt under a ruleset that does not make it live. The
+		# ball is dead and the defence takes it out; the whistle that stopped the
+		# clock was the foul that created the trip, which is the cause named
+		# here. No launch profile reaches this branch — all five set
+		# `final_free_throw_reboundable` — and `TestRestartContract` asserts that.
+		_terminate(
+			PossessionEndReason.Value.DEFENSIVE_REBOUND, RestartCause.Value.FOUL,
+			_context.defense.team_id, false)
 		return
-	_terminate(PossessionEndReason.Value.MADE_SCORE, _context.defense.team_id, false)
+	# The made *free throw*, which `PossessionEndReason` cannot tell apart from
+	# the made field goal above. Naming it here is the whole of §5.31's
+	# correction: the clock is dead through a free-throw trip in every ruleset
+	# this engine models, so the restart after it is never charged.
+	_terminate(
+		PossessionEndReason.Value.MADE_SCORE, RestartCause.Value.MADE_FREE_THROW,
+		_context.defense.team_id, false)
 
 
 ## Records the whistle and reports whether it disqualified the fouler.
@@ -670,14 +1085,18 @@ func _resolve_rebound(
 		&"", outcome.side_id(), ShotZone.id_of(zone))
 
 	if not outcome.offensive:
-		_terminate(PossessionEndReason.Value.DEFENSIVE_REBOUND, _context.defense.team_id, true)
+		_terminate(
+			PossessionEndReason.Value.DEFENSIVE_REBOUND, RestartCause.Value.LIVE_BALL,
+			_context.defense.team_id, true)
 		return
 
 	# §9.4 / §14.4: the possession continues. Same id, no new start event, no
 	# extra team possession, and the rule profile's own shot-clock reset.
 	_context.offensive_rebounds += 1
 	_context.ball_handler_id = outcome.rebounder_id
-	_context.last_passer_id = &""
+	# §14.4: a second chance is a new scoring action. Nothing from before the
+	# miss creates the shot that follows it.
+	_context.clear_pass_creation()
 	_context.in_transition = false
 	_emit(
 		MatchDomainEvent.SHOT_CLOCK_RESET, _context.offense.team_id, outcome.rebounder_id,
@@ -704,7 +1123,8 @@ func _resolve_rebound(
 	var putback: ActionCandidate = _generator.putback_candidate(_context, outcome.rebounder_id)
 	_emit(
 		MatchDomainEvent.ACTION_SELECTED, _context.offense.team_id, putback.actor_id,
-		&"", &"", putback.action_id(), &"", ShotZone.id_of(putback.zone))
+		&"", &"", putback.action_id(),
+		EndgameStrategy.active_tag(_context, _balance), ShotZone.id_of(putback.zone))
 	_resolve_shot(
 		putback.actor_id, putback.zone, putback.dunk, ActionFamily.Value.PUTBACK,
 		AdvantageResult.new(AdvantageLevel.Value.SMALL, putback.actor_id, putback.actor_id),
@@ -723,10 +1143,17 @@ func _emit_turnover(turnover: TurnoverOutcome) -> void:
 			turnover.offender_id, &"", &"", turnover.cause_id())
 
 
+## Every turnover terminates through here, and its restart cause comes from the
+## §11.2 cause already attributed to it rather than from a second judgement:
+## `RestartCause.for_turnover` owns that mapping. A credited steal leaves the
+## ball live; everything else arrived through a whistle or through the ball
+## leaving the floor.
 func _terminate_turnover(turnover: TurnoverOutcome) -> void:
+	_context.clear_pass_creation()
 	_emit_turnover(turnover)
 	_terminate(
-		PossessionEndReason.Value.TURNOVER, _context.defense.team_id, turnover.credits_steal())
+		PossessionEndReason.Value.TURNOVER, RestartCause.for_turnover(turnover),
+		_context.defense.team_id, turnover.credits_steal())
 
 
 ## An offensive foul: the whistle, then the turnover it caused, then any
@@ -737,14 +1164,29 @@ func _terminate_offensive_foul(call: FoulCall, offender_id: StringName) -> void:
 	_emit_turnover(TurnoverResolver.offensive_foul_turnover(offender_id))
 	if disqualified:
 		_resolve_disqualification(_context.offense.team_id, call.fouler_id)
-	_terminate(PossessionEndReason.Value.TURNOVER, _context.defense.team_id, false)
+	_terminate(
+		PossessionEndReason.Value.TURNOVER, RestartCause.Value.FOUL,
+		_context.defense.team_id, false)
 
 
-func _terminate(reason: int, next_team_id: StringName, live_transfer: bool) -> void:
+## The single writer of both terminal facts. Every path names its restart cause
+## explicitly; none is derived from `reason`, which is what removes the §5.30
+## ambiguity rather than relocating it.
+func _terminate(
+	reason: int,
+	restart_cause: int,
+	next_team_id: StringName,
+	live_transfer: bool,
+) -> void:
 	if _terminated:
 		return
+	assert(RestartCause.is_valid(restart_cause), "unknown restart cause")
+	assert(live_transfer == (restart_cause == RestartCause.Value.LIVE_BALL),
+		"a live transfer and a LIVE_BALL restart cause are the same fact, "
+		+ "so a terminal path may not claim one without the other")
 	_terminated = true
 	_end_reason = reason
+	_restart_cause = restart_cause
 	_live_transfer = live_transfer
 	_next_team_id = (
 		next_team_id
@@ -787,4 +1229,23 @@ func _consume(elapsed_ms: int) -> void:
 		return
 	_writer.consume(elapsed_ms)
 	if _writer.clock_ms <= 0:
-		_terminate(PossessionEndReason.Value.PERIOD_EXPIRED, _context.offense.team_id, false)
+		# The horn. `MatchSession` runs a period transition before anything else
+		# can happen, and that transition writes `PERIOD_START` again — but the
+		# record still has to carry a truthful cause of its own, because the
+		# ledger and the calibration runners read it.
+		_terminate(
+			PossessionEndReason.Value.PERIOD_EXPIRED, RestartCause.Value.PERIOD_START,
+			_context.offense.team_id, false)
+
+
+## Advances event time across a dead ball without letting the buzzer interrupt
+## it, leaving at least one millisecond on the clock.
+##
+## The period still ends — the next `_consume` on live action finds a clock at
+## one millisecond and expires it — but it ends *after* the dead-ball sequence
+## has been attributed rather than in the middle of it. That is the difference
+## between a period expiring and a period cancelling a foul's consequences.
+func _advance_dead_ball(elapsed_ms: int) -> void:
+	if _terminated:
+		return
+	_writer.consume(mini(elapsed_ms, maxi(_writer.clock_ms - 1, 0)))

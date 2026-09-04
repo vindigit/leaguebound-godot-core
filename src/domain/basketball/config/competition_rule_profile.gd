@@ -1,14 +1,14 @@
-class_name CompetitionRuleProfile
+﻿class_name CompetitionRuleProfile
 extends RefCounted
 
-## One immutable competition rule profile (`SIMULATION_SPEC.md` §4).
+## One immutable competition rule profile (`SIMULATION_SPEC.md` Â§4).
 ##
 ## "Rules are phase-appropriate and recognizable without using licensed league
 ## names. Period length, foul bonus, line distance, pace environment, and roster
 ## rules are configurable data. The engine does not infer rules from a generic
 ## `PRO` flag."
 ##
-## §4 also fixes the boundary: a rule profile changes spacing, expected pace,
+## Â§4 also fixes the boundary: a rule profile changes spacing, expected pace,
 ## shot-location difficulty, officiating, and substitution patterns. It "cannot
 ## secretly rewrite stored player ratings", and nothing here is allowed to reach
 ## a capability.
@@ -27,7 +27,7 @@ var regulation_periods: int
 var period_seconds: int
 var overtime_seconds: int
 var shot_clock_seconds: int
-## §9.4: "Offensive rebounds use the rule profile's reset behavior."
+## Â§9.4: "Offensive rebounds use the rule profile's reset behavior."
 var offensive_rebound_reset_seconds: int
 var frontcourt_seconds: int
 var personal_foul_limit: int
@@ -37,17 +37,130 @@ var bonus_kind: int
 ## Team fouls at which the double bonus begins; -1 disables the tier.
 var team_foul_double_bonus_threshold: int
 var double_bonus_free_throws: int
-## §5.1 permits a rules-profile exception, but every launch profile resets team
+## Â§5.1 permits a rules-profile exception, but every launch profile resets team
 ## fouls each period.
 var team_fouls_reset_each_period: bool
-## §13.2 / §14: a missed final free throw is live where the rules say so.
+## Â§13.2 / Â§14: a missed final free throw is live where the rules say so.
 var final_free_throw_reboundable: bool
 var possession_arrow_enabled: bool
 var three_point_profile_id: StringName
 var restricted_area_profile_id: StringName
 var pace_environment_id: StringName
+## The numeric half of the pace environment: a multiplier on every clock draw,
+## below one for a quicker competition and above one for a more deliberate one.
+##
+## `SIMULATION_SPEC.md` Â§4 lists pace environment among the things a rule profile
+## configures, but the profile previously carried only an id that nothing read,
+## so every competition consumed the clock at the same rate and possessions per
+## game were a pure function of period length. Â§14.1 states a different
+## possessions band for each competition, and this is the knob that reaches
+## them without moving the shared time bands underneath all five.
+##
+## **Re-derived for all five competitions by §5.32**, against the corrected clock
+## contract. `simulation-v13` and `simulation-v14` between them stopped charging
+## a throw-in on every restart the rules do not charge, which returns about three
+## seconds on roughly a fifth of possessions and moved possessions per team up by
+## +2.77 to +3.70 at every level on matched seeds. These values were calibrated
+## against the old model, so they were absorbing an error that no longer exists.
+##
+## The re-derivation is a measurement, not an offset. A possession's mean
+## duration is `A·p + B`, where `A·p` is every draw that passes through
+## `ClockResolver._draw` and `B` is the free-throw and dead-ball event time no
+## pace value can reach; `A` and `B` were measured per competition by running
+## identical variations at two pace scales, and each new value is the `p` that
+## restores the possessions that competition produced under the clock model these
+## numbers were calibrated against. Every level needed between +4.12% and +4.68%
+## — one mechanism, one magnitude — and the ordering between the five is
+## unchanged, which is what says the pace *environment* did not move and only its
+## accounting did.
+##
+## `B` is 6.6% of possession duration at college and 14.3% at top domestic, so
+## this parameter still reaches 86-93% of a possession. It remains the correct
+## calibration surface; §5.32 records the evidence rather than assuming it.
+var pace_multiplier: float
 var officiating_profile_id: StringName
 var roster_rule_profile_id: StringName
+## §4 `timeoutRule`: charged timeouts each team may call in the match.
+##
+## The Simulation Specification has always listed a timeout rule among the
+## things a competition profile configures; nothing read it, and the engine had
+## no timeout at all. Overtime does not grant more here — a coach who has spent
+## them has spent them, which is what makes the allowance a decision rather
+## than an unlimited privilege.
+var timeouts_per_team: int
+
+## §11.3: "Assist attribution follows configurable competition/stat rules."
+##
+## `assist_rule_id` names the scoring rule and `credited_assist_families` is
+## that rule's content: the shot families whose attempt a delivery is credited
+## for, as opposed to the ones the shooter creates for himself.
+##
+## All five version 1.0 competitions share `delivered-shot-v1`, because no §4
+## or §14 requirement asks any of them to score an assist differently, and the
+## Stage 4 brief is explicit that shared basketball mechanics are preferred over
+## per-competition rules. The fields exist so that a competition which does need
+## a different rule is a configuration change rather than an engine change, and
+## so a calibration report can name the rule it measured rather than implying
+## one.
+var assist_rule_id: StringName = &"delivered-shot-v1"
+var credited_assist_families: PackedInt32Array = PassCreation.DELIVERED_FAMILIES
+
+## Whether a timeout called in `EndgameStrategy`'s final-regulation window
+## lets the calling team inbound in the frontcourt instead of walking the ball
+## up. Real leagues differ on this rule and the engine had no representation of
+## it at all before Stage 4's endgame work: a timeout was always a pure rest.
+##
+## Off by default, matching every profile's behaviour before this field
+## existed. Exactly one profile grants it — `top_domestic_profile()` — because
+## the top domestic professional rule set is the one this repertoire is modelled
+## on. It is granted on that ground alone.
+##
+## It was briefly granted to `college_profile()` as well. That was a mistake of
+## reasoning rather than of code: the 2026-09-01 owner ruling named college and
+## top domestic as the two competitions whose *measured overtime rate* was to be
+## treated as missing end-of-regulation behaviour, and the grant read that
+## ruling as though it had also decided a §4 rule question. It had not. A
+## competition's rules are fixed by §4 and by what the competition is, never by
+## which §14.2 band a measurement is short of — deriving one from the other is
+## the same as letting a calibration target reach into production data, which
+## §5.25's own pre-implementation confirmation 3 exists to forbid.
+var timeout_advance_permitted: bool = false
+
+## The remaining game clock, in milliseconds, at or below which a made **field
+## goal** leaves the clock stopped, so the throw-in that follows restarts it on
+## the legal touch. Zero disables the rule: the clock never stops after a basket
+## in that competition.
+##
+## **This relocates an existing rule rather than introducing one.** Before §5.31
+## the engine already stopped the clock after a made basket inside the last five
+## seconds of every period — but it did so inside
+## `PossessionEngine._open_possession`, by reading
+## `SimulationBalanceProfile.desperation_opening_clock_ms` and treating the
+## desperation window as a clock-stoppage window. That is a competition rule
+## expressed as a coupling to a balance constant, in the class §4 says must not
+## infer rules. Every profile therefore ships 5,000ms, which reproduces the
+## previous behaviour exactly, and the rule is now data where §4 puts it.
+##
+## **Open owner decision, not taken here.** Whether any competition should
+## declare a *longer* late-game window — the final two minutes of the fourth
+## period, say — is ruled on by nothing in this repository.
+## `SIMULATION_SPEC.md` §4's `CompetitionRuleProfile` interface has no
+## clock-stoppage member at all and `BALANCE_SPEC.md` states no such rule, so
+## inventing one here would be a rule change disguised as a calibration fix.
+## The representation supports it, `RestartClockPolicy` reads it,
+## `TestRestartContract` proves both sides of its boundary on a constructed
+## profile, and `PROJECT_STATUS.md` §5.31 carries it as the missing decision.
+var made_basket_clock_stop_ms: int = 5000
+
+## Whether that window applies only to the last period of regulation and to
+## overtime, rather than to every period.
+##
+## False in every profile, because that is what the previous behaviour was. It
+## exists because a competition that adopts a late-game rule almost certainly
+## scopes it to late periods, and a representation that could not say so would
+## force the eventual owner ruling to change engine code rather than profile
+## data.
+var made_basket_clock_stop_late_periods_only: bool = false
 
 
 func _init(
@@ -72,7 +185,16 @@ func _init(
 	p_pace_environment_id: StringName = &"standard_pace",
 	p_officiating_profile_id: StringName = &"standard_officiating",
 	p_roster_rule_profile_id: StringName = &"standard_roster",
+	p_pace_multiplier: float = 1.0,
+	p_timeouts_per_team: int = 6,
+	p_timeout_advance_permitted: bool = false,
+	p_made_basket_clock_stop_ms: int = 5000,
+	p_made_basket_clock_stop_late_periods_only: bool = false,
 ) -> void:
+	assert(p_timeouts_per_team >= 0 and p_timeouts_per_team <= 12,
+		"a timeout allowance must be a small non-negative count")
+	assert(p_pace_multiplier >= 0.60 and p_pace_multiplier <= 1.60,
+		"the pace environment multiplier stays inside a credible competition band")
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"rule profile identity and version are required")
 	assert(p_regulation_periods > 0, "regulation period count must be positive")
@@ -93,6 +215,10 @@ func _init(
 		"a double bonus cannot begin before the ordinary bonus"
 	)
 	assert(p_double_bonus_free_throws > 0, "the double bonus must award at least one attempt")
+	assert(p_made_basket_clock_stop_ms >= 0,
+		"a made-basket clock-stop window is never negative")
+	assert(p_made_basket_clock_stop_ms <= p_period_seconds * 1000,
+		"a made-basket clock-stop window cannot outlast the period it is drawn against")
 	profile_id = p_profile_id
 	version = p_version
 	regulation_periods = p_regulation_periods
@@ -112,13 +238,35 @@ func _init(
 	three_point_profile_id = p_three_point_profile_id
 	restricted_area_profile_id = p_restricted_area_profile_id
 	pace_environment_id = p_pace_environment_id
+	pace_multiplier = p_pace_multiplier
 	officiating_profile_id = p_officiating_profile_id
 	roster_rule_profile_id = p_roster_rule_profile_id
+	timeouts_per_team = p_timeouts_per_team
+	timeout_advance_permitted = p_timeout_advance_permitted
+	made_basket_clock_stop_ms = p_made_basket_clock_stop_ms
+	made_basket_clock_stop_late_periods_only = p_made_basket_clock_stop_late_periods_only
 
 
 func period_length_ms(period: int) -> int:
 	assert(period > 0, "periods are one-based")
 	return (period_seconds if period <= regulation_periods else overtime_seconds) * 1000
+
+
+## Whether a made field goal leaves the game clock stopped, given the period and
+## the game clock remaining **as the next possession begins**.
+##
+## `RestartClockPolicy` is the only caller, and a made *free throw* never
+## reaches here: a free-throw trip is dead-ball time in every ruleset this
+## engine models, so it is basketball rather than a competition rule and the
+## policy answers it without asking a profile.
+func stops_clock_after_made_basket(period: int, remaining_ms: int) -> bool:
+	assert(period > 0, "periods are one-based")
+	assert(remaining_ms >= 0, "a remaining game clock is never negative")
+	if made_basket_clock_stop_ms <= 0:
+		return false
+	if made_basket_clock_stop_late_periods_only and period < regulation_periods:
+		return false
+	return remaining_ms <= made_basket_clock_stop_ms
 
 
 ## The **maximum** free throws a non-shooting defensive foul awards, given the
@@ -174,3 +322,95 @@ static func professional_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
 		&"professional_baseline", &"v1", 4, 720, 300, 24, 6, 14, 8,
 		5, BonusKind.TWO_SHOT, -1, 2, true, true, false)
+
+
+# --- the five calibrated competition profiles -------------------------------
+#
+# `SIMULATION_SPEC.md` Â§4 makes period length, foul bonus, shot clock, and
+# roster rules configurable data rather than something inferred from a `PRO`
+# flag, and Â§3 names the competitions. `BALANCE_SPEC.md` Â§14.1 then states a
+# possessions-per-game band for each. Those two facts together fix the clock:
+# the period length has to be the one under which the Â§14.1 band corresponds to
+# a credible seconds-per-possession figure, because possessions per *game* is a
+# rate against game length. Each profile below records that arithmetic.
+#
+# These are the profiles the competition calibration report certifies. They are
+# versioned with the engine, not with the calibration harness, because they are
+# shipping rules rather than test scaffolding.
+#
+# All five declare the same made-basket clock rule — the last 5,000ms of every
+# period, `made_basket_clock_stop_late_periods_only` off — and they declare it
+# explicitly rather than by default so that a competition which needs a
+# different one is a visible edit to this file. That value is not a new ruling:
+# it is what `PossessionEngine` already did through the desperation threshold
+# before §5.31 moved the rule here. Whether any of them should declare a longer
+# late-game window is an open owner decision recorded on
+# `made_basket_clock_stop_ms`; nothing below invents an answer to it.
+
+
+## High school: eight-minute quarters (32 minutes), 30-second shot clock,
+## one-and-one at seven team fouls and a double bonus at ten, five personal
+## fouls. Â§14.1 asks for 61-72 possessions per team, which over 32 minutes is
+## 13.3-15.7 seconds per possession.
+static func high_school_profile() -> CompetitionRuleProfile:
+	return CompetitionRuleProfile.new(
+		&"high_school", &"competition-v1", 4, 480, 240, 30, 5, 20, 10,
+		7, BonusKind.ONE_AND_ONE, 10, 2, true, true, true,
+		&"standard_arc", &"standard_restricted", &"school_pace",
+		&"standard_officiating", &"standard_roster", 0.834, 5, false, 5000, false)
+
+
+## College: twenty-minute halves (40 minutes), 30-second shot clock, two shots
+## from the fifth team foul of the half, five personal fouls. Â§14.1 asks for
+## 64-73 possessions, which over 40 minutes is 16.4-18.8 seconds per possession.
+##
+## Timeout-advance is **not** granted here. The college rule set does not
+## advance the ball on a timeout, and the owner ruling that named college
+## alongside top domestic was a ruling about how to read an overtime
+## measurement, not a grant of a §4 rule (see `timeout_advance_permitted`).
+static func college_profile() -> CompetitionRuleProfile:
+	return CompetitionRuleProfile.new(
+		&"college", &"competition-v1", 2, 1200, 300, 30, 5, 20, 10,
+		5, BonusKind.TWO_SHOT, -1, 2, true, true, true,
+		&"standard_arc", &"standard_restricted", &"college_pace",
+		&"standard_officiating", &"standard_roster", 1.041, 4, false, 5000, false)
+
+
+## Domestic development: twelve-minute quarters (48 minutes), 24-second shot
+## clock, deliberately the fastest environment in the game. Â§14.1 asks for
+## 88-101 possessions, which over 48 minutes is 14.3-16.4 seconds per
+## possession.
+static func development_profile() -> CompetitionRuleProfile:
+	return CompetitionRuleProfile.new(
+		&"domestic_development", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
+		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
+		&"standard_arc", &"standard_restricted", &"development_pace",
+		&"standard_officiating", &"standard_roster", 0.955, 7, false, 5000, false)
+
+
+## Overseas: ten-minute quarters (40 minutes), 24-second shot clock, two shots
+## from the fifth team foul of the quarter, five personal fouls. Â§14.1 asks for
+## 70-82 possessions, which over 40 minutes is 14.6-17.1 seconds per possession.
+static func overseas_profile() -> CompetitionRuleProfile:
+	return CompetitionRuleProfile.new(
+		&"overseas", &"competition-v1", 4, 600, 300, 24, 5, 14, 8,
+		4, BonusKind.TWO_SHOT, -1, 2, true, true, true,
+		&"standard_arc", &"standard_restricted", &"overseas_pace",
+		&"standard_officiating", &"standard_roster", 1.031, 5, false, 5000, false)
+
+
+## Top domestic professional: twelve-minute quarters (48 minutes), 24-second
+## shot clock, two shots from the fifth team foul of the quarter, six personal
+## fouls. Â§14.1 asks for 96-103 possessions, which over 48 minutes is 14.0-15.0
+## seconds per possession.
+##
+## Timeout-advance is granted here, and here only: this is the rule set the
+## frontcourt-inbound rule belongs to. See `timeout_advance_permitted` for why
+## the grant is a §4 fact about the competition rather than a response to a
+## §14.2 measurement.
+static func top_domestic_profile() -> CompetitionRuleProfile:
+	return CompetitionRuleProfile.new(
+		&"top_domestic_pro", &"competition-v1", 4, 720, 300, 24, 6, 14, 8,
+		5, BonusKind.TWO_SHOT, -1, 2, true, true, false,
+		&"standard_arc", &"standard_restricted", &"top_domestic_pace",
+		&"standard_officiating", &"standard_roster", 0.891, 7, true, 5000, false)

@@ -1,4 +1,4 @@
-; Engine configuration file.
+﻿; Engine configuration file.
 ; It's best edited using the editor UI and not directly,
 ; since the parameters that go here are not all obvious.
 ;
@@ -38,5 +38,5 @@ renderer/rendering_method="mobile"
 [simulation]
 
 engine_version="4.7.1-stable"
-ruleset_version="simulation-scaffold-v1"
+ruleset_version="simulation-calibrated-v3"
 random_source_version="godot-pcg32-v1"

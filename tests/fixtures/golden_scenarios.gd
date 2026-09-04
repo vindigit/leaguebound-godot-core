@@ -54,12 +54,74 @@ static func input_for(scenario: StringName) -> MatchInput:
 ## is named for. `tools/golden_ledger_harness.gd --verify` re-checks that claim,
 ## so a balance change that quietly stops producing overtime is a failure rather
 ## than a golden hash that still passes while testing nothing.
+##
+## When a balance change does invalidate one, re-derive it with
+## `calibration/runners/find_scenario_seeds.gd` rather than guessing. The
+## overtime seed moved from 5150 to 126704 at the Stage 4 calibration: the
+## calibrated scoring rates changed which fixed seeds finish level.
 static func seed_for(scenario: StringName) -> int:
 	match scenario:
 		REGULATION:
 			return 20260815
 		OVERTIME:
-			return 5150
+			# Moved from 190056 by the `simulation-v9-endgame-strategy`
+			# ruleset, from 39595 by `simulation-v6-pass-creation` before
+			# that, from 31676 by `simulation-v4-management` before that, and
+			# from 126704 by `simulation-v3-margin` before that. Every
+			# ruleset that changes the action mix changes which fixed seeds
+			# finish level, and a game that finishes level is by definition
+			# one that reached a managed score state — so this seed stopped
+			# reaching overtime, which is the one thing the fixture exists to
+			# cover. `find_scenario_seeds.gd` derived the replacement over a
+			# 2,000-seed search.
+			#
+			# That this is the *only* seed `EndgameStrategy` moved is part of
+			# the blast-radius evidence recorded in `PROJECT_STATUS.md`: the
+			# other five scenarios still exercise their named behaviour at
+			# the seeds they always had. Every one of the six ledgers still
+			# changed — in all six, `EndgameStrategy` tags one or more
+			# `ACTION_SELECTED` events with `endgame_two_for_one`,
+			# `endgame_hold`, or `endgame_designed_play` wherever the two-for-
+			# one, hold-for-the-final-shot, or designed-final-possession
+			# decision applies, which is a real behaviour change and not a
+			# hash regenerated to silence a failing test. None of these six
+			# fixed-seed games happens to reach the leading-by-three foul,
+			# the intentional free-throw miss, quick-two-vs-tying-three, or a
+			# timeout-advance-eligible rule profile — those are covered by
+			# `tests/simulation/test_endgame_strategy.gd` instead.
+			# `PROJECT_STATUS.md` records the first divergence for each
+			# scenario.
+			#
+			# `simulation-v10-endgame-corrections` did *not* move it again:
+			# this seed still finishes level, and this scenario's ledger is
+			# byte-identical across the correction, because the possessions
+			# it turns on never reach a decision v10 changed (§5.26).
+			#
+			# `simulation-v13-opening-clock-and-location-contract` moved it
+			# from 31676. The opening throw-in of every period now emits on a
+			# stopped clock instead of three seconds into it, so each period
+			# carries a little more live time and the action mix shifts —
+			# which is again exactly the thing that decides whether a fixed
+			# seed finishes level. It stopped reaching overtime, so
+			# `find_scenario_seeds.gd` derived 7919 over a 600-seed search.
+			# It is once more the *only* seed v13 moved: the other five still
+			# exercise their named behaviour at the seeds they always had,
+			# while all six ledgers changed, first at the game's opening
+			# `INBOUND` timestamp (§5.30).
+			#
+			# `simulation-v14-restart-contract` moved it again, from 7919, for
+			# the same structural reason and a different mechanism: a made free
+			# throw and a charged timeout both stop the clock, so neither
+			# restart charges its throw-in any more (§5.31). That returns two to
+			# four seconds on every free-throw trip and every run-stopping
+			# timeout, the action mix shifts, and this seed stopped finishing
+			# level. `find_scenario_seeds.gd` derived 71271 over an 800-seed
+			# search, and it is once again the *only* seed that moved: the other
+			# five still exercise their named behaviour at the seeds they have
+			# always had. All six ledgers changed; in all six the first
+			# behavioural divergence is the throw-in after a made free throw,
+			# and `PROJECT_STATUS.md` §5.31 names the event for each.
+			return 71271
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

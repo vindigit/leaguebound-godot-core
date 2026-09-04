@@ -1,4 +1,4 @@
-# LeagueBound Basketball Simulation Specification
+﻿# LeagueBound Basketball Simulation Specification
 
 | Field | Value |
 | --- | --- |
@@ -41,9 +41,9 @@ Skipping the prologue does not simulate hidden games and does not apply a perfor
 
 The high-school simulation baseline is 20 official regular-season games: 14 home-and-away district games, four scheduled interdistrict games, and two scheduled showcase, rivalry, or tournament games. Only district record determines qualification. The top four schools in each of four districts enter a 16-team state bracket worth up to four games. State results feed one 96-team National Tournament worth up to seven games, producing a maximum 31-game official school season.
 
-District ties resolve by head-to-head mini-table, capped district point differential, then a deterministic schedule-seeded draw. The state bracket uses fixed cross-district pairings, prevents same-district first-round games, and never reseeds. National seeds 33–96 play the opening round, seeds 1–32 receive byes, and the bracket applies neither reseeding nor geographic protection.
+District ties resolve by head-to-head mini-table, capped district point differential, then a deterministic schedule-seeded draw. The state bracket uses fixed cross-district pairings, prevents same-district first-round games, and never reseeds. National seeds 33â€“96 play the opening round, seeds 1â€“32 receive byes, and the bracket applies neither reseeding nor geographic protection.
 
-School basketball and summer club basketball never share one undifferentiated schedule or two simultaneous current memberships. Summer eligibility begins after the player’s actual school-elimination date. When an accepted summer place begins, the club becomes the one current competition membership and the continuing school place is retained only as a next-season reservation or affiliation until club membership closes. Each summer block expands into the games defined by its competition format and preserves separate club, statistics, workload, recruiting exposure, and history attribution.
+School basketball and summer club basketball never share one undifferentiated schedule or two simultaneous current memberships. Summer eligibility begins after the playerâ€™s actual school-elimination date. When an accepted summer place begins, the club becomes the one current competition membership and the continuing school place is retained only as a next-season reservation or affiliation until club membership closes. Each summer block expands into the games defined by its competition format and preserves separate club, statistics, workload, recruiting exposure, and history attribution.
 
 ## 2. Simulation Principles
 
@@ -93,7 +93,7 @@ The engine does not select a desired final score or player stat line and reverse
 
 The engine supports:
 
-- Five-on-five men’s basketball.
+- Five-on-five menâ€™s basketball.
 - High school, summer club, college, domestic developmental, overseas, and top domestic professional rule profiles.
 - Regulation and overtime.
 - Planned rotations and contextual substitutions.
@@ -236,7 +236,7 @@ interface PlayerMatchRuntime {
 
 Potential caps, Attribute Points, follower count, money, and scouting visibility are not match-resolution inputs.
 
-**Overall is not a match-resolution input either.** Current Overall, Maximum Potential Overall, and Projected Peak are display projections derived from ratings and caps (`BALANCE_SPEC.md` §6.3). No capability, action weight, shot profile, contest, rebound score, foul curve, rotation decision, or Tier B aggregate may read any of them. Basketball reads the 20 attributes, body, badges, and match context. This keeps Overall truthful as a description without letting a display value become a cause.
+**Overall is not a match-resolution input either.** Current Overall, Maximum Potential Overall, and Projected Peak are display projections derived from ratings and caps (`BALANCE_SPEC.md` Â§6.3). No capability, action weight, shot profile, contest, rebound score, foul curve, rotation decision, or Tier B aggregate may read any of them. Basketball reads the 20 attributes, body, badges, and match context. This keeps Overall truthful as a description without letting a display value become a cause.
 
 ### 6.1 Body contract
 
@@ -258,13 +258,13 @@ Body affects, and only affects:
 - **Positioning and leverage.** Post resistance, box-out results, screen quality, and drive absorption, in combination with Strength.
 - **Matchups.** Assignment suitability and the size/speed mismatch terms in advantage resolution.
 
-Body must never contribute a general bonus to unrelated outcomes, and it must never be read as a proxy for Overall. Maturity profile, projected adult range, and growth resolution live in the career domain (`BALANCE_SPEC.md` §7.4); the match engine cannot resolve, advance, or observe growth.
+Body must never contribute a general bonus to unrelated outcomes, and it must never be read as a proxy for Overall. Maturity profile, projected adult range, and growth resolution live in the career domain (`BALANCE_SPEC.md` Â§7.4); the match engine cannot resolve, advance, or observe growth.
 
 ### 6.2 Layered identity in the match profile
 
-`rotationRole` and `tacticalRole` are separate fields with separate effects (§10.6). Derived archetype is **not** a match-profile field: it is a display projection and is never supplied to the engine.
+`rotationRole` and `tacticalRole` are separate fields with separate effects (Â§10.6). Derived archetype is **not** a match-profile field: it is a display projection and is never supplied to the engine.
 
-Availability facts — did not play, emergency duty, medically unavailable, not registered — are represented by lineup, rotation, and `injuryLimitations` state, not by overloading `rotationRole`.
+Availability facts â€” did not play, emergency duty, medically unavailable, not registered â€” are represented by lineup, rotation, and `injuryLimitations` state, not by overloading `rotationRole`.
 
 ### 6.3 Body state transitions
 
@@ -391,14 +391,14 @@ type PossessionNode =
 
 ```text
 Dead ball / inbound
-  → advance or transition
-  → half-court entry when transition does not resolve
-  → choose initiator and action
-  → defense selects coverage/response
-  → resolve advantage, turnover, foul, reset, or shot setup
-  → resolve shot or free throws
-  → rebound or change possession
-  → update clock, fatigue, fouls, statistics, and presentation events
+  â†’ advance or transition
+  â†’ half-court entry when transition does not resolve
+  â†’ choose initiator and action
+  â†’ defense selects coverage/response
+  â†’ resolve advantage, turnover, foul, reset, or shot setup
+  â†’ resolve shot or free throws
+  â†’ rebound or change possession
+  â†’ update clock, fatigue, fouls, statistics, and presentation events
 ```
 
 A possession can contain multiple actions and resets before a terminal result. The current one-action possession can remain as a migration mode, but the target state machine must support pass-to-action chains, help rotations, offensive rebounds, and late-clock continuation.
@@ -427,8 +427,10 @@ Each state transition consumes time from a bounded distribution defined by actio
 - Transition actions consume less time.
 - Patient offense and resets consume more time.
 - Late-clock state restricts legal action choices.
-- Offensive rebounds use the rule profile’s reset behavior.
+- Offensive rebounds use the rule profileâ€™s reset behavior.
 - Dead-ball fouls and free throws use separate event time without incorrectly consuming shot-clock time.
+- **The game clock restarts on the throw-in's legal touch, not on the whistle before it.** A possession that begins from a stopped clock — a foul, a violation, a ball out of bounds, the start of a period — charges nothing for retrieving the ball, for the official's administration, or for the throw-in itself, so its `INBOUND` carries the possession's own starting clock. A possession that begins while the clock is still running, which in this model is the restart after a made basket in open play, charges the throw-in as elapsed time because the clock never stopped. Whether the clock was stopped is a fact the session supplies to the possession; the possession does not infer it.
+- **A possession that begins with almost no time left does not run the ordinary opening.** Below a bounded game-clock threshold the offense advances the ball if the clock allows and then commits to an attempt from wherever it stands, without a half-court set. It is not given that set for free: the attempt carries the `TacticalLocation` it was actually taken from, and §12.6 charges it for the distance.
 
 ## 10. Action Selection
 
@@ -471,14 +473,14 @@ For automatic selection:
 ```text
 ActionWeight =
   Validity
-  × RoleOpportunity
-  × PlayerTendency
-  × CoachInstruction
-  × TacticalFit
-  × MatchupOpportunity
-  × ScoreClockContext
-  × CapabilityConfidence
-  × FatigueAvailability
+  Ã— RoleOpportunity
+  Ã— PlayerTendency
+  Ã— CoachInstruction
+  Ã— TacticalFit
+  Ã— MatchupOpportunity
+  Ã— ScoreClockContext
+  Ã— CapabilityConfidence
+  Ã— FatigueAvailability
 ```
 
 The Balance Specification defines curves and caps. No single factor except validity can reduce every action to zero.
@@ -487,16 +489,16 @@ The Balance Specification defines curves and caps. No single factor except valid
 
 The ten five-position sliders affect automatic behavior:
 
-- Pass First ↔ Score First.
-- Patient ↔ Aggressive.
-- Perimeter ↔ Interior.
-- Create Own Shot ↔ Off-Ball.
-- Safe ↔ Creative Passing.
-- Push Transition ↔ Control Tempo.
-- Disciplined Defense ↔ Gamble.
-- Stay Attached ↔ Help.
-- Box Out ↔ Chase Rebounds.
-- Defer ↔ Seek Clutch Opportunities.
+- Pass First â†” Score First.
+- Patient â†” Aggressive.
+- Perimeter â†” Interior.
+- Create Own Shot â†” Off-Ball.
+- Safe â†” Creative Passing.
+- Push Transition â†” Control Tempo.
+- Disciplined Defense â†” Gamble.
+- Stay Attached â†” Help.
+- Box Out â†” Chase Rebounds.
+- Defer â†” Seek Clutch Opportunities.
 
 Slider positions map to centered bounded multipliers. They never modify ratings or permanent coach instructions.
 
@@ -512,11 +514,11 @@ Coach instructions modify automatic behavior according to:
 - Veteran/leadership authority.
 - Current play call and game state.
 
-The player’s saved tendencies remain the behavioral baseline. Coaching can substantially shape role and opportunity but cannot permanently rewrite those sliders.
+The playerâ€™s saved tendencies remain the behavioral baseline. Coaching can substantially shape role and opportunity but cannot permanently rewrite those sliders.
 
 ### 10.6 Layered identity contract
 
-Rotation role, tactical role, and derived archetype are three separate layers. This section owns their behavioral contract and their stable identifiers. `BALANCE_SPEC.md` §12.4 owns the numeric bounds.
+Rotation role, tactical role, and derived archetype are three separate layers. This section owns their behavioral contract and their stable identifiers. `BALANCE_SPEC.md` Â§12.4 owns the numeric bounds.
 
 #### 10.6.1 Rotation roles
 
@@ -556,9 +558,9 @@ Tactical role is the job assigned for one game. Version 1.0 stable IDs:
 
 Rules:
 
-- Exactly one tactical role is active per player per game. It is fixed for the game and can change only between games (§18.1).
+- Exactly one tactical role is active per player per game. It is fixed for the game and can change only between games (Â§18.1).
 - No consolidation was applied. All eleven roles required by the owner ruling are retained as distinct IDs because each maps to a distinct opportunity vector in the table above; merging any two would erase a real difference in candidate generation and role opportunity.
-- Tactical role modifies `RoleOpportunity` in the §10.3 weight construction, and planned minutes and assignment in §18. It modifies **nothing else**. It never contributes to a capability, a shot profile, a contest, a rebound candidate score, a turnover risk, or a foul curve.
+- Tactical role modifies `RoleOpportunity` in the Â§10.3 weight construction, and planned minutes and assignment in Â§18. It modifies **nothing else**. It never contributes to a capability, a shot profile, a contest, a rebound candidate score, a turnover risk, or a foul curve.
 - A tactical role never gates action validity. A `shooter` may drive and a `roll_pop_big` may pass; the role changes how often those are selected, not whether they are legal.
 - Assigning a role a player is unsuited for is legal and produces bad basketball, not corrected basketball. The engine does not silently reassign.
 
@@ -644,6 +646,12 @@ A pass event records:
 
 Assist attribution follows configurable competition/stat rules. Vision increases recognition and creation; Passing increases execution. A high Vision player can see a pass that poor Passing fails to deliver. A high Passing player with poor Vision may accurately deliver only obvious options.
 
+**Implementation status: the passer-to-shot relationship is an explicit record, and "whether the pass directly created the eventual shot" is settled at the shot rather than at the pass.** `PassCreation` carries the passer, the receiver, the openness the delivery produced, the catch quality it earned, the defender it moved, and the competition's own credited-assist rule; `PASS_COMPLETED` records all of it. A delivery creates the attempt when the record is live, the ball reached *that* shooter, the passer is not the shooter, and the shot's family is one the competition credits — the last of these being `CompetitionRuleProfile.assist_rule_id` and `credited_assist_families`, which all five version 1.0 competitions share as `delivered-shot-v1`. The creator is stamped on `FIELD_GOAL_ATTEMPT` and `FIELD_GOAL_MADE` before the shot resolves, so §24.3's requirement that every official statistic derive from an ordered event holds for assists without reconstruction.
+
+The record is invalidated by a possession change, a turnover, an offensive rebound, a free-throw whistle, a reset, an attack that does not finish, a later pass replacing it, and the shot that consumes it. Two of those are defence in depth rather than the load-bearing guard, and `PROJECT_STATUS.md` §5.15 records which and why.
+
+The attribute split is implemented as this section and §8 state it together: Vision leads the §11.1 advantage roll a completed pass makes — recognition and creation — and Passing leads the delivery, the catch quality, and the §14.3 conditional that converts a created basket into a credited assist, which §8 names "assist conversion support".
+
 ### 11.4 Screens and off-ball value
 
 Screens and off-ball actions produce measurable events even when they do not appear in the public box score:
@@ -674,6 +682,8 @@ interface ShotIntent {
 ```
 
 Shot zones at minimum include restricted rim, close non-rim, midrange, standard three, and deep three. Public logs can group these more simply.
+
+**Implementation status: `assistedState` is recorded on the attempt, not only on the make.** `CATCH_AND_SHOOT` is a shot taken off the catch, `CREATED` one the delivery produced but the shooter finished on the move, and `UNASSISTED` everything the shooter made for himself — including a shot he created for himself after catching an ordinary pass. The engine previously recorded `CREATED` for exactly that last case, which is the inverse of what this section means, and recorded nothing at all on the attempt.
 
 ### 12.2 Shot context construction
 
@@ -707,6 +717,10 @@ interface ShotContest {
 ```
 
 Contest is created from actual defensive positioning and capabilities. It is not selected as independent random flavor after shot probability is known.
+
+**Defender capability must span more than one band.** Contest pressure is centred on a base and moved by how far the defender's contest capability sits from the middle of the scale. If that span is narrower than the distance between band boundaries, the best and worst defenders in a league produce contests inside the same band and the clause above is satisfied in form only — capability is read, and then makes no difference. `BALANCE_SPEC.md` §14.1 carries the measured consequence and the corrected value.
+
+**Perimeter contests currently have no help term.** Help pressure is applied only to interior attempts, so a perimeter jumper's pressure comes from the primary defender alone and cannot reach the `HEAVY` threshold. `SMOTHERED` is therefore unreachable on the perimeter. This is a known gap, recorded rather than modelled; closing it requires a perimeter closeout or rotation term that does not exist yet.
 
 ### 12.4 Execution window
 
@@ -758,7 +772,7 @@ else:
   made = randomCheck(mapQualityToProbability(MakeQuality, shotProfile))
 ```
 
-Probability floors and ceilings are shot-profile-specific and defined in the Balance Specification. Floors cannot make absurd shots routinely viable, and ceilings cannot erase the user’s valid perfect guarantee.
+Probability floors and ceilings are shot-profile-specific and defined in the Balance Specification. Floors cannot make absurd shots routinely viable, and ceilings cannot erase the userâ€™s valid perfect guarantee.
 
 ### 12.7 Blocks and alterations
 
@@ -801,7 +815,7 @@ The engine distinguishes shooting, non-shooting, offensive, loose-ball, and inte
 
 ### 13.3 Foul discipline
 
-Defensive IQ and Interior/Perimeter Defense reduce avoidable foul risk through better position and legal contest selection. Stealing and Blocking increase success after a valid attempt; they do not independently force constant gambling. The Disciplined ↔ Gamble tendency and coach instructions determine attempt frequency.
+Defensive IQ and Interior/Perimeter Defense reduce avoidable foul risk through better position and legal contest selection. Stealing and Blocking increase success after a valid attempt; they do not independently force constant gambling. The Disciplined â†” Gamble tendency and coach instructions determine attempt frequency.
 
 ## 14. Rebounding
 
@@ -827,7 +841,7 @@ Defensive players receive positional advantage according to shot/rebound profile
 
 ### 14.3 User interaction
 
-Meaningful user rebound opportunities can offer action-specific positioning or timing interaction. Perfect execution maximizes the player’s candidate quality but does not guarantee possession against superior position, size, teammates, or opponents.
+Meaningful user rebound opportunities can offer action-specific positioning or timing interaction. Perfect execution maximizes the playerâ€™s candidate quality but does not guarantee possession against superior position, size, teammates, or opponents.
 
 ### 14.4 Offensive rebounds and putbacks
 
@@ -867,9 +881,9 @@ Coverage changes candidate actions, spacing, matchup responsibilities, and help 
 Automatic defenders choose contain, pressure, help, recover, switch, gamble, contest, box out, or transition assignment from:
 
 - Coach plan.
-- Stay Attached ↔ Help tendency.
-- Disciplined ↔ Gamble tendency.
-- Box Out ↔ Chase Rebounds tendency.
+- Stay Attached â†” Help tendency.
+- Disciplined â†” Gamble tendency.
+- Box Out â†” Chase Rebounds tendency.
 - Defensive IQ.
 - Matchup and action.
 - Score, clock, foul trouble, fatigue, and role.
@@ -937,7 +951,7 @@ Fatigue affects burst, stability, decision execution, contest arrival, ball secu
 
 ### 17.2 Work rate
 
-User work rate changes involvement and action intensity with a corresponding fatigue cost. It cannot create guaranteed touches or overrule the coach’s substitution authority.
+User work rate changes involvement and action intensity with a corresponding fatigue cost. It cannot create guaranteed touches or overrule the coachâ€™s substitution authority.
 
 ### 17.3 Injury events
 
@@ -1032,6 +1046,18 @@ If included as match inputs, morale and professionalism effects must be small, v
 
 Home advantage can affect bounded officiating, communication, composure, and familiarity factors. Its aggregate effect is calibrated as a small win-rate edge for otherwise even teams. It never guarantees an outcome.
 
+**Which metric carries the verdict.** The §14.2 home-win target is judged by the controlled, symmetrized paired venue-side win estimator defined in `BALANCE_SPEC.md` §17.4. The marginal single-arm home win rate is an informational population diagnostic and does not independently determine the home-environment calibration verdict. Both are published; only the paired estimator carries a target.
+
+**How the aggregate effect is measured.** The venue's contribution is a *paired two-arm* quantity and never one column of games. Three arms play identical fixtures at identical seeds — the venue at strength `E`, the same fixture at strength `0`, and the venue swapped to the other bench at strength `E` — and the contribution is the mean of the two venue arms' estimates against the shared control. A single arm carries the fixture, the rosters and the seeds along with the venue and cannot separate them. `BALANCE_SPEC.md` §17.4 states the estimator and the cap it feeds.
+
+### 19.5 Opening possession
+
+**The engine does not choose which team receives the opening possession.** `MatchInput.initial_possession_team_id` is a required input with no default, validated to name one of the two supplied teams. The match engine consumes a `MatchInput` and never constructs one.
+
+No tip-off, jump ball, possession arrow, or alternating-possession rule is modelled at version 0.1. `CompetitionRuleProfile.possession_arrow_enabled` is reserved and unread; wiring it up is a specification change and requires this section to describe the rule first.
+
+Until a scheduling or career layer exists to decide it from real fixture context, choosing the opening possession belongs to whoever builds the input. **A measurement fixture must counterbalance it.** Receiving the opening possession is worth a measurable margin on its own; a fixture that gives it to the same side in every game puts a first-possession edge inside every home/away differential measured on that fixture, including §14.2's equal-team home win rate.
+
 ## 20. Pressure, Clutch, and Momentum
 
 ### 20.1 Pressure
@@ -1042,7 +1068,7 @@ Manual timing remains user skill. Pressure may change window stability or size t
 
 ### 20.2 Clutch behavior
 
-Defer ↔ Seek Clutch Opportunities changes willingness to initiate or accept late-game actions. Coach plan, role, matchup, and ability still determine access.
+Defer â†” Seek Clutch Opportunities changes willingness to initiate or accept late-game actions. Coach plan, role, matchup, and ability still determine access.
 
 ### 20.3 Momentum
 
@@ -1144,7 +1170,7 @@ The presentation scheduler targets approximately three to five minutes for a nor
 
 ### 23.2 Sim full game
 
-- Uses the same match-start snapshot, rule profile, rotations, and Tier A possession engine for the user’s game.
+- Uses the same match-start snapshot, rule profile, rotations, and Tier A possession engine for the userâ€™s game.
 - Generates automatic decisions and execution for every player.
 - Produces the same final result schema and development/health inputs.
 
@@ -1286,7 +1312,7 @@ Tier C does not create membership, playing contracts, signing rights, profession
 
 ### 26.4 High-school relevance tiers
 
-- The player’s active district uses full player- and game-level simulation.
+- The playerâ€™s active district uses full player- and game-level simulation.
 - The other three districts in the active state use team-level schedule, standings, qualification, and result simulation.
 - Schools outside the active state use national-index simulation based on Team Power Rating, schedule context, state performance, and bounded deterministic variance.
 
@@ -1296,19 +1322,19 @@ A background school or player enters relevant-aggregate simulation when direct c
 
 ### 26.5 Development boundary and detail-promotion invariance
 
-Development is a career-domain resolution, not a match resolution. This specification defines the boundary; `BALANCE_SPEC.md` §9.7 owns the canonical development contract and its distributions.
+Development is a career-domain resolution, not a match resolution. This specification defines the boundary; `BALANCE_SPEC.md` Â§9.7 owns the canonical development contract and its distributions.
 
-**The match engine's role.** The engine emits participation, role-relative performance, and workload evidence in `MatchFinalResult`. It never grants Attribute Points, never allocates them, never changes a rating or a cap, and never advances a career year (§25).
+**The match engine's role.** The engine emits participation, role-relative performance, and workload evidence in `MatchFinalResult`. It never grants Attribute Points, never allocates them, never changes a rating or a cap, and never advances a career year (Â§25).
 
 **Executor equivalence.** One canonical development contract governs the user, full-detail NPCs, and aggregate executors. Detail level changes how the contract is executed, never what it produces:
 
 - The user allocates manually.
 - Full-detail NPCs receive AP-equivalent opportunity and allocate through an automatic allocator bound by identical costs, caps, timing, aging, decline, and source-ledger rules.
-- Tier B and Tier C executors may resolve development in aggregate, but must reproduce the distributions the full-detail path would have produced, within the tolerances in `BALANCE_SPEC.md` §27.2.
+- Tier B and Tier C executors may resolve development in aggregate, but must reproduce the distributions the full-detail path would have produced, within the tolerances in `BALANCE_SPEC.md` Â§27.2.
 
-**Detail-promotion invariance.** Changing a player's simulation detail level must not change the player. Promotion and demotion may add or drop evidence resolution; they may never alter current ratings, potential caps, body state, maturity state, accumulated development, or committed history. This extends §26.4's prospective-promotion rule from history to development state.
+**Detail-promotion invariance.** Changing a player's simulation detail level must not change the player. Promotion and demotion may add or drop evidence resolution; they may never alter current ratings, potential caps, body state, maturity state, accumulated development, or committed history. This extends Â§26.4's prospective-promotion rule from history to development state.
 
-The engine must therefore never receive a player whose ratings depend on how closely he is being simulated. A player who is stronger because the user is about to face him violates this contract and the parity requirements in §27.5.
+The engine must therefore never receive a player whose ratings depend on how closely he is being simulated. A player who is stronger because the user is about to face him violates this contract and the parity requirements in Â§27.5.
 
 ## 27. Calibration Framework
 
@@ -1422,15 +1448,15 @@ Required suites:
 15. Multi-season leader, award-evidence, downstream award-integration, and roster-role plausibility reports.
 16. Upstream legal-state validation fixtures covering contractual membership, active playing contracts, rights-only assignment rejection, contract-term import classification, college and draft eligibility, Out-of-Basketball state, and the 25-season boundary.
 17. Legal-roster preflight tests proving automatic authorized replacement occurs before match creation and the match engine never invents legal state or players.
-18. Active-player 25–99 rating-domain tests and sub-25 placeholder rejection.
+18. Active-player 25â€“99 rating-domain tests and sub-25 placeholder rejection.
 19. Tier B relevance-promotion persistence and no-retroactive-box-score tests.
 20. Tier B/Tier C annual-receipt, professional-service, level-change, and Out-of-Basketball idempotency tests.
 21. Award-candidate non-BDP and exactly-once downstream award-finalization tests.
-22. Overall-exclusion tests proving no resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak (§6).
-23. Layered-identity tests: rotation role affects minutes only, tactical role affects opportunity only, derived archetype affects nothing, and no identity layer reaches a capability or probability (§10.6).
+22. Overall-exclusion tests proving no resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak (Â§6).
+23. Layered-identity tests: rotation role affects minutes only, tactical role affects opportunity only, derived archetype affects nothing, and no identity layer reaches a capability or probability (Â§10.6).
 24. Tactical-role stability tests proving one active role per player per game, fixed for the game, with emergency duty and DNP never relabeling the player.
-25. Body contract tests covering action validity, reach, positioning, and matchup effects, and proving the engine cannot observe or resolve growth (§6.1, §6.3).
-26. Detail-promotion invariance tests proving ratings, caps, and body are identical across simulation detail levels for the same seed (§26.5).
+25. Body contract tests covering action validity, reach, positioning, and matchup effects, and proving the engine cannot observe or resolve growth (Â§6.1, Â§6.3).
+26. Detail-promotion invariance tests proving ratings, caps, and body are identical across simulation detail levels for the same seed (Â§26.5).
 27. User/NPC development parity tests proving the manual path and the full-detail allocator produce equivalent distributions from equivalent opportunity.
 
 Statistical tests use fixed seeds, sample-size declarations, confidence intervals, and failure tolerances from the Balance Specification. They cannot pass by expanding tolerances after every failure without a documented tuning decision.
@@ -1449,24 +1475,36 @@ Statistical tests use fixed seeds, sample-size declarations, confidence interval
 
 Completed in the current Godot core:
 
-- ✅ Replace 16-attribute inputs with the canonical 20-attribute model.
-- ✅ Add free-throw rating, Offensive IQ, Defensive IQ, and Vertical contracts.
-- ✅ Replace raw RNG callbacks with the injected versioned `RandomSource`.
-- ✅ Keep scene nodes and presentation state from owning score, clock, box score, or engine state. (Currently trivially satisfied: no presentation layer exists yet.)
+- âœ… Replace 16-attribute inputs with the canonical 20-attribute model.
+- âœ… Add free-throw rating, Offensive IQ, Defensive IQ, and Vertical contracts.
+- âœ… Replace raw RNG callbacks with the injected versioned `RandomSource`.
+- âœ… Keep scene nodes and presentation state from owning score, clock, box score, or engine state. (Currently trivially satisfied: no presentation layer exists yet.)
+
+Also completed since that list was written:
+
+- [x] Replace fixed five-player `Team` tuples with upstream-validated roster, lineup, and rotation snapshots (`TeamMatchProfile`, `TeamMatchState`, `RotationPlan`). Runtime lineup state is the sole authority for participation.
+- [x] Replace generic league scaling with explicit competition rule/environment profiles. Five exist -- high school, college, domestic development, overseas, and top domestic professional -- and the pace environment is now a number the clock consumes rather than an id nothing read.
+- [x] Expand one-action possessions into multi-action possession state (`PossessionEngine`).
+- [x] Add planned rotations, substitutions, full fouls, minutes, coverage, and role state.
+- [x] Expand `CapabilityCalculator` to the full derived-capability set, using the weights owned by the Balance Specification. All twenty capability rows plus the four physical capabilities are present and were verified against that table.
+- [x] Move the anonymous numeric literals in shot resolution into the versioned simulation balance profile. Every match constant is a named tunable with a unit and a safe range, and the configuration-integrity check rejects one outside its range.
+- [x] Replace the unconstrained `TacticalRole` string and its `balanced` default with the stable ID set.
+- [x] Replace the `RotationRole` enumeration that mixed usage intent with availability facts.
+- [x] Extend `BodyProfile` with standing reach, and add the career-domain maturity, projected-range, and growth-ledger state.
+- [x] Implement §18.2's **score and time** rotation pressure. Six of §18.2's eight pressures are now implemented; performance-within-tolerance and coach trust remain outstanding because no career domain supplies them. The rule is `GarbageTimeRule`, and it is a *possession-based safety* rather than a raw margin: a lead is safe when it is large against the standard deviation of the margin still to be played, which is `settled_swing_points_per_pair * sqrt(possession_pairs_left)`. Two thresholds read that one shared number, and **the leading coach's is the lower of the two** — a coach who has won the game rests people before a coach who has lost it concedes. That asymmetry is authorised by the owner ruling of 2026-08-20 and is an asymmetry of *situation*: the policy is one policy, the sign of a team's own margin selects which half applies, and putting the same roster on the other side of the same scoreboard reverses its behaviour exactly. The state lives on `TeamMatchState.settled_mode`, is written only by `MatchStateReducer` from a `GARBAGE_TIME` event carrying the mode and the margin it was taken at, and is released — with hysteresis, and on both the safety and the coaching margin floor — when the trailing team actually closes the gap. `RotationResolver` reads it and never recomputes it, so no policy lives in the substitution loop. It moves minutes and nothing else: no rating, no probability, no possession.
+- [x] Implement §10.2's **clock and score** candidate input and §10.3's `ScoreClockContext` as a real score term. `GameManagement` computes one bounded pressure — the deficit expressed in possession pairs, over the pairs the remaining regulation time actually buys at the pace this game has played at — and the team ahead protects the lead while the team behind chases it. It reaches the clock draw, the action weights and the offensive-glass crash decision, and it reaches no probability: the same shot, from the same shooter, against the same defender, resolves identically at any score. Before it, the score entered resolution only inside the last forty seconds of the final period, and the measured seconds per possession, actions per possession and three-point share were identical across every score state.
+- [x] Implement §20.2 **clutch behaviour** as an end-of-regulation possession strategy. On the last possession of regulation a trailing team prefers the shot value that levels the game — a three when down three, a two when down two — instead of hunting the highest value available. It is the deficit that selects the value, so either team holds the same rule.
+- [x] Implement §4's `timeoutRule` and §5's `TimeoutState`. Each competition profile grants a phase-appropriate allowance, `TeamMatchState` carries what is left, and a coach spends one to answer an opponent's run of `timeout_run_points` or more unanswered points while enough regulation remains to want it. A `TIMEOUT` event is written to the ledger; the reducer spends the allowance and rests everybody on the floor on both sides. It grants no probability and moves no possession. Overtime grants no further timeouts.
+- [x] Order substitution planning by force rather than by lineup position. §5.1's mandatory departures — foul-out, ejection, medical unavailability — claim the bench before any discretionary substitution does. The previous single pass could hand the last eligible bench player to a coaching preference and leave a fouled-out player with no legal replacement; that was unreachable while every discretionary reason required a completed stint, and became reachable the moment the settled-game rule could move four players at once.
+- [x] Give the engine a **game-stakes context** (§18.2 contextual adjustment). `GameStakes` is three tiers — `REGULAR`, `POSTSEASON`, `CHAMPIONSHIP_OR_ELIMINATION` — carried on `MatchInput` and defaulted to `REGULAR`. `StakesPolicy` is the only place a tier becomes a number, and four coaching decisions read it: how far past his planned minute share a coach lets a player run, how much regulation must remain before he spends a timeout on an opponent's run rather than holding it, how many standard deviations of safety he demands before entering the settled rotation, and how early and how firmly the end-of-regulation tie-seeking preference applies. Every effect is `base * (1 + step * tier)`, so a regular-season game multiplies by exactly one and every committed golden ledger is byte-identical. A tier reaches no resolver, no rating, and no capability; it cannot read a competition, a round, a team, or a result. **Mapping real game metadata onto a tier belongs to the future scheduling and career layers, not to the engine** — the engine is handed a tier and learns nothing else about the occasion, which is what keeps a tier from becoming a place to hide a per-tournament exception.
 
 Outstanding:
 
-- Replace fixed five-player `Team` tuples with upstream-validated roster, lineup, and rotation snapshots.
-- Replace generic league scaling with explicit competition rule/environment profiles.
-- Expand one-action possessions into multi-action possession state.
-- Add planned rotations, substitutions, full fouls, minutes, tactical coordinates, coverage, and role state.
-- Expand `CapabilityCalculator` from its three scaffold capabilities to the full derived-capability set in §7, using the weights owned by `BALANCE_SPEC.md` §5.2. The current scaffold weights diverge from that table and are not authoritative.
-- Move the anonymous numeric literals in shot resolution into the versioned simulation balance profile, as `BALANCE_SPEC.md` §4 requires.
-- Replace the unconstrained `TacticalRole` string and its `balanced` default with the stable ID set in §10.6.2.
-- Replace the current `RotationRole` enumeration, which mixes usage intent with availability facts, with the seven rotation roles in §10.6.1 plus separate availability state.
-- Extend `BodyProfile` with standing reach, and add the career-domain maturity, projected-range, and growth-ledger state defined in §6.3.
+- Add tactical coordinates to resolution. `TacticalLocation` now has exactly one production reader: §12.6 make resolution charges an attempt for the distance between where it was actually taken and the distance its own shot zone implies, which is what stops a backcourt heave resolving on arc odds. That is the whole of it. Tactical movement frames are still not part of possession resolution — rebound positioning, contest arrival and help distance do not read a location, and a possession that runs the ordinary opening does not carry one. This item stays outstanding.
 - Remove career money, morale, and Ink state from the match adapter. (No such coupling exists in the new repository; this remains a rule for future adapters rather than a migration task.)
-- Prevent match-initialization drift by using `MatchSessionService` after legal-roster preflight and any authorized automatic replacement.
+- Prevent match-initialization drift by using `MatchSessionService` after legal-roster preflight and any authorized automatic replacement. `MatchSession` exists and is the single session behind Play, Sim, and Skip; the upstream preflight does not, because no career or world domain is implemented.
+
+Implementation status is not calibration status. This section records what is *implemented*; `BALANCE_SPEC.md` section 32.1 records what is *calibrated*, and the two are separate claims.
 
 ### 30.3 Implementation stages
 
@@ -1508,7 +1546,7 @@ No production tuning constant should remain anonymously embedded in engine code.
 The simulation contract is implementation-ready when:
 
 - All 20 attributes have approved measurable effects and contract tests.
-- Active named Tier A and Tier B player ratings validate at 25–99, and sub-25 placeholders are rejected from matches.
+- Active named Tier A and Tier B player ratings validate at 25â€“99, and sub-25 placeholders are rejected from matches.
 - No resolution path reads Current Overall, Maximum Potential Overall, or Projected Peak.
 - Rotation role, tactical role, and derived archetype are separate, use their stable IDs, and stay within their declared effect boundaries.
 - Body affects only action validity, reach, positioning, and matchups, and the engine cannot observe or resolve growth.

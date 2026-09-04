@@ -13,6 +13,21 @@ extends GdUnitTestSuite
 
 const SEED: int = 20260815
 
+## The seed at which `MatchFixtureFactory.even_match()` finishes regulation level
+## and plays overtime — the same fixture and seed the `overtime` golden scenario
+## pins, so this suite and the ledger exercise one agreed overtime game. Kept in
+## step with `GoldenScenarios.seed_for(GoldenScenarios.OVERTIME)` by hand rather
+## than by reference, so a ruleset change that moves the golden seed fails this
+## assertion loudly instead of silently drifting.
+## Tracks `GoldenScenarios.seed_for(OVERTIME)`, which the comment above requires:
+## the ledger and this suite must agree on which overtime game is the reference.
+## Moved from 31676 by `simulation-v13-opening-clock-and-location-contract` and
+## from 7919 by `simulation-v14-restart-contract`, each time because that seed no
+## longer finishes level (`PROJECT_STATUS.md` §5.30, §5.31). Parity itself has
+## never failed here: what fails is the fixture guard reporting that its game
+## stopped reaching the state the fixture is named for.
+const OVERTIME_SEED: int = 71271
+
 
 ## Stepping possession by possession produces exactly the ledger a full Sim
 ## produces.
@@ -43,6 +58,51 @@ func test_skip_to_final_matches_full_simulation() -> void:
 		MatchFixtureFactory.standard_match(), SeededRandomSource.new(SEED))
 	var skipped: MatchSimulationOutput = session.skip_to_final_result()
 	assert_str(skipped.signature()).is_equal(simulated.signature())
+
+
+## The same three executors, on a game that goes to overtime.
+##
+## Every other case in this suite plays a game that ends in regulation, which
+## left the whole of the overtime path untested for parity. A mutation found it:
+## a Skip that drives the session itself and stops at the end of regulation
+## instead of delegating to `run_to_completion` produced identical output on
+## every fixture here and survived. It is not an equivalent mutation — it
+## changes the result of any game that reaches overtime — the suite simply never
+## played one.
+##
+## The fixture and seed are the `overtime` golden scenario's, so the ledger and
+## this suite agree on which overtime game is the reference, and the assertion
+## checks that overtime actually happened rather than trusting the seed to keep
+## producing it.
+func test_all_three_executors_agree_on_a_game_that_reaches_overtime() -> void:
+	var simulated: MatchSimulationOutput = MatchEngine.new().simulate_match(
+		MatchFixtureFactory.even_match(), SeededRandomSource.new(OVERTIME_SEED))
+	assert_int(simulated.final_result.overtime_periods).override_failure_message(
+		"the overtime fixture no longer reaches overtime, so this test is not "
+		+ "exercising the path it exists for"
+	).is_greater(0)
+
+	var stepping := MatchSession.new(
+		MatchFixtureFactory.even_match(), SeededRandomSource.new(OVERTIME_SEED))
+	stepping.open()
+	while not stepping.is_complete():
+		stepping.advance_possession()
+	var played: MatchSimulationOutput = stepping.build_output()
+
+	var skipping := MatchSession.new(
+		MatchFixtureFactory.even_match(), SeededRandomSource.new(OVERTIME_SEED))
+	var skipped: MatchSimulationOutput = skipping.skip_to_final_result()
+
+	assert_int(played.final_result.overtime_periods).is_equal(
+		simulated.final_result.overtime_periods)
+	assert_int(skipped.final_result.overtime_periods).override_failure_message(
+		"Skip returned a result with fewer overtime periods than Sim, so it is "
+		+ "not driving the same session to the same end"
+	).is_equal(simulated.final_result.overtime_periods)
+	assert_str(played.signature()).is_equal(simulated.signature())
+	assert_str(skipped.signature()).is_equal(simulated.signature())
+	assert_str(MatchLedgerSerializer.hash_output(skipped)).is_equal(
+		MatchLedgerSerializer.hash_output(simulated))
 
 
 ## Skip-to-next-appearance stops at a real appearance and then finishes to the

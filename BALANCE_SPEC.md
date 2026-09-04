@@ -111,6 +111,22 @@ Rules:
 - Remote connectivity is never required to load a valid balance profile.
 - Developer overrides are unavailable in release builds and cannot contaminate save files.
 
+### 4.1 Simulation ruleset history
+
+The simulation half of the profile is versioned separately because it is the half that moves a match ledger. A change to it invalidates every committed golden hash by construction, so the version is the record of *why* those hashes were allowed to move.
+
+| Version | Change | Golden-ledger effect |
+| --- | --- | --- |
+| `simulation-v1` | Initial multi-action possession engine | — |
+| `simulation-v2-calibrated` | Free-throw attribution correction (`00567d4`) | One scenario regenerated deliberately |
+| `simulation-v3-margin` | §18.2 settled-game rotation; mandatory-first substitution ordering; `offensive_rebound_base` 0.28 → 0.25; `steal_opportunity_on_ball` 0.175 → 0.200 and `steal_opportunity_pass` 0.14 → 0.160 | All six scenarios regenerated; the overtime scenario needed a re-derived seed because the previous one stopped reaching overtime. `PROJECT_STATUS.md` §5.10 carries the evidence and the blast-radius proof |
+
+| `simulation-v4-management` | §10.2/§10.3/§18.2 score-and-clock game management (`GameManagement`): a team protecting a lead consumes more clock, resets more, hunts fewer threes and stops crashing the offensive glass, and a team chasing one does the reverse; §20.2 end-of-regulation possession strategy preferring the shot value that levels the game; §4/§5 coaching timeouts with a per-competition allowance | All six scenarios regenerated. Every one of these changes moves the clock, the action mix or the event stream of any game that reaches a managed score state, and five of the six fixtures do. `PROJECT_STATUS.md` §5.11 carries the evidence and the blast-radius proof |
+
+| `simulation-v5-garbage-time` | §18.2 score-and-time rotation rebuilt as `GarbageTimeRule`: a possession-based safety measure with **asymmetric leading and trailing thresholds** (owner ruling of 2026-08-20), a `GARBAGE_TIME` ledger event and a `TeamMatchState.settled_mode` the rotation reads instead of recomputing. `decided_game_margin` and `decided_game_clock_share` are replaced by `settled_minimum_margin`, `settled_swing_points_per_pair`, `settled_leading_safety`, `settled_trailing_safety`, `settled_release_share` and `settled_minimum_pairs_left` | **No committed hash moved.** All six scenarios reproduce exactly, because none of the six fixtures reaches the eighteen-point coaching floor the rule needs before it can fire. The version moves because the balance profile's tunables and the engine's rotation behaviour did, not because a hash was allowed to. `PROJECT_STATUS.md` §5.12 carries the evidence |
+
+A golden hash is regenerated only after an explicit version change, and only after `tools/golden_ledger_harness.gd` confirms that every scenario still exercises the behaviour it is named for. Regenerating to silence a failing test is prohibited.
+
 ## 5. Public Rating Scale
 
 All 20 public ratings are whole numbers from 25 through 99. A value below 25 is reserved for non-player placeholders and cannot appear on an active basketball player.
@@ -402,6 +418,12 @@ The ceiling center is not Potential Overall. It is the anchor from which attribu
 
 Per-attribute noise is normally distributed with standard deviation 2.5 and clipped to ±6. All draws use the career-generation stream.
 
+**Implementation status: the ceiling centers above were moved by Stage 4 and this table had not recorded it.** `ProgressionProfile` implements `81 / 85 / 88` against the `75 / 79 / 83` stated here; the deviations and hard ranges are unchanged. The change was made with the §9.5 seasonal bands, because a ceiling centre producing a Maximum Potential near 72 made the §8.2 top-domestic rostered median of 77–81 unreachable at any level of opportunity. These are **Baselines** and §32 keeps them provisional pending report 7, so the move is permitted; leaving the document disagreeing with the code was not. The previous values are retained here so the change stays auditable, exactly as §9.5 retains its previous baselines.
+
+**Selection pressure is now an explicit parameter.** §8.1's "competition-appropriate selection pressure" is implemented on `CapGenerator.generate` as an order statistic: the ceiling is the highest of a named pool of draws from the profile's own distribution. A pool of one is no selection and consumes exactly one draw. This satisfies §8.2's requirement that the engine "must not silently increase a player's cap merely because he reached a higher league", because every ceiling the pool can yield was already reachable from the unselected distribution — what changes is which players are sampled, not what the distribution contains.
+
+**Implementation status: the rare-generational cohort draws from a pool of three.** Every other generated population uses a pool of one. The pool was raised because the cohort was measured to contain careers whose Maximum Potential sat below the §8.4 band the cohort is defined to reach — at a pool of two its tenth percentile was 84 against a band of 92–95, and those careers filled every cap, stranded up to 1,200 AP-equivalent, and peaked in the mid-eighties at every opportunity level tested. Raising the pool lifted the cohort's tenth percentile and left its median untouched, because the median career is opportunity-bound rather than cap-bound. `PROJECT_STATUS.md` §5.8 carries the measurement.
+
 ### 8.2 Population distribution targets
 
 | Population | Median OVR | 90th percentile | 99th percentile |
@@ -528,20 +550,38 @@ Every annual progression source uses the shared career-year identity and its com
 
 These totals include training, game participation, focused direct progress converted to AP equivalent, and ordinary development events. They exclude rare breakthroughs.
 
-**Status: calibration inputs, not proven values.** Every band in the following table is a **Baseline** supplied as a starting point for the million-career progression report. They are not evidence that the resulting careers peak correctly. The locked career peak distribution in §8.4 is the acceptance target; these bands are the primary tunable used to reach it, together with the §9.1 cost curve and the §10 aging and decline model. Until §31 report 7 passes, no document, interface, or design decision may treat these numbers as established, and they may not be quoted as the reason a career progresses at a given rate.
+**Status: raised by the Stage 4 progression measurement; still short of certification.** The bands below were multiplied by approximately 2.4 during Stage 4. The previous values are recorded in the table so the change is auditable.
 
-The lifetime conversion from seasonal AP availability to peak Overall is unmeasured. A completed freshman near 48 OVR reaching a strong peak of 80–85 requires a specific total AP income, a specific spending pattern against the escalating cost bands, and a specific decline offset; none of the three has been reported. The report must publish that conversion explicitly.
+**The lifetime conversion is now measured.** It was the largest single finding of Stage 4. Deriving the requirement arithmetically: a completed freshman near 48 OVR reaching a strong peak of 80–85 must raise twenty attributes by roughly thirty points each, which against the §9.1 escalating cost bands (1 AP below 60, 2 AP at 60–69, 3 AP at 70–79, 5 AP at 80–89) costs approximately **1,150 lifetime AP-equivalent**. The previous bands delivered a measured mean of **469**. The §8.4 curve was therefore unreachable by construction rather than by mistuning, and no amount of allocation skill could have closed a 2.5× shortfall.
 
-| Phase | Typical available AP-equivalent per season | High-engagement upper guardrail |
-| --- | ---: | ---: |
-| High school | 45–65 | 78 |
-| Summer circuit | 8–16 | 20 |
-| College | 35–55 | 68 |
-| Domestic development | 30–48 | 60 |
-| Overseas | 25–45 | 56 |
-| Top domestic pro, age 19–24 | 24–40 | 50 |
-| Top domestic pro, age 25–29 | 16–30 | 38 |
-| Top domestic pro, age 30+ | 8–22 | 30 |
+At the raised bands the measured mean lifetime grant is **1,165 AP-equivalent** and mean cap attainment is **0.88**, so caps — not currency — are now the binding constraint, which is the intended relationship.
+
+| Phase | Typical available AP-equivalent per season | High-engagement upper guardrail | Previous baseline |
+| --- | ---: | ---: | ---: |
+| High school | 108–156 | 187 | 45–65 |
+| Summer circuit | 18–38 | 48 | 8–16 |
+| College | 84–132 | 163 | 35–55 |
+| Domestic development | 72–115 | 144 | 30–48 |
+| Overseas | 60–108 | 134 | 25–45 |
+| Top domestic pro, age 19–24 | 58–96 | 120 | 24–40 |
+| Top domestic pro, age 25–29 | 38–72 | 91 | 16–30 |
+| Top domestic pro, age 30+ | 19–53 | 72 | 8–22 |
+
+These remain **Baselines**. The measurement behind them used 400 complete careers, not the §27.1 million. They are better-founded than the values they replace and are not yet ship-approved.
+
+#### Owner ruling, 2026-08: the bounded elite-opportunity exception
+
+**Ruling (authoritative).** *Rare-generational careers may exceed the §9.5 high-engagement upper guardrail by up to 20% when caused by ledgered elite opportunity, while emitting the required balance warning. This exception applies only to the rare-generational path and cannot alter AP costs, game-development caps, population shares, or adjacent outcome bands.*
+
+**What it was ruling on.** All five §8.4 bands now measure inside their locked targets, and reaching the rare-generational band takes that cohort above the guardrails in this table. Summed across a twenty-three-season career the guardrails permit about **2,695 AP-equivalent**; the cohort was measured receiving about 3,140, a **16.5% overage**, and passing its guardrail in 17 seasons of 23. §8.4 is Locked and these bands are Baselines, so the tension resolved in §8.4's favour; the ruling sets the price at which that is acceptable and caps it at **20%** of the same summed-guardrail figure the 16.5% was measured against.
+
+**How the exception is bounded.** The permission attaches to a **persistent career condition** (`CareerOpportunityCondition.ELITE_OPPORTUNITY`), not to an outcome label. Seventeen exceptional seasons in one career are one condition and not seventeen anomalies, and a permission attached to a condition cannot be claimed by another cohort merely by being handed more opportunity. A career without the condition that runs a career-long surplus above its own summed guardrails is a defect whatever band it belongs to; a career *with* it may exceed by up to the share this section's profile carries.
+
+The bound is enforced as each season is granted, by `DevelopmentService.seasonal_opportunity_ceiling`, rather than checked afterwards. That makes the lifetime total provably under 1.20× the summed guardrails at any opportunity setting, so a later retune cannot walk the cohort past the ruling by accident. Careers without the condition are not trimmed: §9.5 already governs them through the balance warning and the source-ledger explanation, and bounding them would move outcome bands the ruling explicitly may not touch.
+
+**What enforcing it exposed.** At the opportunity multiplier chosen before the ruling, the cohort *mean* overage was compliant at 16.5% while individual careers reached 26% — roughly a fifth of the cohort outside the ruling behind a compliant average. The multiplier was re-measured against the enforced bound and now sits where the worst career reaches 17.9% against the permitted 20%. A cohort average is not a bound.
+
+**What the exception does not do.** It changes no §9.1 cost, no §9.6 seasonal game-development cap, no §8.4 population share, and no seasonal draw. Every exceeding season still raises the balance warning this section requires, still carries a source-ledger entry naming what produced the excess, and is still judged for that explanation by the career-progression report. `PROJECT_STATUS.md` §5.8 and §5.9 carry the measurements and the regression evidence.
 
 The upper guardrail is not a hard currency cap. It triggers a balance warning and requires the source ledger to explain why the season was exceptional.
 
@@ -559,6 +599,8 @@ GameDevelopment = ParticipationBase × RoleRelativePerformance × CompetitionQua
 - `DevelopmentRoom` declines from 1.00 below 70 rating to 0.25 at 95+.
 
 Seasonal game-development caps are 12 AP-equivalent in HS, 16 in college/alternatives, and 20 in top domestic professional basketball. Played and simulated games share the same pool and formula.
+
+**Implementation status: the caps are enforced.** `ProgressionProfile.game_development_cap` carries the row above per career phase and `DevelopmentService.grant_game_development` trims a grant to whatever the season has left, returning what it credited so the caller can place the remainder through a source that can account for it. The formula's four terms are not yet implemented — game participation is currently supplied as a seasonal AP-equivalent total rather than resolved per game — so this records the cap, not the formula.
 
 ### 9.7 One canonical development contract
 
@@ -828,6 +870,18 @@ The following are stable target bands for mature seasons. They are fictional-lea
 | Free-throw attempts/FGA | 18–38% | 20–38% | 18–36% | 20–39% | 18–34% |
 | Assist % | 42–66% | 48–68% | 48–69% | 50–72% | 52–72% |
 
+**Implementation status: top-domestic points per possession is inside its band.** It measured 1.1847 ±0.0037 over 2,000 games against the 1.18 ceiling — a genuine failure of about +0.0047. The cause was **not** shot mix, turnovers, offensive rebounding, free throws, or a top-domestic-specific defect: zone shares matched the adjacent level within ±0.006 while accuracy was uniformly higher, which is what a roster-rating gap through a shared balance profile produces.
+
+The cause was the contest-band distribution. Two thirds of every attempt at every level resolved `OPEN` or `LIGHT`, `HEAVY` was 2–3%, and `SMOTHERED` was 0.00% everywhere, because `contest_capability_span` moved pressure by less than one band width across the entire defender-capability range. Raised from 0.35 to **0.46** in ruleset `simulation-v8-contest-capability`, so capability spans more than one band as `SIMULATION_SPEC.md` §12.3 requires.
+
+Measured after the correction: **1.1694 ±0.0037** pooled over two untouched 1,000-game ranges, with field-goal percentage at 0.4588 against a 0.45 floor. **Zero §14.1 verdict changes at any of the five levels.** The effect is monotone in roster strength and pivots at college — scoring rises slightly where defenders are poor and falls where they are good, which is the mechanism and is deliberately not compensated. **Not certified**: §27.1 asks for 100,000 complete games per competition. `PROJECT_STATUS.md` §5.20.
+
+**Implementation status: the two field-goal-percentage rows below top domestic were re-examined, and only one of them is a failure.** High school does not reproduce: it measures **0.3888 ±0.0018** pooled over two untouched 1,000-game ranges against a 0.390 floor, with the interval reaching the band, and it passes outright on one of the four fresh ranges run. It is recorded as marginal and unresolved rather than as a failure. College does reproduce: **0.4124** against a 0.420 floor, with every range interval lying entirely below it.
+
+The college shortfall has **no production cause**. Shot mix, within-zone accuracy, contest distribution, within-band accuracy, shooter and defender rating distributions, the player builder, rating normalization, execution quality, pass and advantage quality, fatigue and movement penalties, the competition rule profile and the three-point line are each ruled out by counterfactual measurement rather than by inspection; every term that is not driven by capability is flat across all five levels to within 0.0003. Crossing rule profiles against roster populations on matched fixtures moves field-goal percentage by **±0.03 to ±0.05 when the roster changes and by ∓0.004 to ∓0.006 when the rule profile changes** — college's rules with Development's roster land at 0.4405, inside college's band, while Development's rules with college's roster land at 0.4057, below Development's floor.
+
+What remains is a mismatch between two ladders that no engine value can reconcile: the calibration fixture walks a roster ladder that is linear in rating while the floors in this table climb unevenly, and the engine's own response is uniform at about +0.0044 of field-goal percentage per rating point. Closing it means either moving college's roster level — about +2 points, and by +4 its points per possession crosses the 1.10 ceiling above — or amending the college band. **Both are owner decisions; neither is enacted, and no value in this table has been changed to match observed output.** `PROJECT_STATUS.md` §5.22.
+
 ### 14.2 Game-shape targets
 
 - Even-team home win rate: 53–56%; baseline 54.5%.
@@ -854,6 +908,8 @@ For turnovers, steals, blocks, rebounds, and advantage creation, an ordinary ten
 | Immediate putback after offensive rebound | 23% | 8% | 48% |
 
 These are conditional event rates. They are not applied once per possession without candidate generation.
+
+**Implementation status: the assist row is implemented at the baseline this table states, and was not for a period.** `SimulationBalanceProfile.assist_base` had been raised from 0.74 to 0.94, which converted very nearly every qualifying delivery and held assist percentage near 48% by crediting harder rather than by creating shots. It is restored to 0.74 with the floor and ceiling this row fixes, and it is driven by Pass Accuracy, because §8 of the Simulation Specification assigns "assist conversion support" to Passing. The row's denominator is a made field goal that carried a recorded creator, which `run_assist_diagnostics.gd` measures directly; the population rate runs from 73–75% at high school to 90% at top domestic, ordered by level because the baseline is the rate at an even capability matchup. `PROJECT_STATUS.md` §5.15.
 
 ## 15. Fatigue, Condition, and Recovery
 
@@ -980,9 +1036,61 @@ Morale can modify decision confidence, effort selection, and recovery by at most
 - Equal-team home win target: 54.5%, allowed 53–56%.
 - No single home modifier may exceed four absolute probability points.
 - Combined environment contributions are capped at +2.5 points per 100 possessions.
+
+**Owner ruling — which metric judges the home-win target.** The §14.2 home-win target is judged by the **controlled, symmetrized paired venue-side win estimator**. The marginal single-arm home win rate remains an **informational population diagnostic** and does not independently determine the home-environment calibration verdict.
+
+The judged estimator is
+
+```text
+0.5 × [ P(designated venue side wins when the environment favours it)
+      + P(opposite venue side wins when the environment is reversed) ]
+```
+
+evaluated per matched fixture. The implementation may use the mathematically equivalent paired-fixture form `0.5 + mean_i(0.5 × ((wv(hᵢ) − wv(nᵢ)) + (wv(rᵢ) − wv(−nᵢ))))`; the two are identical because `wv(n) + wv(−n) = 1` for every margin, and both forms must be published and asserted equal.
+
+| Contract element | Definition |
+| --- | --- |
+| Denominator | Matched fixtures carrying all three arms. **Not simulations** — one fixture is three complete games and one observation |
+| Arm construction | `home` = venue A at strength `E`; `neutral` = the same fixture at strength `0`; `reversed` = venue B at strength `E`. Identical rosters, identical seeds, opening inbound counterbalanced and held constant across the three arms |
+| Ties | Win 1, loss 0, tie 0.5. A regulation tie plays overtime so a completed game is never a tie; the case is defined for totality, and defining it this way is what makes the two forms exactly equal |
+| Weighting | Every matched pair carries weight 1. Levels are not reweighted by size and reports are not weighted by report count |
+| Interval | 1.96 × the standard error of the per-fixture paired series. Paired, so it carries the common-random-number variance reduction |
+| Pooling | Union of fixture keys across shards, then the same unweighted mean. Keys carry the competition; an overlapping key is refused rather than double-counted |
+
+The neutral arm **cancels** from the estimate and is therefore required as an independent check on the fixture rather than as an input to the answer. A fixture missing any arm is refused, not estimated from the arms that survived.
+
+**The cap is judged on the paired two-arm venue contribution, not on one arm's scoring.** Three arms play identical fixtures at identical seeds: `home` (venue at strength `E`), `neutral` (the same fixture at strength `0`), and `reversed` (the venue swapped to the other bench at strength `E`). Margins are signed venue-minus-visitor throughout, giving two independent per-fixture estimates of one quantity:
+
+```text
+effect on A = margin_home[i]     − margin_neutral[i]
+effect on B = margin_reversed[i] + margin_neutral[i]
+```
+
+The published contribution is their mean, divided by the venue-side possessions per game taken across the arms and expressed per 100. The two estimates must also agree within their combined intervals; a disagreement means the effect is attached to a roster rather than to a building.
+
+The control cancels from that mean — `((h − n) + (r + n))/2 = (h + r)/2` — which is why the neutral arm is read as an independent check that the fixture is unbiased rather than as an input to the answer. It remains required: a fixture missing any arm is refused, not estimated from the arms that survived.
+
+Sample size is the count of **matched fixtures**, not of simulations. Three arms of one fixture are three complete games and one piece of independent evidence.
 - Pressure can shrink a manual perfect zone by at most 20% relative, visibly.
 - Pressure can change simulated decision/execution noise by at most five absolute probability points.
 - Momentum is disabled in the version 0.1 baseline. Enabling it requires a separate no-rubber-band report.
+
+**Implementation status: the home environment is `HomeEnvironmentContext`, and the flat shooting bonus that used to carry most of it is gone.** `SIMULATION_SPEC.md` §9.3 names the type and the engine did not have it: the environment was a bare float read at three call sites, with nothing anywhere that summed the channels or compared the sum with either cap. It is now one bounded object with §19.4's channels — officiating, communication, and composure — each clamped to the four-point cap above, jointly bounded, and reached through one accessor so a fourth effect cannot be added without appearing in the aggregation. `home_environment_shot_bonus`, which added a term to the make probability of every home field-goal attempt and was worth about 65% of the whole effect, is removed: §19.4 authorizes officiating, communication, composure and familiarity, and a flat make bonus is none of them. On equal-team mirror fixtures the venue was worth +0.34 to +0.63 points a game against a requirement of 1.36 to 1.71.
+
+**Measured on the paired two-arm estimator above** (`PROJECT_STATUS.md` §5.18), over two untouched validation ranges of 250 matched fixtures per level — 810,000–810,249 and 820,000–820,249:
+
+| Pooled over five levels | Validation C | Validation D |
+| --- | ---: | ---: |
+| Venue-attributable equal-team home win rate | **0.5432 ±0.0125** | **0.5360 ±0.0122** |
+| Venue contribution, points per 100 possessions | **1.729 ±0.331** | **1.460 ±0.307** |
+| Levels inside the +2.5 cap | 5 of 5 | 5 of 5 |
+| Levels whose venue reversal agrees | 5 of 5 | 5 of 5 |
+
+Both pooled win rates sit inside the 53–56% band and both contributions inside the cap.
+
+**An earlier figure of "1.93 points per 100" recorded here was the home-arm-only metric**, not the paired contribution, and is superseded. On the corrected estimator no level breaches the cap on either range; the closest is overseas at 2.297.
+
+It is **not certified**: the sample is 250 matched fixtures per level per range — 750 complete games — against §27.1's 100,000 complete games per competition. **Top domestic fails the band on both ranges in opposite directions** (0.5640 and 0.5100, intervals not overlapping), which is an open tension and not something to be tuned away. `PROJECT_STATUS.md` §5.17 and §5.18.
 
 ### 17.5 Relationship labels
 
@@ -1503,9 +1611,11 @@ Satisfied here means the contract exists, is implemented, and is tested. It does
 
 ### 29.2 Outstanding
 
-1. `CapabilityCalculator` implements three capabilities against the twenty required by §5.2, and its weights diverge from this specification (handle creation and point-of-attack containment differ in both inputs and percentages). The specification is authoritative; the code is scaffold.
-2. `ShotResolver` contains anonymous numeric literals inside resolution code, which §4 prohibits. All possession constants must move into the versioned simulation balance profile.
-3. Attribute monotonicity tests are explicitly deferred in `tests/simulation/test_attribute_contracts.gd`. Only addressability is currently verified. Overall monotonicity *is* verified (`tests/unit/basketball/test_overall_calculator.gd`); the per-attribute simulation observables of §8 of `SIMULATION_SPEC.md` are not.
+Items 1–3 below were satisfied before Stage 4 or by it; they are retained with their resolution recorded rather than deleted, because §29.3 forbids marking an item satisfied merely because a type exists.
+
+1. ~~`CapabilityCalculator` implements three capabilities against the twenty required by §5.2.~~ **Resolved before Stage 4.** All twenty §5.2 capabilities plus the four §7.3 physical capabilities exist in `RatingsProfile` with the specified weights, and Stage 4 verified every weight row against this document.
+2. ~~`ShotResolver` contains anonymous numeric literals inside resolution code.~~ **Resolved.** Every shot, contest, and continuation constant is a named tunable on `SimulationBalanceProfile` with a unit and a safe range, and Gate B0 rejects one outside its range — which it did during Stage 4 calibration, catching a kick-out share pushed past its declared bound.
+3. ~~Attribute monotonicity tests are explicitly deferred.~~ **Resolved by Stage 4.** `calibration/runners/run_attribute_sensitivity.gd` verifies, for all twenty attributes: addressability, monotonic direction across ratings 40/50/65/80/90, and a meaningful 50→80 effect; and for every capability weighting an IQ rating alongside a different primary, that the IQ movement stays under 60% of the primary's. It runs in the pull-request gate at the §27.1 isolated-boundary sample size of 100,000 resolutions per test point. **What remains uncovered** is the match-level half of §8 of `SIMULATION_SPEC.md`: box-score effects, role-relative value, team impact, and fatigue/availability effects per attribute are not yet measured.
 4. BDP, economy transaction, and rare-event hazard ledgers do not exist.
 5. No career or world domain is implemented. Career-year receipts exist as a type but nothing advances the calendar, so professional-service credit and offseason scheduling are untested end to end.
 6. Balance profiles are typed domain value objects rather than authored Resources under `resources/balance/` as `GODOT_TDD.md` §5.6 specifies. The domain purity boundary (§5.1) forbids domain code from loading Resources, so the intended shape is an infrastructure loader mapping authored `.tres` files onto these value objects. That loader is not written, and no persistence layer exists to pin a profile version per career.
@@ -1615,6 +1725,38 @@ The following numeric baselines should be implemented behind the balance registr
 | Comeback-offer likelihood after the unified clock is verified | §22.3 | 10 |
 
 The locked targets these values must reach — the §7.3.2 Builder bands, the §8.4 career peak distribution, and the §24 lifetime rare-event targets — are not in this table. They are owner rulings and are not tunable.
+
+### 32.1 Stage 4 calibration status
+
+Stage 4 built a committed calibration harness under `calibration/`, ran it, and moved values on the evidence. This section records what the evidence actually supports, because §2 forbids treating a Baseline as approved and §29.3 forbids marking an item satisfied because a type exists.
+
+**Passing at the sample size run.**
+
+- All twenty attributes: addressed, monotonic, meaningful 50→80 effect, no IQ substitution for a primary skill. Run at the full §27.1 isolated-boundary sample.
+- Career peak distribution for four of the five §8.4 bands: poorly managed (median 66, target below 72), ordinary successful (77, target 74–79), strong (82, target 80–85), exceptional (87, target 86–91).
+- Population share peaking above 95 Overall: zero, against the "practically nonexistent" requirement.
+- Continuity across the deliberate 72–74 gap.
+- Manual, full-detail-allocator, and aggregate-executor progression parity: identical mean peak Overall from equivalent opportunity.
+- Builder completed-build bands (§7.3.2) continue to hold after the progression change.
+- Determinism: committed golden ledgers reproduce exactly; regenerated deliberately under an explicit engine and balance version change.
+
+**Failing or unmeasured, with the reason.**
+
+| Item | Status | Reason |
+| --- | --- | --- |
+| §8.4 rare generational band | **Corrected. Passes on independent validation ranges; not certified.** Median 93 against 92–95 | **Cause measured, not assumed, and the first measurement was half right.** The recorded cause — saturated cap attainment — described the cohort's ceiling tail, not its median career. Replaying every career's own build and caps through the projection's ordinary conversion at multiples of its real budget showed the median career spending everything it was granted and stopping three Overall short of its own ceiling, and put the requirement at about 3,140 lifetime AP against 2,610 granted rather than the 2,900 previously inferred. Allocation was ruled out by the Overall-maximising bound, which beats the realized career by 0.58 Overall; aging and decline by the 17 AP-equivalent decline removes across a whole career. The correction raises the cohort's opportunity by the measured factor and its §8.1 selection pool from two to three, and it costs the cohort roughly 16.5% above the §9.5 guardrails, warned and ledger-explained. `PROJECT_STATUS.md` §5.8. |
+| §6.3 projected-peak coverage and bias | **Corrected. Passes on independent validation ranges; not certified.** Coverage 0.7473 and 0.7370 against 0.70–0.85, median signed error −1.0 and 0.0 against ±2, median width 11 against 6–12, on two untouched 3,000-career ranges (seeds 300001–303000 and 402001–405000); the production judged path agrees at 2,000 careers per range with executor parity exactly 0.0000. The model now takes the §9.5 band **midpoint** over a per-profile horizon as expected opportunity and conditions the interval on the prospect profile, with the player's own caps narrowing it wherever they bind through the conversion's saturation. Parameters were fitted on seeds 1–600 and confirmed unchanged on seeds 200001–202000. No §8.4 band moved and no golden ledger changed, which is the direct check that §6.2's prohibition on Overall reaching a resolution path still holds. The diagnosis that produced it is retained below. | **The recorded cause was right about the direction and silent about the size, which is not actionable.** Splitting the signed error into the model's two independent halves at 3,000 careers gives +10.0 attributable to the credited opportunity budget and **0.0** to the AP-to-Overall conversion: given the true lifetime AP the model predicts the realized peak exactly. It credits a mean of 603 AP against 1,198 granted, and realized opportunity runs at 1.39× the projection's own upper bound. By outcome class the displayed range brackets only poorly-managed careers (coverage 1.000, error −1.0) against 0.046/0.042/0.033 for ordinary, strong and exceptional — a severe hidden subgroup failure the pooled coverage figure conceals. What the model calls "ordinary opportunity" is poor-career opportunity. **The coverage band and the width guardrail are jointly satisfiable**: the irreducible width — the narrowest window reaching 70% coverage inside groups sharing every creation-time input, which bounds any model built from those inputs — is 8.0 against the 6–12 guardrail, reproduced on two independent seed ranges. The failure is the model, not the requirement. The shape is what is wrong: one global opportunity interval applied to every career tops out at 0.666 coverage, while the irreducible width ranges from 6 to 16 across groups, so the interval must be conditioned per career rather than scaled uniformly. |
+| §14.1 competition bands | **Ten of eleven pass at top domestic; all five levels re-measured on one untouched range** | Every level was re-measured at 400 games on variations 60,000-60,399 under `simulation-v3-margin` and again under `simulation-v4-management`, and once more on the untouched range 350,000-350,399 under `simulation-v5-garbage-time`, so no figure in this table predates its own engine any more. Points per possession moved from 1.2084 to **1.1680** — inside 1.08-1.18 on the judged range, and 1.1771 ±0.0040 pooled over 2,100 population games, which is inside the band with its interval touching the ceiling. It was corrected at its measured source: field-goal attempts per possession ran at 0.967 against a band-consistent 0.90, and the two processes that set that number are offensive rebounding and ball-handling disruption. Points per possession is 1.1691 under `simulation-v4-management`, eleven ten-thousandths from where §5.10 left it, because the score-and-clock correction changes which action a coach selects and not how efficient anybody is. Assist percentage was the only remaining §14.1 failure at top domestic — 0.4854 against 0.52-0.72 — and is **corrected**: 0.5890 and 0.5817 top domestic, and inside the band at all five levels, on two untouched 100-game validation ranges (variations 610,000-610,099 and 620,000-620,099), measured from the ledger rather than from a box score. The cause was creation and not attribution: a pass's §11.1 advantage was recorded against the passer instead of the receiver, the §11.3 direct-creation flag was written and never read, and the `RELOCATION` family changed no state at all, so a pass could not create a shot and only 52% of made field goals were reached by a delivery. Four §14.1 failures resolve on identical seeds and one is created: top-domestic points per possession moves 1.178 to 1.1809 against a 1.18 ceiling on Validation A while passing at 1.173 on Validation B. `PROJECT_STATUS.md` §5.15. The other four levels previously ran high school 10/10, overseas 9/10, development 9/10, college 8/10, with college field-goal percentage at 0.4151 against a 0.42 floor and assist percentage failing at all four; after §5.15 the only remaining §14.1 failure below top domestic is college field-goal percentage, at 0.4125 and 0.4070 on the two validation ranges. `PROJECT_STATUS.md` §5.10. |
+| §14.2 game-shape targets | **Blowout share passes at three of five competition levels; close-game share passes at all five; overtime passes at one. A competition-specific amendment is proposed and awaits owner decision.** Blowout 0.1300 / 0.1700 / 0.2450 / 0.1550 / 0.2725 across high school, college, development, overseas and top domestic at 400 games each on the untouched range 350,000-350,399, and 0.2320 / 0.2120 on two untouched 500-game population validation ranges. Close-game share 0.2200-0.2700 at every level. Overtime 0.0100-0.0425. High school passes all fifteen judged metrics. `PROJECT_STATUS.md` §5.10, §5.11, §5.12 and §5.13. | **Three tasks of measurement, and the answer changed twice.** §5.10 reconstructed the margin as an independent random walk and called §14.2 unreachable; §5.11 measured the covariance the reconstruction assumed away, found it genuinely zero, and traced that to three authorised mechanisms the engine did not have — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts. Implementing them raised the even-team covariance from +4.67 to +25.12 and cut the margin's variance by a sixth, with no probability touched anywhere. §5.12 then implemented the asymmetric garbage-time rotation the owner authorised on 2026-08-20: a possession-based safety measure, `|margin| / (1.77 * sqrt(possession_pairs_left))`, with the leading coach's threshold at 2.6 standard deviations and the trailing coach's at 4.2. It moves minutes and nothing else — the same shot from the same shooter resolves identically at +30 and −30 — and it cut the even-team blowout share from 0.2467 to 0.1883 and margin variance by a further fifth, while §14.1 moved only in the fourth decimal and no golden hash changed at all. **What remains is classified rather than argued.** The overtime band is unreachable at any dispersion this possession and scoring model can produce: a ledger-faithful replay model reaches a tie rate of 0.0334 at a margin standard deviation of 9.90, because the probability of an exactly level score is the margin density at zero. That is a property of this scoring model and not a law of basketball; a fuller end-of-regulation repertoire would concentrate mass at level, and it is a system this engine does not yet have. The blowout band at the two high-possession competitions is reachable only outside the owner-ruled safe ranges, because `sigma_margin = sqrt(2 n sigma^2)` and §14.1 locks both terms per competition. `PROJECT_STATUS.md` §5.13 proposes competition-specific bands, labels them simulation-derived and provisional because no authoritative external benchmark was available to consult, sets out three costed owner options, and **enacts nothing**. |
+| §27.1 certification sample sizes | Not reached anywhere except attribute sensitivity | See the performance finding below. |
+| Builder tournament dominance rejection (§12.4) | Not run | The round-robin tournament runner is not implemented. |
+| OVR truthfulness suite (§31 report 1) | Not run | Not implemented. |
+| Play/Sim/Skip and Tier A/Tier B parity at §27.1 sizes | Not run at scale | Play/Sim/Skip parity remains proven structurally by byte-identical ledgers in the acceptance suite, which is stronger evidence than a distributional test, but the §27.1 matched-triplet sample was not run. |
+| Body maturation report (§31 report 15) | **Implemented; measured below the required sample** | `calibration/runners/run_body_maturation.gd`, with nightly and deep workflow jobs and an aggregation path verified end to end on real shards. At 2,000 matched maturity triples all eleven §7.4.2/§7.4.3 structural invariants measure exactly 1.0000 — adult containment, intermediate legality, skeletal monotonicity, determinism from the career seed, increment idempotency, exact increment count, no rating, cap or currency side effect, body plausibility, and the stored range matching the versioned widths. Timing separation is 0.4797 and realized high-school growth shares are 0.785 / 0.547 / 0.306 against a configured 0.75 / 0.50 / 0.25. Timing is confirmed to be a schedule rather than a budget: the matched triples end on an identical adult body. The sample is short of §27.1 and the report says so rather than claiming certification. |
+
+**The performance finding that constrains all of the above.** The Stage 4 profile measured the match engine at **5,496 ms per complete reference game** before optimization and **1,345 ms after** — a 4.09× improvement with byte-identical ledgers. The dominant cost was found by measurement, not assumption: `Rating.normalized` was formatting a three-argument assert message on every call, because GDScript evaluates an assert message eagerly in a debug build, costing 3.92 µs against 0.026 µs for the arithmetic it exists to do. Fixing that, memoizing the immutable half of capability resolution, and removing per-candidate string construction accounted for the whole gain.
+
+At 1,345 ms per game, the §27.1 requirement of 100,000 games per competition is roughly 37 hours per competition on one process. **The 10 ms per game calibration goal is not reachable in GDScript for this engine design**: a game resolves roughly 460 candidate-generation calls of about 25 candidates each, and at GDScript's method-dispatch cost that is a few hundred milliseconds of irreducible floor. Reaching the goal requires the possession engine in a compiled extension. This is a documented risk, not a solved problem.
 
 Testing may tune these numbers inside their stated guardrails. Changing one-standard difficulty, the 20 ratings, permanent allocation, exact caps, guaranteed valid perfect releases, full Play/Sim parity, rare-event intent, non-pay-to-win economy, the separation of the three development values, the separation of the identity layers, body-growth containment, or any other structural invariant requires explicit approval from the owning design source under the authority hierarchy rather than an ordinary balance change.
 

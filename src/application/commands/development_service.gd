@@ -85,6 +85,48 @@ func grant_opportunity(
 		career_year, source, executor, amount, state.balance_version, note)
 
 
+## Grant §9.6 game-participation development, bounded by its seasonal cap.
+##
+## §9.6 sets the cap at 12 AP-equivalent in high school, 16 in college and the
+## alternative routes, and 20 in top domestic professional basketball, and
+## "played and simulated games share the same pool and formula" — so the cap is
+## per player-season, not per game and not per executor.
+##
+## Returns the amount actually credited, which is the requested amount trimmed
+## to whatever the season has left. The trim is silent by design: a season that
+## offered more development than games can carry has not committed a violation,
+## it has simply produced opportunity that has to arrive from a source that can
+## account for it. The caller decides where the remainder goes, and the ledger
+## records both halves separately so the split is inspectable.
+func grant_game_development(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+	executor: int,
+	amount: float,
+	note: String = "",
+) -> float:
+	assert(CareerPhase.is_valid(phase), "unknown career phase")
+	assert(DevelopmentExecutor.is_valid(executor), "unknown development executor")
+	assert(amount >= 0.0, "game participation cannot remove development")
+
+	var cap: float = float(_profiles.progression.game_development_cap[phase])
+	var already: float = state.point_ledger.granted_from(
+		career_year, AttributePointSource.Value.GAME)
+	var granted: float = minf(amount, maxf(0.0, cap - already))
+	if granted <= 0.0:
+		return 0.0
+	state.point_ledger.grant(
+		career_year, AttributePointSource.Value.GAME, executor, granted,
+		state.balance_version, note)
+	return granted
+
+
+## AP-equivalent granted in one career year against the §9.5 seasonal band.
+func seasonal_granted_total(state: PlayerDevelopmentState, career_year: int) -> float:
+	return state.point_ledger.granted_in_year(career_year)
+
+
 ## Whether the season's granted total has passed the §9.5 upper guardrail.
 ##
 ## "The upper guardrail is not a hard currency cap. It triggers a balance
@@ -95,12 +137,76 @@ func exceeds_seasonal_guardrail(
 	career_year: int,
 	phase: int,
 ) -> bool:
-	var granted: float = 0.0
+	return (seasonal_granted_total(state, career_year)
+		> float(_profiles.progression.seasonal_ap_guardrail[phase]))
+
+
+## Whether the source ledger explains an exceptional season (§9.5).
+##
+## The generic offseason grant explains nothing. It is what every season of that
+## phase receives and its note names only the phase, so a season that passed its
+## guardrail on the strength of the offseason phase alone would be "explained"
+## by a note that says nothing about why it was exceptional. A breach is only
+## explained when some grant that is *not* the generic offseason phase carries a
+## note naming what produced it.
+##
+## An ordinary season is vacuously explained: there is nothing to justify.
+func seasonal_guardrail_is_explained(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+) -> bool:
+	if not exceeds_seasonal_guardrail(state, career_year, phase):
+		return true
 	for entry in state.point_ledger.entries():
-		if entry.career_year == career_year and entry.is_grant() \
-				and entry.source != AttributePointSource.Value.AT_CAP_CONVERSION:
-			granted += entry.amount
-	return granted > float(_profiles.progression.seasonal_ap_guardrail[phase])
+		if entry.career_year != career_year or not entry.is_grant():
+			continue
+		if entry.source == AttributePointSource.Value.OFFSEASON:
+			continue
+		if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+			continue
+		if not entry.note.is_empty():
+			return true
+	return false
+
+
+## The §9.5 balance warning for one season, or an empty string when the season
+## was ordinary.
+##
+## §9.5 requires the guardrail to "trigger a balance warning" and the ledger to
+## "explain why the season was exceptional". Returning the explanation inside
+## the warning is what makes those one thing rather than two: a caller cannot
+## surface the warning without also surfacing what the ledger said, and a breach
+## the ledger cannot account for says so in the text rather than passing
+## silently.
+func seasonal_guardrail_warning(
+	state: PlayerDevelopmentState,
+	career_year: int,
+	phase: int,
+) -> String:
+	if not exceeds_seasonal_guardrail(state, career_year, phase):
+		return ""
+
+	var granted: float = seasonal_granted_total(state, career_year)
+	var guardrail: int = _profiles.progression.seasonal_ap_guardrail[phase]
+	var reasons: PackedStringArray = []
+	for entry in state.point_ledger.entries():
+		if entry.career_year != career_year or not entry.is_grant():
+			continue
+		if entry.source == AttributePointSource.Value.OFFSEASON:
+			continue
+		if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+			continue
+		if entry.note.is_empty() or reasons.has(entry.note):
+			continue
+		reasons.append("%s: %s" % [AttributePointSource.id_of(entry.source), entry.note])
+
+	var head: String = (
+		"career year %d in %s granted %.1f AP-equivalent against the §9.5 guardrail of %d"
+			% [career_year, CareerPhase.id_of(phase), granted, guardrail])
+	if reasons.is_empty():
+		return "%s with no source-ledger explanation" % head
+	return "%s: %s" % [head, "; ".join(reasons)]
 
 
 ## Spend general AP to raise one attribute by `points` whole ratings.
@@ -221,3 +327,87 @@ func advance_age(state: PlayerDevelopmentState, career_year: int) -> bool:
 		return false
 	state.age += 1
 	return true
+
+
+## The §9.5 seasonal guardrail for one phase.
+func seasonal_guardrail_for(phase: int) -> float:
+	assert(CareerPhase.is_valid(phase), "unknown career phase")
+	return float(_profiles.progression.seasonal_ap_guardrail[phase])
+
+
+## The most lifetime opportunity a career may legitimately receive against the
+## sum of its own seasonal guardrails (§9.5, owner ruling 2026-08).
+##
+## A career without the elite-opportunity condition is bounded by the guardrails
+## themselves. One carrying it may pass them by the profile's bounded share,
+## which is what makes the exception a permission attached to a named career
+## condition rather than a licence any cohort could claim.
+func career_opportunity_allowance(
+	state: PlayerDevelopmentState,
+	guardrail_total: float,
+) -> float:
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return guardrail_total
+	return guardrail_total * (
+		1.0 + _profiles.progression.elite_opportunity_guardrail_allowance)
+
+
+## Why a career's lifetime opportunity is not permitted, or an empty string when
+## it is.
+##
+## §9.5 makes an individual exceptional season a *warning*. This is the separate
+## question the owner ruling answers: whether the pattern of exceptional seasons
+## across a whole career is one the model is allowed to produce. Three ways it is
+## not — a career exceeding its guardrails without the condition that permits it,
+## a career exceeding the bounded share even with the condition, and a career
+## whose exceptional seasons the source ledger never explained. All three are
+## reported here so a report judges one number rather than three.
+func career_opportunity_violation(
+	state: PlayerDevelopmentState,
+	granted_total: float,
+	guardrail_total: float,
+	unexplained_seasons: int,
+) -> String:
+	if unexplained_seasons > 0:
+		return ("%d exceptional season(s) carry no source-ledger explanation"
+			% unexplained_seasons)
+	if guardrail_total <= 0.0 or granted_total <= guardrail_total:
+		return ""
+
+	var overage: float = (granted_total - guardrail_total) / guardrail_total
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return ("a career with condition %s exceeded its summed §9.5 guardrails by "
+			+ "%.1f%%; only the elite-opportunity condition permits any excess") % [
+				CareerOpportunityCondition.id_of(state.opportunity_condition),
+				overage * 100.0]
+
+	var permitted: float = _profiles.progression.elite_opportunity_guardrail_allowance
+	if overage > permitted + 0.000001:
+		return ("elite opportunity exceeded the permitted %.0f%% by reaching %.1f%% "
+			+ "above the summed §9.5 guardrails") % [permitted * 100.0, overage * 100.0]
+	return ""
+
+
+## The most AP-equivalent one season of this career may be granted (§9.5, owner
+## ruling 2026-08), or a negative value when the season is not bounded.
+##
+## §9.5's guardrail is a warning rather than a cap for every ordinary career, and
+## that stays true: a career without the elite-opportunity condition is not
+## trimmed here, because §9.5 already governs it through the warning and the
+## source-ledger explanation, and bounding it would change outcome bands the
+## ruling explicitly may not touch.
+##
+## A career that *carries* the condition is bounded, because the ruling that
+## grants it the exception is also what limits it. Enforcing the limit as the
+## season is granted makes compliance structural: the model cannot produce a
+## career past the ruling and then be tuned until such careers become rare. The
+## opportunity that is trimmed was never granted and never ledgered, so nothing
+## is taken back from a wallet.
+func seasonal_opportunity_ceiling(state: PlayerDevelopmentState, phase: int) -> float:
+	if not CareerOpportunityCondition.permits_guardrail_exception(
+			state.opportunity_condition):
+		return -1.0
+	return seasonal_guardrail_for(phase) * (
+		1.0 + _profiles.progression.elite_opportunity_guardrail_allowance)

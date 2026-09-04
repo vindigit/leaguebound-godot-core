@@ -39,8 +39,16 @@ func probability(
 	if context.is_late_game() and absf(float(context.offense_margin())) <= 5.0:
 		var composure: float = Rating.normalized(shooter.attributes.offensive_iq)
 		value -= (1.0 - composure) * _balance.clock_desperation_penalty_max * 0.35
+	# §19.4 composure, inside §17.4's pressure envelope. A road free throw in a
+	# hostile building is the least ambiguous composure effect in basketball,
+	# and it is charged to the visitor rather than credited to the host so that
+	# a neutral court and a home court differ only by what the visitor loses.
+	#
+	# It does not read the score or the clock: the §20.1 late-and-close term
+	# above is a separate, documented pressure effect that applies in both
+	# buildings.
 	if not context.input.is_home(context.offense.team_id):
-		value -= _balance.home_environment_shot_bonus * context.input.home_environment
+		value -= context.input.home_environment_context.composure()
 	return clampf(value, _balance.floor_free_throw, _balance.ceiling_free_throw)
 
 

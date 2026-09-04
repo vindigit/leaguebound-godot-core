@@ -1,0 +1,295 @@
+name: Nightly calibration
+
+# The middle layer. Runs the full statistical suites at sample sizes that take
+# hours rather than minutes, shards them across parallel jobs, and archives the
+# machine-readable reports.
+#
+# These runs are allowed to fail without blocking a merge: a band that drifts is
+# a calibration finding, not a broken build. What they must not do is fail
+# silently, so every job uploads its report and the summary job reads them back.
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      games_per_competition:
+        description: "Complete games per competition, per shard"
+        default: "2000"
+      careers:
+        description: "Complete careers per shard"
+        default: "20000"
+      body_triples:
+        description: "Matched maturity triples per shard"
+        default: "25000"
+
+permissions:
+  contents: read
+
+jobs:
+  competition:
+    name: Competition ${{ matrix.competition }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 720
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # Process-level sharding: each job owns a disjoint seed range, so the
+      # shards are independent and a rerun of one reproduces exactly.
+      - name: Run competition calibration
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_competition_calibration.gd --
+          --competition=${{ matrix.competition }}
+          --games=${{ github.event.inputs.games_per_competition || '2000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=${{ matrix.competition }}_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: competition-${{ matrix.competition }}-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  # Nightly shards are far below the §27.1 sample, so this job can never
+  # certify. It runs anyway because aggregation is the part most likely to break
+  # silently: a shard that stopped emitting a metric, a profile version that
+  # moved under one job, a seed range that started overlapping. Catching that
+  # nightly is much cheaper than catching it in a pre-release deep run.
+  summarize-competition:
+    name: Summarize ${{ matrix.competition }}
+    needs: competition
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        competition:
+          - high_school
+          - college
+          - development
+          - overseas
+          - top_domestic_pro
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: competition-${{ matrix.competition }}-*
+          path: shards
+          merge-multiple: true
+      # `--allow-uncertified` because the nightly sample cannot reach the
+      # requirement. The aggregation itself must still be valid: a rejected
+      # shard set fails this job regardless of the flag.
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=competition_calibration --shards=4
+          --directory=res://shards --label=${{ matrix.competition }}
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-${{ matrix.competition }}
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
+  # The `careers` input above was declared from the workflow's first commit and
+  # no job consumed it, so the nightly layer has never exercised the progression
+  # runner at all — the §8.4 and §6.3 metrics were only ever seen in a developer
+  # shell. Sharding four ways keeps a nightly window while still exercising the
+  # aggregation path that the deep run depends on.
+  progression:
+    name: Career progression shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 720
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run career progression shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_career_progression.gd --
+          --careers=${{ github.event.inputs.careers || '20000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=nightly_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: career-progression-nightly-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  summarize-progression:
+    name: Summarize career progression
+    needs: progression
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: career-progression-nightly-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=career_progression --shards=4
+          --directory=res://shards --label=nightly_progression
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-progression
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
+  body:
+    name: Body maturation shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run body maturation shard
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_body_maturation.gd --
+          --careers=${{ github.event.inputs.body_triples || '25000' }}
+          --shard=${{ matrix.shard }} --shards=4
+          --label=nightly_s${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: body-maturation-nightly-${{ matrix.shard }}
+          path: reports/
+          if-no-files-found: warn
+
+  summarize-body:
+    name: Summarize body maturation
+    needs: body
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: body-maturation-nightly-*
+          path: shards
+          merge-multiple: true
+      - name: Aggregate shards and report
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_report_aggregation.gd --
+          --report=body_maturation --shards=4
+          --directory=res://shards --label=nightly_body
+          --allow-uncertified
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-summary-body
+          path: reports/certification_*.json
+          if-no-files-found: warn
+
+  sensitivity:
+    name: Attribute sensitivity
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run attribute sensitivity at the §27.1 sample size
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_attribute_sensitivity.gd --
+          --resolutions=100000 --label=nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: attribute-sensitivity
+          path: reports/
+
+  builder:
+    name: Builder tournament
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      - name: Run Builder calibration portfolio
+        run: godot --headless --path . --script res://tools/builder_calibration_harness.gd
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: builder-calibration
+          path: reports/
+
+  performance:
+    name: Performance profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.1
+          use-dotnet: false
+      # The profile records the runner's build mode in its own provenance block,
+      # so a debug-template number is never compared with a release one.
+      - name: Run performance profile
+        run: >-
+          godot --headless --path . --script
+          res://calibration/runners/run_performance_profile.gd --
+          --games=40 --label=nightly
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-profile
+          path: reports/

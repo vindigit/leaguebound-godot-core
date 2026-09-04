@@ -28,6 +28,53 @@ var _projector: BoxScoreProjector
 var _possessions: Array[PossessionRecord]
 var _live_start: bool
 var _opened: bool
+## §4/§5 timeouts: the team currently on a scoring run and how many unanswered
+## points it has. Read from the possession records as they are appended, so the
+## trigger is a function of the committed ledger like everything else.
+var _run_team_id: StringName
+var _run_points: int
+## `EndgameStrategy`'s timeout-to-advance: set by `_consider_advance_timeout`
+## for the one possession that follows it, and consumed the same way
+## `_live_start` is.
+var _advance_start: bool
+## Why the next possession restarts (`RestartCause`, `PROJECT_STATUS.md` §5.31).
+##
+## **Ownership.** This session is the single authoritative writer. It is set from
+## the committed record of the possession that just ended, and overridden by the
+## two dead-ball events that happen *after* a possession ends and genuinely
+## supersede its cause: a charged timeout, and a period transition. It is read by
+## `PossessionEngine._open_possession` and by nothing else — the session itself
+## never asks what the cause implies about the clock, because that is a
+## competition rule and `RestartClockPolicy` owns it.
+##
+## It replaces the `_clock_stopped` boolean §5.30 shipped. That flag was derived
+## as `end_reason != MADE_SCORE`, and §5.30 recorded the resulting ambiguity as a
+## known conservatism: `PossessionEndReason` returns `MADE_SCORE` for a made
+## field goal and for a made final free throw alike, so a free-throw restart was
+## charged a running clock the rules do not charge. Deriving the fact from an end
+## reason that cannot express it was the defect; naming the cause at the point
+## the possession ends is the fix.
+##
+## It also closes a second, unrecorded case. `_consider_timeout` set
+## `_live_start = false` and left `_clock_stopped` alone, so a made basket
+## followed by a charged timeout still charged the next throw-in — even though a
+## timeout stops the clock in every ruleset. The override below is that
+## correction.
+##
+## This stays a separate fact from `_live_start`, which answers whether there is
+## anything to inbound at all. The two are required to agree about the live case
+## and `PossessionEngine.simulate` asserts that they do; they are not folded
+## together because a dead-ball restart still has two possible clock modes and
+## only the rule profile can say which.
+##
+## The session opens on `PERIOD_START`, because a game starts with a stopped
+## clock and an opening throw-in.
+var _restart_cause: int
+## The possession sequence an advance timeout was last called at, so the
+## "at most once for the same possession" condition is state the session
+## actually holds rather than an accident of the order `advance_possession`
+## happens to call things in. -1 is "never".
+var _advance_timeout_possession: int
 
 const MAX_POSSESSIONS: int = 2000
 
@@ -47,6 +94,11 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_possessions = []
 	_live_start = false
 	_opened = false
+	_run_team_id = &""
+	_run_points = 0
+	_advance_start = false
+	_advance_timeout_possession = -1
+	_restart_cause = RestartCause.Value.PERIOD_START
 
 
 func snapshot() -> MatchSnapshot:
@@ -96,6 +148,23 @@ func advance_possession() -> PossessionResult:
 			return null
 	assert(_snapshot.possession_sequence < MAX_POSSESSIONS,
 		"match exceeded the possession safety bound")
+	_consider_garbage_time()
+	# A team calls at most one timeout in this gap. The run-stopping timeout is
+	# considered first because it is the older, more general trigger; the
+	# advance timeout only gets a turn when the same team did not just spend an
+	# allowance answering a run — comparing the calling team's own allowance
+	# before and after is what detects that without `_consider_timeout` having
+	# to say so itself.
+	var pre_timeout_team: StringName = _snapshot.possession_team_id
+	var pre_timeout_remaining: int = (
+		_snapshot.state_for(pre_timeout_team).timeouts_remaining
+		if not pre_timeout_team.is_empty() else 0)
+	_consider_timeout()
+	var run_timeout_called: bool = (
+		not pre_timeout_team.is_empty()
+		and _snapshot.state_for(pre_timeout_team).timeouts_remaining < pre_timeout_remaining)
+	if not run_timeout_called:
+		_consider_advance_timeout()
 	_apply_substitutions()
 	_rotation.validate(_snapshot, _input)
 
@@ -104,11 +173,18 @@ func advance_possession() -> PossessionResult:
 		_snapshot.possession_sequence,
 	])
 	var possession: PossessionResult = _possession_engine.simulate(
-		_snapshot, _input, _random_source.derive(stream_label), _live_start)
+		_snapshot, _input, _random_source.derive(stream_label), _live_start, _advance_start,
+		_restart_cause)
 	_ledger.append_all(possession.events)
 	_snapshot = _reducer.apply_events(_snapshot, possession.events)
 	_possessions.append(possession.record)
 	_live_start = possession.record.live_transfer
+	# The engine named the cause at the moment it terminated the possession; the
+	# session carries it forward rather than re-deriving it from an end reason
+	# that cannot express it.
+	_restart_cause = possession.record.restart_cause
+	_advance_start = false
+	_record_run(possession.record)
 	return possession
 
 
@@ -185,8 +261,130 @@ func _advance_period() -> void:
 		MatchDomainEvent.PERIOD_STARTED, &"", &"", &"", &"", &"", &"", &"", 0, next_period)
 	_commit(writer)
 	# A new period starts from a dead ball, so the next possession is never a
-	# transition opportunity.
+	# transition opportunity, and never a leftover advance-timeout either. Its
+	# clock is stopped and starts on the opening touch, whatever ended the period
+	# before it.
 	_live_start = false
+	_advance_start = false
+	_restart_cause = RestartCause.Value.PERIOD_START
+
+
+## §18.2 score and time: each coach decides, from the shared scoreboard, whether
+## he is still playing the game.
+##
+## Emitted before substitutions so a rotation reads the state the ledger has
+## already explained, and emitted per team because the two coaches reach the
+## decision at different moments — which is the whole of the correction. The
+## event carries the mode and that team's own signed margin, so a reader can see
+## which side of the scoreboard the decision was made from and at what score,
+## without recomputing anything.
+func _consider_garbage_time() -> void:
+	var writer := _writer()
+	var balance: SimulationBalanceProfile = _input.balance_profile
+	for team_profile: TeamMatchProfile in [_input.home, _input.away]:
+		var team_id: StringName = team_profile.team_id
+		var team_state: TeamMatchState = _snapshot.state_for(team_id)
+		var resolved: int = GarbageTimeRule.resolved_mode(
+			_snapshot, _input, balance, team_id)
+		if resolved == team_state.settled_mode:
+			continue
+		var transition: StringName = (
+			&"resumed" if resolved == GarbageTimeRule.Mode.NONE else &"entered")
+		writer.emit(
+			MatchDomainEvent.GARBAGE_TIME, team_id, &"", &"", &"",
+			GarbageTimeRule.mode_id(resolved), transition, &"", 0,
+			_snapshot.margin_for(team_id))
+	if writer.events.is_empty():
+		return
+	_commit(writer)
+
+
+## §18.2 contextual adjustment, the timeout half: a coach stops the other side's
+## run.
+##
+## The rule is symmetric and reads only public state — who is on a run, how many
+## points it has reached, how many timeouts the team has left, and how much
+## regulation is still to play. Either coach calls it on exactly the same
+## condition, and its whole effect is the rest `MatchStateReducer` applies to
+## everybody on the floor. It changes no probability and moves no possession.
+func _consider_timeout() -> void:
+	var team_id: StringName = _snapshot.possession_team_id
+	if team_id.is_empty() or _run_team_id.is_empty() or _run_team_id == team_id:
+		return
+	var balance: SimulationBalanceProfile = _input.balance_profile
+	if _run_points < balance.timeout_run_points:
+		return
+	if _snapshot.state_for(team_id).timeouts_remaining <= 0:
+		return
+	# §18.2 stakes: a coach in a Final starts holding his timeouts for the endgame
+	# earlier than one in a regular-season game. It is the same timeout and the
+	# same effect — rest for everybody on the floor, both teams — moved to the
+	# moment it is worth more.
+	if GameManagement.remaining_ms(_snapshot, _input.rule_profile) < StakesPolicy.timeout_reserve_ms(
+		balance, _input.stakes
+	):
+		return
+	var writer := _writer()
+	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"run", &"", 0, _run_points)
+	_commit(writer)
+	# The run is answered whether or not the next possession scores: a coach who
+	# has spent a timeout on it does not spend a second one on the same run.
+	_run_points = 0
+	_run_team_id = &""
+	# A timeout is a dead ball, so the possession that follows it is never a
+	# transition opportunity — and the clock is stopped, whatever ended the
+	# possession before it. A made basket followed by a timeout used to keep the
+	# running-clock restart it no longer has (§5.31).
+	_live_start = false
+	_restart_cause = RestartCause.Value.TIMEOUT
+
+
+## `EndgameStrategy`'s timeout-to-advance (§4, gated by
+## `CompetitionRuleProfile.timeout_advance_permitted`): a trailing or tied team
+## late in regulation calls a timeout to gain the ball in the frontcourt rather
+## than walk it up. It is still an ordinary `TIMEOUT` — one allowance spent,
+## everybody on the floor rested, on both sides — with a different cause, and
+## a session-level flag that tells the possession engine to skip the backcourt
+## walk for the one possession that follows it.
+##
+## Whether it is worth an allowance at all is `EndgameStrategy`'s decision, and
+## the two facts only this session knows are handed to it: whether the coming
+## possession starts from a dead ball (there is no ball to inbound after a live
+## transfer, so there is no advance to buy), and whether this same possession
+## has already been advanced. Everything else — margin, clock, reserve — the
+## snapshot carries.
+func _consider_advance_timeout() -> void:
+	var team_id: StringName = _snapshot.possession_team_id
+	if team_id.is_empty():
+		return
+	if not EndgameStrategy.timeout_advance_eligible(
+		_snapshot,
+		_input.rule_profile,
+		_input.balance_profile,
+		team_id,
+		_live_start,
+		_advance_timeout_possession == _snapshot.possession_sequence,
+	):
+		return
+	var writer := _writer()
+	writer.emit(MatchDomainEvent.TIMEOUT, team_id, &"", &"", &"", &"", &"advance")
+	_commit(writer)
+	_advance_start = true
+	_advance_timeout_possession = _snapshot.possession_sequence
+	# A timeout is a dead ball whatever its cause, and it stops the clock whatever
+	# its cause.
+	_live_start = false
+	_restart_cause = RestartCause.Value.TIMEOUT
+
+
+func _record_run(record: PossessionRecord) -> void:
+	if record.points_scored <= 0:
+		return
+	if record.offense_team_id == _run_team_id:
+		_run_points += record.points_scored
+		return
+	_run_team_id = record.offense_team_id
+	_run_points = record.points_scored
 
 
 func _apply_substitutions() -> void:

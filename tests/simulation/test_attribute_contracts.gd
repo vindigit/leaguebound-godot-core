@@ -64,18 +64,76 @@ func test_handle_changes_creation_and_ball_security() -> void:
 		_ball_handling_turnover_rate(HIGH_RATING))
 
 
-func test_passing_changes_pass_accuracy_and_bad_pass_risk() -> void:
+## §8: "Passing — pass placement and catch quality; bad-pass turnover risk;
+## assist conversion support." §11.3: "Passing increases execution."
+##
+## So Passing owns delivery: it lands the pass, it decides the quality of the
+## catch, and it decides whether a delivery that produced a basket is what the
+## basket is credited to. It does **not** decide whether the opportunity existed
+## — that is Vision — and it never touches the shooter's own shooting.
+func test_passing_changes_delivery_execution_and_assist_conversion() -> void:
 	_assert_capability_sensitivity(
 		AttributeKey.Key.PASSING, CapabilityKey.Value.PASS_ACCURACY)
 	assert_float(_pass_turnover_rate(LOW_RATING)).is_greater(_pass_turnover_rate(HIGH_RATING))
+	# §14.3: the qualifying pass becomes a credited assist more often when the
+	# passer is the one who delivered it well.
+	assert_float(_assist_conversion(HIGH_RATING)).is_greater(_assist_conversion(LOW_RATING))
+	# And it changes nothing about the shot itself. The shooter's capability,
+	# baseline, contest, and resolved make probability are identical whoever
+	# passed him the ball.
+	_assert_passing_does_not_move_the_shot()
 
 
-func test_vision_changes_read_quality_and_assist_conversion() -> void:
+## §8: "Vision — open-target recognition; advanced-pass selection; help-defense
+## reading." §11.3: "Vision increases recognition and creation. A high Vision
+## player can see a pass that poor Passing fails to deliver."
+##
+## So Vision owns creation: whether the delivery found a team-mate the defence
+## had left, which is the §11.1 advantage a completed pass produces and the
+## thing that makes an assisted shot exist at all. It converts nothing by
+## itself, and it does not make the receiver's shot go in.
+func test_vision_changes_open_target_recognition_and_creation() -> void:
 	_assert_capability_sensitivity(
 		AttributeKey.Key.VISION, CapabilityKey.Value.PASS_READ_QUALITY)
-	# §11.3: Vision increases recognition and creation, which is what converts a
-	# qualifying pass into a credited assist.
-	assert_float(_assist_probability(HIGH_RATING)).is_greater(_assist_probability(LOW_RATING))
+	assert_float(_pass_advantage_rate(HIGH_RATING)).is_greater(
+		_pass_advantage_rate(LOW_RATING))
+	# And Vision *leads* the creation roll. Pass Accuracy is in it too — §11.1
+	# names both — but the roll is recognition, so removing Read Quality from it
+	# and leaning on accuracy instead would invert this.
+	var recognition_by_vision: float = (
+		_pass_advantage_rate_for({AttributeKey.Key.VISION: HIGH_RATING})
+		- _pass_advantage_rate_for({AttributeKey.Key.VISION: LOW_RATING}))
+	var recognition_by_passing: float = (
+		_pass_advantage_rate_for({AttributeKey.Key.PASSING: HIGH_RATING})
+		- _pass_advantage_rate_for({AttributeKey.Key.PASSING: LOW_RATING}))
+	assert_float(recognition_by_vision).override_failure_message(
+		"Passing created more open targets than Vision did (vision %.4f, passing %.4f)"
+			% [recognition_by_vision, recognition_by_passing]
+	).is_greater(recognition_by_passing)
+	# Assist conversion is Passing's observable, not Vision's. Vision reaches it
+	# only through the 15% share the §5.2 Pass Accuracy row gives it, which is
+	# well inside the §27.2 amplifier limit — an attribute that moved conversion
+	# as hard as Passing does would make the two indistinguishable.
+	var by_vision: float = (
+		_assist_conversion_by_vision(HIGH_RATING) - _assist_conversion_by_vision(LOW_RATING))
+	var by_passing: float = _assist_conversion(HIGH_RATING) - _assist_conversion(LOW_RATING)
+	assert_float(by_vision).is_greater_equal(0.0)
+	assert_float(by_vision).override_failure_message(
+		"Vision moved assist conversion as hard as Passing does"
+	).is_less(by_passing * CalibrationTargets.MAX_AMPLIFIER_SHARE_OF_PRIMARY)
+
+
+## §11.3, both halves at once. High Vision with poor Passing sees the open man
+## and fails to deliver him the ball; high Passing with poor Vision delivers
+## safely and creates less. Neither profile is simply better than the other.
+func test_vision_and_passing_remain_meaningfully_distinct() -> void:
+	var seer: Dictionary = {AttributeKey.Key.VISION: HIGH_RATING, AttributeKey.Key.PASSING: LOW_RATING}
+	var deliverer: Dictionary = {AttributeKey.Key.VISION: LOW_RATING, AttributeKey.Key.PASSING: HIGH_RATING}
+	# The seer creates more.
+	assert_float(_pass_advantage_rate_for(seer)).is_greater(_pass_advantage_rate_for(deliverer))
+	# The deliverer turns it over less.
+	assert_float(_pass_turnover_rate_for(seer)).is_greater(
+		_pass_turnover_rate_for(deliverer))
 
 
 func test_offensive_iq_changes_shot_selection() -> void:
@@ -354,17 +412,114 @@ func _pass_turnover_rate(rating: int) -> float:
 	return float(turnovers) / float(SAMPLES)
 
 
-## The §14.3 assist conversion rate for a qualifying pass, which Vision drives.
-func _assist_probability(rating: int) -> float:
+## The §14.3 assist conversion rate for a qualifying delivery, which §8 puts on
+## Passing.
+func _assist_conversion(rating: int) -> float:
+	return _conversion_from(
+		CapabilityKey.Value.PASS_ACCURACY, {AttributeKey.Key.PASSING: rating})
+
+
+## The same rate as a function of Vision, which must not move it.
+func _assist_conversion_by_vision(rating: int) -> float:
+	return _conversion_from(
+		CapabilityKey.Value.PASS_ACCURACY, {AttributeKey.Key.VISION: rating})
+
+
+func _conversion_from(capability_key: int, overrides: Dictionary) -> float:
 	var calculator: CapabilityCalculator = _capability()
-	var read: float = calculator.base_capability(
-		CapabilityKey.Value.PASS_READ_QUALITY, _attributes({AttributeKey.Key.VISION: rating}))
+	var capability: float = calculator.base_capability(capability_key, _attributes(overrides))
 	var balance: SimulationBalanceProfile = _balance()
 	return balance.opposed_probability(
 		balance.assist_base,
-		calculator.differential_units(read, 0.5),
+		calculator.differential_units(capability, 0.5),
 		balance.assist_floor,
 		balance.assist_ceiling)
+
+
+## The share of completed-pass actions that create a material §11.1 advantage —
+## the openness that makes an assisted shot possible at all.
+func _pass_advantage_rate(rating: int) -> float:
+	return _pass_advantage_rate_for({AttributeKey.Key.VISION: rating})
+
+
+func _pass_advantage_rate_for(overrides: Dictionary) -> float:
+	var context: PossessionContext = _context(overrides)
+	var on_court: Array[StringName] = context.offense_on_court()
+	var candidate := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, on_court[0], 1.0, on_court[1])
+	var resolver := AdvantageResolver.new(_capability(), BodyEffects.new(_balance()), _balance())
+	var material: int = 0
+	for index in range(SAMPLES):
+		if resolver.resolve(
+			context, candidate, SeededRandomSource.new(index + 1)
+		).is_material():
+			material += 1
+	return float(material) / float(SAMPLES)
+
+
+func _pass_turnover_rate_for(overrides: Dictionary) -> float:
+	var context: PossessionContext = _context(overrides)
+	var on_court: Array[StringName] = context.offense_on_court()
+	var candidate := ActionCandidate.new(
+		ActionFamily.Value.PASS_SWING, on_court[0], 1.0, on_court[1])
+	var resolver := TurnoverResolver.new(_capability(), _balance())
+	var advantage := AdvantageResult.new()
+	var turnovers: int = 0
+	for index in range(SAMPLES):
+		if resolver.resolve_pass(
+			context, candidate, advantage, SeededRandomSource.new(index + 1)
+		).occurred:
+			turnovers += 1
+	return float(turnovers) / float(SAMPLES)
+
+
+## The shooter's own shot is untouched by whoever passed him the ball.
+##
+## §12.2 and §12.6 do list "catch/pass quality" among the make-quality context
+## terms, and the engine honours that: a badly delivered ball is a harder catch.
+## What is asserted here is the part that would otherwise let Passing stand in
+## for shooting — the shooter's capability, the zone baseline, the contest, and
+## the resolved probability at a fixed catch quality are identical whoever threw
+## the pass. The pass-quality term is a bounded context penalty on the delivery,
+## never a shooting rating.
+func _assert_passing_does_not_move_the_shot() -> void:
+	var advantage := AdvantageResult.new()
+	var probabilities: PackedFloat64Array = PackedFloat64Array()
+	var capabilities: PackedFloat64Array = PackedFloat64Array()
+	var bands: PackedInt32Array = PackedInt32Array()
+	for rating: int in [LOW_RATING, HIGH_RATING]:
+		# A fresh calculator per arm. `CapabilityCalculator` memoizes by player
+		# id and is documented as living for exactly one `MatchInput`; two
+		# fixtures that share player ids are two matches, and reusing one
+		# calculator across them silently answers the second arm with the
+		# first arm's ratings.
+		var context: PossessionContext = _context({AttributeKey.Key.PASSING: rating})
+		var calculator := CapabilityCalculator.new(
+			context.input.ratings_profile, context.input.balance_profile)
+		var body := BodyEffects.new(context.input.balance_profile)
+		var resolver := ShotResolver.new(calculator, body, context.input.balance_profile)
+		# The shooter is a team-mate of the player whose Passing is being moved,
+		# and his own shooting attributes are identical in both arms.
+		var shooter_id: StringName = context.offense_on_court()[1]
+		var shooter: PlayerMatchProfile = context.offense_profile(shooter_id)
+		var runtime: PlayerMatchRuntime = context.offense_runtime(shooter_id)
+		var contest: ShotContest = resolver.build_contest(
+			context, shooter_id, ShotZone.Value.STANDARD_THREE, advantage)
+		var outcome: ShotOutcome = resolver.resolve(
+			context, shooter_id, ShotZone.Value.STANDARD_THREE, false, contest, advantage,
+			1.0, 0.0, SeededRandomSource.new(7))
+		capabilities.append(calculator.shot_capability(
+			shooter, runtime, ShotZone.Value.STANDARD_THREE))
+		bands.append(contest.band)
+		probabilities.append(outcome.probability)
+	assert_float(capabilities[0]).override_failure_message(
+		"Passing moved the shooter's own shot capability").is_equal_approx(
+		capabilities[1], 0.000001)
+	assert_int(bands[0]).override_failure_message(
+		"Passing moved the contest the shooter faced").is_equal(bands[1])
+	assert_float(probabilities[0]).override_failure_message(
+		"Passing moved the shooter's own make probability"
+	).is_equal_approx(probabilities[1], 0.000001)
 
 
 func _shooting_foul_rate(rating: int) -> float:
