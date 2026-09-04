@@ -37,6 +37,32 @@ var _run_points: int
 ## for the one possession that follows it, and consumed the same way
 ## `_live_start` is.
 var _advance_start: bool
+## Whether the game clock is stopped as the next possession begins
+## (`PROJECT_STATUS.md` §5.30).
+##
+## **Ownership.** Written here and nowhere else, from the committed record of the
+## possession that just ended; read by `PossessionEngine._open_possession` to
+## decide whether the throw-in restarts the clock or happens on a running one.
+##
+## A whistle stops the clock and it restarts on the legal touch, so a possession
+## following a turnover, a violation or the start of a period is charged nothing
+## for its inbound. A made basket in open play does not stop it, so that restart
+## still costs what it always cost. This is a separate fact from `_live_start`,
+## which answers whether there is anything to inbound at all, and it is
+## deliberately not folded into it: a live transfer has no throw-in, while a
+## dead-ball restart may have either a stopped or a running clock.
+##
+## The session opens with the clock stopped, because a game starts stopped.
+##
+## **Known conservatism.** `PossessionEndReason` does not separate a made field
+## goal from a made free throw, and a made final free throw does stop the clock.
+## Treating both as running keeps the inbound charged in a case where basketball
+## would not charge it. It is left that way deliberately: the alternative is a
+## new end reason, the error is in the direction that preserves the §14.1
+## possessions band rather than inflating it, and inside the last five seconds —
+## where it could decide anything — the desperation opening already treats the
+## clock as stopped.
+var _clock_stopped: bool
 ## The possession sequence an advance timeout was last called at, so the
 ## "at most once for the same possession" condition is state the session
 ## actually holds rather than an accident of the order `advance_possession`
@@ -65,6 +91,7 @@ func _init(input: MatchInput, random_source: RandomSource) -> void:
 	_run_points = 0
 	_advance_start = false
 	_advance_timeout_possession = -1
+	_clock_stopped = true
 
 
 func snapshot() -> MatchSnapshot:
@@ -139,11 +166,15 @@ func advance_possession() -> PossessionResult:
 		_snapshot.possession_sequence,
 	])
 	var possession: PossessionResult = _possession_engine.simulate(
-		_snapshot, _input, _random_source.derive(stream_label), _live_start, _advance_start)
+		_snapshot, _input, _random_source.derive(stream_label), _live_start, _advance_start,
+		_clock_stopped)
 	_ledger.append_all(possession.events)
 	_snapshot = _reducer.apply_events(_snapshot, possession.events)
 	_possessions.append(possession.record)
 	_live_start = possession.record.live_transfer
+	# Everything except a made basket in open play arrives through a whistle, and
+	# a whistle stops the clock until the next legal touch.
+	_clock_stopped = possession.record.end_reason != PossessionEndReason.Value.MADE_SCORE
 	_advance_start = false
 	_record_run(possession.record)
 	return possession
@@ -222,9 +253,12 @@ func _advance_period() -> void:
 		MatchDomainEvent.PERIOD_STARTED, &"", &"", &"", &"", &"", &"", &"", 0, next_period)
 	_commit(writer)
 	# A new period starts from a dead ball, so the next possession is never a
-	# transition opportunity, and never a leftover advance-timeout either.
+	# transition opportunity, and never a leftover advance-timeout either. Its
+	# clock is stopped and starts on the opening touch, whatever ended the period
+	# before it.
 	_live_start = false
 	_advance_start = false
+	_clock_stopped = true
 
 
 ## §18.2 score and time: each coach decides, from the shared scoreboard, whether

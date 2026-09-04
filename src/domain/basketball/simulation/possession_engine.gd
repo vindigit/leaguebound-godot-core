@@ -98,6 +98,7 @@ func simulate(
 	random_source: RandomSource,
 	live_start: bool = false,
 	advance_start: bool = false,
+	clock_stopped: bool = true,
 ) -> PossessionResult:
 	assert(input == _input, "this engine was constructed for a different match input")
 	assert(not snapshot.completed, "a completed match cannot resolve another possession")
@@ -135,7 +136,7 @@ func simulate(
 		MatchDomainEvent.POSSESSION_STARTED, offense_team_id, initiator_id, &"", &"",
 		&"live" if live_start else &"dead_ball")
 
-	_open_possession(random_source.derive(&"open"), live_start, advance_start)
+	_open_possession(random_source.derive(&"open"), live_start, advance_start, clock_stopped)
 	_run_action_loop(random_source)
 
 	if not _terminated:
@@ -159,13 +160,49 @@ func simulate(
 
 # --- §9.2 opening states ----------------------------------------------------
 
-func _open_possession(random_source: RandomSource, live_start: bool, advance_start: bool) -> void:
+func _open_possession(
+	random_source: RandomSource,
+	live_start: bool,
+	advance_start: bool,
+	clock_stopped: bool,
+) -> void:
+	# A possession that begins with almost nothing on the clock cannot run the
+	# ordinary opening, and requiring it to was killing the possession before it
+	# ever chose an action. It commits from where it stands instead.
+	var desperate: bool = _state.clock_ms <= _balance.desperation_opening_clock_ms
 	if not live_start:
-		# DEAD_BALL -> INBOUND
-		_consume(_clock.inbound_ms(random_source.derive(&"inbound")))
-		if _terminated:
-			return
+		# DEAD_BALL -> INBOUND.
+		#
+		# **A stopped clock restarts on the legal touch.** After a whistle — a
+		# foul, a violation, a ball out of bounds, the start of a period — the
+		# game clock is not running, so retrieving the ball, the official's
+		# administration, and the throw-in itself cost the offence nothing. The
+		# event that records the touch therefore emits at the possession's own
+		# starting clock (`PROJECT_STATUS.md` §5.30).
+		#
+		# **A clock that never stopped keeps running.** The common restart in this
+		# engine is the one after a made basket in open play, and there no
+		# competition modeled here stops the clock: the opponent takes the ball
+		# out with it running and the seconds are genuinely spent. Charging every
+		# restart as though it were a stopped clock frees roughly three and a half
+		# minutes of game time per game and moves college possessions from 71.9 to
+		# 79.1 against a 64-73 band, which is why the caller supplies the fact
+		# rather than the engine assuming it.
+		#
+		# Inside the desperation window the clock is stopped whatever the cause:
+		# every dead-ball restart stops it unconditionally, and a made basket in
+		# the last five seconds is inside every modeled competition's late-game
+		# stop. So `desperate` reaches the same conclusion without needing the
+		# caller to have derived it.
+		if not (clock_stopped or desperate):
+			_consume(_clock.running_clock_inbound_ms(random_source.derive(&"inbound")))
+			if _terminated:
+				return
 		_emit(MatchDomainEvent.INBOUND, _context.offense.team_id, _context.ball_handler_id)
+	if desperate:
+		_context.desperation_opening = true
+		_open_desperate(random_source, advance_start)
+		return
 	# ADVANCE. A timeout-advance possession (§4's rule-profile-gated
 	# `timeout_advance_permitted`) already inbounds in the frontcourt, so there
 	# is no backcourt walk left to charge for — the event still emits, tagged,
@@ -191,6 +228,47 @@ func _open_possession(random_source: RandomSource, live_start: bool, advance_sta
 	if _terminated:
 		return
 	_emit(MatchDomainEvent.HALF_COURT_ENTERED, _context.offense.team_id, _context.ball_handler_id)
+
+
+## The desperation opening (§9.2, `PROJECT_STATUS.md` §5.30).
+##
+## With five seconds or less the offence still has to advance the ball, and
+## still has to do it against a defence, but it does not walk it up and it does
+## not run a half-court set. So the advance is drawn exactly as it always was and
+## charged exactly as it always was — this is not free time — and the half-court
+## entry is *skipped rather than discounted*: the possession does not get a
+## set-up offence it had no time to run. What it gets instead is the fact of
+## where it actually is, which `ShotResolver` then charges for.
+##
+## Two outcomes, and the clock picks between them without anybody's help:
+##
+## - The advance completes. The ball is in the frontcourt with no set drawn, so
+##   the attempt comes from `DEEP`.
+## - The advance would cross the horn. The offence never gets it across, so the
+##   attempt comes from the `BACKCOURT` and is a heave.
+##
+## Neither branch reads the score, the margin, the period, or what result would
+## be convenient. A team four points ahead inbounding with three seconds runs
+## exactly this path, because that is what happens on a basketball court.
+func _open_desperate(random_source: RandomSource, advance_start: bool) -> void:
+	var depth: int = TacticalLocation.Depth.DEEP
+	if advance_start:
+		# The timeout already bought the frontcourt inbound; there is no
+		# backcourt walk left to skip, and none left to charge for either.
+		_emit(
+			MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id,
+			&"", &"", &"", &"timeout_advanced")
+	else:
+		var advance_ms: int = _clock.advance_ms(_context, random_source.derive(&"advance"))
+		if advance_ms < _writer.clock_ms:
+			_consume(advance_ms)
+			if _terminated:
+				return
+			_emit(MatchDomainEvent.ADVANCE, _context.offense.team_id, _context.ball_handler_id)
+		else:
+			depth = TacticalLocation.Depth.BACKCOURT
+	_context.ball_location = TacticalLocation.new(
+		TacticalLocation.Lane.CENTER, depth, MovementIntent.Value.ADVANCE_BALL)
 
 
 func _enters_transition(random_source: RandomSource) -> bool:

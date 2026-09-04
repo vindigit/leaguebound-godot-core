@@ -11,6 +11,15 @@ extends RefCounted
 ## and its ball handler's Push Transition ↔ Control Tempo slider stretch or
 ## compress the band, which is what makes a patient team consume more clock per
 ## possession without changing anyone's ratings.
+##
+## **`running_clock_inbound_ms` is not charged for every inbound.** The game clock
+## restarts on the legal touch whenever it was stopped, so a throw-in that
+## follows a whistle costs nothing and `PossessionEngine` emits its `INBOUND` at
+## the possession's own starting clock. What this draw models is the other case:
+## the restart after a made basket in open play, where the clock never stopped
+## and the seconds spent inbounding are seconds the offence genuinely loses
+## (`PROJECT_STATUS.md` §5.30). Charging it on a stopped clock is the defect that
+## section closes, which is why the caller decides and this function does not.
 
 var _balance: SimulationBalanceProfile
 ## The competition's pace environment (§4). Every draw is scaled by it, so the
@@ -27,7 +36,9 @@ func _init(
 	_pace_multiplier = 1.0 if p_rules == null else p_rules.pace_multiplier
 
 
-func inbound_ms(random_source: RandomSource) -> int:
+## The inbound that happens on a *running* clock. See the class note: the caller
+## charges this only when the clock never stopped.
+func running_clock_inbound_ms(random_source: RandomSource) -> int:
 	return _draw(
 		_balance.inbound_seconds_min, _balance.inbound_seconds_max,
 		_pace_multiplier, random_source)

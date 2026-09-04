@@ -87,6 +87,17 @@ var movement_penalty_max: float = 0.08
 var catch_quality_penalty_max: float = 0.07
 var fatigue_shot_penalty_max: float = 0.10
 var clock_desperation_penalty_max: float = 0.12
+## §12.6 distance consequence for an attempt taken from further out than its own
+## zone assumes, expressed against `TacticalLocation.rim_distance()`.
+##
+## Zero for every attempt taken from the location its zone implies, which is
+## every possession that completed an ordinary half-court entry. It exists so a
+## backcourt or unusually deep attempt created by the desperation opening cannot
+## be resolved on ordinary arc odds. The value is bounded rather than calibrated:
+## one full arc-to-backcourt step costs this much make probability, and the
+## zone's own floor (`shot_floor`) still owns the lower bound, so a heave keeps a
+## small but real chance rather than becoming an engineered miss.
+var location_distance_penalty_max: float = 0.25
 ## Â§12.6 lists advantage and pass quality as a positive make-quality term.
 var advantage_shot_bonus_max: float = 0.10
 
@@ -389,6 +400,17 @@ var pull_up_three_capability_threshold: float = 0.18
 var reset_block_clock_ms: int = 6000
 ## Below this shot clock only a shot attempt remains legal.
 var desperation_clock_ms: int = 2500
+## The game clock at or below which a possession opens as a desperation
+## possession: the offence inbounds, pushes the ball as far as the clock allows,
+## and commits to an attempt from wherever it stands rather than walking the
+## ball up and running a half-court set (`SIMULATION_SPEC.md` §9.2).
+##
+## This is a *game*-clock window, not a shot-clock one, and it is deliberately
+## distinct from `desperation_clock_ms` above: that constant asks which actions
+## remain legal late in a possession, this one asks how a possession that has
+## almost no time to begin with is opened at all. Score is not an input — a team
+## inbounding with four seconds gets a look whatever the scoreboard says.
+var desperation_opening_clock_ms: int = 5000
 ## Spacing: the three-point capability at which a player counts as a spacer.
 var spacer_capability_threshold: float = 0.45
 
@@ -524,6 +546,16 @@ var settled_release_share: float = 0.85
 var settled_minimum_pairs_left: float = 1.0
 
 # --- Â§9.4 time consumption --------------------------------------------------
+## Dead-ball inbound administration: retrieving the ball, the official's
+## handling, and the throw-in itself before it is legally touched.
+##
+## **This is not game-clock consumption and no resolver may charge it as such.**
+## The game clock starts on the legal touch, so `ClockResolver` has no
+## `inbound_ms` and `PossessionEngine` emits `INBOUND` at the possession's
+## starting clock (`PROJECT_STATUS.md` §5.30). The pair is retained because it
+## still describes a real duration that `intentional_miss_clock_ms` cites when it
+## derives its window from the clock model, and because presentation owns the
+## interval between a dead ball and the touch that restarts the clock.
 var inbound_seconds_min: int = 2
 var inbound_seconds_max: int = 4
 var advance_seconds_min: int = 2
@@ -714,6 +746,14 @@ var leading_foul_clock_ms: int = 10000
 ## does not fit and the miss is the only thing left; outside it the point is
 ## worth more.
 ##
+## **Under `simulation-v13` the inbound term no longer runs the game clock**, so
+## the same arithmetic now gives five seconds rather than seven and this window
+## is wider than its own derivation requires. It is left at 7000 deliberately:
+## narrowing it would change when a trailing team deliberately misses, which is
+## an end-of-regulation coaching decision and not the opening-clock defect §5.30
+## exists to fix. Recorded as a known, bounded conservatism rather than retuned
+## as a side effect.
+##
 ## 3500 was not wrong so much as unreachable once
 ## `EndgameStrategy.minimum_miss_window_ms` put a floor underneath it: a
 ## free-throw trip charges two seconds of event time per attempt, so a trip
@@ -850,7 +890,13 @@ func _init(
 	# tie-seeking window. v12 removes the false timeout dependency, preserves
 	# putback decision tags, and lets an already-selected designed-play action
 	# release before the horn inside the existing desperation threshold (§5.29).
-	p_version: StringName = &"simulation-v12-endgame-ledger-and-resource-contract",
+	# v13 corrects the authoritative game-clock contract at a possession's
+	# opening: dead-ball inbound administration no longer consumes live game
+	# clock, and a possession opening inside `desperation_opening_clock_ms`
+	# commits to an attempt from its actual court location instead of running an
+	# ordinary half-court set it has no time for (§5.30). Both change what the
+	# engine produces for the same input, so the ruleset is bumped.
+	p_version: StringName = &"simulation-v13-opening-clock-and-location-contract",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1095,6 +1141,7 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"shot.ceiling_dunk", &"probability", ceiling_dunk, 0.50, 1.0)
 	_add(tunables, &"shot.floor_midrange", &"probability", floor_midrange, 0.0, 0.20)
 	_add(tunables, &"shot.ceiling_midrange", &"probability", ceiling_midrange, 0.40, 1.0)
+	_add(tunables, &"shot.location_distance_penalty_max", &"probability", location_distance_penalty_max, 0.0, 0.60)
 	_add(tunables, &"shot.floor_standard_three", &"probability", floor_standard_three, 0.0, 0.20)
 	_add(tunables, &"shot.ceiling_standard_three", &"probability", ceiling_standard_three, 0.35, 1.0)
 	_add(tunables, &"shot.floor_deep_three", &"probability", floor_deep_three, 0.0, 0.20)
@@ -1169,6 +1216,7 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"validity.pull_up_three_capability_threshold", &"capability", pull_up_three_capability_threshold, 0.0, 1.0)
 	_add(tunables, &"validity.reset_block_clock_ms", &"milliseconds", float(reset_block_clock_ms), 0.0, 15000.0)
 	_add(tunables, &"validity.desperation_clock_ms", &"milliseconds", float(desperation_clock_ms), 0.0, 10000.0)
+	_add(tunables, &"validity.desperation_opening_clock_ms", &"milliseconds", float(desperation_opening_clock_ms), 0.0, 15000.0)
 	_add(tunables, &"validity.spacer_capability_threshold", &"capability", spacer_capability_threshold, 0.0, 1.0)
 	_add(tunables, &"action.base_weight_pass_swing", &"weight", base_weight_pass_swing, 0.10, 3.0)
 	_add(tunables, &"action.base_weight_drive", &"weight", base_weight_drive, 0.05, 3.0)

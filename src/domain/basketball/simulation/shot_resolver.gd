@@ -245,6 +245,7 @@ func resolve(
 		clampf(runtime.acute_fatigue / 100.0, 0.0, 1.0) * _balance.fatigue_shot_penalty_max)
 	var clock_penalty: float = (
 		_clock_desperation(context) * _balance.clock_desperation_penalty_max)
+	var location_penalty: float = _location_distance_penalty(context, zone)
 	# §12.2 shot selection: Offensive IQ improves the circumstances of the
 	# attempt. Bounded by the advantage bonus so it cannot replace the shot.
 	var selection: float = _capability.shot_selection(shooter, runtime, zone)
@@ -257,6 +258,7 @@ func resolve(
 		- movement_penalty
 		- fatigue_penalty
 		- clock_penalty
+		- location_penalty
 		+ selection_bonus)
 	# §19.4 deliberately contributes nothing here. A term added to the make
 	# probability of every home attempt is not officiating, communication,
@@ -285,6 +287,7 @@ func resolve(
 			"movement_penalty": movement_penalty,
 			"fatigue_penalty": fatigue_penalty,
 			"clock_penalty": clock_penalty,
+			"location_penalty": location_penalty,
 			"selection_bonus": selection_bonus,
 			"unclamped_probability": unclamped,
 			"probability": probability,
@@ -292,6 +295,35 @@ func resolve(
 		})
 	return ShotOutcome.new(
 		made, ShotZone.points_for(zone), probability, zone, dunk, false, &"", contest)
+
+
+## §12.6 distance consequence: an attempt taken from further out than its own
+## zone assumes does not resolve on that zone's ordinary odds.
+##
+## `TacticalLocation` is the authoritative spatial input (§16.1) and this is its
+## first reader. The term is the *excess* of the attempt's actual rim distance
+## over the distance its zone already implies, normalized so that one full
+## arc-to-backcourt step costs `location_distance_penalty_max`. That framing is
+## what makes the ordinary game byte-identical: a deep three taken from `DEEP`
+## has zero excess and is charged nothing, and a possession that ran the ordinary
+## opening carries no location at all, so there is nothing to charge.
+##
+## It reads a court position and a shot zone, and there is no third input. A
+## scoreboard, a deficit, a target band, a calibration result, and whether a make
+## would level the game are all unreachable from here — `test_fg_decomposition`
+## enforces that by scanning this file — and the shot's own `shot_floor` still
+## owns the lower bound, so this lengthens the odds against a heave and never
+## decides one.
+func _location_distance_penalty(context: PossessionContext, zone: int) -> float:
+	var location: TacticalLocation = context.ball_location
+	if location == null:
+		return 0.0
+	var excess: float = location.rim_distance() - TacticalLocation.rim_distance_for_depth(
+		TacticalLocation.depth_for_zone(zone))
+	if excess <= 0.0:
+		return 0.0
+	var span: float = 1.0 - TacticalLocation.rim_distance_for_depth(TacticalLocation.Depth.ARC)
+	return clampf(excess / span, 0.0, 1.0) * _balance.location_distance_penalty_max
 
 
 func _clock_desperation(context: PossessionContext) -> float:

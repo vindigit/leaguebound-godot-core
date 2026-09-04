@@ -244,11 +244,20 @@ static func designed_play_active(
 ## clock when a possession begins, so this is the one live deadline both clocks
 ## share; the defect was not clock identity but letting the selected action's
 ## duration cross that deadline before the action could be emitted.
+## A possession that opened inside the desperation-opening window is also
+## release-due, for its whole length and without consulting the score. It exists
+## because the clock left it no ordinary possession to run; letting the first
+## action it manages to select expire unemitted would reintroduce, one state
+## later, exactly the loss the opening path was added to stop. `PossessionContext`
+## owns that fact and fixes it before any action is chosen, so this cannot become
+## a place where a convenient margin buys extra time.
 static func final_release_due(
 	context: PossessionContext,
 	balance: SimulationBalanceProfile,
 	threshold_ms: int,
 ) -> bool:
+	if context.desperation_opening:
+		return true
 	return (
 		designed_play_active(context, balance)
 		and context.state.shot_clock_ms <= maxi(threshold_ms, 0)

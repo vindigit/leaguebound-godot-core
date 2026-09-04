@@ -63,7 +63,14 @@ func depth_id() -> StringName:
 ## Normalized distance from the rim, used by rebound positioning and contest
 ## arrival. Zero is at the rim; one is the far edge of live offensive space.
 func rim_distance() -> float:
-	match depth:
+	return rim_distance_for_depth(depth)
+
+
+## The same ladder, addressable without building a location. `ShotResolver`
+## compares an attempt's actual location against the distance its own zone
+## implies, and needs the second of those two without a frame to hang it on.
+static func rim_distance_for_depth(depth_value: int) -> float:
+	match depth_value:
 		Depth.RIM:
 			return 0.0
 		Depth.PAINT:
