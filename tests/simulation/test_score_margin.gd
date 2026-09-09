@@ -49,6 +49,43 @@ const EDGE_SAMPLE: int = 24
 ## standard error here is near three points, will not reach.
 const MIRROR_MEAN_MARGIN_BOUND: float = 10.0
 
+## The largest home-minus-away mean *starter-minutes* difference this suite will
+## accept from the same mirror games.
+##
+## It replaces a `maxf(half_width, 1.0)` bound — the mean judged against the
+## sample's own confidence interval — which the sibling constant above already
+## explains is "a coin flip at forty games". That is not a figure of speech: a
+## true-zero effect lands outside its own 95% interval 5% of the time by
+## definition, so the assertion failed on about one tree in twenty regardless of
+## whether anything was wrong. `simulation-v15` moved these forty seeds into that
+## tail and the failure was investigated rather than assumed (§5.33):
+##
+## | tree | seeds | games | mean difference | 95% half-width | z |
+## | --- | --- | ---: | ---: | ---: | ---: |
+## | `e32bad5` | 0-399 | 400 | −0.0362 | 1.6765 | −0.04 |
+## | **`simulation-v15`** | 0-399 | 400 | **−0.0925** | 1.6496 | **−0.11** |
+## | `e32bad5` | 5000-5399 | 400 | +0.3911 | 1.5994 | +0.48 |
+## | **`simulation-v15`** | 5000-5399 | 400 | **−0.6023** | 1.5673 | **−0.75** |
+##
+## At four hundred games the difference is indistinguishable from zero on both
+## trees and on both disjoint seed ranges, and every reading is well inside its
+## own interval. There is no one-sided rotation effect to find; the forty-game
+## reading of +5.33 is `z = +2.0` against a standard error of 2.66 minutes, which
+## is ordinary. It is also not a one-directional drift: the corrected tree reads
+## −0.09 on one range and −0.60 on the other, on opposite sides of the baseline.
+##
+## The bound is therefore set where a defect sits rather than where this sample's
+## noise happens to fall. Per-game standard deviation is 16.8 minutes, so forty
+## games carry a standard error of 2.66; ten minutes is 3.8 of those, which
+## ordinary sampling will not reach. A rotation that only runs for one bench is
+## worth far more — five starters held on court for a whole game is +94 — and a
+## bench substituting even a fifth less is worth twenty to thirty.
+##
+## The sample is deliberately **not** raised to make this pass. Forty games is
+## what the pull-request gate can afford, and a sample changed to obtain a green
+## result is not evidence.
+const MIRROR_ROTATION_MINUTES_BOUND: float = 10.0
+
 ## Cached because each entry is a complete simulated game and six of the tests
 ## below read the same handful from different angles.
 static var _mirror_cache: Dictionary = {}
@@ -81,6 +118,13 @@ func test_identical_rosters_have_no_systematic_edge() -> void:
 ## The same rosters, the same tactics, the same everything: the two teams have
 ## to be given the same rotation. A one-sided substitution rule would show up
 ## here as a minute gap that survives the sample.
+##
+## The fixture is symmetric by construction — both benches are built from the
+## same variation, the environment is zero, and the opening inbound alternates on
+## variation parity — so the expected difference is exactly zero and any
+## systematic gap is a defect. The bound is `MIRROR_ROTATION_MINUTES_BOUND`
+## rather than the sample's own interval, for the reason recorded on that
+## constant.
 func test_identical_rosters_receive_the_same_rotation() -> void:
 	var difference: PackedFloat64Array = PackedFloat64Array()
 	var index: int = 0
@@ -90,7 +134,27 @@ func test_identical_rosters_receive_the_same_rotation() -> void:
 			_starter_minutes(input, output, input.home)
 			- _starter_minutes(input, output, input.away))
 		index += 1
-	assert_float(absf(_mean(difference))).is_less(maxf(_mean_half_width(difference), 1.0))
+	assert_float(absf(_mean(difference))).override_failure_message(
+		"mirror starter minutes differ by more than a sampling error can explain"
+	).is_less(MIRROR_ROTATION_MINUTES_BOUND)
+	# And both benches are genuinely rotated. A tree in which *neither* side
+	# substituted would hold every starter on court for the whole game and pass
+	# the difference test trivially, so the level is asserted as well as the gap.
+	var home_minutes: float = 0.0
+	var away_minutes: float = 0.0
+	index = 0
+	for output in _mirror_sample():
+		var input: MatchInput = _mirror_match(index, 0.0)
+		home_minutes += _starter_minutes(input, output, input.home)
+		away_minutes += _starter_minutes(input, output, input.away)
+		index += 1
+	var games: float = float(_mirror_sample().size())
+	# Five starters playing every minute of a 48-minute game is 240.
+	for minutes: float in [home_minutes / games, away_minutes / games]:
+		assert_float(minutes).override_failure_message(
+			"a bench that is never used is not a rotation").is_less(200.0)
+		assert_float(minutes).override_failure_message(
+			"starters that never play is not a rotation either").is_greater(80.0)
 
 
 ## Swapping which of two identical rosters is called "home" cannot change the
