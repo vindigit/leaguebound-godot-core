@@ -23,6 +23,15 @@ extends RefCounted
 ##    `CompetitionRuleProfile.stops_clock_after_made_basket`, which reads the
 ##    period and the remaining time.
 ##
+## **No threshold is written in this file.** The owner ruling closed by
+## work-queue item 20 gives each competition three windows — one for an ordinary
+## regulation period, one for the final regulation period, one for overtime —
+## and every one of those numbers, and the inclusive boundary they are compared
+## against, lives in `MadeFieldGoalClockRule`. This class knows only that a made
+## field goal is a question worth asking a profile and that every other dead-ball
+## cause is not. Hardcoding a window here, or reading a period number here, would
+## put a competition rule back into the policy layer that §5.31 took it out of.
+##
 ## A `LIVE_BALL` restart has no throw-in to administer at all. It answers
 ## `CLOCK_ALREADY_RUNNING` because that is true — the clock did not stop — and
 ## the opening path never asks, because it takes the live branch first. The

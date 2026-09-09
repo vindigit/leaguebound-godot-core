@@ -902,7 +902,18 @@ func _init(
 	# onto `CompetitionRuleProfile` (§5.31). Two restarts change as a result — a
 	# made free throw and a charged timeout both stop the clock and no longer
 	# charge the throw-in — so the ruleset is bumped again.
-	p_version: StringName = &"simulation-v14-restart-contract",
+	# v15 answers the made-field-goal question v14 deliberately left open. The
+	# owner ruling is that a made field goal does not stop the clock merely
+	# because it went in, and that the competitions which stop it anyway do so
+	# inside an end-of-period window whose length depends on whether the period
+	# is an ordinary regulation period, the final regulation period, or an
+	# overtime. `MadeFieldGoalClockRule` carries those three numbers per
+	# competition and `PeriodCategory` supplies the third argument; the single
+	# 5,000ms window every profile shipped under v14 is replaced by the matrix
+	# (§5.33, work-queue item 20). Restarts change in every competition — high
+	# school loses its window entirely, the other four gain longer and
+	# period-dependent ones — so the ruleset is bumped again.
+	p_version: StringName = &"simulation-v15-made-field-goal-clock-matrix",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
