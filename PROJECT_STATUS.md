@@ -32,7 +32,7 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after. §5.30 then corrects the opening-state clock and gives `TacticalLocation` its first production reader, and §5.31 replaces the boolean it shipped with an explicit restart contract — a typed `RestartCause` named at every terminal path, one `RestartClockPolicy`, and the made-basket clock rule moved onto the competition rule profile where §4 puts it — closing the ambiguity §5.30 recorded, a second timeout defect the audit found, and a competition rule that was being decided inside `PossessionEngine`. Together those corrections stopped charging a throw-in the rules do not charge, which moved §14.1 possessions per game up at **all five** competition levels and out of band at three; §5.32 re-derives the pace environment against the corrected clock, by measurement rather than by offset, and **all five levels pass on the judged cell and on two untouched validation ranges**. No target or tolerance moved, no shooting or other probability was retuned, and no overtime claim is made anywhere in that work.
+**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after. §5.30 then corrects the opening-state clock and gives `TacticalLocation` its first production reader, and §5.31 replaces the boolean it shipped with an explicit restart contract — a typed `RestartCause` named at every terminal path, one `RestartClockPolicy`, and the made-basket clock rule moved onto the competition rule profile where §4 puts it — closing the ambiguity §5.30 recorded, a second timeout defect the audit found, and a competition rule that was being decided inside `PossessionEngine`. Together those corrections stopped charging a throw-in the rules do not charge, which moved §14.1 possessions per game up at **all five** competition levels and out of band at three; §5.32 re-derives the pace environment against the corrected clock, by measurement rather than by offset, and **all five levels pass on the judged cell and on two untouched validation ranges**. §5.33 then takes the made-field-goal clock-stoppage ruling §5.31 recorded as missing — a made field goal does not stop the clock merely because it went in, and each competition's late-game windows differ by whether the period is an ordinary regulation period, the final one, or an overtime — and implements it as a typed three-window rule the profiles declare and one policy reads. **Pace was re-measured under that final matrix and deliberately left unchanged**: it moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced §5.32, every level is in band on both trees, and three of the four game-shape verdict transitions do not reproduce on untouched seed ranges. §5.33 also classifies §5.32's new §17.4 blocker: the 2.5 cap is a statistical ceiling on measured outcome movement rather than a deterministic cap on an internal modifier, and **the same 200-pair cell reads 1.8821 and passes on the unchanged `e32bad5` tree once the sample is tripled**, so it is closed as a sampling artifact with no home-advantage value touched. No target or tolerance moved, no shooting or other probability was retuned, and no overtime claim is made anywhere in that work.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -95,7 +95,8 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The `GameStakes` three-tier contract, `MatchInput.stakes` defaulted to `REGULAR`, `StakesPolicy` and the four coaching decisions that read it, the matched stakes diagnostic runner, and the focused scripted-drama audit (§5.14). **No ruleset version changed and no golden ledger moved**: the regular-season path is byte-identical, which is the point of the default.
 - The §11.3 passer-to-shot event chain: `PassCreation`, the corrected pass beneficiary, the creator stamped on every shot attempt and make, the catch-and-shoot and spot-up continuations, the competition-scoped credited-assist rule, the restored §14.3 conditional baseline, the assist-chain audit and its diagnostics runner, and the `simulation-v6-pass-creation` ruleset the regenerated golden ledgers belong to (§5.15).
 - `EndgameStrategy`'s two-for-one clock management, hold-for-the-final-shot, quick-two-vs-tying-three preference past `GameManagement`'s own window, a designed final-possession play, a leading-by-three foul (`FoulType.Value.LEADING_PROTECT`), an intentional final free-throw miss, and timeout-to-advance (`CompetitionRuleProfile.timeout_advance_permitted`), first built under `simulation-v9-endgame-strategy`, corrected through v10/v11 (§5.25–§5.27), and instrumented and deadline-corrected under `simulation-v12-endgame-ledger-and-resource-contract` (§5.29), and joined by the opening-state clock and location contract of `simulation-v13-opening-clock-and-location-contract` (§5.30). The v9 measurements in §5.25 remain pre-correction diagnostics. **Measured, not certified:** the repertoire is real and auditable, but no version yet closes the overtime band.
-- The explicit restart contract of `simulation-v14-restart-contract` (§5.31): `RestartCause` and `RestartClockMode` as domain types, `RestartClockPolicy` as the single cause-to-clock-mode policy, `CompetitionRuleProfile.made_basket_clock_stop_ms` and `..._late_periods_only` as the competition rule, `PossessionRecord.restart_cause` and the restart cause on every `INBOUND` event. It removes the §5.30 ambiguity between a made field goal and a made free throw, corrects an unrecorded timeout defect, and relocates a competition clock rule out of `PossessionEngine` without changing what it did. Six golden hashes regenerated with the first behavioural divergence located in each.
+- The explicit restart contract of `simulation-v14-restart-contract` (§5.31): `RestartCause` and `RestartClockMode` as domain types, `RestartClockPolicy` as the single cause-to-clock-mode policy, `CompetitionRuleProfile.made_field_goal_clock_rule` as the competition rule, `PossessionRecord.restart_cause` and the restart cause on every `INBOUND` event. It removes the §5.30 ambiguity between a made field goal and a made free throw, corrects an unrecorded timeout defect, and relocates a competition clock rule out of `PossessionEngine` without changing what it did. Six golden hashes regenerated with the first behavioural divergence located in each.
+- The owner-ruled made-field-goal timing matrix of `simulation-v15-made-field-goal-clock-matrix` (§5.33): `MadeFieldGoalClockRule` carries one window per period category and validates its own shape, `PeriodCategory` derives regulation-final-versus-overtime from `regulation_periods` without storing anything, and all five launch profiles declare their own matrix. A made field goal no longer stops the clock merely because it went in; each competition's late-game windows are data, the boundary is inclusive and written in one place, and `RestartClockPolicy` still has exactly one production call site and no threshold of its own. Two of six golden hashes regenerated, no fixture reseeded.
 
 Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
 
@@ -235,8 +236,8 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. **College and high-school field-goal percentage re-examined (§5.22): high school does not reproduce — 0.3888 ±0.0018 pooled over two untouched 1,000-game ranges with the interval reaching its 0.390 floor — and college reproduces at 0.4124 against 0.420 with no production defect behind it.** Measured, not certified |
 | Assist percentage | ~~**Fail:** 48.15% top domestic at 400 games against 52–72%~~ **Corrected (§5.15):** 58.9% and 58.2% top domestic on two untouched 100-game validation ranges, and inside the band at all five competition levels on both. Measured, not certified. |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
-| §14.1 possessions per game | ~~**Fail at three of five levels** after the clock corrections (§5.30, §5.31)~~ **Corrected (§5.32):** the pace environment is re-derived against the corrected clock at all five levels and passes on the judged cell and on two untouched validation ranges — fifteen readings, every one within 0.45 possessions of the pace that competition was calibrated to. Measured, not certified |
-| §17.4 combined home-environment cap | **New failure (§5.32):** `home.combined_cap_respected` reads 0.0000 at `home.points_per_100_contribution` 3.0606 against a 2.5 cap, on the 200-pair mirror. The owner-ruled §14.2 metric (`venue.attributable_home_win_rate` 0.5575) and the paired estimator's own cap both still pass, and only one arm of the mirror moved — but the verdict is red and is open |
+| §14.1 possessions per game | ~~**Fail at three of five levels** after the clock corrections (§5.30, §5.31)~~ **Corrected (§5.32):** the pace environment is re-derived against the corrected clock at all five levels and passes on the judged cell and on two untouched validation ranges — fifteen readings, every one within 0.45 possessions of the pace that competition was calibrated to. Measured, not certified. **Re-checked under the final owner timing matrix (§5.33) and left unchanged:** the matrix moves possessions by −0.12 to +0.79 per team (0.0% to 0.8%) against the 3.9%–4.7% that required §5.32's re-derivation, every reading is in band on both trees, and there is no possessions verdict transition at any level |
+| §17.4 combined home-environment cap | ~~**New failure (§5.32):** `home.combined_cap_respected` reads 0.0000 at 3.0606 against a 2.5 cap on the 200-pair mirror~~ **Classified and closed as a sampling artifact (§5.33), not fixed and not retuned.** The 2.5 cap is a statistical ceiling on measured outcome movement, not a deterministic cap on an internal modifier: the engine's deterministic bound is `HomeEnvironmentContext.MAX_COMBINED_MODIFIER` = 0.09 absolute probability points, clamped before storage, proven unbypassed by source scan, and unreachable at the 0.030 production values. **On the unchanged `e32bad5` tree, the same range and estimator at 600 pairs instead of 200 reads 1.8821 and PASSES**, so the breach was a property of the cell. It reproduces on no cell of the corrected tree — 1.7696, 1.3869, 1.3438, 1.7812 across three disjoint ranges — and both mirror arms' intervals overlap in every cell. No home-advantage value was changed |
 | Builder dominance tournament | Not implemented/run |
 | OVR truthfulness report 1 | Not implemented/run |
 | Body maturation report 15 | **Implemented and measured** — see §5.3 |
@@ -7603,6 +7604,618 @@ FAIL, which is the runner saying so.
   only production values this section changes are the five `pace_multiplier`
   numbers**, and no golden hash moves for them.
 
+### 5.33 The made-field-goal clock matrix: the owner ruling item 20 was waiting for, implemented and measured
+
+`simulation-v14` built the representation for a made-basket clock rule, shipped
+every competition at the 5,000ms window the engine had already been applying
+through the desperation threshold, and recorded in §5.31 that **no source in this
+repository ruled on whether any competition should declare a longer one**. That
+ruling has now been given. This section implements it, proves it, and then asks
+the only question that matters afterwards: whether it moves pace.
+
+#### 1. The ruling
+
+A made field goal **does not stop the game clock merely because it went in.** The
+competitions that stop it anyway do so inside an end-of-period window whose
+length depends on the kind of period. In milliseconds of game clock remaining,
+boundary **inclusive**:
+
+| competition | non-final regulation | final regulation | overtime |
+| --- | ---: | ---: | ---: |
+| middle school | 0 | 0 | 0 |
+| high school | 0 | 0 | 0 |
+| college | 0 | 60,000 | 60,000 |
+| domestic development | 60,000 | 120,000 | 120,000 |
+| overseas | 0 | 120,000 | 120,000 |
+| top domestic | 60,000 | 120,000 | 120,000 |
+
+Zero means a made field goal never independently stops that competition's clock
+in that kind of period. Every other dead-ball cause — a foul, a violation, a ball
+out of bounds, a charged timeout, a period start, a made final free throw — is
+untouched in every competition, because none of them reaches this rule at all.
+
+**Middle school is not a sixth profile, and one was not invented.**
+`SIMULATION_SPEC.md` §1.1 gives the prologue three games under the same
+possession-resolution contract as any other user-team game, but no
+`CompetitionRuleProfile` exists for it in this repository, and creating one would
+mean inventing a period length, a shot clock, a foul structure and a §14.1
+possessions band that no source states. Its ruling is identical to high school's
+and is exactly the value `MadeFieldGoalClockRule.none()` carries;
+`TestRestartContract` proves it on that value and on the high-school profile that
+ships it. **Five competition profiles remain, as §3 and §14.1 define them.**
+
+#### 2. Why the v14 representation could not express it, and what replaced it
+
+`simulation-v14` carried two fields: `made_basket_clock_stop_ms`, one window, and
+`made_basket_clock_stop_late_periods_only`, a boolean that could only include or
+exclude the periods before the last one **at that same single length**. The
+ruling needs the final regulation period and the ordinary periods before it to
+carry *different* lengths, and it needs that in **four of the five**
+competitions — 0 against 60,000 at college, 0 against 120,000 overseas, and
+60,000 against 120,000 at both domestic levels. Only high school, which declares
+nothing anywhere, is expressible without a third number.
+
+Two small types replace the pair, and neither is a new clock system:
+
+- **`PeriodCategory`** (`src/domain/basketball/model/period_category.gd`) — three
+  values, `NON_FINAL_REGULATION`, `FINAL_REGULATION`, `OVERTIME`, derived from a
+  period number and `regulation_periods` and **never stored**. It agrees with
+  `CompetitionRuleProfile.period_length_ms` by construction: both treat a period
+  above the regulation count as overtime. **No literal period number appears
+  anywhere in the rule, the policy, or the fixtures** — college plays two halves,
+  so its final regulation period is period 2 and the others' is period 4, and a
+  representation that assumed four would silently mis-scope college.
+- **`MadeFieldGoalClockRule`**
+  (`src/domain/basketball/config/made_field_goal_clock_rule.gd`) — one window per
+  category, validating its own shape, and **the only place the boundary
+  comparison is written**. "Inclusive" is a property of this class rather than a
+  convention repeated at call sites.
+
+`RestartClockPolicy` gained no threshold and no period number. It still knows
+only that a made field goal is a question worth asking a profile and that every
+other dead-ball cause is not.
+
+#### 3. Ownership map, unchanged in shape
+
+| Fact | Written by | Read by |
+| --- | --- | --- |
+| `PossessionRecord.restart_cause` | `PossessionEngine._terminate` only; seven terminal sites each name a cause | `MatchSession`; calibration runners |
+| `MatchSession._restart_cause` | `MatchSession` only — from the committed record, overridden by a charged timeout and by a period transition | `PossessionEngine._open_possession` only |
+| `RestartClockMode` | never stored; derived by `RestartClockPolicy.mode_for` only | `PossessionEngine._open_possession` only |
+| `CompetitionRuleProfile.made_field_goal_clock_rule` | profile data, declared explicitly by all five launch profiles | `CompetitionRuleProfile.stops_clock_after_made_basket` only |
+| `PeriodCategory` | derived by `PeriodCategory.of`, never stored | `CompetitionRuleProfile.period_category` only |
+| The three windows and the inclusive boundary | `MadeFieldGoalClockRule` | `MadeFieldGoalClockRule.stops_clock` only |
+| `INBOUND.detail_id` | `PossessionEngine._open_possession` only | the ledger; the focused tests; the pace runner |
+
+**One production call site**, `PossessionEngine._open_possession`
+(`possession_engine.gd:226`), verified by search: every other
+`RestartClockPolicy.mode_for` reference in the repository is a test.
+
+#### 4. Validation the representation refuses to accept
+
+`MadeFieldGoalClockRule` rejects a negative window in any category, a non-final
+window larger than the final one, and a non-final window declared where the final
+period has none — the last two being far more likely to be arguments passed in
+the wrong order than a real rule. `CompetitionRuleProfile` owns the half a window
+cannot check for itself, because a window does not know how long a period is:
+each category is checked against **the period kind it actually governs**, so an
+overtime window is judged against the overtime length rather than the regulation
+one. A competition with a single regulation period may not scope a non-final
+window at all, because it has no such period and the configuration could never
+activate.
+
+All five rejections are proved by `assert_error`, not asserted in prose.
+
+**Zero disables cleanly.** A zero window is never "stops at exactly 0ms
+remaining": a made field goal that leaves no clock does not begin a next
+possession for the rule to govern, and `stops_clock` returns false for a zero
+window before it compares anything.
+
+#### 5. Pace under the final matrix, measured before deciding anything
+
+§5.32 derived the shipped `pace_multiplier` values against the **temporary
+universal 5,000ms** window. Those values are treated here as the Phase A
+baseline, not as automatically final. Three phases, matched seeds (variations
+0–199, RNG seeds `variation + 1`), identical rosters, one instrument
+(`run_pace_decomposition.gd`, extended with the rare-shape and game-shape
+counters and copied unchanged onto the `e32bad5` tree so both engines are read by
+the same code):
+
+- **Phase A** — `e32bad5`: universal 5,000ms window, shipped pace values.
+- **Phase B** — the final matrix, **the same shipped pace values**.
+- **Phase C** — the final matrix with a justified pace adjustment, *if* Phase B
+  demands one.
+
+##### Possessions per team per game
+
+| competition | A: `e32bad5` | B: final matrix | change | §14.1 band | distance to nearer edge, B |
+| --- | ---: | ---: | ---: | --- | ---: |
+| high school | 70.6850 | 70.5675 | **−0.1175** | 61–72 | 1.43 |
+| college | 72.1225 | 72.1250 | **+0.0025** | 64–73 | 0.88 |
+| domestic development | 95.4125 | 96.1975 | **+0.7850** | 88–101 | 4.80 |
+| overseas | 74.8400 | 74.9225 | **+0.0825** | 70–82 | 7.08 |
+| top domestic | 102.0950 | 102.6700 | **+0.5750** | 96–103 | 0.33 |
+
+**All ten readings are inside their band.** The largest displacement is +0.785
+possessions per team, 0.82% of the level it moves.
+
+The comparison that decides materiality is with the displacement that *did*
+require a re-derivation. §5.32's clock corrections moved possessions by **+2.77
+to +3.70 — 3.9% to 4.7% — and took three of the five levels out of band.** The
+matrix moves them by −0.12 to +0.79, **0.0% to 0.8%**, and takes none out of
+band. It is between a fifth and a two-hundredth of the effect that triggered the
+last re-derivation, in the same units, on the same instrument, at the same
+sample.
+
+##### Why the effect is small, and it is not luck
+
+The matrix both removes and adds stoppage, and the two nearly cancel:
+
+| competition | made-FG restarts on a **running** clock, A → B | made-FG restarts on a **stopped** clock, A → B |
+| --- | ---: | ---: |
+| high school | 42.595 → 42.800 | **0.600 → 0.000** |
+| college | 46.425 → 45.245 | 0.275 → 1.330 |
+| domestic development | 63.830 → 57.440 | 0.635 → 7.545 |
+| overseas | 50.485 → 48.275 | 0.555 → 2.640 |
+| top domestic | 71.820 → 64.525 | 0.815 → 8.010 |
+
+High school's stopped-clock made-FG restarts fall to **exactly zero**, which is
+the ruling stated as a measurement. The other four gain between 1.1 and 7.2 per
+game. But a 5,000ms window was already catching the possessions where a stopped
+clock matters most, and the windows the ruling adds sit at the end of periods
+where few possessions remain to be created: the clock a stopped restart returns
+is two to three seconds, and there is often not enough period left to spend it.
+
+##### Every metric the brief asks for, at all five levels
+
+| metric | high school | college | development | overseas | top domestic |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| possessions/team, A → B | 70.6850 → 70.5675 | 72.1225 → 72.1250 | 95.4125 → 96.1975 | 74.8400 → 74.9225 | 102.0950 → 102.6700 |
+| regulation-only possessions/team | 70.2925 → 70.2125 | 71.7650 → 71.8350 | 95.3575 → 95.9900 | 74.6475 → 74.8150 | 101.7750 → 102.5525 |
+| overtime possessions per game | 0.785 → 0.710 | 0.715 → 0.580 | 0.110 → 0.415 | 0.385 → 0.215 | 0.640 → 0.235 |
+| mean possession duration (ms) | 13657.8 → 13672.0 | 16721.6 → 16700.2 | 15100.2 → 15000.4 | 16074.3 → 16036.6 | 14148.6 → 14040.1 |
+| running-clock made-FG restarts | 42.595 → 42.800 | 46.425 → 45.245 | 63.830 → 57.440 | 50.485 → 48.275 | 71.820 → 64.525 |
+| stopped-clock made-FG restarts | 0.600 → 0.000 | 0.275 → 1.330 | 0.635 → 7.545 | 0.555 → 2.640 | 0.815 → 8.010 |
+| made-free-throw restarts | 10.105 → 10.135 | 13.795 → 13.845 | 18.195 → 18.360 | 14.830 → 14.815 | 20.390 → 20.700 |
+| other dead-ball restarts | 18.525 → 18.430 | 15.780 → 15.850 | 22.055 → 21.990 | 17.880 → 17.830 | 23.030 → 22.850 |
+| points per possession | 0.9585 → 0.9595 | 1.0604 → 1.0603 | 1.1019 → 1.0981 | 1.1218 → 1.1231 | 1.1662 → 1.1624 |
+| points per team | 67.7525 → 67.7100 | 76.4775 → 76.4775 | 105.1325 → 105.6375 | 83.9575 → 84.1450 | 119.0675 → 119.3400 |
+| close-game rate | 0.2800 → 0.2950 | 0.2500 → 0.2550 | 0.2550 → 0.2200 | 0.2300 → 0.1900 | 0.1400 → 0.2050 |
+| blowout rate | 0.1250 → 0.1250 | 0.1450 → 0.1500 | 0.1850 → 0.2000 | 0.1450 → 0.1450 | 0.2550 → 0.2300 |
+| overtime rate | 0.0400 → 0.0350 | 0.0300 → 0.0300 | 0.0050 → 0.0200 | 0.0150 → 0.0100 | 0.0300 → 0.0100 |
+
+**Made-free-throw restarts and other dead-ball restarts do not move at any
+level** — the largest change in either row is 0.31 per game, and every made-free-
+throw restart is still uncharged in every competition. That is the free-throw
+distinction holding in production over 200 games a level, not just in the policy
+fixtures.
+
+##### Rare events, raw counts beside their own denominators
+
+A doubled raw count against a doubled denominator is not a regression, so both
+are carried:
+
+| competition | expired without an attempt, A | rate | expired without an attempt, B | rate | possessions A → B |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| high school | 436 | 0.01542 | 478 | 0.01693 | 28,274 → 28,227 |
+| college | 257 | 0.00891 | 259 | 0.00898 | 28,849 → 28,850 |
+| domestic development | 510 | 0.01336 | 449 | 0.01167 | 38,165 → 38,479 |
+| overseas | 519 | 0.01734 | 556 | 0.01855 | 29,936 → 29,969 |
+| top domestic | 486 | 0.01190 | 468 | 0.01140 | 40,838 → 41,068 |
+
+| competition | possessions opening under 5s, A | rate | B | rate |
+| --- | ---: | ---: | ---: | ---: |
+| high school | 435 | 0.01539 | 419 | 0.01484 |
+| college | 211 | 0.00731 | 203 | 0.00704 |
+| domestic development | 443 | 0.01161 | 469 | 0.01219 |
+| overseas | 390 | 0.01303 | 406 | 0.01355 |
+| top domestic | 496 | 0.01215 | 501 | 0.01220 |
+
+The expired-without-attempt rate moves by at most 0.0018 in either direction and
+does so in **both** directions across the five levels — up at high school and
+overseas, down at development and top domestic, flat at college. That is not a
+mechanism; it is what a rate does at this sample. The structural defect §5.30
+closed remains closed: nothing here reintroduces a possession that cannot reach
+action selection whatever it draws.
+
+#### 6. The judged verdicts, and the decision not to re-derive pace
+
+`run_competition_calibration.gd`, 200 games a level, variations 0–199, run on
+both trees at the identical seeds. **74 judged metrics compared: 58 PASS on both,
+12 FAIL on both, 4 transitions.**
+
+##### Possessions per game: no transition, and no level near its band on either side
+
+| competition | A: `e32bad5` | B: final matrix | band | verdict |
+| --- | ---: | ---: | --- | --- |
+| high school | 70.6850 ±0.3694 | 70.5675 ±0.3584 | 61–72 | **PASS → PASS** |
+| college | 72.1225 ±0.3594 | 72.1250 ±0.3217 | 64–73 | **PASS → PASS** |
+| domestic development | 95.4125 ±0.2885 | 96.1975 ±0.3040 | 88–101 | **PASS → PASS** |
+| overseas | 74.8400 ±0.2887 | 74.9225 ±0.2566 | 70–82 | **PASS → PASS** |
+| top domestic | 102.0950 ±0.3688 | 102.6700 ±0.3280 | 96–103 | **PASS → PASS** |
+
+##### The four transitions, and what they are worth
+
+Every one is PASS → FAIL, none is a possessions row, and **three of the four
+were sitting exactly on a band edge before the change**:
+
+| metric | A | B | band | move, in its own half-widths | edge in A |
+| --- | ---: | ---: | --- | ---: | --- |
+| `high_school.overtime_rate` | 0.0400 ±0.0283 | 0.0350 ±0.0267 | 0.04–0.08 | **0.19** | exactly on the floor |
+| `development.home_win_rate` | 0.5300 ±0.0685 | 0.5650 ±0.0681 | 0.53–0.56 | **0.51** | exactly on the floor |
+| `overseas.close_game_rate` | 0.2300 ±0.0580 | 0.1900 ±0.0542 | 0.22–0.34 | **0.69** | 0.01 above the floor |
+| `top_domestic_pro.home_win_rate` | 0.5600 ±0.0682 | 0.5250 ±0.0686 | 0.53–0.56 | **0.51** | exactly on the ceiling |
+
+`high_school.overtime_rate` moves by 0.005 — **one game in two hundred** — from a
+reading that sat on the floor to the digit. None of the four moves as much as
+0.7 of its own interval half-width, so **not one of them is established at this
+sample.**
+
+##### Both trees, on two untouched ranges: the flips go both ways
+
+The decisive test is the same seeds on both trees, and it was run on two ranges
+that derived nothing — **800–999** and **1000–1199**:
+
+| metric | cell 0–199, A → B | untouched 800–999, A → B | untouched 1000–1199, A → B |
+| --- | --- | --- | --- |
+| `high_school.overtime_rate` | 0.0400 PASS → 0.0350 **FAIL** | 0.0200 FAIL → 0.0200 FAIL | 0.0200 FAIL → 0.0250 FAIL |
+| `development.home_win_rate` | 0.5300 PASS → 0.5650 **FAIL** | 0.5000 FAIL → 0.5400 **PASS** | 0.6000 FAIL → 0.6100 FAIL |
+| `overseas.close_game_rate` | 0.2300 PASS → 0.1900 **FAIL** | 0.2400 PASS → 0.3000 PASS | 0.2150 FAIL → 0.2550 **PASS** |
+| `top_domestic_pro.home_win_rate` | 0.5600 PASS → 0.5250 **FAIL** | 0.6000 FAIL → 0.5500 **PASS** | 0.4550 FAIL → 0.4650 FAIL |
+
+**Not one of the four transitions reproduces as a transition.** Across the three
+ranges the matrix produces **four PASS → FAIL and three FAIL → PASS**, which is
+what a set of band-edge rows does when it is jostled by noise, not what a
+regression does.
+
+**The seed range dominates these rows completely, and it does so on the baseline
+tree.** Read down the `e32bad5` column alone, before this change exists:
+
+| metric on `e32bad5` | 0–199 | 800–999 | 1000–1199 | spread | typical half-width |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `development.home_win_rate` | 0.5300 | 0.5000 | 0.6000 | **0.100** | ±0.068 |
+| `top_domestic_pro.home_win_rate` | 0.5600 | 0.6000 | 0.4550 | **0.145** | ±0.068 |
+| `overseas.close_game_rate` | 0.2300 | 0.2400 | 0.2150 | 0.025 | ±0.058 |
+
+Two of these rows swing by 0.10 and 0.145 **between seed ranges on the unchanged
+engine**, and fail their band on two of the three ranges without this change
+existing. Against that, a tree-to-tree move of 0.035 to 0.050 is not a signal.
+This is the same roster-population effect §5.28 established for overtime, on the
+same kind of row.
+
+**One direction is worth reporting rather than discounting.**
+`development.home_win_rate` moves the same way on all three ranges — +0.035,
++0.040, +0.010 — and `top_domestic_pro.home_win_rate` moves down on two of three
+— −0.035, −0.050, +0.010. Each individual move is at most 0.7 of its own
+half-width and the third range contradicts the second, so both are **reported,
+not established**, and neither is repaired here: the ruling touches the game
+clock after a made field goal and reaches nothing in the home environment.
+
+##### Verdict: the matrix does not materially move pace, and pace is left alone
+
+The finalized matrix does not create a meaningful pace displacement:
+
+1. **Every possessions reading is in band on both trees**, and there is no
+   possessions verdict transition at any level.
+2. **The displacement is 0.0% to 0.8%** against the 3.9% to 4.7% that took three
+   levels out of band and required §5.32's re-derivation — measured on the same
+   instrument, at the same sample, in the same units.
+3. **Three of the four game-shape transitions do not reproduce** on an untouched
+   seed range, and the fourth is a pre-existing blocker.
+4. **All four move by less than 0.7 of their own interval half-width.**
+
+**`pace_multiplier` is therefore unchanged at all five levels — 0.834, 1.041,
+0.955, 1.031, 0.891 — and Phase C is not entered.** Re-deriving against a
+displacement smaller than the interval that measures it would be fitting to one
+seed range, which is exactly what §5.32's method was built to avoid. **No
+shooting, shot-selection, turnover, foul, free-throw, rebounding, home-advantage,
+endgame or overtime value was touched either.**
+
+**One thing is reported rather than discounted.** Top domestic's possessions sit
+closest to a band edge of any level: 102.6700 ±0.3280 against a 103 ceiling on
+the matched cell, and 102.6300 ±0.3399 on the untouched range — an upper interval
+edge of 102.97 there. It passes on both and the matrix consumed roughly six
+tenths of a possession of headroom that §5.32 had left. It is the level to watch
+if any future change adds clock back, and it is recorded here so the next task
+does not discover it as a surprise.
+
+#### 7. Golden ledgers: two of six move, and both for the same named event
+
+The ruleset is bumped to **`simulation-v15-made-field-goal-clock-matrix`**,
+because the change moves what the engine produces for the same input. The
+`project.godot` `[simulation] ruleset_version` key is **unchanged** at
+`simulation-calibrated-v3`, which is the convention v13 and v14 also followed:
+that key has not moved since early Stage 4 and the balance profile's `version` is
+what tracks behavioural rulesets.
+
+Every `GoldenScenarios` fixture builds its profile through `MatchFixtureFactory`,
+and none of those profiles ever declared a made-basket rule — they took the
+constructor default, which was a 5,000ms window and is now
+`MadeFieldGoalClockRule.none()`. That is the ruling applied to a fixture that
+states no competition rule: a made field goal does not stop the clock unless a
+competition says it does.
+
+**Four of six ledgers are byte-identical.** `overtime`, `offensive_rebound`,
+`foul_free_throw` and `substitution_foul_out` do not contain a made field goal
+inside the removed window, so nothing in them moves. Their hashes are unchanged
+and **no fixture was reseeded — the overtime scenario still reaches overtime at
+seed 71271, which it has carried since §5.31.**
+
+The two that move, with the first differing event in each:
+
+| scenario | hash | first divergence |
+| --- | --- | --- |
+| `regulation` | `a5336e9f…` → `dea3db8b…` | event **276**, period 1, **2,000ms** remaining |
+| `late_game` | `eab52f9e…` → `39ea7735…` | event **223**, period 1, **2,555ms** remaining |
+
+Both are the same mechanism, and it is the one the ruling names:
+
+- **Restart cause:** `made_field_goal` in both.
+- **Competition:** a `MatchFixtureFactory` profile, which declares no
+  made-field-goal rule and therefore now has none.
+- **Period category:** `NON_FINAL_REGULATION` — period 1 of 4 in both.
+- **Time window:** 2,000ms and 2,555ms remaining, both inside the **removed**
+  5,000ms window and outside the fixture's new window of zero.
+
+In `regulation`, `INBOUND` used to emit at 2,000ms on a stopped clock; it is now
+a running-clock restart, the throw-in draw consumes the rest of the period, and
+the possession ends `period_expired` at 0ms. `late_game` diverges identically at
+2,555ms. **No hash moved without an explanation, and no hash was regenerated to
+silence a failing test** — the two that moved are the two that contain the event
+the ruling changes, and the four that do not contain it did not move.
+
+#### 8. §17.4 `home.combined_cap_respected`: a statistical ceiling, not a deterministic cap
+
+§5.32 opened this as a new blocker at 3.0606 against a declared 2.5. The first
+question the brief asks is which kind of quantity 2.5 bounds, and the code
+answers it without a simulation.
+
+**There *is* a deterministic cap on the internal combined home modifier, and it
+is a different quantity with a different value and different units.**
+`HomeEnvironmentContext` bounds the sum of its three §19.4 channels at
+`MAX_COMBINED_MODIFIER = 0.09` **absolute probability points**, and each channel
+individually at `MAX_SINGLE_MODIFIER = 0.04`. The per-channel bound is a
+**clamp**, not an assertion, and it is applied in the constructor *before* the
+value is stored:
+
+```gdscript
+_modifiers = PackedFloat64Array([
+    _bounded(p_officiating), _bounded(p_communication), _bounded(p_composure)])
+assert(total_modifier() <= MAX_COMBINED_MODIFIER + 1e-9, …)
+```
+
+Every read goes through `_modifiers`, so there is no ordering by which a
+consumer sees an unclamped value, and the clamp is not conditional on assertions
+being compiled in. It is **not bypassed**: `test_combined_contributions_stay_
+inside_the_budget` scans the source of all nine production resolvers and fails if
+any of them reads the raw `home_environment` strength instead of the bounded
+context, and `test_no_single_modifier_exceeds_four_absolute_points` proves a
+profile asking for 0.9 receives 0.04.
+
+At production values the deterministic cap is not merely respected but
+**structurally unreachable**: `0.009 + 0.013 + 0.008 = 0.030` at full venue
+strength, one third of the 0.09 budget.
+
+**The 2.5 figure is a different thing entirely.** It is in *points per 100
+possessions*, a unit no internal modifier is expressed in, and
+`run_home_court_diagnostics.gd` computes the judged metric as
+
+```gdscript
+var contribution: float = home_arm.points_per_100_gap() - neutral_arm.points_per_100_gap()
+… CalibrationMetric.boolean(… contribution <= 2.5 …)
+```
+
+where `points_per_100_gap()` is `100 × (venue points per possession − visitor
+points per possession)` **accumulated from finished games**. It is a measured
+outcome difference between two simulated arms, not a stored or composed
+modifier. `HomeEnvironmentContext`'s own documentation states the split
+explicitly: the cap "is enforced in two halves", structurally by the modifier
+bound and empirically by this measurement.
+
+**Classification: Question B — a statistical ceiling on measured outcome
+movement.** There is no deterministic value above 2.5 anywhere in the engine to
+trace, because the engine holds no quantity in those units.
+
+##### The empirical work Question B requires
+
+`run_home_court_diagnostics.gd`, mirror mode, top domestic — the same runner,
+mode and competition as the cell that produced 3.0606. Both mirror arms are
+reported independently and combined, with intervals, on **three disjoint seed
+ranges** and at **three times the original sample**:
+
+| tree | range | pairs | `home.points_per_100_contribution` | cap verdict | paired `venue.points_per_100` |
+| --- | --- | ---: | ---: | --- | ---: |
+| `e32bad5` (§5.32) | validation_c | 200 | **3.0606** | **FAIL** | 2.2020 ±0.7772 |
+| `e32bad5` | validation_c | **600** | **1.8821** | **PASS** | 1.5142 ±0.4360 |
+| `e32bad5` | validation_a | 600 | 0.5757 | PASS | 1.2796 ±0.4530 |
+| `simulation-v15` | validation_c | 200 | **1.7696** | **PASS** | 2.0110 ±0.7504 |
+| `simulation-v15` | validation_c | 600 | **1.3869** | **PASS** | 1.4708 ±0.4389 |
+| `simulation-v15` | validation_a | 600 | 1.3438 | PASS | 1.5360 ±0.4304 |
+| `simulation-v15` | validation_d | 600 | 1.7812 | PASS | 1.5377 ±0.4425 |
+
+**The decisive row is the second one, and it contains none of this branch's
+work.** On the **unchanged `e32bad5` tree**, on the **same seed range**, with the
+**same estimator**, tripling the sample from 200 to 600 pairs moves the metric
+from **3.0606 (FAIL) to 1.8821 (PASS)**. The breach is a property of the
+200-pair cell, not of the engine, and it was already dissolving before this
+branch touched anything.
+
+**It does not reproduce anywhere on the corrected tree.** Four cells, three
+disjoint ranges, two sample sizes: 1.7696, 1.3869, 1.3438, 1.7812 — every one
+under the cap, the largest at 71% of it.
+
+**Both arms, reported independently.** §5.32's evidence for "one arm moved and
+its mirror did not" was `home.environment_margin_gain` +1.71 against
+`reversed.environment_margin_gain` +0.10. Measured again:
+
+| tree | range | pairs | home arm | reversed arm | intervals overlap? |
+| --- | --- | ---: | ---: | ---: | --- |
+| `e32bad5` | validation_c | 600 | 1.8350 ±0.7546 | 1.2483 ±0.7409 | yes |
+| `e32bad5` | validation_a | 600 | 0.6200 ±0.7652 | 1.9883 ±0.7902 | yes |
+| `simulation-v15` | validation_c | 200 | 1.7250 ±1.2552 | 2.4050 ±1.1790 | yes |
+| `simulation-v15` | validation_c | 600 | 1.2817 ±0.7244 | 1.7350 ±0.7667 | yes |
+| `simulation-v15` | validation_a | 600 | 1.3117 ±0.7602 | 1.8417 ±0.7513 | yes |
+| `simulation-v15` | validation_d | 600 | 1.7267 ±0.7509 | 1.4267 ±0.7340 | yes |
+
+**In every cell the two arms' intervals overlap**, and which arm reads higher
+changes from cell to cell — `e32bad5` has the home arm higher on validation_c and
+the reversed arm higher on validation_a by more than a point. That is one
+quantity measured twice noisily, which is what the mirror design is for.
+
+**Classification: statistical breach, resolved. `home.combined_cap_respected`
+reads PASS on every cell measured here, including the original cell on this
+branch, and no home-advantage production value was changed.** The §5.32 blocker
+is closed as a sampling artifact rather than as a fix, and nothing was retuned to
+close it.
+
+##### And the §14.2 home-win row, which moves both ways
+
+`venue.attributable_home_win_rate` is the owner-ruled §14.2 metric, and at 600
+pairs it is tight enough to cross its floor on either tree. Matched cells, same
+seeds, only the timing matrix differing:
+
+| range | `e32bad5` | `simulation-v15` | matched move |
+| --- | ---: | ---: | ---: |
+| validation_c | 0.5408 ±0.0181 **PASS** | 0.5175 ±0.0182 **FAIL** | **−0.0233** |
+| validation_a | 0.5292 ±0.0190 **FAIL** | 0.5458 ±0.0185 **PASS** | **+0.0166** |
+
+**The two matched moves have opposite signs**, the baseline fails one range and
+passes the other, and the corrected tree does the reverse. There is no
+directional effect to attribute, and **no home-advantage value was touched**: the
+ruling implemented here changes the game clock after a made field goal and
+reaches nothing in `HomeEnvironmentContext`, its channels, or its consumers.
+Reported, not established, and not repaired.
+
+#### 9. Focused tests, activation evidence, and the mutation battery
+
+`tests/simulation/test_restart_contract.gd` grows from **22 cases to 35**, and
+the added families cover every level named in the ruling.
+
+**Activation evidence is asserted, not assumed.** Every family counts the
+branches it actually reached and fails if the count is wrong, so a fixture that
+silently stopped exercising the rule fails instead of passing quietly:
+
+| family | activation assertion |
+| --- | ---: |
+| the shipped matrix matches the ruling | `checked == 5` competitions |
+| every nonzero window, three-sided boundary | `proved == 10` windows |
+| every zero window, at every clock | `proved == 5` windows |
+| final vs non-final regulation separated | `proved == 4` competitions |
+| overtime reads its own window | `proved == 4` competitions |
+| made field goal vs made free throw | `separated == 15` competition/category pairs |
+| throw-in causes reconstructed from the ledger | `checked > 0` throw-ins |
+
+Ten nonzero windows and five zero windows is the shipped matrix counted from the
+other side; a matrix that lost or gained a window fails the count before it
+reaches a boundary.
+
+Each nonzero window is proved **one millisecond above (clock continues), exactly
+at (clock stops), and one millisecond below (clock stops)**, in a period of the
+category it governs — and no fixture names a literal period number, so college's
+two halves and the others' four quarters take the same path.
+
+**The seven mutations the brief requires, each run against a tree verified clean
+at 35/35 immediately before and after:**
+
+| # | mutation | result | first catching test | failures |
+| ---: | --- | --- | --- | ---: |
+| 1 | every made-FG restart forced to a running clock | **caught** | `test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary` | 20 |
+| 2 | every made-FG restart forced to start-on-touch | **caught** | `test_a_made_field_goal_in_open_play_still_charges_its_throw_in` | 2 |
+| 3 | `MADE_FIELD_GOAL` and `MADE_FREE_THROW` collapsed | **caught** | `test_every_whistle_restart_emits_its_throw_in_at_the_starting_clock` | 1 |
+| 4 | the inclusive boundary made exclusive | **caught** | `test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary` | 10 |
+| 5 | overtime given the ordinary-regulation window | **caught** | `test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary` | 1 |
+| 6 | non-final and final regulation treated identically | **caught** | `test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary` | 1 |
+| 7 | competition configuration ignored (all five given top domestic's matrix) | **caught** | `test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary` | 2 |
+
+Each mutation changes only what its name claims: 1, 2 and 3 edit the
+`MADE_FIELD_GOAL` arm of `RestartClockPolicy` alone; 4, 5 and 6 edit one line of
+`MadeFieldGoalClockRule`; 7 edits `stops_clock_after_made_basket` to consult top
+domestic's rule instead of the profile's own.
+
+**Reported honestly: GdUnit stops a suite partway once it fails, so the "first
+catching test" column is the first to catch each mutation and not necessarily the
+only one.** Mutations 5 and 6 are the two whose dedicated fixtures —
+`test_overtime_reads_the_overtime_window_and_not_a_regulation_one` and
+`test_a_non_final_regulation_period_does_not_borrow_the_final_period_window` —
+sit later in the file than the boundary sweep that catches them first, and the
+runner offers no single-test filter with which to demonstrate them separately.
+The activation counters above are what carries that weight instead.
+
+**One thing no shipped profile can prove, and a constructed one does.** Every
+competition in the ruling gives overtime and the final regulation period the
+*same* window, so a policy that confused those two would be invisible in
+production data. `test_a_constructed_profile_routes_each_period_category_to_its_
+own_window` declares 30,000 / 90,000 / 150,000, proves all three boundaries, and
+proves that no category answers with a neighbour's window.
+
+The five validation rejections are proved with `assert_error` against the exact
+assertion text: a negative window in each of the three categories, a non-final
+window exceeding the final one, a non-final window where the final period has
+none, a regulation window outlasting a regulation period, an overtime window
+outlasting an overtime period, and a non-final window on a single-period
+competition.
+
+#### 10. A mirror rotation test that failed, and what it turned out to be
+
+`TestScoreMargin.test_identical_rosters_receive_the_same_rotation` failed on the
+corrected tree at +5.33 minutes. It was investigated rather than assumed either
+way, because a one-sided rotation is exactly the class of defect that suite
+exists to catch.
+
+The fixture is symmetric by construction: both benches are built from the same
+`variation`, the environment is zero, and the opening inbound alternates on
+variation parity. The expected difference is therefore **exactly zero**, and the
+assertion was the mean against **the sample's own 95% interval** — which the
+sibling constant in the same file already documents as "a coin flip at forty
+games". That is literal: a true-zero effect lands outside its own interval 5% of
+the time whatever the engine does.
+
+Measured at four hundred games on both trees and two disjoint seed ranges:
+
+| tree | seeds | games | mean difference | 95% half-width | z |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `e32bad5` | 0–399 | 400 | −0.0362 | 1.6765 | −0.04 |
+| `simulation-v15` | 0–399 | 400 | **−0.0925** | 1.6496 | **−0.11** |
+| `e32bad5` | 5000–5399 | 400 | +0.3911 | 1.5994 | +0.48 |
+| `simulation-v15` | 5000–5399 | 400 | **−0.6023** | 1.5673 | **−0.75** |
+
+**There is no one-sided rotation effect.** All four readings are inside their own
+intervals, the corrected tree reads −0.09 on one range and −0.60 on the other —
+opposite sides of the baseline — and the forty-game +5.33 is `z = +2.0` against a
+per-game standard deviation of 16.8 minutes.
+
+The assertion was replaced with an explicit defect-scale bound,
+`MIRROR_ROTATION_MINUTES_BOUND = 10.0`, derived and recorded on the constant: ten
+minutes is 3.8 standard errors at the suite's sample, while a bench whose
+rotation does not run is worth +94 and one substituting a fifth less is worth
+twenty to thirty. A second assertion was added that both benches' starter minutes
+land between 80 and 200, so a tree in which *neither* side substituted can no
+longer pass the difference test trivially. **The sample was deliberately not
+raised**: forty games is what the gate can afford, and a sample changed to obtain
+a green result is not evidence.
+
+#### 11. What this section did not touch
+
+- **§14.2 overtime, every competition.** Untouched, and no movement claimed. It
+  fails at every level on every range measured here — 0.0350/0.0300/0.0200/0.0100
+  /0.0100 on the matched cell — which is §5.28's established mechanism gap, not
+  this change's. **Nothing here was tuned against overtime**, and the four
+  overtime rows that moved did so by 0.005 to 0.02, one to four games in two
+  hundred.
+- **College field-goal percentage.** 0.4132 → 0.4134 on the matched cell against
+  a 0.420 floor. **Untouched**, and carried as the §5.22/§5.23 owner decision.
+- **Overseas home-win rate.** 0.4950 → 0.4900, FAIL on both sides; measured as a
+  regression check only, not repaired.
+- **Development blowout rate.** 0.1850 → 0.2000, FAIL on both sides; measured
+  only.
+- **Builder dominance tournament and OVR truthfulness.** Not implemented, not
+  started.
+- **§27.1 certification.** **No certification was run and none is claimed.** The
+  calibration runner's own `sample.meets_certification_size` reads FAIL on every
+  run in this section, which is it saying so.
+- **Every `BALANCE_SPEC.md` target and tolerance.** Unchanged. No band, floor,
+  ceiling or cap was edited, widened, or reinterpreted.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -7748,7 +8361,9 @@ Work should proceed in this order unless new evidence changes a dependency:
 17. **Draw any §27.1 certification across seed ranges rather than extending one (§5.28).** College's overtime rate differs between two large disjoint ranges by 0.6 percentage points at p=0.052 — a roster-population effect, not sampling, since both samples are large. At a 4% band floor that is material, and a certification resting on one range would not be reproducible on another.
 18. ~~**Resolve the sub-five-second opening-state clock contract before another overtime calibration run (§5.29).**~~ **Done (§5.30).** The 2026-09-04 owner ruling is implemented as `simulation-v13-opening-clock-and-location-contract`. A throw-in onto a stopped clock consumes no game time and `INBOUND` emits at the possession's starting clock; a possession beginning inside five seconds skips the half-court set it has no time for and commits from its actual `TacticalLocation`, which then costs it a bounded §12.6 distance term rather than giving it arc odds. On the same paired 250-game range, expired-without-attempt falls 16 → 9 for college and 7 → 6 for top domestic, and the 0–5s bucket falls 11 → 6 and 7 → 4. Backcourt and deep attempts are 0.25% and 0.41% of all field-goal attempts, made at 15–25%. Neither shot accuracy nor any tie was touched, and no overtime movement is claimed. **What it opens is item 19**, below: the correction moves §14.1 possessions per game out of band in both competitions.
 19. ~~**Re-derive each competition's `pace_multiplier` against the corrected clock contract (§5.30).**~~ **Done (§5.32).** The correction is bigger than §5.30 could see, because `simulation-v14` then stopped charging the throw-in after a made free throw and after a charged timeout as well: on matched seeds the move is +2.77 for high school, +2.77 for college, +3.62 for development, +3.02 for overseas and +3.70 for top domestic — **one mechanism at every level**, taking three of the five out of band and displacing the other two inside theirs. Re-derived as a measurement rather than an offset: a possession's duration is `A·p + B`, `A` and `B` were measured per competition by running identical variations at two pace scales, and each new value is the `p` that restores the possessions that competition produced under the clock model these numbers were calibrated against (the `451dda8` anchor, whose college and top-domestic figures reproduce §5.30's published baseline to the fourth decimal). Every level needed between **+4.12% and +4.68%** and the ordering between the five is unchanged. All five land within **0.23 possessions** of their anchor and all five pass, on the judged cell and on two untouched validation ranges. `B` is 6.6% to 14.3% of a possession, so `pace_multiplier` still reaches 86-93% of it and remains the correct calibration surface. No target, tolerance, or any other probability was touched.
-20. **Take the §5.31 made-basket clock-stoppage decision, or record a deliberate deferral.** `SIMULATION_SPEC.md` §4's `CompetitionRuleProfile` interface has no clock-stoppage member and `BALANCE_SPEC.md` states no such rule, so the repository has **no authoritative ruling** on whether a competition stops the game clock after a made field goal in a late-game window. The representation is built and proved — `made_basket_clock_stop_ms` and `made_basket_clock_stop_late_periods_only` on the rule profile, read only through `RestartClockPolicy`, with both sides of the boundary tested on a constructed profile that declares a two-minute window scoped to late periods. Every launch profile ships the 5,000ms window the engine already applied through the desperation threshold, so nothing was invented and nothing moved. What is missing is the owner's answer to whether any competition — top domestic being the obvious candidate, on the same §4 grounds that granted it `timeout_advance_permitted` — should declare a longer one. **It is a data edit, not an engine change, and it would move §14.1 possessions per game, so it must be taken as a rule decision and then re-derived through item 19's method rather than folded into a calibration pass.**
+20. ~~**Take the §5.31 made-basket clock-stoppage decision, or record a deliberate deferral.**~~ **Done (§5.33).** The owner ruling was given and is implemented as `simulation-v15-made-field-goal-clock-matrix`: a made field goal does not stop the clock merely because it went in, and the competitions that stop it anyway do so inside an end-of-period window whose length depends on the period's kind — nothing for middle school and high school, the final 60s of the final regulation period and of overtime at college, the final 60s of ordinary regulation periods and 120s of the final one and of overtime at both domestic levels, and the final 120s of the final regulation period and of overtime overseas, every boundary inclusive. The single window and late-periods boolean `simulation-v14` shipped could not express it — four of the five competitions need different lengths for the final regulation period and the ones before it — so it is replaced by `MadeFieldGoalClockRule` (three windows, self-validating, the only place the boundary comparison is written) and `PeriodCategory` (derived from `regulation_periods`, never stored, so college's two halves and everyone else's four quarters take one path). `RestartClockPolicy` gained no threshold and no period number and still has exactly one production call site. **Middle school is not a sixth profile**: §1.1 gives the prologue no rule profile and inventing one would mean inventing a period length, a shot clock and a §14.1 band no source states, so its ruling is proved on the `MadeFieldGoalClockRule.none()` value that high school also ships. Thirty-five focused cases with asserted activation counts, seven mutations all caught, five validation rejections proved by `assert_error`, two of six golden ledgers moved with the first divergence named in each and **no fixture reseeded**. **Pace was re-measured and deliberately left alone**: the matrix moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced item 19's re-derivation, every level is in band on both trees, three of the four game-shape verdict transitions do not reproduce on untouched ranges, and the fourth is the pre-existing §14.2 overtime blocker.
+
+21. **The §14.2 home-win row is now tight enough at 600 pairs to cross its floor on either tree, and it is not this branch's (§5.33).** `venue.attributable_home_win_rate` at top domestic reads 0.5408 PASS on `e32bad5` and 0.5175 FAIL on `simulation-v15` for `validation_c`, and 0.5292 FAIL on `e32bad5` against 0.5458 PASS on `simulation-v15` for `validation_a` — **matched moves of opposite sign on two disjoint ranges at the same sample**. The next home-court pass should pool disjoint ranges rather than extend one, for the same reason §5.28 gives for overtime. Do not retune the home environment against a single range.
 
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 
