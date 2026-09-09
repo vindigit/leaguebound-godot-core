@@ -163,89 +163,367 @@ func test_the_policy_separates_the_two_made_basket_causes() -> void:
 		).is_equal(RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH)
 
 
-# --- 4. the competition boundary, proved on both sides -----------------------
+# --- 4. the owner-ruled made-field-goal timing matrix -------------------------
 
-## **Mutation: removing the competition/time boundary fails here.**
+## The ruling itself, written out rather than read from the profiles.
 ##
-## Every launch profile declares the same window — the last 5,000ms of every
-## period — and each is proved immediately before it, exactly at it, and
-## immediately after it. "Before the boundary" means more time remaining than the
-## window, which is the side where the clock is still running.
-func test_every_profile_charges_a_made_basket_before_its_window_and_not_inside_it() -> void:
+## A test that asked each profile what it declares and then checked that it
+## declares it would pass under every mutation of the profile data. So the ruling
+## is stated here, independently, and the shipped profiles are checked against
+## it. Milliseconds of game clock remaining, by `PeriodCategory`; zero means a
+## made field goal never independently stops that competition's clock in that
+## kind of period.
+##
+## **Mutation: ignoring competition-specific configuration fails here.** Any
+## single window applied to all five competitions contradicts at least two rows.
+func test_every_launch_profile_declares_the_owner_ruled_timing_matrix() -> void:
+	var checked: int = 0
 	for competition: int in CalibrationTargets.all_competitions():
 		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
-		var window: int = rules.made_basket_clock_stop_ms
-		assert_int(window).override_failure_message(
-			"%s must declare a made-basket window for this fixture to mean anything"
-			% rules.profile_id
-		).is_greater(0)
-		for period: int in [1, rules.regulation_periods, rules.regulation_periods + 1]:
+		var rule: MadeFieldGoalClockRule = rules.made_field_goal_clock_rule
+		var expected: PackedInt32Array = _owner_ruling(rules.profile_id)
+		assert_int(rule.non_final_regulation_ms).override_failure_message(
+			"%s non-final-regulation window" % rules.profile_id
+		).is_equal(expected[PeriodCategory.Value.NON_FINAL_REGULATION])
+		assert_int(rule.final_regulation_ms).override_failure_message(
+			"%s final-regulation window" % rules.profile_id
+		).is_equal(expected[PeriodCategory.Value.FINAL_REGULATION])
+		assert_int(rule.overtime_ms).override_failure_message(
+			"%s overtime window" % rules.profile_id
+		).is_equal(expected[PeriodCategory.Value.OVERTIME])
+		checked += 1
+	assert_int(checked).override_failure_message(
+		"no competition was checked against the ruling").is_equal(5)
+
+
+## The table above is indexed by `PeriodCategory.Value`, so its ordering is
+## load-bearing. Pinned rather than assumed.
+func test_the_period_category_ordering_the_ruling_table_relies_on() -> void:
+	assert_int(PeriodCategory.Value.NON_FINAL_REGULATION).is_equal(0)
+	assert_int(PeriodCategory.Value.FINAL_REGULATION).is_equal(1)
+	assert_int(PeriodCategory.Value.OVERTIME).is_equal(2)
+	assert_int(PeriodCategory.COUNT).is_equal(3)
+
+
+## Every nonzero window in the shipped matrix, proved on all three sides of its
+## boundary in a period of the category it governs.
+##
+## **Mutation: making the inclusive boundary exclusive fails here** — the
+## "exactly at the window" row is the one that changes.
+## **Mutation: forcing every made-field-goal restart to `CLOCK_ALREADY_RUNNING`
+## fails here** on the two inside rows.
+func test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary() -> void:
+	var proved: int = 0
+	for competition: int in CalibrationTargets.all_competitions():
+		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+		for category: int in PeriodCategory.all():
+			var window: int = rules.made_field_goal_clock_rule.window_ms_for(category)
+			if window <= 0:
+				continue
+			var period: int = _period_of_category(rules, category)
 			_assert_made_basket_mode(
 				rules, period, window + 1, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
-				"one millisecond before the window opens")
+				"one millisecond above the %s window" % PeriodCategory.id_of(category))
 			_assert_made_basket_mode(
 				rules, period, window, RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
-				"exactly at the boundary")
+				"exactly at the %s window" % PeriodCategory.id_of(category))
 			_assert_made_basket_mode(
 				rules, period, window - 1, RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
-				"one millisecond inside the window")
+				"one millisecond below the %s window" % PeriodCategory.id_of(category))
+			proved += 1
+	# college 2, development 3, overseas 2, top domestic 3; high school declares
+	# none. A matrix that lost a window would fail this count before it reached a
+	# boundary.
+	assert_int(proved).override_failure_message(
+		"the shipped matrix no longer contains ten nonzero windows").is_equal(10)
 
 
-## Regulation and overtime agree in every launch profile, because every one of
-## them sets `made_basket_clock_stop_late_periods_only` false. That is an
-## assertion about the shipped data, not an assumption: a profile that changed it
-## fails here and has to say so.
-func test_no_launch_profile_scopes_its_made_basket_window_to_late_periods() -> void:
+## And every zero window leaves the clock running however little time is left,
+## including at the extremes.
+##
+## **Mutation: forcing every made-field-goal restart to `STARTS_ON_LEGAL_TOUCH`
+## fails here.**
+func test_every_zero_window_leaves_the_clock_running_at_every_remaining_time() -> void:
+	var proved: int = 0
 	for competition: int in CalibrationTargets.all_competitions():
 		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
-		assert_bool(rules.made_basket_clock_stop_late_periods_only).override_failure_message(
-			"%s scopes its made-basket window to late periods; the §5.31 record says "
-			% rules.profile_id + "no launch profile does, and one of the two is now wrong"
-		).is_false()
-		var inside: int = rules.made_basket_clock_stop_ms - 1
-		assert_bool(rules.stops_clock_after_made_basket(1, inside)).is_true()
-		assert_bool(rules.stops_clock_after_made_basket(
-			rules.regulation_periods + 1, inside)).is_true()
+		for category: int in PeriodCategory.all():
+			if rules.made_field_goal_clock_rule.window_ms_for(category) > 0:
+				continue
+			var period: int = _period_of_category(rules, category)
+			for remaining: int in [0, 1, 4999, 60000, 120000, 120001]:
+				_assert_made_basket_mode(
+					rules, period, remaining, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+					"a zero %s window" % PeriodCategory.id_of(category))
+			proved += 1
+	assert_int(proved).override_failure_message(
+		"the shipped matrix no longer contains five zero windows").is_equal(5)
 
 
-## The representation can express what no launch profile declares: a longer
-## window, scoped to the last period of regulation and to overtime. This is the
-## shape the open owner decision would take, proved on a constructed profile so
-## that the decision is a data edit rather than an engine change.
+## The final regulation period and the ones before it are different periods with
+## different rules, in the three competitions whose windows differ.
 ##
-## It is deliberately *not* shipped. §5.31 records the missing ruling; inventing
-## an answer here would be a rule change disguised as a calibration fix.
-func test_a_profile_may_scope_a_longer_window_to_late_periods_only() -> void:
-	var rules: CompetitionRuleProfile = _late_window_profile()
-	var window: int = rules.made_basket_clock_stop_ms
-
-	# Early periods never stop, however little time is left.
-	for remaining: int in [window + 1, window, window - 1, 1]:
+## **Mutation: treating non-final and final regulation periods identically fails
+## here.** At 120,000ms remaining, development and top domestic stop in the final
+## period and run in an earlier one; college and overseas stop in the final
+## period and run in an earlier one at their own window too.
+func test_a_non_final_regulation_period_does_not_borrow_the_final_period_window() -> void:
+	var proved: int = 0
+	for competition: int in CalibrationTargets.all_competitions():
+		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+		var rule: MadeFieldGoalClockRule = rules.made_field_goal_clock_rule
+		if rule.final_regulation_ms <= rule.non_final_regulation_ms:
+			continue
+		# A clock reading that is inside the final-period window but outside the
+		# ordinary-period one. It must separate the two categories.
+		var between: int = rule.final_regulation_ms
 		_assert_made_basket_mode(
-			rules, 1, remaining, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
-			"an early period is outside a late-periods-only window")
+			rules, rules.regulation_periods, between,
+			RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
+			"the final regulation period at its own window")
+		_assert_made_basket_mode(
+			rules, 1, between, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+			"an ordinary regulation period at the final period's window")
+		proved += 1
+	assert_int(proved).override_failure_message(
+		"no competition distinguishes its final regulation period any more"
+	).is_equal(4)
 
-	# The last regulation period and every overtime observe the boundary.
-	for period: int in [rules.regulation_periods, rules.regulation_periods + 1]:
+
+## Overtime reads the overtime window, not a regulation one.
+##
+## **Mutation: giving overtime the wrong window fails here.** Every competition
+## with a nonzero overtime window has a *smaller* non-final-regulation window
+## (60,000ms at development and top domestic, zero at college and overseas), so
+## an overtime that consulted the ordinary-regulation figure would leave the
+## clock running at the overtime boundary.
+func test_overtime_reads_the_overtime_window_and_not_a_regulation_one() -> void:
+	var proved: int = 0
+	for competition: int in CalibrationTargets.all_competitions():
+		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+		var rule: MadeFieldGoalClockRule = rules.made_field_goal_clock_rule
+		if rule.overtime_ms <= 0:
+			continue
+		assert_int(rule.overtime_ms).override_failure_message(
+			"%s: this fixture only discriminates while overtime's window exceeds "
+			% rules.profile_id + "the ordinary regulation one"
+		).is_greater(rule.non_final_regulation_ms)
+		for overtime_period: int in [
+			rules.regulation_periods + 1,
+			rules.regulation_periods + 2,
+			rules.regulation_periods + 5,
+		]:
+			_assert_made_basket_mode(
+				rules, overtime_period, rule.overtime_ms,
+				RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
+				"overtime at its own window")
+			_assert_made_basket_mode(
+				rules, overtime_period, rule.overtime_ms + 1,
+				RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+				"overtime one millisecond above its window")
+		proved += 1
+	assert_int(proved).override_failure_message(
+		"no competition declares an overtime window").is_equal(4)
+
+
+## The representation routes three genuinely different windows to three
+## different period categories.
+##
+## Every shipped profile gives overtime and the final regulation period the same
+## length, so a policy that confused those two would be invisible in production
+## data. This constructed profile makes all three distinct, which is the only
+## way to prove each category reads its own field rather than a neighbour's.
+func test_a_constructed_profile_routes_each_period_category_to_its_own_window() -> void:
+	var rules: CompetitionRuleProfile = _distinct_window_profile()
+	var expected: Dictionary = {
+		PeriodCategory.Value.NON_FINAL_REGULATION: 30000,
+		PeriodCategory.Value.FINAL_REGULATION: 90000,
+		PeriodCategory.Value.OVERTIME: 150000,
+	}
+	for category: int in PeriodCategory.all():
+		var window: int = rules.made_field_goal_clock_rule.window_ms_for(category)
+		assert_int(window).override_failure_message(
+			"the fixture no longer declares three distinct windows"
+		).is_equal(expected[category] as int)
+		var period: int = _period_of_category(rules, category)
 		_assert_made_basket_mode(
 			rules, period, window + 1, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
-			"one millisecond before a late window opens")
+			"above the %s window" % PeriodCategory.id_of(category))
 		_assert_made_basket_mode(
 			rules, period, window, RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
-			"exactly at a late boundary")
+			"exactly at the %s window" % PeriodCategory.id_of(category))
 		_assert_made_basket_mode(
 			rules, period, window - 1, RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH,
-			"one millisecond inside a late window")
+			"below the %s window" % PeriodCategory.id_of(category))
+		# And no other category's window governs this one.
+		for other: int in PeriodCategory.all():
+			if other == category:
+				continue
+			var foreign: int = rules.made_field_goal_clock_rule.window_ms_for(other)
+			if foreign <= window:
+				continue
+			_assert_made_basket_mode(
+				rules, period, foreign, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+				"a %s period must not borrow the %s window" % [
+					PeriodCategory.id_of(category), PeriodCategory.id_of(other)])
 
 
-## A profile that declares no window at all never stops for a made basket, at any
-## clock. Zero is the disabling value and it has to actually disable.
+## Middle school and high school: a made field goal never stops the clock, late
+## in regulation or in overtime.
+##
+## §1.1 gives the middle-school prologue no `CompetitionRuleProfile` of its own,
+## and inventing one would mean inventing a period length, a shot clock and a
+## §14.1 band that no source states. Its ruling is identical to high school's —
+## no made-field-goal stoppage in any period — and is exactly the value
+## `MadeFieldGoalClockRule.none()` carries, so it is proved on that value and on
+## the high-school profile that ships it.
+func test_the_middle_school_and_high_school_ruling_is_no_made_field_goal_stoppage() -> void:
+	var high_school: CompetitionRuleProfile = CompetitionCatalog.rules_for(
+		CalibrationTargets.Competition.HIGH_SCHOOL)
+	assert_bool(high_school.made_field_goal_clock_rule.stops_clock_anywhere())		.override_failure_message(
+			"high school declares a made-field-goal window; the ruling says it has none")		.is_false()
+	assert_str(str(high_school.made_field_goal_clock_rule)).override_failure_message(
+		"the middle-school and high-school ruling are the same value"
+	).is_equal(str(MadeFieldGoalClockRule.none()))
+
+	# Late in the final regulation period, and deep into overtime, at every
+	# clock reading either competition could present.
+	for period: int in [
+		1,
+		high_school.regulation_periods - 1,
+		high_school.regulation_periods,
+		high_school.regulation_periods + 1,
+		high_school.regulation_periods + 3,
+	]:
+		for remaining: int in [0, 1, 1000, 5000, 60000, 120000, 240000]:
+			_assert_made_basket_mode(
+				high_school, period, remaining,
+				RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+				"a competition with no made-field-goal window")
+
+
+## And where a made field goal does not stop the clock, every other dead-ball
+## cause still does. The ruling is about made field goals and nothing else.
+func test_other_dead_ball_causes_still_stop_the_clock_where_a_made_field_goal_does_not() -> void:
+	var high_school: CompetitionRuleProfile = CompetitionCatalog.rules_for(
+		CalibrationTargets.Competition.HIGH_SCHOOL)
+	for cause: int in [
+		RestartCause.Value.PERIOD_START,
+		RestartCause.Value.MADE_FREE_THROW,
+		RestartCause.Value.FOUL,
+		RestartCause.Value.TIMEOUT,
+		RestartCause.Value.VIOLATION,
+		RestartCause.Value.OUT_OF_BOUNDS,
+	]:
+		for period: int in [1, high_school.regulation_periods, high_school.regulation_periods + 1]:
+			assert_int(RestartClockPolicy.mode_for(cause, high_school, period, 1000))				.override_failure_message(
+					"a %s restart is a stopped clock in every competition"
+					% RestartCause.id_of(cause))				.is_equal(RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH)
+
+
+## A made final free throw stays a dead-ball restart in every competition, at
+## every clock reading, whatever that competition's made-field-goal matrix says.
+##
+## **Mutation: collapsing `MADE_FIELD_GOAL` and `MADE_FREE_THROW` fails here** —
+## the two causes are asked the same question at the same clock and are required
+## to answer differently wherever the field-goal window is closed.
+func test_a_made_free_throw_stays_distinct_from_a_made_field_goal_everywhere() -> void:
+	var separated: int = 0
+	for competition: int in CalibrationTargets.all_competitions():
+		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
+		for category: int in PeriodCategory.all():
+			var period: int = _period_of_category(rules, category)
+			var window: int = rules.made_field_goal_clock_rule.window_ms_for(category)
+			# Outside the window — or anywhere at all, where there is none — the
+			# two causes must disagree.
+			var outside: int = window + 1
+			assert_int(RestartClockPolicy.mode_for(
+				RestartCause.Value.MADE_FIELD_GOAL, rules, period, outside)
+			).override_failure_message(
+				"%s %s: a made field goal outside the window runs"
+				% [rules.profile_id, PeriodCategory.id_of(category)]
+			).is_equal(RestartClockMode.Value.CLOCK_ALREADY_RUNNING)
+			assert_int(RestartClockPolicy.mode_for(
+				RestartCause.Value.MADE_FREE_THROW, rules, period, outside)
+			).override_failure_message(
+				"%s %s: a made free throw stops the clock in every ruleset"
+				% [rules.profile_id, PeriodCategory.id_of(category)]
+			).is_equal(RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH)
+			separated += 1
+	assert_int(separated).override_failure_message(
+		"no competition/category pair separated the two made-basket causes"
+	).is_equal(15)
+
+
+## Inside a window the throw-in costs nothing and the clock then runs from the
+## legal touch — proved on a simulated possession rather than on the policy.
+##
+## Two facts, and they are different: `INBOUND` emitting at the possession's own
+## starting clock is "no throw-in time is charged before the legal touch"; the
+## next clock-consuming event arriving strictly later is "the clock is running
+## once the ball is touched". A restart that stopped the clock and then left it
+## stopped would pass the first and fail the second.
+func test_a_stopped_made_field_goal_restart_charges_nothing_then_runs_on_the_touch() -> void:
+	var input: MatchInput = _competition_input(
+		CalibrationTargets.Competition.TOP_DOMESTIC_PRO, AUDIT_BASE_SEED)
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var window: int = rules.made_field_goal_clock_rule.final_regulation_ms
+	assert_int(window).override_failure_message(
+		"top domestic must declare a final-regulation window for this fixture"
+	).is_greater(0)
+	var snapshot: MatchSnapshot = _snapshot_at(input, rules.regulation_periods, window)
+	var possession: PossessionResult = _possession(
+		input, snapshot, 4107, RestartCause.Value.MADE_FIELD_GOAL)
+
+	var inbound: MatchDomainEvent = _first_of(possession.events, MatchDomainEvent.INBOUND)
+	assert_object(inbound).override_failure_message(
+		"a stopped made-field-goal restart still administers a throw-in").is_not_null()
+	assert_int(inbound.clock_ms).override_failure_message(
+		"no game clock may be charged before the legal touch").is_equal(window)
+
+	var after_touch: int = -1
+	for event: MatchDomainEvent in possession.events:
+		if event.clock_ms < window:
+			after_touch = event.clock_ms
+			break
+	assert_int(after_touch).override_failure_message(
+		"the clock never ran after the legal touch, so it did not restart"
+	).is_between(0, window - 1)
+
+
+## The boundary reaches a whole simulated possession, not just the policy: at the
+## same seed and the same cause, one millisecond either side of the window
+## produces a charged and an uncharged throw-in.
+func test_the_window_boundary_changes_a_simulated_possession() -> void:
+	var input: MatchInput = _competition_input(
+		CalibrationTargets.Competition.TOP_DOMESTIC_PRO, AUDIT_BASE_SEED)
+	var rules: CompetitionRuleProfile = input.rule_profile
+	var window: int = rules.made_field_goal_clock_rule.final_regulation_ms
+	var period: int = rules.regulation_periods
+	var outside: PossessionResult = _possession(
+		input, _snapshot_at(input, period, window + 1000), 4106,
+		RestartCause.Value.MADE_FIELD_GOAL)
+	var inside: PossessionResult = _possession(
+		input, _snapshot_at(input, period, window), 4106,
+		RestartCause.Value.MADE_FIELD_GOAL)
+
+	assert_int(_first_of(outside.events, MatchDomainEvent.INBOUND).clock_ms)\
+		.override_failure_message("outside the window the throw-in is charged")\
+		.is_less(window + 1000)
+	assert_int(_first_of(inside.events, MatchDomainEvent.INBOUND).clock_ms)\
+		.override_failure_message("inside the window it is not")\
+		.is_equal(window)
+
+
+## A profile with no window at all never stops the clock for a made basket, at
+## any clock. Zero is the disabling value and it has to actually disable.
 func test_a_profile_with_no_window_never_stops_the_clock_for_a_made_basket() -> void:
 	var rules := CompetitionRuleProfile.new(
 		&"no_window_fixture", &"v1", 4, 600, 300, 24, 6, 14, 8,
 		5, CompetitionRuleProfile.BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"standard_pace",
-		&"standard_officiating", &"standard_roster", 1.0, 6, false, 0, false)
+		&"standard_officiating", &"standard_roster", 1.0, 6, false,
+		MadeFieldGoalClockRule.none())
 	for remaining: int in [600000, 5000, 1000, 1, 0]:
 		_assert_made_basket_mode(
 			rules, 4, remaining, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
@@ -257,24 +535,98 @@ func test_a_profile_with_no_window_never_stops_the_clock_for_a_made_basket() -> 
 	).is_equal(RestartClockMode.Value.STARTS_ON_LEGAL_TOUCH)
 
 
-## The boundary reaches a whole simulated possession, not just the policy: at the
-## same seed and the same cause, one millisecond either side of the window
-## produces a charged and an uncharged throw-in.
-func test_the_window_boundary_changes_a_simulated_possession() -> void:
-	var input: MatchInput = _fixture_input()
-	var window: int = input.rule_profile.made_basket_clock_stop_ms
-	var outside: PossessionResult = _possession(
-		input, _snapshot_at(input, 1, window + 1000), 4106,
-		RestartCause.Value.MADE_FIELD_GOAL)
-	var inside: PossessionResult = _possession(
-		input, _snapshot_at(input, 1, window), 4106, RestartCause.Value.MADE_FIELD_GOAL)
+## An omitted rule means no stoppage, not an inherited one. Every fixture profile
+## in the repository takes this path.
+func test_a_profile_that_declares_no_rule_at_all_gets_no_stoppage() -> void:
+	var rules := CompetitionRuleProfile.new(&"defaulted_fixture", &"v1", 2, 180, 120, 24, 6)
+	assert_bool(rules.made_field_goal_clock_rule.stops_clock_anywhere())\
+		.override_failure_message(
+			"the constructor default declares a window; a fixture that never "
+			+ "mentions the rule must not silently acquire one")\
+		.is_false()
+	for period: int in [1, 2, 3]:
+		for remaining: int in [0, 1, 5000, 120000]:
+			_assert_made_basket_mode(
+				rules, period, remaining, RestartClockMode.Value.CLOCK_ALREADY_RUNNING,
+				"a profile that declares no made-field-goal rule")
 
-	assert_int(_first_of(outside.events, MatchDomainEvent.INBOUND).clock_ms)\
-		.override_failure_message("outside the window the throw-in is charged")\
-		.is_less(window + 1000)
-	assert_int(_first_of(inside.events, MatchDomainEvent.INBOUND).clock_ms)\
-		.override_failure_message("inside the window it is not")\
-		.is_equal(window)
+
+# --- 4b. the representation refuses what it cannot mean -----------------------
+
+## A negative window is rejected, per category.
+func test_a_negative_window_is_rejected() -> void:
+	await assert_error(func() -> void:
+		var _rule := MadeFieldGoalClockRule.new(-1, 0, 0)
+	).is_runtime_error(
+		"Assertion failed: a non-final-regulation made-field-goal window is never negative")
+	await assert_error(func() -> void:
+		var _rule := MadeFieldGoalClockRule.new(0, -1, 0)
+	).is_runtime_error(
+		"Assertion failed: a final-regulation made-field-goal window is never negative")
+	await assert_error(func() -> void:
+		var _rule := MadeFieldGoalClockRule.new(0, 0, -1)
+	).is_runtime_error(
+		"Assertion failed: an overtime made-field-goal window is never negative")
+
+
+## An ordinary regulation period cannot stop the clock for longer than the final
+## one, and cannot stop it where the final one does not stop at all. Both are far
+## more likely to be arguments passed in the wrong order than a real rule.
+func test_a_contradictory_regulation_shape_is_rejected() -> void:
+	await assert_error(func() -> void:
+		var _rule := MadeFieldGoalClockRule.new(120000, 60000, 60000)
+	).is_runtime_error(
+		"Assertion failed: a non-final regulation window cannot exceed the final "
+		+ "regulation window")
+	await assert_error(func() -> void:
+		var _rule := MadeFieldGoalClockRule.new(60000, 0, 60000)
+	).is_runtime_error(
+		"Assertion failed: a competition that stops the clock in an ordinary period "
+		+ "must also stop it in the final one")
+
+
+## A window that outlasts the period it is drawn against is rejected by the
+## profile, which is the only object that knows how long a period is. Each
+## category is checked against the period kind it actually governs, so an
+## overtime window is judged against the overtime length and not the regulation
+## one.
+func test_a_window_longer_than_its_own_period_is_rejected() -> void:
+	await assert_error(func() -> void:
+		var _rules := CompetitionRuleProfile.new(
+			&"too_long_regulation", &"v1", 4, 60, 300, 24, 6, 14, 8,
+			5, CompetitionRuleProfile.BonusKind.TWO_SHOT, -1, 2, true, true, false,
+			&"standard_arc", &"standard_restricted", &"standard_pace",
+			&"standard_officiating", &"standard_roster", 1.0, 6, false,
+			MadeFieldGoalClockRule.new(0, 120000, 0))
+	).is_runtime_error(
+		"Assertion failed: a final-regulation made-field-goal window cannot outlast "
+		+ "a regulation period")
+	await assert_error(func() -> void:
+		var _rules := CompetitionRuleProfile.new(
+			&"too_long_overtime", &"v1", 4, 720, 60, 24, 6, 14, 8,
+			5, CompetitionRuleProfile.BonusKind.TWO_SHOT, -1, 2, true, true, false,
+			&"standard_arc", &"standard_restricted", &"standard_pace",
+			&"standard_officiating", &"standard_roster", 1.0, 6, false,
+			MadeFieldGoalClockRule.new(0, 120000, 120000))
+	).is_runtime_error(
+		"Assertion failed: an overtime made-field-goal window cannot outlast an "
+		+ "overtime period")
+
+
+## A competition that plays a single regulation period has no non-final
+## regulation period, so a window scoped to that category could never activate.
+## Dead configuration is rejected rather than carried.
+func test_a_single_regulation_period_competition_cannot_scope_a_non_final_window() -> void:
+	await assert_error(func() -> void:
+		var _rules := CompetitionRuleProfile.new(
+			&"one_period", &"v1", 1, 720, 300, 24, 6, 14, 8,
+			5, CompetitionRuleProfile.BonusKind.TWO_SHOT, -1, 2, true, true, false,
+			&"standard_arc", &"standard_restricted", &"standard_pace",
+			&"standard_officiating", &"standard_roster", 1.0, 6, false,
+			MadeFieldGoalClockRule.new(60000, 120000, 120000))
+	).is_runtime_error(
+		"Assertion failed: a single-regulation-period competition has no non-final "
+		+ "regulation period to scope a window to")
 
 
 # --- 5. one writer, and the readers the contract declares ---------------------
@@ -474,11 +826,41 @@ func test_stepped_and_full_runs_agree_on_every_restart() -> void:
 func test_every_launch_profile_declares_a_credible_made_basket_window() -> void:
 	for competition: int in CalibrationTargets.all_competitions():
 		var rules: CompetitionRuleProfile = CompetitionCatalog.rules_for(competition)
-		assert_int(rules.made_basket_clock_stop_ms).override_failure_message(
-			"%s declares a negative window" % rules.profile_id).is_greater_equal(0)
-		assert_int(rules.made_basket_clock_stop_ms).override_failure_message(
-			"%s declares a window longer than one of its own periods" % rules.profile_id
+		var rule: MadeFieldGoalClockRule = rules.made_field_goal_clock_rule
+		assert_object(rule).override_failure_message(
+			"%s carries no made-field-goal clock rule" % rules.profile_id).is_not_null()
+		for category: int in PeriodCategory.all():
+			assert_int(rule.window_ms_for(category)).override_failure_message(
+				"%s declares a negative %s window"
+				% [rules.profile_id, PeriodCategory.id_of(category)]
+			).is_greater_equal(0)
+		# Each window against the period kind it actually governs. A regulation
+		# window judged against the overtime length, or the reverse, would let a
+		# window through that outlasts its own period.
+		assert_int(rule.non_final_regulation_ms).override_failure_message(
+			"%s: a non-final-regulation window outlasts a regulation period"
+			% rules.profile_id
 		).is_less_equal(rules.period_seconds * 1000)
+		assert_int(rule.final_regulation_ms).override_failure_message(
+			"%s: a final-regulation window outlasts a regulation period" % rules.profile_id
+		).is_less_equal(rules.period_seconds * 1000)
+		assert_int(rule.overtime_ms).override_failure_message(
+			"%s: an overtime window outlasts an overtime period" % rules.profile_id
+		).is_less_equal(rules.overtime_seconds * 1000)
+		# A competition that stops the clock in an ordinary regulation period
+		# must stop it in the final one, and never for longer.
+		if rule.non_final_regulation_ms > 0:
+			assert_int(rule.final_regulation_ms).override_failure_message(
+				"%s stops the clock in an ordinary period but not in the final one"
+				% rules.profile_id
+			).is_greater_equal(rule.non_final_regulation_ms)
+		# Every competition that plays more than one regulation period may scope
+		# a non-final window; one that does not, may not.
+		if rules.regulation_periods == 1:
+			assert_int(rule.non_final_regulation_ms).override_failure_message(
+				"%s has no non-final regulation period to scope a window to"
+				% rules.profile_id
+			).is_equal(0)
 		# All five launch profiles reach the free-throw branch, so
 		# `PossessionEngine`'s dead-ball free-throw termination is unreachable
 		# in production and its `FOUL` restart cause is a fixture-only path.
@@ -517,14 +899,59 @@ func _competition_input(competition: int, variation: int) -> MatchInput:
 	return CompetitionCatalog.match_for(competition, variation, 0.5)
 
 
-## A constructed profile of the shape the open owner decision would take: the
-## last two minutes of the final regulation period and of every overtime.
-func _late_window_profile() -> CompetitionRuleProfile:
+## The owner ruling for one competition, by `PeriodCategory` index, in
+## milliseconds of game clock remaining.
+##
+## Stated independently of the profiles it checks. If this ever needs to be
+## edited to make a test pass, the ruling has changed and that is an owner
+## decision, not a test repair.
+func _owner_ruling(profile_id: StringName) -> PackedInt32Array:
+	match String(profile_id):
+		"high_school":
+			return PackedInt32Array([0, 0, 0])
+		"college":
+			return PackedInt32Array([0, 60000, 60000])
+		"domestic_development":
+			return PackedInt32Array([60000, 120000, 120000])
+		"overseas":
+			return PackedInt32Array([0, 120000, 120000])
+		"top_domestic_pro":
+			return PackedInt32Array([60000, 120000, 120000])
+	assert_bool(false).override_failure_message(
+		"no owner ruling is recorded for '%s'" % profile_id).is_true()
+	return PackedInt32Array([0, 0, 0])
+
+
+## A period number of the given category, in the given competition.
+##
+## No literal period number appears in the fixtures: college plays two halves and
+## the rest play four quarters, so "the final regulation period" is period 2 in
+## one and period 4 in the others, and a fixture that wrote either would silently
+## test the wrong period in the other.
+func _period_of_category(rules: CompetitionRuleProfile, category: int) -> int:
+	match category:
+		PeriodCategory.Value.NON_FINAL_REGULATION:
+			assert_int(rules.regulation_periods).override_failure_message(
+				"%s plays one regulation period and has no non-final one"
+				% rules.profile_id).is_greater(1)
+			return 1
+		PeriodCategory.Value.FINAL_REGULATION:
+			return rules.regulation_periods
+		_:
+			return rules.regulation_periods + 1
+
+
+## A constructed profile whose three windows are all different, so that each
+## period category can be proved to read its own field. No shipped competition
+## separates overtime from the final regulation period, so nothing in production
+## data can prove that routing.
+func _distinct_window_profile() -> CompetitionRuleProfile:
 	return CompetitionRuleProfile.new(
-		&"late_window_fixture", &"v1", 4, 720, 300, 24, 6, 14, 8,
+		&"distinct_window_fixture", &"v1", 4, 720, 300, 24, 6, 14, 8,
 		5, CompetitionRuleProfile.BonusKind.TWO_SHOT, -1, 2, true, true, false,
 		&"standard_arc", &"standard_restricted", &"standard_pace",
-		&"standard_officiating", &"standard_roster", 1.0, 6, false, 120000, true)
+		&"standard_officiating", &"standard_roster", 1.0, 6, false,
+		MadeFieldGoalClockRule.new(30000, 90000, 150000))
 
 
 func _snapshot_at(input: MatchInput, period: int, clock_ms: int) -> MatchSnapshot:
