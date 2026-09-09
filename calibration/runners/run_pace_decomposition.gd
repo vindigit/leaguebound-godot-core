@@ -25,6 +25,11 @@ extends SceneTree
 
 const DEFAULT_GAMES: int = 120
 const PROGRESS_EVERY: int = 50
+## A possession beginning at or under this much game clock is a "final five
+## seconds" possession. It is the §5.30 sub-five-second opening band, reported
+## here so a timing change that moved how many possessions land in it is visible
+## beside the possession count it moved.
+const FINAL_SECONDS_MS: int = 5000
 
 
 class Tally:
@@ -48,6 +53,18 @@ class Tally:
 	var offensive_rebounds: int = 0
 	var free_throw_trips: int = 0
 	var free_throw_attempts: int = 0
+	## Possessions that ran out of period without producing a field-goal
+	## attempt. Kept as a raw count beside its own denominator: a doubled count
+	## against a doubled possession total is not a regression, and only the rate
+	## can say which happened.
+	var expired_without_attempt: int = 0
+	## Possessions that began with five seconds or less on the game clock.
+	var final_five_second_possessions: int = 0
+	## Game shape, on the same sample as the pace numbers so the two are read
+	## against one denominator rather than two runs.
+	var points: int = 0
+	var close_games: int = 0
+	var blowout_games: int = 0
 	## Restart accounting, keyed by `RestartCause` id.
 	var restarts_free: Dictionary = {}
 	var restarts_charged: Dictionary = {}
@@ -125,8 +142,7 @@ func _scaled_rules(competition: int, pace_scale: float) -> CompetitionRuleProfil
 		source.restricted_area_profile_id, source.pace_environment_id,
 		source.officiating_profile_id, source.roster_rule_profile_id,
 		source.pace_multiplier * pace_scale, source.timeouts_per_team,
-		source.timeout_advance_permitted, source.made_basket_clock_stop_ms,
-		source.made_basket_clock_stop_late_periods_only)
+		source.timeout_advance_permitted, source.made_field_goal_clock_rule)
 	for property: Dictionary in source.get_property_list():
 		var name: String = str(property["name"])
 		var usage: int = property["usage"] as int
@@ -151,6 +167,16 @@ func _measure(
 		tally.overtime_games += 1
 	tally.regulation_ms += rules.regulation_periods * rules.period_seconds * 1000
 	tally.overtime_ms += overtime_periods * rules.overtime_seconds * 1000
+	var home_score: int = output.final_result.home_score
+	var away_score: int = output.final_result.away_score
+	tally.points += home_score + away_score
+	# The same thresholds `MatchMetricAccumulator` judges §14.2 against, so a
+	# reading here and a verdict there are the same quantity.
+	var margin: int = absi(home_score - away_score)
+	if margin <= 5:
+		tally.close_games += 1
+	if margin >= 20:
+		tally.blowout_games += 1
 
 	for record: PossessionRecord in output.possessions:
 		tally.possessions += 1
@@ -169,6 +195,8 @@ func _measure(
 				tally.made_free_throw += 1
 			_:
 				pass
+		if record.start_clock_ms <= FINAL_SECONDS_MS:
+			tally.final_five_second_possessions += 1
 		if record.end_reason == PossessionEndReason.Value.TURNOVER:
 			tally.turnovers += 1
 		elif record.end_reason == PossessionEndReason.Value.PERIOD_EXPIRED:
@@ -196,11 +224,21 @@ func _measure(
 func _measure_events(tally: Tally, output: MatchSimulationOutput) -> void:
 	var possession_clock: int = -1
 	var stage_clock: int = -1
+	# `PossessionRecord` carries no attempt count, so "did this possession put a
+	# shot up" is read from the ledger between its own start and end markers.
+	var attempted: bool = false
 	for event: MatchDomainEvent in output.events:
 		match event.event_type:
 			MatchDomainEvent.POSSESSION_STARTED:
 				possession_clock = event.clock_ms
 				stage_clock = event.clock_ms
+				attempted = false
+			MatchDomainEvent.FIELD_GOAL_ATTEMPT:
+				attempted = true
+			MatchDomainEvent.POSSESSION_ENDED:
+				if not attempted and event.detail_id == PossessionEndReason.id_of(
+					PossessionEndReason.Value.PERIOD_EXPIRED):
+					tally.expired_without_attempt += 1
 			MatchDomainEvent.INBOUND:
 				var cause: String = String(event.detail_id)
 				var spent: int = maxi(0, possession_clock - event.clock_ms)
@@ -239,9 +277,12 @@ func _report(id: StringName, rules: CompetitionRuleProfile, tally: Tally) -> voi
 	print("    pace_multiplier                    %.4f" % rules.pace_multiplier)
 	print("    period structure                   %d x %ds + OT %ds"
 		% [rules.regulation_periods, rules.period_seconds, rules.overtime_seconds])
-	print("    made-basket clock stop             %dms%s" % [
-		rules.made_basket_clock_stop_ms,
-		", late periods only" if rules.made_basket_clock_stop_late_periods_only else ""])
+	print("    made-FG clock stop (non-final reg)  %dms"
+		% rules.made_field_goal_clock_rule.non_final_regulation_ms)
+	print("    made-FG clock stop (final reg)     %dms"
+		% rules.made_field_goal_clock_rule.final_regulation_ms)
+	print("    made-FG clock stop (overtime)      %dms"
+		% rules.made_field_goal_clock_rule.overtime_ms)
 	print("  possession count")
 	print("    possessions per team per game      %.4f" % per_team)
 	print("    possessions per game (both teams)  %.4f" % (float(tally.possessions) / games))
@@ -280,6 +321,23 @@ func _report(id: StringName, rules: CompetitionRuleProfile, tally: Tally) -> voi
 		100.0 * float(tally.overtime_possessions) / possessions])
 	print("    regulation-only possessions/team   %.4f" % (
 		float(tally.regulation_possessions) / games / 2.0))
+	print("  scoring")
+	print("    points per possession              %.4f" % (float(tally.points) / possessions))
+	print("    points per team per game           %.4f" % (float(tally.points) / games / 2.0))
+	print("  rare possession shapes (raw count, then rate on its own denominator)")
+	print("    expired without an attempt         %d raw / %d possessions = %.5f" % [
+		tally.expired_without_attempt, tally.possessions,
+		float(tally.expired_without_attempt) / possessions])
+	print("    possessions opening under 5s       %d raw / %d possessions = %.5f" % [
+		tally.final_five_second_possessions, tally.possessions,
+		float(tally.final_five_second_possessions) / possessions])
+	print("  game shape (denominator %d games)" % tally.games)
+	print("    close games (margin <= 5)          %d raw = %.4f" % [
+		tally.close_games, float(tally.close_games) / games])
+	print("    blowouts (margin >= 20)            %d raw = %.4f" % [
+		tally.blowout_games, float(tally.blowout_games) / games])
+	print("    overtime games                     %d raw = %.4f" % [
+		tally.overtime_games, float(tally.overtime_games) / games])
 
 
 func _print_restarts(tally: Tally, games: float) -> void:
