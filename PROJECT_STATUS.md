@@ -8227,7 +8227,10 @@ B, C, D and G are refuted; E and F are confirmed as contributing and, between
 them, separate the two competitions. NO PRODUCTION CODE, TARGET, TOLERANCE,
 RULESET VERSION OR GOLDEN CHANGED. NOT CERTIFIED AND NO CERTIFICATION CLAIMED —
 each arm's own `certification.sample_reached` reads short of §27.1 and the
-report says so in its notes.**
+report says so in its notes. The full fast gate is green on this tree — parse
+258/0, attribute sensitivity 80/80, calibration smoke 15/15, GdUnit4 672/672
+across 52/52 suites — and all six golden ledgers are byte-identical because no
+production behaviour changed.**
 
 The one-line answer the §9 work queue needs: **college and top domestic do not
 share a cause, and neither cause is a defect.** College creates tie mass at
@@ -8651,7 +8654,45 @@ as unsupported.**
   `certification.sample_reached` reads short of the 100,000-game requirement and
   the report says so in its own notes.
 
-#### 13. Remaining uncertainty
+#### 13. Gate evidence on this section's tree
+
+Run from a clean generated state (`.godot` and `reports` removed first) with
+`tools/run_checks.sh`, which mirrors `.github/workflows/headless-tests.yml` step
+for step and argument for argument:
+
+| check | result |
+| --- | --- |
+| import | pass |
+| parse gate | **258 scripts, 0 failures** |
+| project acceptance | pass (six golden ledgers verified, all byte-identical) |
+| simulation smoke | pass |
+| Builder smoke | pass |
+| attribute sensitivity (`--resolutions=100000 --label=pr`) | **80/80 judged, 0 failures** |
+| calibration smoke (`--games=6 --label=pr`) | **15/15 judged, 0 failures** |
+| GdUnit4 | **672/672 cases, 52/52 suites, 0 errors, 0 failures** |
+
+`git diff --check` clean. The GdUnit total rises from 659/659 across 51 suites to
+**672/672 across 52** — the thirteen cases and one suite this section adds, and
+nothing else. **This is gate evidence, not `BALANCE_SPEC.md` §27.1
+certification; nothing on this branch is certified.**
+
+Beyond the gate, and specific to this section:
+
+- **Shard aggregation verified two ways on all six arms.** 24 of 24 shards
+  accepted, no seed overlap, and the canonical `ReportAggregator` estimate
+  compared against an independent sum of the counter sections — the runner exits
+  non-zero if they disagree. They agreed on every arm.
+- **Deterministic repeated-seed verification**, one seed in a hundred on every
+  shard, comparing `MatchSimulationOutput.signature()` byte for byte. Passes on
+  all 24.
+- **Conditional-outcome coverage** judged on every shard, so a silently unwritten
+  counter fails the run rather than reading as a rate of zero.
+- **Golden ledgers unaffected.** No production behaviour changed, so no hash
+  moved and no fixture was reseeded. The canonical home-court estimator was not
+  re-run, because it is only required when production behaviour changes and none
+  did.
+
+#### 14. Remaining uncertainty
 
 - **What mechanism produces real basketball's concentration at zero.** This
   section sizes the gap, splits it by competition, and eliminates seven of eight
