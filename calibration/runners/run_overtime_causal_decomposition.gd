@@ -169,10 +169,53 @@ func _measure_one(
 		+ "not change what a seed produces.",
 		"Stage 4 brief: instrumentation must not change seeded outcomes",
 		determinism_checked - determinism_failures, determinism_checked)
+	_add_coverage_metric(report, tally)
 	report.add_section(&"tally", tally.to_dictionary())
 	report.add_section(&"funnel", _funnel_section(tally))
 	report.finish()
 	return report
+
+
+## Every conditional-outcome family the brief asks for, asserted to have been
+## written at least once.
+##
+## A counter that is silently never written reads as a rate of zero, which is
+## indistinguishable in a report from a mechanism that never fired. One did:
+## a stray guard left two-point attempts unrecorded while three-point attempts
+## were recorded beside them, and the table read as though no late possession
+## ever attempted a two. The instrument now fails rather than reporting that.
+func _add_coverage_metric(
+	report: CalibrationReport,
+	tally: OvertimeDecomposition.Tally,
+) -> void:
+	var required: PackedStringArray = [
+		"no_attempt", "turnover", "attempt_2", "attempt_3", "made_2", "made_3",
+		"shooting_foul", "non_shooting_foul", "free_throw_trip", "free_throw_made",
+		"free_throw_missed", "offensive_rebound", "defensive_rebound",
+		"points_0", "points_1", "points_2", "points_3",
+		"score_unchanged", "tied_afterward", "lead_changed",
+		"regulation_ended_afterward",
+	]
+	var present: int = 0
+	var missing := PackedStringArray()
+	for outcome in required:
+		var total: int = 0
+		for window_name in OvertimeDecomposition.OPPORTUNITY_WINDOW_NAMES:
+			for bucket in OvertimeDecomposition.REPORTED_BUCKETS:
+				total += tally.count_of(
+					StringName("cond.%s.%s.%s" % [window_name, bucket, outcome]))
+		if total > 0:
+			present += 1
+		else:
+			missing.append(outcome)
+	if not missing.is_empty():
+		printerr("  conditional-outcome families never written: %s" % ", ".join(missing))
+	_invariant(report, &"instrument.conditional_outcome_coverage",
+		"Conditional-outcome families written at least once, over the families "
+		+ "the Stage 4 brief requires. A family that is never written reads as a "
+		+ "rate of zero and is indistinguishable from a mechanism that never fired.",
+		"Stage 4 brief Phase 2: conditional outcomes per score-clock bucket",
+		present, required.size())
 
 
 func _input_for(competition: int, rosters: String, variation: int) -> MatchInput:

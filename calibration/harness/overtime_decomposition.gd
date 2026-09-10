@@ -58,6 +58,14 @@ const CHECKPOINT_NAMES: PackedStringArray = [
 const OPPORTUNITY_WINDOW_MS: PackedInt32Array = [120000, 60000, 30000, 10000]
 const OPPORTUNITY_WINDOW_NAMES: PackedStringArray = ["120s", "60s", "30s", "10s"]
 
+## The offence score states the conditional-outcome table is cut on. `far` and
+## `far_up` exist so `margin_bucket` is total over every margin, and are reported
+## rather than dropped.
+const REPORTED_BUCKETS: PackedStringArray = [
+	"tied", "down1", "down2", "down3", "down4_6",
+	"up1", "up2", "up3", "up4_6", "far", "far_up",
+]
+
 ## The signed density reported around zero, inclusive both ways.
 const DENSITY_BOUND: int = 10
 
@@ -541,6 +549,15 @@ static func _accumulate_session_event(tally: Tally, event: MatchDomainEvent) -> 
 		tally.add(StringName("ledger_tag.%s" % event.detail_id))
 
 
+## Every outcome one possession produced, recorded against the score state it
+## opened in.
+##
+## Two kinds of row live here and the report must not mix them. `no_attempt`,
+## `points_*`, `tied_afterward` and the rest of `_close_window`'s rows are
+## written **once per possession** and are therefore probabilities. The rows
+## below are written **once per matching event**, so an offensive rebound can
+## give one possession two attempts and a per-possession figure above one is a
+## count rather than a broken probability.
 static func _accumulate_window_event(
 	tally: Tally,
 	state: MatchSnapshot,
@@ -553,16 +570,21 @@ static func _accumulate_window_event(
 			window.field_goal_attempts += 1
 			var zone: int = ShotZone.from_id(event.zone_id)
 			var value: int = 3 if ShotZone.is_three(zone) else 2
-			if value == 3:
-				_window_outcome(tally, window, StringName("attempt_%d" % value))
+			_window_outcome(tally, window, StringName("attempt_%d" % value))
+			# A plausible tying action is one whose value can actually erase the
+			# deficit the possession opened at. A two down three cannot, and is
+			# not counted as one however well it is executed.
 			if deficit > 0 and value >= deficit:
 				window.plausible_tying_action = true
+			# The same attempt judged against the *live* margin rather than the
+			# opening one, so an attempt that would tie the game as it stands is
+			# separable from one that merely could have at the tip-off of the
+			# possession.
 			if state.margin_for(event.team_id) == -value:
 				_window_outcome(tally, window, &"tying_attempt")
 		MatchDomainEvent.FIELD_GOAL_MADE:
-			var made_value: int = event.points
-			window.points += made_value
-			_window_outcome(tally, window, StringName("made_%d" % made_value))
+			window.points += event.points
+			_window_outcome(tally, window, StringName("made_%d" % event.points))
 		MatchDomainEvent.TURNOVER:
 			_window_outcome(tally, window, &"turnover")
 		MatchDomainEvent.FREE_THROW_AWARDED:
@@ -580,14 +602,13 @@ static func _accumulate_window_event(
 				tally.add(&"mech.intentional_final_free_throw_miss.activations")
 		MatchDomainEvent.REBOUND:
 			if event.detail_id == MatchDomainEvent.REBOUND_OFFENSIVE:
-					_window_outcome(tally, window, &"offensive_rebound")
+				_window_outcome(tally, window, &"offensive_rebound")
 			else:
 				_window_outcome(tally, window, &"defensive_rebound")
 		MatchDomainEvent.FOUL:
-			var foul_type: int = FoulType.from_id(event.detail_id)
-			match foul_type:
+			match FoulType.from_id(event.detail_id):
 				FoulType.Value.SHOOTING:
-							_window_outcome(tally, window, &"shooting_foul")
+					_window_outcome(tally, window, &"shooting_foul")
 				FoulType.Value.INTENTIONAL:
 					_window_outcome(tally, window, &"intentional_foul")
 					tally.add(&"cycle.intentional_foul")
