@@ -8216,6 +8216,457 @@ a green result is not evidence.
 - **Every `BALANCE_SPEC.md` target and tolerance.** Unchanged. No band, floor,
   ceiling or cap was edited, widened, or reinterpreted.
 
+### 5.34 The overtime shortfall, decomposed: two competitions, two different causes, and no defect
+
+Status: **DIAGNOSTIC. 12,800 complete games across six arms — college and top
+domestic, each on two disjoint generated-roster seed ranges and on a mirrored
+identical-roster arm — with 24 of 24 shards accepted by `ReportAggregator`, no
+seed overlap, and both recombination paths agreeing exactly on every arm. The
+§14.2 overtime band is missed by both competitions on every arm. Hypotheses A,
+B, C, D and G are refuted; E and F are confirmed as contributing and, between
+them, separate the two competitions. NO PRODUCTION CODE, TARGET, TOLERANCE,
+RULESET VERSION OR GOLDEN CHANGED. NOT CERTIFIED AND NO CERTIFICATION CLAIMED —
+each arm's own `certification.sample_reached` reads short of §27.1 and the
+report says so in its notes.**
+
+The one-line answer the §9 work queue needs: **college and top domestic do not
+share a cause, and neither cause is a defect.** College creates tie mass at
+very nearly the rate it needs and loses it on the last transition; top domestic
+creates tie mass at the same rate as college and loses far more of it, on a
+regulation-margin distribution that has *no* concentration at zero at all. Both
+are game-shape properties of a legal engine, and both correction surfaces are
+tunables with documented safe ranges — so this section ends in an owner decision
+package, not a fix.
+
+#### 1. Reproduced baseline
+
+| arm | games | overtime | 95% CI | §5.28 comparison |
+| --- | ---: | ---: | --- | --- |
+| college, range A (940,001–942,400) | 2,400 | **0.0312** | [0.0250, 0.0390] | 0.0310 pooled over 15,000 |
+| college, range B (6,940,001–6,942,400) | 2,400 | **0.0250** | [0.0195, 0.0320] | — |
+| college, **pooled** | 4,800 | **0.0281** | [0.0238, 0.0332] | **4.98 SE below the 0.0400 floor** |
+| top domestic, range A | 2,400 | **0.0204** | [0.0155, 0.0269] | 0.0223 pooled over 15,000 |
+| top domestic, range B | 2,400 | **0.0242** | [0.0187, 0.0311] | — |
+| top domestic, **pooled** | 4,800 | **0.0223** | [0.0185, 0.0269] | **8.31 SE below the floor** |
+
+Every §5.28 figure this task depends on reproduces: college's regulation-margin
+standard deviation 13.766 against §5.13's 14.00, its blowout rate 0.1492 against
+0.1474, top domestic's blowout 0.2275 against 0.2262. **One §5.28 finding does
+not reproduce and is corrected below** (§6).
+
+#### 2. Instrumentation contract
+
+`calibration/harness/overtime_decomposition.gd`,
+`calibration/runners/run_overtime_causal_decomposition.gd`.
+
+**It is a reader.** Every figure is derived by replaying a finished game's
+committed ledger through the production `MatchStateReducer`. Nothing in the
+harness is called during simulation, nothing consumes a random source, and
+nothing writes production state. That is asserted rather than claimed: every
+shard re-simulates one seed in a hundred and compares
+`MatchSimulationOutput.signature()` byte for byte, as the judged metric
+`instrument.repeated_seed_signature_identical`. It passes on all 24 shards.
+
+**Mechanism activations are recomputed, not read off the ledger.**
+`ACTION_SELECTED.detail_id` carries `EndgameStrategy.active_tag`, which is
+priority-ordered: it reports the highest-priority decision in force and drops
+every other one that also holds. The harness builds a `PossessionContext` on the
+replayed state and calls the production predicates themselves, and reports the
+ledger tag beside them so the undercount is visible rather than assumed. It is
+large — college's two-for-one reads 1.2913 activations per game from the
+predicate against 3.4013 tagged events, and hold-for-the-final-shot 0.9175
+against 1.5146.
+
+**Two recombination paths, compared on every aggregation.** `ReportAggregator`
+rebuilds each metric from its `MetricAggregation` terms with Wilson intervals
+recomputed rather than averaged; the counter sections are summed independently.
+The runner fails if they disagree. They agreed to the last decimal on all six
+arms.
+
+**One instrument defect was found and fixed before any figure here was taken.**
+A stray guard left two-point attempts unrecorded while three-point attempts were
+recorded beside them, so the conditional-outcome table read as though no late
+possession ever attempted a two — a rate of zero, indistinguishable in a report
+from a mechanism that never fires. Every arm was re-run from scratch on the
+corrected instrument; every figure in this section comes from that run. The
+repair is `instrument.conditional_outcome_coverage`, a judged metric on every
+shard that counts the outcome families the brief requires and fails the run if
+any is silent.
+
+**Definitional note.** This harness cuts `close_game` and `blowout` on the
+**regulation** margin, because the question is the shape of the curve whose
+density at zero *is* the overtime rate. §14.2's own rates are cut on the final
+margin including overtime (`MatchMetricAccumulator`). The two are not the same
+statistic and the figures here are not offered as §14.2 readings.
+
+#### 3. The overtime path, audited and fixtured
+
+`tests/simulation/test_overtime_trigger.gd`, 13 cases, all passing.
+
+| Question | Where it is decided | Finding |
+| --- | --- | --- |
+| Regulation completion | `PeriodController.period_has_expired` | One predicate, `clock_ms <= 0` |
+| Exact tie | `PeriodController.match_is_complete` | Integer equality on reduced state; no tolerance, no rounding |
+| Overtime opened | `MatchSession._advance_period` | The only writer |
+| Overtime length and rules | `period_length_ms`, `PeriodCategory.of` | Derived from `regulation_periods`; college's final regulation period is period 2 and nothing assumes four quarters |
+| Rounding, stale score, event order | `MatchStateReducer` | Integer scores through `add_points` only; exactly-once in-sequence application asserted |
+| Scoring at the horn | `PossessionEngine._consume` | The only terminal path on the buzzer; `_emit` asserts a terminated possession emits nothing |
+| Free throws past the horn | `_advance_dead_ball` | Leaves at least one millisecond; a trip drawn before the horn is shot in full after it |
+| Play / Sim / Skip | `MatchSession` | One session, one `advance_possession`; byte-identical ledgers |
+| Golden vs calibration trigger | `MatchEngine.simulate_match` | The same `MatchSession`; there is no second path |
+| Profile bypass | `CompetitionRuleProfile` | No field can; a positive overtime length is asserted in the constructor |
+| Tie recorded as a win | `MatchFinalResult` | Structurally impossible; completion requires an unlevel score |
+| Final-possession write order | `MatchSession.advance_possession` | Events are appended and reduced before the call returns; the next call takes the decision |
+| Made-field-goal clock rule | `RestartClockPolicy` | Decides only whether the next throw-in charges clock; not an input to the tie decision |
+
+**The large-sample invariant holds exactly.** Over all 12,800 games in all six
+arms, replayed regulation ties and recorded overtime entries agree in every
+single game: `invariant.tie_overtime_mismatch` is **0**, with zero ties that
+failed to open overtime and zero overtimes that followed an unlevel regulation.
+The two sides are computed from different places — the left from the score
+reduced immediately before the final regulation `PERIOD_ENDED`, the right from
+the count `MatchFinalResult` publishes.
+
+**Five mutations, each against a tree verified clean at 13/13 immediately before
+and after — all five caught.** A suite that passes both before and after a
+correction is evidence of nothing, and the same is true of one that passes with
+the mechanism it tests removed.
+
+| # | mutation | first catching test | failures |
+| ---: | --- | --- | ---: |
+| 1 | a level regulation score completes the match, so overtime never opens | `test_only_a_level_score_leaves_regulation_incomplete` | 5 |
+| 2 | an overtime period is given a full regulation period's length | `test_no_competition_profile_can_bypass_or_shorten_away_overtime` | 15 |
+| 3 | the overtime counter saturates at one however many are played | `test_the_overtime_counter_is_the_period_number_past_regulation` | 10 |
+| 4 | a free-throw trip may run the period to exactly zero mid-sequence | `test_a_free_throw_trip_drawn_before_the_horn_is_shot_in_full` | 69 |
+| 5 | the horn no longer terminates a possession | `test_no_score_is_committed_after_the_horn_and_none_before_it_is_lost` | 1 |
+
+**Reported honestly:** GdUnit stops a suite once it fails, so that column is the
+*first* test to catch each mutation and not necessarily the only one. Mutation 5
+is caught by an **activation** assertion rather than by a wrong value — with the
+horn no longer terminating anything, no possession expires, and the fixture that
+requires both a released shot and an unreleased one finds only the first. That is
+the property the activation assertions exist for.
+
+**A sixth mutation was designed and deliberately not run.** Routing free-throw
+event time through `_consume` instead of `_advance_dead_ball` terminates the
+possession and then trips `_emit`'s own assertion on the next attempt, aborting
+the runner rather than failing a test. A crash proves nothing about a suite, so
+the property `_advance_dead_ball` actually owns — the millisecond it leaves
+behind — is what mutation 4 attacks instead.
+
+#### 4. College — the causal funnel
+
+2,400 games, range A. Conditional rates are counted as conjunctions with the
+previous stage, never as ratios of two unconditional rates.
+
+| # | stage | n | of games | given previous | loss reason |
+| ---: | --- | ---: | ---: | --- | --- |
+| 1 | reached the final regulation period | 2,400 | 1.0000 | — | — |
+| 2 | within six at 5:00 | 843 | 0.3513 | 843/2,400 = 0.3513 | ordinary dispersion |
+| 3 | within three at 2:00 | 433 | 0.1804 | 380/843 = 0.4508 | ordinary dispersion |
+| 4 | within three at 1:00 | 459 | 0.1913 | 331/433 = 0.7644 | ordinary; the stage is **not** nested — games tighten as well as loosen |
+| 5 | level at some moment of the final minute | 193 | 0.0804 | 181/459 = 0.3943 | expected variance |
+| 6 | a possession opened trailing by 1–3 inside the final minute | 435 | 0.1812 | 182/193 = 0.9430 | — |
+| 7 | selected an action whose value could erase the deficit | 308 | 0.1283 | 308/435 = 0.7080 | 17% of tieable possessions produce no attempt at all; see §7 |
+| 8 | a trailing team **levelled** it inside the final minute | 145 | 0.0604 | 128/308 = 0.4156 | ordinary miss probability |
+| 9 | **still level at the horn** | 75 | 0.0312 | 69/145 = **0.4759** | the opponent answers |
+| 10 | entered overtime | 75 | 0.0312 | 75/75 = **1.0000** | — |
+
+**Where college loses the missing mass.** Reaching 0.0400 needs 96 games of
+2,400 against 75 observed, **+28.0%**. Holding stage 9's conversion at 0.4759,
+that needs 202 games levelled from behind against 145 — **+39.1%**. Holding
+stage 8 at 145, it needs a conversion of 0.6621 against 0.4759. The loss is
+**not** in the approach: 19.1% of college games are within three at the
+one-minute mark, which is an unremarkable figure. It is in how much tie mass the
+final minute manufactures and how much of it survives.
+
+#### 5. Top domestic — the causal funnel
+
+2,400 games, range A.
+
+| # | stage | n | of games | given previous |
+| ---: | --- | ---: | ---: | --- |
+| 1 | reached the final regulation period | 2,400 | 1.0000 | — |
+| 2 | within six at 5:00 | 667 | 0.2779 | 667/2,400 = 0.2779 |
+| 3 | within three at 2:00 | 359 | 0.1496 | 285/667 = 0.4273 |
+| 4 | within three at 1:00 | 379 | 0.1579 | 246/359 = 0.6852 |
+| 5 | level at some moment of the final minute | 177 | 0.0737 | 155/379 = 0.4090 |
+| 6 | a possession opened trailing by 1–3 inside the final minute | 368 | 0.1533 | 172/177 = 0.9718 |
+| 7 | selected an action that could erase the deficit | 276 | 0.1150 | 276/368 = 0.7500 |
+| 8 | a trailing team **levelled** it inside the final minute | 140 | 0.0583 | 129/276 = 0.4674 |
+| 9 | **still level at the horn** | 49 | 0.0204 | 46/140 = **0.3286** |
+| 10 | entered overtime | 49 | 0.0204 | 49/49 = **1.0000** |
+
+**Where top domestic loses the missing mass.** Reaching 0.0400 needs 96 games
+against 49, **+95.9%**. Holding stage 9's conversion at 0.3286, that needs 292
+games levelled from behind against 140 — **+108.7%**. Holding stage 8 at 140, it
+needs a conversion of 0.6857 against 0.3286.
+
+#### 6. Are the causes the same? No, and the difference is one transition
+
+**The two competitions manufacture tie mass at statistically the same rate.**
+Stage 8 is 0.0604 for college and 0.0583 for top domestic — a difference of
+0.0021 on standard errors of 0.0049 and 0.0048, which is nothing.
+
+**They differ, significantly, on whether the tie survives.** Stage 9's
+conditional is 69/145 = 0.4759 for college against 46/140 = 0.3286 for top
+domestic. The difference is 0.1473 on a standard error of 0.0574: **z = 2.57,
+p = 0.010**. College holds a level score to the horn roughly one and a half
+times as often as top domestic does.
+
+The mechanism is possession availability, and it is measured directly:
+
+| | college | top domestic |
+| --- | ---: | ---: |
+| regulation possessions still to play at 5:00 | 18.05 | 21.43 |
+| at 2:00 | 7.52 | 9.09 |
+| at 1:00 | 4.03 | 4.77 |
+| at 0:30 | 2.15 | 2.56 |
+| a tied possession is the last of regulation | 0.2633 | 0.1756 |
+
+Top domestic plays a fifth more possessions inside every late window, so a
+level score there faces more remaining chances to be broken. That is a direct
+consequence of §14.1's own locked economy — a 24-second shot clock and 96–103
+possessions against college's 30-second clock and 64–73 — and not of any
+endgame decision.
+
+**The margin curves say the same thing from the other side.** The probability of
+an exactly level regulation score is the signed margin distribution's density at
+zero, so the honest comparison is against a smooth curve of the *same width*:
+
+| | college | top domestic |
+| --- | ---: | ---: |
+| regulation margin standard deviation | 13.766 | 16.392 |
+| smooth-normal density at zero for that SD | 0.0290 | 0.0243 |
+| observed density at zero | 0.0312 | 0.0204 |
+| **excess over smooth** | **1.078×** | **0.839×** |
+| local peak ratio, zero against mean of ±1…±5 | 1.371 | 1.010 |
+
+**College has a real endgame spike at zero and it is too small. Top domestic has
+no spike at all** — its zero bucket sits *below* what a Gaussian of its own
+width would put there, and level with its own immediate neighbourhood. Real
+basketball's regulation-tie rate sits at roughly twice its own smooth density;
+college reaches 1.08× and top domestic 0.84×.
+
+Both curves do reproduce one real feature: a genuine trough at ±1. College reads
+0.0125 and 0.0142 at −1 and +1 against 0.0208–0.0258 across ±2…±5; top domestic
+0.0121 and 0.0146 against 0.0167–0.0292. A one-point margin is an unstable state
+in this engine as it is on a court, and that is correct.
+
+**A §5.28 finding that does not reproduce, and is corrected.** §5.28 recorded
+college's overtime rate differing between two large disjoint seed ranges by 0.6
+percentage points at p = 0.052, and warned that "a single seed range is not a
+safe basis for a §14.2 verdict at this precision". On the two disjoint ranges
+measured here the difference is **−0.0062 at p = 0.19** for college and
+**+0.0037 at p = 0.38** for top domestic. Neither is significant. §5.28's
+caution was drawn from a p-value on the wrong side of 0.05 in one direction;
+this task's ranges put it on the other side. **The correct statement is that
+neither competition shows a range effect that survives a second look**, and the
+conclusion §5.28 drew from it — that any §27.1 run should draw across ranges
+rather than extend one — remains good practice for a different reason: it is
+cheap, and a range effect that is absent at 4,800 games is not proven absent at
+100,000.
+
+#### 7. Hypothesis verdicts
+
+| | hypothesis | verdict | evidence |
+| --- | --- | --- | --- |
+| **A** | overtime trigger defect | **REFUTED** | 0 mismatches in 12,800 games, two independent derivations; 13 deterministic fixtures; five mutations, all caught |
+| **B** | scorekeeping or horn defect | **REFUTED** | No event carries a negative clock; nothing is emitted after termination; an expired possession ends at exactly zero; every awarded free throw is taken at a clock above zero and its makes reach the scoreboard; `anomaly.*` counters all zero on every arm |
+| **C** | score granularity | **REFUTED as a cause** | Possession increments college 0.539/0.029/0.283/0.142/0.007 and top domestic 0.504/0.018/0.296/0.175/0.008 for 0/1/2/3/4+ points. The −2 → 0 transition inside the final two minutes is 0.2777 for college and **0.3184** for top domestic: the competition with the worse overtime rate converts down-two possessions into level scores *more* often |
+| **D** | late-game decision quality | **REFUTED as a cause** | Top domestic outperforms college on nearly every per-possession endgame figure — no-attempt while level 0.1290 against 0.2135, level-afterward from down two 0.3213 against 0.2527 — and has the worse overtime rate. Shot selection is correct where it is decisive: down two inside the final minute, two-point attempts outnumber threes 0.5904 to 0.2570 (top domestic) and 0.5751 to 0.2857 (college) |
+| **E** | possession availability | **CONFIRMED, contributing** | The possessions-remaining table in §6; and free-throw event time charges 1.34–1.55 seconds of *game clock* per one-possession endgame possession, at most 11–15% of the final windows, where every ruleset modelled here stops the clock entirely |
+| **F** | margin variance | **CONFIRMED for top domestic, REFUTED for college** | College's width is right (SD 13.766, blowout 0.1492 inside 8–18%) and its overtime is still short. Top domestic's is not (SD 16.392, blowout 0.2275, 11 SE above band). But see the mirrored arm below: **narrowing the width does not buy overtime** |
+| **G** | roster population | **REFUTED, decisively** | §8 |
+| **H** | target validity | **NOT ESTABLISHED either way** | §9 |
+
+#### 8. Fixed rosters against generated rosters
+
+`CompetitionCatalog.mirrored_match_for` builds both benches from the same
+variation, so every rating, body, role and plan is identical and the pregame
+strength gap is exactly zero — the harness confirms it, reading
+`population.abs_expected_gap` as 0.0000 with standard deviation 0.0000 on both
+mirrored arms against 3.15–3.18 on the generated ones.
+
+| | generated | mirrored | difference | p |
+| --- | ---: | ---: | ---: | ---: |
+| college overtime | 0.0312 (n=2,400) | 0.0294 (n=1,600) | −0.0019 | **0.73** |
+| top domestic overtime | 0.0204 (n=2,400) | 0.0206 (n=1,600) | +0.0002 | **0.96** |
+| college regulation margin SD | 13.766 | 12.893 | −0.873 | — |
+| top domestic regulation margin SD | 16.392 | 15.158 | −1.234 | — |
+| college blowout | 0.1492 | 0.1263 | −0.0229 | — |
+| top domestic blowout | 0.2275 | 0.1900 | −0.0375 | — |
+
+**Removing the entire between-team strength spread moves the margin distribution
+and does not move overtime at all.** The width narrows measurably in both
+competitions and the blowout share falls by two to four percentage points, while
+the overtime rate changes by less than a fifth of its own standard error.
+
+That is a stronger result than the roster verdict alone. On a smooth curve,
+narrowing college's SD from 13.766 to 12.893 would raise the density at zero by
+6.7% and top domestic's from 16.392 to 15.158 by 8.2%; the observed changes are
+−5.8% and +1.0%. **Overtime in this engine is insensitive to margin width over
+the range a whole population's worth of team-strength spread covers**, which
+isolates the deficiency as missing *concentration at zero* rather than excess
+dispersion — including for top domestic, whose dispersion is separately and
+genuinely out of band.
+
+**Classification: not a roster-generation dependency.** No work-queue transfer
+to roster calibration is opened for overtime, because the population is not the
+cause.
+
+**A fixture-construction property found while building the arm, reported and not
+repaired.** `match_for` builds home from `variation * 2` and away from
+`variation * 2 + 1`, and `team_for` indexes a 13-step ladder by
+`(variation * 37) % 13`. Since `74 mod 13 = 9` and `37 mod 13 = 11`, the away
+index is always exactly eleven steps above the home index modulo thirteen. The
+between-team tilt is therefore a **two-point distribution, not a spread**: home
+is stronger by 0.70 rating points in 11 of every 13 variations and weaker by
+3.85 in the other 2, on every seed range, because the pattern has period 13 in
+the variation. Five games in six are as even as the generator can make two
+distinct teams, which is why the mirrored arm changes so little. It is also
+systematically one-sided in a fixture that carries §14.2's equal-team home-win
+target — the same class of artifact §5.18 found in the opening inbound and
+counterbalanced. **This task is forbidden to change roster generation and has
+not**, and the effect on the home-win estimator is not measured by this
+instrument. It is recorded for the roster-generation owner in §9's work queue.
+
+#### 9. Target provenance
+
+- `BALANCE_SPEC.md` §14.2 states **"Overtime frequency: 4–8% of games"** as one
+  universal band for all five competitions. `git log -S` places it in `4d98048`
+  (2026-08-14, *Establish Godot simulation core baseline*) — the first commit of
+  this repository. It arrives with **no derivation, no dataset, no seasons, no
+  inclusion criteria and no overtime definition.**
+- `CalibrationTargets.overtime_frequency()` carries it as
+  `CalibrationBand.new(0.04, 0.08, §14.2)`. The band's only cited source is the
+  specification section that states it, so its provenance is itself.
+- §5.13 proposed competition-specific bands (1–4% for college and top domestic),
+  labelled the proposal simulation-derived and provisional, and **explicitly
+  refused** to quote an external benchmark it could not verify. §5.25 records the
+  2026-09-01 owner ruling rejecting that for these two competitions in favour of
+  building the missing repertoire. **That ruling stands and nothing here revisits
+  it.**
+- **External check, attempted and reported honestly.** `basketball-reference.com`
+  returned HTTP 403 to this environment. `fivethirtyeight.com` no longer resolves
+  (301 to `abcnews.com/politics`), so the "about 6 percent since 1993, ESPN Stats
+  & Information" figure it carried could not be retrieved at source. One
+  secondary estimate was reachable — a 2024 blog post putting NBA overtime near
+  5.9% over 24 seasons — carrying **no named data source and no stated inclusion
+  criteria**, which fails the admissibility bar on source, license, definition
+  and transformation record alike. **It is recorded as inadmissible and is not
+  used as evidence.**
+- **Verdict: NOT ESTABLISHED either way.** The target is an unsourced owner
+  constant and no admissible external evidence could be obtained. Every figure
+  that could be reached at all sits *inside* 4–8% rather than below it, so
+  nothing here supports a finding that the band is unsupported, and nothing here
+  is strong enough to confirm it. **The band is unchanged.**
+
+#### 10. Endgame mechanism activation and conditional outcomes
+
+Activations are the production predicates evaluated against replayed state, per
+game, inside the final two minutes.
+
+| mechanism | college | top domestic |
+| --- | ---: | ---: |
+| two-for-one | 1.2913 | 1.3308 |
+| hold for the final shot | 0.9175 | 1.0792 |
+| quick two | 0.0267 | 0.0250 |
+| designed final possession | 0.1179 | 0.1333 |
+| tying three preferred (down exactly 3, in window) | 0.0750 | 0.0779 |
+| tying two preferred (down exactly 2, in window) | 0.0571 | 0.0558 |
+| leading-by-three foul (whistles) | 0.0154 | 0.0088 |
+| intentional final free-throw miss | 0.0042 | 0.0013 |
+| timeout to advance (eligible) | **0.0000** | 0.2121 |
+| timeout to advance (charged) | **0.0000** | 0.1496 |
+| intentional foul (whistles) | 0.4429 | 0.5067 |
+
+**The §5.26 rule-grant correction is confirmed in production data**: college
+reaches timeout-to-advance eligibility exactly zero times in 2,400 games, because
+the grant was revoked; top domestic charges it 0.1496 times per game, against the
+0.1315 §5.28 measured.
+
+Level scores created from behind, among possessions opening inside the final
+minute:
+
+| opened | college | top domestic |
+| --- | --- | --- |
+| down 1 | 4 of 179 = 0.0223 | 5 of 211 = 0.0237 |
+| down 2 | **69 of 273 = 0.2527** | **80 of 249 = 0.3213** |
+| down 3 | 35 of 309 = 0.1133 | 29 of 297 = 0.0976 |
+| down 4–6 | 2 of 865 = 0.0023 | 1 of 907 = 0.0011 |
+
+Down one, a field goal takes the lead rather than levelling, and the engine does
+exactly that — lead changed 0.4022 (college) and 0.4645 (top domestic) against
+levelled 0.0223 and 0.0237. **Essentially all tie mass is manufactured by
+down-two possessions converting a two**, with down-three threes a distant second.
+
+**One observation that is not a defect and is worth recording.** Down exactly
+three inside the final thirty seconds — where only a three levels the game — two-
+point attempts still outnumber threes, 0.3735 to 0.2590 at college and 0.4157 to
+0.2892 at top domestic. `GameManagement.endgame_multiplier` does prefer the three
+at that deficit, but it is a bounded preference inside the §12.2 guardrails and
+the quick-two-then-foul plan is a legitimate competing line. It is reported, not
+corrected: no evidence here shows the preference is mis-signed, and down-three
+possessions are the smaller half of tie creation in both competitions.
+
+#### 11. Classification, per competition
+
+**College — CALIBRATION, not a defect.** Its margin width is right, its
+population is not the cause, its trigger and scorekeeping are sound, and its
+endgame decisions are correct. It manufactures a real but undersized
+concentration at zero (1.078× a smooth curve of its own width) and needs roughly
+39% more tie creation, or a stage-9 conversion of 0.6621 against 0.4759, to
+reach the floor.
+
+**Top domestic — CALIBRATION, not a defect, and a different one.** It creates
+tie mass as well as college and keeps a third less of it, because §14.1's own
+locked possession economy gives every late window a fifth more possessions. Its
+regulation-margin distribution has no concentration at zero at all (0.839× a
+smooth curve of its own width) and is separately too wide — but the mirrored arm
+shows that narrowing the width does not buy overtime, so width is a §14.2
+blowout problem rather than the overtime one.
+
+**Neither is a match-engine defect.** Every invariant in §3 holds on 12,800
+games. **Neither is roster-population driven.** **Neither target is established
+as unsupported.**
+
+#### 12. What was NOT done, and why
+
+- **No production behaviour was changed.** The brief authorises implementation
+  only on a proven deterministic defect with a narrow correction. None was found,
+  and manufacturing one would mean adding a sixth late-game behaviour against the
+  explicit instruction not to, or tuning against the number, which the project's
+  rules exist to prevent.
+- **No calibration surface was touched.** Two are identified in
+  `docs/STAGE4_OVERTIME_OWNER_DECISION.md` with their semantics, expected primary
+  and collateral effects, and a before/after plan. Both would move locked §14.1
+  pace. **Both stop for owner approval.**
+- **No target or tolerance changed.** The 4–8% band, and every other §14 band,
+  is exactly as it was.
+- **No ruleset bump, no golden regenerated, no reseed.** This section produces
+  diagnostics and tests only, so `simulation-v15-made-field-goal-clock-matrix`
+  stands and all six committed golden hashes are untouched.
+- **No §27.1 certification was run or claimed.** Each arm's
+  `certification.sample_reached` reads short of the 100,000-game requirement and
+  the report says so in its own notes.
+
+#### 13. Remaining uncertainty
+
+- **What mechanism produces real basketball's concentration at zero.** This
+  section sizes the gap, splits it by competition, and eliminates seven of eight
+  candidate explanations. It does **not** name the missing mechanism, and no
+  measurement here can: that requires either an admissible external reference for
+  the shape of a real regulation-margin curve near zero, or an owner ruling on
+  which of the two identified surfaces to move.
+- **Whether stage 9's conversion is wrong at all.** College holds a level score
+  to the horn 47.6% of the time. No source available to this task says what that
+  figure should be.
+- **The free-throw game-clock question is a rules ruling, not a measurement.**
+  Whether §9.4's "free throws use separate event time" means the game clock stops
+  is genuinely ambiguous in the specification, and it is the same class of
+  question the made-field-goal clock matrix needed a ruling for in §5.33.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -8357,13 +8808,17 @@ Work should proceed in this order unless new evidence changes a dependency:
 14. ~~**Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch.**~~ **Done (§5.27).** Both were read per activation rather than per count, by replaying each game's ledger through a second reducer and re-evaluating the production gates on the reconstructed state (reconstruction verified at 1.000000 tag agreement over 66,623 final-period selections). **Quick-two had a defect**: its window was drawn against the unscaled `endgame_possession_ms` while the tie-seeking window it must stay outside of is that constant scaled by the stakes tier, so the two were complementary at regular-season stakes and the whole of quick-two sat inside the tie-seeking window at both tiers above it, where the two rules disagree by construction and the three wins anyway. Corrected by `simulation-v11-quick-two-stakes-window`; regular season is unchanged to the millisecond. **Two-for-one was validated and left unchanged**: a matched A/B on identical seeds and rosters shows the multiplier shifts direct-shot selection by +3.19pp pooled (95% CI +0.47 to +5.91) but moves neither possession length nor the rate of regaining the ball beyond noise. No defect demonstrated, so nothing changed.
 
 15. ~~**Tag the offensive-rebound putback with the endgame decision in force, and regenerate the golden ledgers deliberately.**~~ **Done (§5.29).** The putback now reads `EndgameStrategy.active_tag`; one known `offensive_rebound` golden hash moves for that field alone while seed, score, event count and played result remain unchanged.
-16. **Continue the regulation-tie diagnosis per competition, without injecting ties (§5.28, §5.29, §5.30).** The curve is already peaked at zero — signed density ratio 1.38 for college, 1.12 for top domestic — and the decomposition proved that a material share of late tieable possessions never reaches an attempt. **Two mechanisms have now been repaired against that finding and neither closed the band.** §5.29 corrected the selected-action deadline; §5.30 corrected the opening-state clock and added the location-aware desperation opening. Together they take college's expired-without-attempt possessions from 20 to 9 and top domestic's from 16 to 6 on the frozen 250-game range, and overtime does not move: college sits at 0.0200 before and after on 200 matched games, top domestic at 0.0250 → 0.0150, both noise at that sample. **The attempt-creation explanation for the overtime shortfall is now substantially exhausted** — the possessions that were dying before an attempt largely no longer die, and the band is still missed by the margins §5.28 established at 15,000 games. The remaining zero-concentration gap is therefore unlikely to be found in end-of-regulation attempt creation, and the next diagnosis should look at the margin process itself rather than at the last possession. College still needs a modest zero-concentration increase with its width otherwise inside band; top domestic also remains too wide at the blowout end. Do not solve either by altering make probability or directly moving a final score to zero.
-17. **Draw any §27.1 certification across seed ranges rather than extending one (§5.28).** College's overtime rate differs between two large disjoint ranges by 0.6 percentage points at p=0.052 — a roster-population effect, not sampling, since both samples are large. At a 4% band floor that is material, and a certification resting on one range would not be reproducible on another.
+16. **Continue the regulation-tie diagnosis per competition, without injecting ties (§5.28, §5.29, §5.30).** The curve is already peaked at zero — signed density ratio 1.38 for college, 1.12 for top domestic — and the decomposition proved that a material share of late tieable possessions never reaches an attempt. **Two mechanisms have now been repaired against that finding and neither closed the band.** §5.29 corrected the selected-action deadline; §5.30 corrected the opening-state clock and added the location-aware desperation opening. Together they take college's expired-without-attempt possessions from 20 to 9 and top domestic's from 16 to 6 on the frozen 250-game range, and overtime does not move: college sits at 0.0200 before and after on 200 matched games, top domestic at 0.0250 → 0.0150, both noise at that sample. **The attempt-creation explanation for the overtime shortfall is now substantially exhausted** — the possessions that were dying before an attempt largely no longer die, and the band is still missed by the margins §5.28 established at 15,000 games. The remaining zero-concentration gap is therefore unlikely to be found in end-of-regulation attempt creation, and the next diagnosis should look at the margin process itself rather than at the last possession. College still needs a modest zero-concentration increase with its width otherwise inside band; top domestic also remains too wide at the blowout end. Do not solve either by altering make probability or directly moving a final score to zero. **§5.34 closes this item's diagnostic half and hands what remains to items 22 and 23.** The margin process itself was measured, as this item asked: seven of eight candidate causes are eliminated, the two competitions are shown not to share a cause, and the residue is two named calibration surfaces rather than a mechanism the engine is missing.
+17. **Draw any §27.1 certification across seed ranges rather than extending one (§5.28).** College's overtime rate differs between two large disjoint ranges by 0.6 percentage points at p=0.052 — a roster-population effect, not sampling, since both samples are large. At a 4% band floor that is material, and a certification resting on one range would not be reproducible on another. **§5.34 does not reproduce the range effect and corrects the inference, not the practice.** On two further disjoint ranges at 2,400 games each the difference is −0.0062 at p=0.19 for college and +0.0037 at p=0.38 for top domestic; neither is significant, and a mirrored identical-roster arm moves overtime by less than a fifth of its own standard error in both competitions, so it is not a roster-population effect either. **Drawing across ranges remains right** — it is cheap, and an effect absent at 4,800 games is not proven absent at 100,000 — but it should be done as ordinary hygiene rather than because college is believed to be range-sensitive.
 18. ~~**Resolve the sub-five-second opening-state clock contract before another overtime calibration run (§5.29).**~~ **Done (§5.30).** The 2026-09-04 owner ruling is implemented as `simulation-v13-opening-clock-and-location-contract`. A throw-in onto a stopped clock consumes no game time and `INBOUND` emits at the possession's starting clock; a possession beginning inside five seconds skips the half-court set it has no time for and commits from its actual `TacticalLocation`, which then costs it a bounded §12.6 distance term rather than giving it arc odds. On the same paired 250-game range, expired-without-attempt falls 16 → 9 for college and 7 → 6 for top domestic, and the 0–5s bucket falls 11 → 6 and 7 → 4. Backcourt and deep attempts are 0.25% and 0.41% of all field-goal attempts, made at 15–25%. Neither shot accuracy nor any tie was touched, and no overtime movement is claimed. **What it opens is item 19**, below: the correction moves §14.1 possessions per game out of band in both competitions.
 19. ~~**Re-derive each competition's `pace_multiplier` against the corrected clock contract (§5.30).**~~ **Done (§5.32).** The correction is bigger than §5.30 could see, because `simulation-v14` then stopped charging the throw-in after a made free throw and after a charged timeout as well: on matched seeds the move is +2.77 for high school, +2.77 for college, +3.62 for development, +3.02 for overseas and +3.70 for top domestic — **one mechanism at every level**, taking three of the five out of band and displacing the other two inside theirs. Re-derived as a measurement rather than an offset: a possession's duration is `A·p + B`, `A` and `B` were measured per competition by running identical variations at two pace scales, and each new value is the `p` that restores the possessions that competition produced under the clock model these numbers were calibrated against (the `451dda8` anchor, whose college and top-domestic figures reproduce §5.30's published baseline to the fourth decimal). Every level needed between **+4.12% and +4.68%** and the ordering between the five is unchanged. All five land within **0.23 possessions** of their anchor and all five pass, on the judged cell and on two untouched validation ranges. `B` is 6.6% to 14.3% of a possession, so `pace_multiplier` still reaches 86-93% of it and remains the correct calibration surface. No target, tolerance, or any other probability was touched.
 20. ~~**Take the §5.31 made-basket clock-stoppage decision, or record a deliberate deferral.**~~ **Done (§5.33).** The owner ruling was given and is implemented as `simulation-v15-made-field-goal-clock-matrix`: a made field goal does not stop the clock merely because it went in, and the competitions that stop it anyway do so inside an end-of-period window whose length depends on the period's kind — nothing for middle school and high school, the final 60s of the final regulation period and of overtime at college, the final 60s of ordinary regulation periods and 120s of the final one and of overtime at both domestic levels, and the final 120s of the final regulation period and of overtime overseas, every boundary inclusive. The single window and late-periods boolean `simulation-v14` shipped could not express it — four of the five competitions need different lengths for the final regulation period and the ones before it — so it is replaced by `MadeFieldGoalClockRule` (three windows, self-validating, the only place the boundary comparison is written) and `PeriodCategory` (derived from `regulation_periods`, never stored, so college's two halves and everyone else's four quarters take one path). `RestartClockPolicy` gained no threshold and no period number and still has exactly one production call site. **Middle school is not a sixth profile**: §1.1 gives the prologue no rule profile and inventing one would mean inventing a period length, a shot clock and a §14.1 band no source states, so its ruling is proved on the `MadeFieldGoalClockRule.none()` value that high school also ships. Thirty-five focused cases with asserted activation counts, seven mutations all caught, five validation rejections proved by `assert_error`, two of six golden ledgers moved with the first divergence named in each and **no fixture reseeded**. **Pace was re-measured and deliberately left alone**: the matrix moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced item 19's re-derivation, every level is in band on both trees, three of the four game-shape verdict transitions do not reproduce on untouched ranges, and the fourth is the pre-existing §14.2 overtime blocker.
 
 21. **The §14.2 home-win row is now tight enough at 600 pairs to cross its floor on either tree, and it is not this branch's (§5.33).** `venue.attributable_home_win_rate` at top domestic reads 0.5408 PASS on `e32bad5` and 0.5175 FAIL on `simulation-v15` for `validation_c`, and 0.5292 FAIL on `e32bad5` against 0.5458 PASS on `simulation-v15` for `validation_a` — **matched moves of opposite sign on two disjoint ranges at the same sample**. The next home-court pass should pool disjoint ranges rather than extend one, for the same reason §5.28 gives for overtime. Do not retune the home environment against a single range.
+
+22. **Take the two §5.34 overtime calibration decisions, or record a deliberate deferral.** `docs/STAGE4_OVERTIME_OWNER_DECISION.md` is the package. Two surfaces are identified with their semantics, why each is the correct surface, expected primary and collateral effects, a before/after plan and a risk rating; **neither has been changed and neither may be without a ruling.** (a) **Does the game clock stop for free throws?** §9.4's "free throws use separate event time" is genuinely ambiguous about the game clock and the engine charges it — 1.34 to 1.55 seconds per one-possession endgame possession, where every ruleset modelled here stops the clock. This is the same class of question the made-field-goal matrix needed a ruling for in item 20, and it should be ruled on **for its own fidelity, not because it might move overtime** — §5.34's arithmetic says it would not be enough anyway. It requires a five-competition pace re-derivation with top domestic already 0.33 from its possessions ceiling. (b) **Does `desperation_opening_clock_ms` stay at 5,000?** Possessions opening between roughly five and thirteen seconds still die in the advance and half-court states before action selection — 23% to 44% of them inside the final ten seconds. §9.4 authorises the mechanism and leaves the threshold a bounded tunable with a 0–15,000 ms safe range, so this is a calibration choice rather than a defect. It is worth at most a third of college's gap and **must be decided together with the §5.23 college field-goal package**, which it would push further below its floor.
+23. **Re-put the §14.2 overtime band itself, with the evidence the 2026-09-01 ruling did not have (§5.34).** That ruling took §5.13's Option 1 — keep the band, treat the measured rates as missing end-of-regulation behaviour. The repertoire has since been built, corrected twice, given a final-action deadline, an opening-state contract, a restart contract, a re-derived pace environment and a made-field-goal clock matrix. **Overtime did not move**: 0.0310 and 0.0223 before most of that work, 0.0281 and 0.0223 after all of it. The premise the ruling rested on has been tested and did not hold, which is new information. §5.34 additionally shows the two competitions do not share a cause — college manufactures tie mass at nearly the rate it needs and loses it on the last transition; top domestic manufactures it as well as college and keeps a third less, because §14.1's own locked possession economy gives every late window a fifth more possessions — so **a single universal band is asking two deliberately different economies for the same tail.** The target is not established as unsupported and this task did not change it: no admissible external reference could be obtained, and every figure that could be reached sits inside 4–8%.
+24. **Transfer the roster-generation pairing artifact to roster calibration (§5.34 §8).** `CompetitionCatalog.match_for` builds home from `variation * 2` and away from `variation * 2 + 1` while `team_for` indexes a 13-step ladder by `(variation * 37) % 13`; since `74 mod 13 = 9` and `37 mod 13 = 11`, the away index is always exactly eleven steps above home's. The population's between-team tilt is therefore a **two-point distribution rather than a spread** — home stronger by 0.70 rating points in 11 of every 13 variations, weaker by 3.85 in the other 2 — on every seed range, because the pattern has period 13 in the variation. **It is not an overtime cause**; the mirrored arm proves that. It matters because it is systematically one-sided inside the fixture that also carries §14.2's equal-team home-win target, which is the same class of artifact §5.18 found in the opening inbound and counterbalanced. The exact statistic responsible is the ladder index pairing in `CompetitionCatalog.team_for`. **This is roster-generation calibration's item, not the match engine's**, and §5.34 was forbidden to repair it and did not.
 
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 
