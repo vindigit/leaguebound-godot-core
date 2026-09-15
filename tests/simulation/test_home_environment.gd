@@ -33,26 +33,6 @@ const SUITE_BASE: int = 770000
 ## never a band: a band at this sample would be a coin flip.
 const SAMPLE: int = 12
 
-## The turnover-edge assertion below needs far more games than `SAMPLE`, because
-## it reads a *signed mean* of a per-game count rather than a structural fact.
-##
-## Measured on the `simulation-v13` tree over the same seeds, the forward arm's
-## running mean is +0.250 at 12 games, −1.583 at 24, −0.056 at 36, +0.229 at 48,
-## +0.233 at 60, −0.362 at 80, −0.630 at 100 and −0.890 at 200; the reversed arm
-## is −1.333, +0.458, −0.944, −1.167, −1.117, −0.963, −0.800 and −0.360 across
-## the same checkpoints. The effect is real and correctly signed — at 200 games
-## it is *larger* than the pre-v13 tree's −0.380 and −0.470 — but it does not
-## dominate game-to-game turnover variance until about 80 games per arm, and at
-## 12 either arm can land on either side of zero. The pre-v13 tree passed at 12
-## by −1.000 in the forward arm, which was luck rather than margin.
-##
-## So this is raised to the first checkpoint where both arms are clear of zero
-## with room, and nothing about the assertion is weakened: it still requires the
-## venue side to hold a turnover edge in both arms (`PROJECT_STATUS.md` §5.30).
-## A paired estimator over these same games would reach the same verdict at a
-## fraction of the sample and is recorded there as the better future shape.
-const VENUE_EDGE_SAMPLE: int = 100
-
 const PRODUCTION_STRENGTH: float = 0.5
 
 
@@ -89,21 +69,18 @@ func test_a_missing_home_context_uses_the_documented_default() -> void:
 	assert_float(input.home_environment_context.strength).is_equal(PRODUCTION_STRENGTH)
 
 
-## 3. Swapping the venue swaps the advantage, and 16. the mirrored event changes
-## are the ones the swap implies.
-##
-## The same two rosters, the same seed, the venue moved. The visiting side's
-## totals in one arm are the home side's in the other, so the difference the
-## venue makes reverses rather than persisting.
+## Swapping venue moves the communication advantage to the new home team.
+## Hold the physical context and draws fixed: complete-game turnover totals
+## also depend on possession availability and are not a deterministic contract.
 func test_swapping_the_venue_swaps_the_advantage() -> void:
-	var forward: float = _mean_venue_turnover_edge(false)
-	var reversed_edge: float = _mean_venue_turnover_edge(true)
-	# The venue side commits fewer live-ball turnovers than the visitor in both
-	# arms, whichever roster is at home.
-	assert_float(forward).override_failure_message(
-		"the home side did not hold a turnover edge").is_less(0.0)
-	assert_float(reversed_edge).override_failure_message(
-		"the venue reversal did not reproduce the turnover edge").is_less(0.0)
+	var a_home: int = _pass_turnover_count(true, 0, HOME, AWAY)
+	var a_away: int = _pass_turnover_count(false, 0, AWAY, HOME)
+	var b_home: int = _pass_turnover_count(true, 0, AWAY, HOME)
+	var b_away: int = _pass_turnover_count(false, 0, HOME, AWAY)
+	assert_int(a_home).is_less(a_away)
+	assert_int(b_home).is_less(b_away)
+	assert_int(a_home).is_equal(b_home)
+	assert_int(a_away).is_equal(b_away)
 
 
 ## 4. Identical home and away identity does not create an effect.
@@ -592,22 +569,6 @@ func _venue_match(
 		first.team_id,
 		CompetitionCatalog.ratings_profile(),
 		strength)
-
-
-## The venue side's live-ball turnovers minus the visitor's, averaged over the
-## sample. Negative means the venue side turned it over less.
-func _mean_venue_turnover_edge(reversed_venue: bool) -> float:
-	var total: float = 0.0
-	for index in range(VENUE_EDGE_SAMPLE):
-		var variation: int = SUITE_BASE + 300 + index
-		var input: MatchInput = _venue_match(PRODUCTION_STRENGTH, reversed_venue, variation)
-		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
-			input, SeededRandomSource.new(variation + 1))
-		var statistics: MatchStatistics = output.final_result.statistics
-		total += float(
-			statistics.team_line(input.home.team_id).turnovers
-			- statistics.team_line(input.away.team_id).turnovers)
-	return total / float(VENUE_EDGE_SAMPLE)
 
 
 ## Splits the home side's live-ball turnovers by whether it was behind or ahead

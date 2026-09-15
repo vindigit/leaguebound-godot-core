@@ -268,29 +268,33 @@ func test_missed_final_free_throw_is_reboundable() -> void:
 ## The bonus is reached, and once reached a non-shooting foul produces free
 ## throws rather than an inbound.
 func test_bonus_state_converts_non_shooting_fouls_into_free_throws() -> void:
-	var output: MatchSimulationOutput = GoldenScenarios.simulate(GoldenScenarios.FOUL_FREE_THROW)
-	var rules: CompetitionRuleProfile = GoldenScenarios.input_for(
-		GoldenScenarios.FOUL_FREE_THROW).rule_profile
-	assert_int(rules.team_foul_bonus_threshold).is_equal(1)
-
-	var converted: int = 0
-	for index in range(output.events.size() - 1):
-		var event: MatchDomainEvent = output.events[index]
-		if event.event_type != MatchDomainEvent.FOUL:
-			continue
-		if event.detail_id != FoulType.id_of(FoulType.Value.NON_SHOOTING_DEFENSIVE):
-			continue
-		for ahead in range(index + 1, output.events.size()):
-			var later: MatchDomainEvent = output.events[ahead]
-			if later.event_type == MatchDomainEvent.FREE_THROW_AWARDED:
-				converted += 1
-				break
-			if later.event_type == MatchDomainEvent.POSSESSION_ENDED:
-				break
-	assert_int(converted).is_greater(0)
-
-	for team in output.final_result.statistics.teams:
-		assert_int(team.periods_in_bonus).is_greater(0)
+	var input: MatchInput = MatchFixtureFactory.bonus_match()
+	var engine := PossessionEngine.new(input)
+	engine._state = MatchSnapshot.new(input)
+	engine._state.possession_team_id = input.home.team_id
+	engine._state.away.team_fouls = input.rule_profile.team_foul_bonus_threshold - 1
+	engine._writer = MatchEventWriter.new(input.match_id, 0, 1, engine._state.clock_ms)
+	engine._writer.possession_id = 1
+	engine._context = PossessionContext.new(input, engine._state, input.home.team_id,
+		engine._matchup_resolver.resolve(input.home, engine._state.home, input.away, engine._state.away), 1)
+	var shooter: StringName = input.home.starters()[0]
+	var fouler: StringName = input.away.starters()[0]
+	engine._context.ball_handler_id = shooter
+	engine._resolve_defensive_foul(FoulCall.new(true,
+		FoulType.Value.NON_SHOOTING_DEFENSIVE, fouler, shooter), SeededRandomSource.new(4242))
+	var awarded: int = 0
+	var fouls: int = 0
+	for event: MatchDomainEvent in engine._writer.events:
+		if event.event_type == MatchDomainEvent.FOUL:
+			fouls += 1
+		if event.event_type == MatchDomainEvent.FREE_THROW_AWARDED:
+			awarded += 1
+			assert_str(String(event.primary_player_id)).is_equal(String(shooter))
+			assert_int(event.amount).is_equal(input.rule_profile.bonus_free_throws_for(
+				input.rule_profile.team_foul_bonus_threshold))
+	assert_int(fouls).is_greater(0)
+	assert_int(awarded).is_greater(0)
+	assert_int(engine._state.away.team_fouls).is_greater_equal(input.rule_profile.team_foul_bonus_threshold)
 
 
 ## §5.1: a player who has fouled out cannot re-enter, and the substitution

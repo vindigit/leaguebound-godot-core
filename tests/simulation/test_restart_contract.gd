@@ -1089,8 +1089,8 @@ func _charge_counts(output: MatchSimulationOutput) -> Dictionary:
 	return counts
 
 
-## Each period's first throw-in must be a `PERIOD_START` at that period's full
-## clock. Returns how many period openings were audited.
+## Each period opens on its full clock. A logged timeout before the first
+## throw-in supersedes PERIOD_START as its cause, without consuming time.
 func _assert_period_openings(
 	output: MatchSimulationOutput,
 	rules: CompetitionRuleProfile,
@@ -1098,18 +1098,23 @@ func _assert_period_openings(
 	var awaiting: bool = false
 	var period: int = 0
 	var opened: int = 0
+	var expected_cause: int = RestartCause.Value.PERIOD_START
 	for event: MatchDomainEvent in output.events:
 		if event.event_type == MatchDomainEvent.PERIOD_STARTED:
 			awaiting = true
 			period = event.period
+			expected_cause = RestartCause.Value.PERIOD_START
 			continue
+		if awaiting and event.event_type == MatchDomainEvent.TIMEOUT:
+			expected_cause = RestartCause.Value.TIMEOUT
+			assert_int(event.clock_ms).is_equal(rules.period_length_ms(period))
 		if not awaiting or event.event_type != MatchDomainEvent.INBOUND:
 			continue
 		awaiting = false
 		opened += 1
 		assert_str(String(event.detail_id)).override_failure_message(
 			"period %d opened on a %s restart" % [period, event.detail_id]
-		).is_equal(String(RestartCause.id_of(RestartCause.Value.PERIOD_START)))
+		).is_equal(String(RestartCause.id_of(expected_cause)))
 		assert_int(event.clock_ms).override_failure_message(
 			"period %d's opening throw-in consumed game clock" % period
 		).is_equal(rules.period_length_ms(period))

@@ -381,11 +381,24 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 	for seed_value: int in range(9201, 9301):
 		var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
 			input, SeededRandomSource.new(seed_value))
+		var replay := MatchSnapshot.new(input)
+		var reducer := MatchStateReducer.new(input)
 		var run_team: StringName = &""
 		var run_points: int = 0
 		var possession_index: int = 0
 		var records: Array[PossessionRecord] = output.possessions
 		for event in output.events:
+			if event.event_type == MatchDomainEvent.TIMEOUT:
+				# Both timeout policies use remaining time in the current overtime
+				# period too. Validate the real gate, not a regulation-only assumption.
+				assert_int(replay.state_for(event.team_id).timeouts_remaining).is_greater(0)
+				var remaining: int = GameManagement.remaining_ms(replay, input.rule_profile)
+				if event.detail_id == &"advance":
+					assert_int(remaining).is_greater(0)
+					assert_int(remaining).is_less_equal(balance.timeout_advance_window_ms)
+				else:
+					assert_int(remaining).is_greater_equal(StakesPolicy.timeout_reserve_ms(balance, input.stakes))
+			reducer.apply_event(replay, event)
 			if event.event_type == MatchDomainEvent.POSSESSION_ENDED:
 				var record: PossessionRecord = records[possession_index]
 				possession_index += 1
@@ -401,12 +414,10 @@ func test_timeouts_trigger_only_under_valid_conditions() -> void:
 			if event.detail_id == &"advance":
 				found_advance += 1
 				assert_bool(input.rule_profile.timeout_advance_permitted).is_true()
-				assert_int(event.period).is_less_equal(input.rule_profile.regulation_periods)
 				continue
 			found += 1
 			assert_int(run_points).is_greater_equal(balance.timeout_run_points)
 			assert_str(String(event.team_id)).is_not_equal(String(run_team))
-			assert_int(event.period).is_less_equal(input.rule_profile.regulation_periods)
 			run_team = &""
 			run_points = 0
 	assert_int(found).override_failure_message(

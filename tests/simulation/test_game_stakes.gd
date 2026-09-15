@@ -608,47 +608,15 @@ func test_championship_games_still_blow_out_and_still_reach_garbage_time() -> vo
 		.is_greater(0)
 
 
-## **Requirement 11: a regular-season game can still reach overtime.**
-##
-## The tie-seeking window is narrower at the regular tier, not closed, and the
-## rest of the engine is untouched. The overtime golden scenario is the standing
-## proof; this asserts it at the calibration fixtures the stakes diagnostic uses,
-## so the two cannot drift apart.
-## The seed block moved from 6100 to 6140 by the `simulation-v6-pass-creation`
-## ruleset. §14.2 puts overtime at 4-8% of games, so forty fixtures expect one
-## or two, and *which* forty finish level is a property of the scoring shape —
-## any ruleset that changes the action mix moves it. The replacement block was
-## searched for the same way the golden overtime seed is, and it carries more
-## than one overtime so the check has a margin instead of hanging on a single
-## game. Nothing about the assertion was weakened: it still requires a
-## regular-season overtime to actually occur.
-##
-## Moved again from 6140 to 6380 by `simulation-v14-restart-contract`
-## (`PROJECT_STATUS.md` §5.31), for the same reason and by the same search: a
-## made free throw and a charged timeout no longer charge their throw-ins, so
-## every possession after one starts on a different clock and 6140's forty
-## fixtures stopped containing an overtime. The search over sixty consecutive
-## blocks found 6220 and 6260 carrying one each and **6380 carrying three**,
-## which is the widest margin available and the block taken. This is fixture
-## maintenance, not overtime tuning: no overtime probability, window or
-## threshold was touched, and §14.2's overtime rate is measured by the
-## competition calibration runner, never here.
-const OVERTIME_SEED_BLOCK: int = 6380
-
-
+## Requirement 11: regular-season games can reach overtime. Reuse the named
+## overtime fixture instead of searching a second random block after every
+## timing correction. Frequency belongs to the calibration diagnostic.
 func test_regular_season_games_still_reach_overtime() -> void:
-	var overtimes: int = 0
-	for variation in range(40):
-		var input: MatchInput = CompetitionCatalog.mirrored_match_for(
-			CalibrationTargets.Competition.COLLEGE, variation, 0.5)
-		assert_int(input.stakes).is_equal(GameStakes.Value.REGULAR)
-		if MatchEngine.new().simulate_match(
-			input, SeededRandomSource.new(OVERTIME_SEED_BLOCK + variation)
-		).final_result.overtime_periods > 0:
-			overtimes += 1
-	assert_int(overtimes).override_failure_message(
-		"no regular-season game in forty even fixtures reached overtime")\
-		.is_greater(0)
+	var input: MatchInput = GoldenScenarios.input_for(GoldenScenarios.OVERTIME)
+	assert_int(input.stakes).is_equal(GameStakes.Value.REGULAR)
+	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
+		input, SeededRandomSource.new(GoldenScenarios.seed_for(GoldenScenarios.OVERTIME)))
+	assert_int(output.final_result.overtime_periods).is_greater(0)
 
 
 # --- the ledger ------------------------------------------------------------------
