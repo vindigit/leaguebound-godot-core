@@ -1,0 +1,219 @@
+{
+  "baseline_commit": "5a8c4a4",
+  "corrected_ruleset": "simulation-v16-stopped-free-throw-clock",
+  "certification": false,
+  "games_total": 600,
+  "ranges": [
+    {
+      "shard": 0,
+      "variations": [
+        0,
+        29
+      ],
+      "seeds": [
+        1,
+        30
+      ]
+    },
+    {
+      "shard": 1,
+      "variations": [
+        30,
+        59
+      ],
+      "seeds": [
+        31,
+        60
+      ]
+    }
+  ],
+  "pace": [
+    {
+      "arm": "before",
+      "range": 1,
+      "competition": "high_school",
+      "games": 30,
+      "possessions_per_team": 70.5833
+    },
+    {
+      "arm": "before",
+      "range": 1,
+      "competition": "college",
+      "games": 30,
+      "possessions_per_team": 72.5667
+    },
+    {
+      "arm": "before",
+      "range": 1,
+      "competition": "development",
+      "games": 30,
+      "possessions_per_team": 96.15
+    },
+    {
+      "arm": "before",
+      "range": 1,
+      "competition": "overseas",
+      "games": 30,
+      "possessions_per_team": 74.15
+    },
+    {
+      "arm": "before",
+      "range": 1,
+      "competition": "top_domestic_pro",
+      "games": 30,
+      "possessions_per_team": 102.45
+    },
+    {
+      "arm": "after",
+      "range": 1,
+      "competition": "high_school",
+      "games": 30,
+      "possessions_per_team": 72.7
+    },
+    {
+      "arm": "after",
+      "range": 1,
+      "competition": "college",
+      "games": 30,
+      "possessions_per_team": 74.65
+    },
+    {
+      "arm": "after",
+      "range": 1,
+      "competition": "development",
+      "games": 30,
+      "possessions_per_team": 98.7
+    },
+    {
+      "arm": "after",
+      "range": 1,
+      "competition": "overseas",
+      "games": 30,
+      "possessions_per_team": 76.4167
+    },
+    {
+      "arm": "after",
+      "range": 1,
+      "competition": "top_domestic_pro",
+      "games": 30,
+      "possessions_per_team": 106.0333
+    },
+    {
+      "arm": "before",
+      "range": 2,
+      "competition": "high_school",
+      "games": 30,
+      "possessions_per_team": 71.3833
+    },
+    {
+      "arm": "before",
+      "range": 2,
+      "competition": "college",
+      "games": 30,
+      "possessions_per_team": 71.2667
+    },
+    {
+      "arm": "before",
+      "range": 2,
+      "competition": "development",
+      "games": 30,
+      "possessions_per_team": 96.0833
+    },
+    {
+      "arm": "before",
+      "range": 2,
+      "competition": "overseas",
+      "games": 30,
+      "possessions_per_team": 74.8167
+    },
+    {
+      "arm": "before",
+      "range": 2,
+      "competition": "top_domestic_pro",
+      "games": 30,
+      "possessions_per_team": 102.3167
+    },
+    {
+      "arm": "after",
+      "range": 2,
+      "competition": "high_school",
+      "games": 30,
+      "possessions_per_team": 73.5333
+    },
+    {
+      "arm": "after",
+      "range": 2,
+      "competition": "college",
+      "games": 30,
+      "possessions_per_team": 72.7833
+    },
+    {
+      "arm": "after",
+      "range": 2,
+      "competition": "development",
+      "games": 30,
+      "possessions_per_team": 99.3167
+    },
+    {
+      "arm": "after",
+      "range": 2,
+      "competition": "overseas",
+      "games": 30,
+      "possessions_per_team": 76.4833
+    },
+    {
+      "arm": "after",
+      "range": 2,
+      "competition": "top_domestic_pro",
+      "games": 30,
+      "possessions_per_team": 105.7833
+    }
+  ],
+  "ft_replay": {
+    "diagnostic_only": true,
+    "profiles_with_attempts": 5,
+    "rows": [
+      {
+        "attempts": 29,
+        "game_clock_ms_charged": 0,
+        "profile": "high_school",
+        "seed": 991001,
+        "shot_clock_ms_charged": 0,
+        "summed_player_played_ms_charged": 0
+      },
+      {
+        "attempts": 31,
+        "game_clock_ms_charged": 0,
+        "profile": "college",
+        "seed": 991001,
+        "shot_clock_ms_charged": 0,
+        "summed_player_played_ms_charged": 0
+      },
+      {
+        "attempts": 38,
+        "game_clock_ms_charged": 0,
+        "profile": "domestic_development",
+        "seed": 991001,
+        "shot_clock_ms_charged": 0,
+        "summed_player_played_ms_charged": 0
+      },
+      {
+        "attempts": 32,
+        "game_clock_ms_charged": 0,
+        "profile": "overseas",
+        "seed": 991001,
+        "shot_clock_ms_charged": 0,
+        "summed_player_played_ms_charged": 0
+      },
+      {
+        "attempts": 21,
+        "game_clock_ms_charged": 0,
+        "profile": "top_domestic_pro",
+        "seed": 991001,
+        "shot_clock_ms_charged": 0,
+        "summed_player_played_ms_charged": 0
+      }
+    ]
+  },
+  "implementation_commit": "dfb0989"
+}

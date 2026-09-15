@@ -8780,6 +8780,36 @@ cross-check 26/26 cells; both JSON artifacts regenerate byte-identically;
 GdUnit test count. No production/specification/CI/golden files changed. Review
 commits are local on `codex/stage4-clock-evidence-review`, not pushed to PR #1.
 
+### 5.36 Approved stopped free-throw clock correction
+
+On 2026-09-15 the owner approved preserving both clocks during free-throw
+administration and attempts after reviewing gameplay effects. The implementation
+removes the FT clock-consumption path and its now-unused timing tunable under
+`simulation-v16-stopped-free-throw-clock`. Awarded points still resolve; later
+live rebounds/play still consume time. No pace multiplier or target is changed.
+
+See [`docs/STAGE4_FREE_THROW_CLOCK_CORRECTION.md`](docs/STAGE4_FREE_THROW_CLOCK_CORRECTION.md)
+for boundary/replay regression tests, original-defect rejection, reviewed golden
+divergences, matched five-profile pace measurements, and validation results.
+This closes the FT-clock approval portion of item 22; its desperation-window
+decision remains open. The existing 7000ms intentional-miss threshold also needs
+a separate coaching rationale after removing its historical FT-time assumption.
+
+Two matched 30-game ranges show more possessions in every competition. Top
+domestic is above its existing ceiling in both ranges; college in one. These
+effects are reported, not compensated. The pooled venue estimate is 0.5415 ±
+0.0149 over 1000 matched fixtures; high-school/development home-win and the
+legacy overseas single-arm cap report failures remain recorded.
+
+Verification: final parse 260/0 and acceptance pass; smoke/builder pass,
+attribute sensitivity 80/80 and calibration smoke 15/15. The initial full GdUnit
+execution failed six cases (15 assertions). All affected suites were repaired
+and rerun fully; XML evidence covers 676 distinct passing cases across 53
+suites with no unresolved failures. This is full execution plus targeted suite
+reruns, not a second single green full-gate run. All work remains locally
+committed; no new remote CI result or certification is claimed.
+
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -8929,9 +8959,11 @@ Work should proceed in this order unless new evidence changes a dependency:
 
 21. **The §14.2 home-win row is now tight enough at 600 pairs to cross its floor on either tree, and it is not this branch's (§5.33).** `venue.attributable_home_win_rate` at top domestic reads 0.5408 PASS on `e32bad5` and 0.5175 FAIL on `simulation-v15` for `validation_c`, and 0.5292 FAIL on `e32bad5` against 0.5458 PASS on `simulation-v15` for `validation_a` — **matched moves of opposite sign on two disjoint ranges at the same sample**. The next home-court pass should pool disjoint ranges rather than extend one, for the same reason §5.28 gives for overtime. Do not retune the home environment against a single range.
 
-22. **Take the two §5.34 overtime calibration decisions, or record a deliberate deferral.** `docs/STAGE4_OVERTIME_OWNER_DECISION.md` is the package. Two surfaces are identified with their semantics, why each is the correct surface, expected primary and collateral effects, a before/after plan and a risk rating; **neither has been changed and neither may be without a ruling.** (a) **Does the game clock stop for free throws?** §9.4's "free throws use separate event time" is genuinely ambiguous about the game clock and the engine charges it — 1.34 to 1.55 seconds per one-possession endgame possession, where every ruleset modelled here stops the clock. This is the same class of question the made-field-goal matrix needed a ruling for in item 20, and it should be ruled on **for its own fidelity, not because it might move overtime** — §5.34's arithmetic says it would not be enough anyway. It requires a five-competition pace re-derivation with top domestic already 0.33 from its possessions ceiling. (b) **Does `desperation_opening_clock_ms` stay at 5,000?** Possessions opening between roughly five and thirteen seconds still die in the advance and half-court states before action selection — 23% to 44% of them inside the final ten seconds. §9.4 authorises the mechanism and leaves the threshold a bounded tunable with a 0–15,000 ms safe range, so this is a calibration choice rather than a defect. It is worth at most a third of college's gap and **must be decided together with the §5.23 college field-goal package**, which it would push further below its floor.
+22. **FT-clock portion approved and implemented in §5.36; desperation-window decision remains open.** The original decision brief follows for provenance: `docs/STAGE4_OVERTIME_OWNER_DECISION.md` is the package. Two surfaces are identified with their semantics, why each is the correct surface, expected primary and collateral effects, a before/after plan and a risk rating; **neither has been changed and neither may be without a ruling.** (a) **Does the game clock stop for free throws?** §9.4's "free throws use separate event time" is genuinely ambiguous about the game clock and the engine charges it — 1.34 to 1.55 seconds per one-possession endgame possession, where every ruleset modelled here stops the clock. This is the same class of question the made-field-goal matrix needed a ruling for in item 20, and it should be ruled on **for its own fidelity, not because it might move overtime** — §5.34's arithmetic says it would not be enough anyway. It requires a five-competition pace re-derivation with top domestic already 0.33 from its possessions ceiling. (b) **Does `desperation_opening_clock_ms` stay at 5,000?** Possessions opening between roughly five and thirteen seconds still die in the advance and half-court states before action selection — 23% to 44% of them inside the final ten seconds. §9.4 authorises the mechanism and leaves the threshold a bounded tunable with a 0–15,000 ms safe range, so this is a calibration choice rather than a defect. It is worth at most a third of college's gap and **must be decided together with the §5.23 college field-goal package**, which it would push further below its floor.
 23. **Re-put the §14.2 overtime band itself, with the evidence the 2026-09-01 ruling did not have (§5.34).** That ruling took §5.13's Option 1 — keep the band, treat the measured rates as missing end-of-regulation behaviour. The repertoire has since been built, corrected twice, given a final-action deadline, an opening-state contract, a restart contract, a re-derived pace environment and a made-field-goal clock matrix. **Overtime did not move**: 0.0310 and 0.0223 before most of that work, 0.0281 and 0.0223 after all of it. The premise the ruling rested on has been tested and did not hold, which is new information. §5.34 additionally shows the two competitions do not share a cause — college manufactures tie mass at nearly the rate it needs and loses it on the last transition; top domestic manufactures it as well as college and keeps a third less, because §14.1's own locked possession economy gives every late window a fifth more possessions — so **a single universal band is asking two deliberately different economies for the same tail.** The target is not established as unsupported and this task did not change it: no admissible external reference could be obtained, and every figure that could be reached sits inside 4–8%.
 24. **Transfer the roster-generation pairing artifact to roster calibration (§5.34 §8).** `CompetitionCatalog.match_for` builds home from `variation * 2` and away from `variation * 2 + 1` while `team_for` indexes a 13-step ladder by `(variation * 37) % 13`; since `74 mod 13 = 9` and `37 mod 13 = 11`, the away index is always exactly eleven steps above home's. The population's between-team tilt is therefore a **two-point distribution rather than a spread** — home stronger by 0.70 rating points in 11 of every 13 variations, weaker by 3.85 in the other 2 — on every seed range, because the pattern has period 13 in the variation. **It is not an overtime cause**; the mirrored arm proves that. It matters because it is systematically one-sided inside the fixture that also carries §14.2's equal-team home-win target, which is the same class of artifact §5.18 found in the opening inbound and counterbalanced. The exact statistic responsible is the ladder index pairing in `CompetitionCatalog.team_for`. **This is roster-generation calibration's item, not the match engine's**, and §5.34 was forbidden to repair it and did not.
+
+25. **Follow up the v16 timing effects (§5.36).** Re-derive pace only as a separately documented change after the restored FT live time; top domestic exceeds its existing ceiling in both matched diagnostic ranges. Review the retained 7000ms intentional-miss rationale and the non-bonus defensive-foul time charge. Preserve the home-court diagnostic failures and distinguish the single-arm cap row from the paired estimator. No target amendment or certification is authorized by the FT-clock approval.
 
 Do not begin Personal Hub, full career systems, recruiting, or content-runtime expansion while simulation readiness remains open.
 

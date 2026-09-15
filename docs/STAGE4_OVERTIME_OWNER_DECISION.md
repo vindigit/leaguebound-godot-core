@@ -1,3 +1,5 @@
+> **2026-09-15 owner decision:** The owner approved keeping both clocks stopped during free-throw administration and attempts. Implementation and measured side effects are recorded in `STAGE4_FREE_THROW_CLOCK_CORRECTION.md`. This supersedes the pending FT-clock decision below; it does not approve target changes, a desperation-window change, or pace compensation.
+
 # Stage 4 owner decision — the §14.2 overtime band
 
 **Status: measurement and decision package. Nothing here is enacted.**
