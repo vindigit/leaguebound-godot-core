@@ -4,6 +4,12 @@
 No production value, locked target, tolerance, ruleset version or golden was
 changed to produce it.
 
+**2026-09-15 review:** Read [the clock and evidence review](STAGE4_CLOCK_EVIDENCE_REVIEW.md)
+before acting on this package. External schedule snapshots now support retaining
+4–8% for college and top domestic. The FT path demonstrably charges the shot
+clock and player minutes as well as the game clock. Earlier categorical causal
+claims below have been narrowed; no owner ruling or production change is enacted.
+
 | | |
 | --- | --- |
 | Branch / head | `stage4-calibration` |
@@ -21,14 +27,14 @@ for college and top domestic: keep the §14.2 4–8% overtime band, and treat th
 measured rates as **missing end-of-regulation behaviour** rather than as evidence
 the band is unreachable.
 
-That ruling has now been tested to destruction, in the only way it could be. The
+The implementation work has tested whether the specified repertoire suffices. The
 missing repertoire was built (§5.25), corrected where it had been gated backwards
 (§5.26, §5.27), given ledger continuity and a final-action deadline (§5.29), a
 corrected opening-state clock contract (§5.30), a named restart cause and a
 single clock policy (§5.31), a re-derived pace environment (§5.32), and a
 made-field-goal clock matrix (§5.33).
 
-**Overtime did not move.** §5.28 measured 0.0310 and 0.0223 over 15,000 games
+**The shortfall persists.** §5.28 measured 0.0310 and 0.0223 over 15,000 games
 each before most of that work; §5.34 measures 0.0281 and 0.0223 over 4,800 games
 each after all of it.
 
@@ -41,32 +47,31 @@ missing". It is:
 
 ---
 
-## 2. What §5.34 eliminated
+## 2. What §5.34 tested
 
-Seven of the eight candidate explanations are closed on evidence. The full
-tables are in §5.34; this is the summary an owner needs to know the ground is
-solid.
+The full tables are in §5.34. These tests narrow the search; they do not prove
+that the engine is defect-free or establish causal equivalence between arms.
 
 | Candidate | Verdict | The decisive fact |
 | --- | --- | --- |
-| A trigger defect | **Refuted** | Replayed regulation ties and recorded overtime entries agree in **all 12,800 games** of six arms, computed from two different places |
-| A scorekeeping or horn defect | **Refuted** | 13 deterministic fixtures, five mutations, all caught. No negative clock, nothing emitted after termination, every awarded free throw taken |
-| Score granularity | **Refuted** | Top domestic converts down-two possessions to level **more** often than college (0.3184 against 0.2777) and has the worse overtime rate |
-| Late-game decision quality | **Refuted** | Top domestic outperforms college on nearly every per-possession endgame figure and has the worse overtime rate. Shot selection is correct where decisive |
-| Roster population | **Refuted, decisively** | Mirrored identical rosters — pregame strength gap exactly zero — move overtime by less than a fifth of its own standard error in both competitions |
-| Margin variance | **Confirmed for top domestic only, and not actionable** | Removing an entire population's worth of strength spread narrows the margin SD by 0.87 and 1.23 points and **does not move overtime at all** |
-| Target validity | **Not established either way** | §5 below |
+| A trigger defect | **Not observed in tested coverage** | Regulation ties and overtime entries agree in the reported 12,800 games and fixtures |
+| A scorekeeping or horn defect | **No anomaly in those checks; FT clock issue remains** | Award preservation does not prove that timestamp consumption is correct |
+| Score granularity | **Not isolated** | Cross-competition transition rates are not an intervention on granularity |
+| Late-game decision quality | **Not isolated** | Aggregate action shares do not establish optimal decisions in every relevant state |
+| Roster population | **No detectable OT effect of this mirror intervention** | Nonsignificance is not equivalence and does not cover production roster distributions |
+| Margin variance | **Width changed; OT effect unresolved** | The mirror intervention narrows SD, but does not establish an OT response or non-response |
+| Target validity | **External support for college/NBA proxies** | Independent recount in the linked review; other three competitions not benchmarked |
 
-**What is left is possession availability and the size of the concentration at
-zero, and neither is a defect.**
+**Possession availability and tie survival are useful leads, not an exhaustive
+causal diagnosis. No new production repair was demonstrated by §5.34.**
 
 ---
 
-## 3. The two calibration surfaces
+## 3. Two candidate surfaces: a clock contract and an opening threshold
 
-Both are registered tunables with documented safe ranges. **Neither has been
-changed.** Each is stated here with what it means, why it is the correct surface,
-what it would do, what it would break, and how it would be measured.
+Both have registered values, but a numeric range does not settle whether event
+duration belongs on the game clock. **Neither has been changed.** FT timing is
+a contract question; the opening threshold is a separate calibration question.
 
 ### 3.1 `free_throw_event_seconds` — the game clock a free throw charges
 
@@ -84,7 +89,7 @@ awarded attempt being cancelled by the horn — but the time it consumes **is ga
 clock**: the reducer's `_advance_clock` folds it into `state.clock_ms` like any
 other elapsed time.
 
-**Why it is the correct calibration surface.** In every ruleset this engine
+**Why its consumption path needs a contract decision.** In every ruleset this engine
 models, the game clock is **stopped** for free throws. The engine charges it.
 §5.31 already established the neighbouring half of this rule — that a throw-in
 following a whistle costs the offence nothing because the clock was never
@@ -99,15 +104,17 @@ throws themselves are not.
 That sentence constrains the **shot** clock and is silent on the game clock.
 It can be read as "free throws have their own event time, separate from the game
 clock" or as "free throws have their own event time, which does not touch the
-shot clock". The engine implements the second. **This is the same class of
-ambiguity §5.33 required an owner ruling to resolve for the made-field-goal
-clock matrix**, and it should be resolved the same way: by a ruling, not by a
-developer picking a reading.
+shot clock". **The engine does not actually satisfy that second reading:**
+`MatchStateReducer._advance_clock` deducts FT timestamp differences from both
+clocks and charges player time/fatigue. The replay evidence in the linked review
+demonstrates this in all five profiles. **The existing work queue still requires
+an owner ruling before changing this consumption path**; this review recommends
+a stopped-clock contract rather than silently selecting one.
 
-**Measured effect, exactly.** From §5.34, per one-possession possession inside
+**Nominal duration accounting, not a causal effect.** From §5.34, per one-possession possession inside
 each late window:
 
-| window | free-throw attempts | one-possession possessions | **game clock charged, sec/possession** |
+| window | free-throw attempts | one-possession possessions | **nominal FT duration, sec/possession** |
 | --- | ---: | ---: | ---: |
 | college, final 120s | 1,854 | 3,480 | **1.07** |
 | college, final 60s | 1,408 | 1,880 | **1.50** |
@@ -116,23 +123,25 @@ each late window:
 | top domestic, final 30s | 756 | 1,016 | **1.49** |
 
 Across a whole game it is 67.93 seconds at college and 84.85 at top domestic —
-2.83% and 2.95% of regulation. **The per-possession column is exact**: it divides
-by the very possessions the attempts were counted in.
+2.83% and 2.95% of regulation on that nominal calculation. The one-millisecond
+clamp can reduce actual clock consumption. Counting attempts times two is not
+an exact sum of charged milliseconds and cannot predict the counterfactual OT rate.
 
-**Expected primary effect.** Returning that clock to the trailing team adds
-roughly one and a half seconds per late possession, concentrated exactly where
-deliberate fouling clusters. It increases the number of possessions a trailing
-team gets inside the final minute, which is the Hypothesis E mechanism.
+**Expected primary effect.** Preserve time for both teams across FT administration,
+regardless of score. More available live time can change subsequent possessions
+and decisions. The number and outcomes of those possessions must be measured;
+the correction must not selectively return time to a trailing team.
 
 **Expected collateral effects, and they are serious.**
 
-- **Possessions per game rise at all five competitions.** §14.1 locks those bands
+- **Possessions per game may rise across the five competitions.** §14.1 locks those bands
   per competition and §5.32 re-derived `pace_multiplier` against them. Top
   domestic already sits **0.33 from its band ceiling** (§5.33 recorded 102.6700
   against a 103 ceiling), so this change alone could take it out of band.
-- Free-throw rate, points per possession and every §14.1 rate stated per
-  possession move with the denominator.
-- All six golden ledgers change, and the ruleset must bump.
+- Free-throw rate, points per possession and other §14.1 rates may change with
+  the altered game sequence and denominator; measure rather than assume direction.
+- Review all six golden ledgers for actual changes, and bump the ruleset for a
+  production semantic change. Do not predict which fixtures must move.
 - It is a **five-competition** change: high school and overseas are affected
   identically and neither has asked for it.
 
@@ -197,7 +206,8 @@ is rather than nothing at all.
   further interacts with that decision and must not be taken independently of it.
 - Possessions per game rise slightly (a possession that produces an attempt ends
   differently from one that expires).
-- All six golden ledgers change and the ruleset must bump.
+- Review all six golden ledgers for actual changes; a production behaviour
+  change requires a ruleset bump.
 
 **Before/after plan.** Matched seeds at 5,000 against a candidate value, all five
 competitions, reporting the §5.34 funnel's stages 7 to 10, the
@@ -205,25 +215,23 @@ expired-without-attempt rates above, and the §14.1 shooting rows — with colle
 field-goal row called out separately because of §5.23.
 
 **Risk.** Medium. It is a smaller, better-bounded change than §3.1, and it is
-worth **at most about a third of college's gap**: the 54 trailing possessions
+worth **about a third of college's gap in one arithmetic scenario**: the 54 trailing possessions
 per 2,400 games that expire without an attempt inside the final minute would
 yield roughly 7 extra level scores at the observed per-possession conversion
-rates, against the 21 extra games the floor needs.
+rates, against the 21 extra games the range-A floor comparison needs. Those
+conversion rates are not validated for the changed states and this is not an upper bound.
 
 ---
 
-## 4. What neither surface can do
+## 4. What has not been established
 
-**Neither closes top domestic.** Top domestic needs +95.9% more zero-margin mass.
-Its loss is that a level score does not survive: it holds one to the horn 32.9%
-of the time against college's 47.6% (z = 2.57, p = 0.010), because §14.1's own
-locked possession economy gives every late window a fifth more possessions —
-4.77 remaining at the one-minute mark against college's 4.03. **That is a
-consequence of the 24-second shot clock and the 96–103 possession band, both
-locked by §14.1.** No endgame tunable reaches it.
-
-**Neither is a defect, so neither is authorised without a ruling.** Every
-contract in §5.34's audit holds on 12,800 games.
+Neither surface has a measured counterfactual demonstrating that it closes the
+band. The 95.9% relative uplift uses top domestic range A's rounded 2.04%, not
+its pooled 2.23%; the baseline must be stated. More possessions and lower tie
+survival are associated across competitions, but rules, lineups and state mixes
+also differ. No controlled isolation shows possession availability is the sole cause.
+The arithmetic scenarios are not upper bounds on nonlinear game outcomes.
+Neither surface may change without the existing owner ruling.
 
 ---
 
@@ -235,19 +243,17 @@ five competitions, with **no derivation, no dataset, no seasons, no inclusion
 criteria and no overtime definition**. `CalibrationTargets.overtime_frequency()`
 cites the specification section that states it, so its provenance is itself.
 
-**No admissible external evidence could be obtained in this environment.**
+**Historical access limitation during §5.34, now superseded by the linked review.**
 `basketball-reference.com` returned HTTP 403; `fivethirtyeight.com` no longer
 resolves. One secondary estimate was reachable and is recorded as **inadmissible**
 — it names no data source and states no inclusion criteria, failing the brief's
 bar on source, license, definition and transformation record alike.
 
-**The target is therefore not established as unsupported**, and this document
-does not propose changing it. What can be said is narrower and still useful:
-every figure that could be reached at all sits *inside* 4–8%, so the band is not
-obviously wrong; and the band is **universal across five competitions whose
-possession economies §14.1 deliberately makes different**, which is the same
-structural objection §5.13 raised for the blowout band and which §5.34's
-possessions-remaining table now measures directly.
+**The independent recount supports retaining 4–8% for the two benchmarked
+competitions:** college conference games 1,155/17,957 (6.43%), NBA regular season
+310/6,150 (5.04%). Inclusion limits, season splits, intervals, source hashes and
+reproduction are in the review. Different possession economies do not by
+themselves invalidate a shared broad band. The other three levels remain unbenchmarked.
 
 ---
 
@@ -262,17 +268,16 @@ competitions, and re-measure.
 
 **Buys:** the Hypothesis E mechanism, at both competitions, and closes a genuine
 fidelity gap on its own merits rather than as an overtime fix.
-**Costs:** a five-competition pace re-derivation with top domestic 0.33 from its
-possessions ceiling; ruleset bump; all six goldens.
-**Closes the band?** Almost certainly not on its own.
+**Costs:** five-competition remeasurement, possible pace re-derivation, ruleset
+bump and review of all goldens.
+**Closes the band?** Not demonstrated; not the rationale for this correction.
 
 ### Option B — Raise `desperation_opening_clock_ms`
 
-**Buys:** at most about a third of college's gap; nothing decisive for top
-domestic.
-**Costs:** interacts with the open college field-goal decision; ruleset bump; all
-six goldens.
-**Closes the band?** No.
+**Buys:** more eligible late attempts; OT effect not established by a counterfactual.
+**Costs:** interacts with the open college field-goal decision; ruleset bump and
+golden review.
+**Closes the band?** Unknown.
 
 ### Option C — Revisit §5.13's Option 2 for these two competitions
 
@@ -280,12 +285,10 @@ six goldens.
 building the repertoire. The repertoire is now built, and the band is still
 missed by 5.0 and 8.3 standard errors on 4,800 games each.
 
-**Buys:** the specification stops asking five different possession economies for
-the same tail — which §5.34's possessions-remaining table now measures rather
-than argues.
-**Costs:** a locked target moves, and it moves toward a measurement. The defence
-is that the 2026-09-01 ruling's own premise has been tested and did not hold.
-**Closes the band?** By construction.
+**Not recommended by this review:** different economies do not invalidate a
+shared broad target; the independent external recount supports retaining it for
+college and top domestic. Changing a band to encompass the simulator would
+change a verdict without demonstrating a more faithful model.
 
 ### Option D — Accept the gap and stop spending on it
 
@@ -301,26 +304,26 @@ what §5.13 warned against.
 
 ## 7. Recommended ruling
 
-**Take Option A on its own merits, not as an overtime fix, and decide Option C
-separately.**
+**Recommend a stopped-clock FT contract on its own merits, and keep the 4–8%
+target for college and top domestic. Do not enact Option C from simulator output.**
 
 The free-throw clock is a fidelity gap whether or not it moves overtime: the
 game clock runs during free throws in an engine modelling five rulesets in which
 it does not. It should be ruled on for that reason, with pace re-derived exactly
 as §5.32 did, and overtime re-measured afterwards as an *outcome* rather than a
 target. **It should not be adopted because it might buy overtime** — that is
-tuning against a number, and §5.34's arithmetic says it would not be enough
-anyway.
+tuning against a number. §5.34's arithmetic is not a proved bound on its effect.
 
-Option C is then a separate question with the evidence it needed. The
-2026-09-01 ruling was a reasonable bet that the missing repertoire explained the
-gap. Four rulesets of corrections later, the repertoire is present, correctly
-gated, and firing at plausible rates, and the gap is unchanged. **That premise
-has been tested and did not hold**, which is new information the ruling did not
-have.
+The repertoire did not suffice to close the gap in the measurements performed.
+That does not show the original band is wrong or the remaining engine is correct.
 
-Option B is not recommended on its own: it is worth a third of one competition's
-gap and interacts with an open owner decision.
+Option B is not recommended on its own: its effect is unresolved and it
+interacts with an open owner decision.
+
+The numerical scenarios above and in Options A–C are historical planning
+estimates, not proved causal bounds. The repertoire not closing the gap does
+not disprove the target. The 2026-09-15 external recount supersedes the earlier
+recommendation to reconsider that target without comparable external data.
 
 **This recommendation is not enacted.** §14.2 is unchanged, `free_throw_event_seconds`
 is unchanged, `desperation_opening_clock_ms` is unchanged, and every measurement
@@ -342,8 +345,8 @@ failures recorded as failures.
    that `match_for` pairs home and away so their ladder indices differ by a
    constant eleven steps modulo thirteen, making the population's strength gap a
    two-point distribution rather than a spread, systematically favouring the home
-   side in 11 of every 13 games. **It is not an overtime cause** — the mirrored
-   arm proves that — but it sits inside the fixture that carries §14.2's
+   side in 11 of every 13 games. **No OT effect was detected in the tested mirror
+   arm; population effects are not ruled out.** It sits inside the fixture that carries §14.2's
    equal-team home-win target. It belongs to roster-generation calibration.
 
 ---

@@ -34,6 +34,13 @@ This is meaningful implementation progress, but it is not a completed Gate 0 and
 
 **Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after. §5.30 then corrects the opening-state clock and gives `TacticalLocation` its first production reader, and §5.31 replaces the boolean it shipped with an explicit restart contract — a typed `RestartCause` named at every terminal path, one `RestartClockPolicy`, and the made-basket clock rule moved onto the competition rule profile where §4 puts it — closing the ambiguity §5.30 recorded, a second timeout defect the audit found, and a competition rule that was being decided inside `PossessionEngine`. Together those corrections stopped charging a throw-in the rules do not charge, which moved §14.1 possessions per game up at **all five** competition levels and out of band at three; §5.32 re-derives the pace environment against the corrected clock, by measurement rather than by offset, and **all five levels pass on the judged cell and on two untouched validation ranges**. §5.33 then takes the made-field-goal clock-stoppage ruling §5.31 recorded as missing — a made field goal does not stop the clock merely because it went in, and each competition's late-game windows differ by whether the period is an ordinary regulation period, the final one, or an overtime — and implements it as a typed three-window rule the profiles declare and one policy reads. **Pace was re-measured under that final matrix and deliberately left unchanged**: it moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced §5.32, every level is in band on both trees, and three of the four game-shape verdict transitions do not reproduce on untouched seed ranges. §5.33 also classifies §5.32's new §17.4 blocker: the 2.5 cap is a statistical ceiling on measured outcome movement rather than a deterministic cap on an internal modifier, and **the same 200-pair cell reads 1.8821 and passes on the unchanged `e32bad5` tree once the sample is tripled**, so it is closed as a sampling artifact with no home-advantage value touched. No target or tolerance moved, no shooting or other probability was retuned, and no overtime claim is made anywhere in that work.
 
+**Latest evidence review (§5.35, 2026-09-15):** the §5.34 diagnostic does not
+establish an exhaustive “no defect” verdict. An actual FT timestamp/reducer
+inconsistency is demonstrated in all five profiles; correcting its consumption
+path remains subject to item 22's owner ruling. Independently recounted external
+five-season college/NBA schedules support retaining their 4–8% overtime target.
+No production value or target changed in this review.
+
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
 ## 2. Authority and evidence rules
@@ -8216,15 +8223,25 @@ a green result is not evidence.
 - **Every `BALANCE_SPEC.md` target and tolerance.** Unchanged. No band, floor,
   ceiling or cap was edited, widened, or reinterpreted.
 
-### 5.34 The overtime shortfall, decomposed: two competitions, two different causes, and no defect
+### 5.34 The overtime shortfall, decomposed: diagnostic observations, not an exhaustive causal verdict
+
+**Interpretation correction (2026-09-15; §5.35 controls):** The original
+measurements and historical reasoning below are retained for traceability, not
+endorsed wholesale. “Refuted,” “no defect,” “same rate,” “no spike,” and
+“not a population effect” exceed the tests' reach. Read the scoped verdicts in
+§5.35 and `docs/STAGE4_CLOCK_EVIDENCE_REVIEW.md`. In particular, the FT reducer
+charges shot-clock time as well as game time, and accessible external snapshots
+now support 4–8% for college and top domestic. No simulation result, target,
+tolerance, or historical gate result is changed by this correction.
 
 Status: **DIAGNOSTIC. 12,800 complete games across six arms — college and top
 domestic, each on two disjoint generated-roster seed ranges and on a mirrored
 identical-roster arm — with 24 of 24 shards accepted by `ReportAggregator`, no
 seed overlap, and both recombination paths agreeing exactly on every arm. The
-§14.2 overtime band is missed by both competitions on every arm. Hypotheses A,
-B, C, D and G are refuted; E and F are confirmed as contributing and, between
-them, separate the two competitions. NO PRODUCTION CODE, TARGET, TOLERANCE,
+§14.2 overtime band is missed by both competitions on every arm. The tested
+trigger checks passed; cross-competition and mirror comparisons narrow the
+search without exhausting possible causes (interpretation corrected in §5.35).
+NO PRODUCTION CODE, TARGET, TOLERANCE,
 RULESET VERSION OR GOLDEN CHANGED. NOT CERTIFIED AND NO CERTIFICATION CLAIMED —
 each arm's own `certification.sample_reached` reads short of §27.1 and the
 report says so in its notes. The full fast gate is green on this tree — parse
@@ -8232,14 +8249,11 @@ report says so in its notes. The full fast gate is green on this tree — parse
 across 52/52 suites — and all six golden ledgers are byte-identical because no
 production behaviour changed.**
 
-The one-line answer the §9 work queue needs: **college and top domestic do not
-share a cause, and neither cause is a defect.** College creates tie mass at
-very nearly the rate it needs and loses it on the last transition; top domestic
-creates tie mass at the same rate as college and loses far more of it, on a
-regulation-margin distribution that has *no* concentration at zero at all. Both
-are game-shape properties of a legal engine, and both correction surfaces are
-tunables with documented safe ranges — so this section ends in an owner decision
-package, not a fix.
+The one-line answer the §9 work queue needs: **the shortfall persists, and this
+experiment did not establish a new production fix.** The observed tie-creation
+rates are similar while tie survival differs. That is a useful decomposition,
+not proof of distinct exclusive causes or of an otherwise defect-free engine.
+The correction surfaces remain subject to the owner decision package.
 
 #### 1. Reproduced baseline
 
@@ -8407,9 +8421,9 @@ needs a conversion of 0.6857 against 0.3286.
 
 #### 6. Are the causes the same? No, and the difference is one transition
 
-**The two competitions manufacture tie mass at statistically the same rate.**
+**No difference in tie-creation rate was detected in this sample.**
 Stage 8 is 0.0604 for college and 0.0583 for top domestic — a difference of
-0.0021 on standard errors of 0.0049 and 0.0048, which is nothing.
+0.0021 on standard errors of 0.0049 and 0.0048; equivalence was not tested.
 
 **They differ, significantly, on whether the tie survives.** Stage 9's
 conditional is 69/145 = 0.4759 for college against 46/140 = 0.3286 for top
@@ -8417,7 +8431,8 @@ domestic. The difference is 0.1473 on a standard error of 0.0574: **z = 2.57,
 p = 0.010**. College holds a level score to the horn roughly one and a half
 times as often as top domestic does.
 
-The mechanism is possession availability, and it is measured directly:
+Possession availability is a plausible contributing mechanism; its association
+with competition is measured directly, but its causal effect is not isolated:
 
 | | college | top domestic |
 | --- | ---: | ---: |
@@ -8430,26 +8445,27 @@ The mechanism is possession availability, and it is measured directly:
 Top domestic plays a fifth more possessions inside every late window, so a
 level score there faces more remaining chances to be broken. That is a direct
 consequence of §14.1's own locked economy — a 24-second shot clock and 96–103
-possessions against college's 30-second clock and 64–73 — and not of any
-endgame decision.
+possessions against college's 30-second clock and 64–73. Endgame decisions and
+other differences between the profiles are not held fixed by this comparison.
 
-**The margin curves say the same thing from the other side.** The probability of
-an exactly level regulation score is the signed margin distribution's density at
-zero, so the honest comparison is against a smooth curve of the *same width*:
+**A descriptive margin reference.** The probability of an exactly level
+regulation score is the discrete distribution's mass at zero. The table compares
+it to a zero-centred Gaussian density of the same SD, an approximation rather
+than a validated null distribution:
 
 | | college | top domestic |
 | --- | ---: | ---: |
 | regulation margin standard deviation | 13.766 | 16.392 |
 | smooth-normal density at zero for that SD | 0.0290 | 0.0243 |
-| observed density at zero | 0.0312 | 0.0204 |
+| observed probability mass at zero | 0.0312 | 0.0204 |
 | **excess over smooth** | **1.078×** | **0.839×** |
 | local peak ratio, zero against mean of ±1…±5 | 1.371 | 1.010 |
 
-**College has a real endgame spike at zero and it is too small. Top domestic has
-no spike at all** — its zero bucket sits *below* what a Gaussian of its own
-width would put there, and level with its own immediate neighbourhood. Real
-basketball's regulation-tie rate sits at roughly twice its own smooth density;
-college reaches 1.08× and top domestic 0.84×.
+**These are descriptive reference ratios, not a validated test of an endgame
+spike.** The Gaussian calculation assumes zero mean and approximates a
+one-point bin with a density. It does not establish what either competition's
+discrete margin distribution should be. No sourced real regulation-margin
+comparison establishes the earlier “twice its smooth density” assertion (§5.35).
 
 Both curves do reproduce one real feature: a genuine trough at ±1. College reads
 0.0125 and 0.0142 at −1 and +1 against 0.0208–0.0258 across ±2…±5; top domestic
@@ -8474,14 +8490,14 @@ cheap, and a range effect that is absent at 4,800 games is not proven absent at
 
 | | hypothesis | verdict | evidence |
 | --- | --- | --- | --- |
-| **A** | overtime trigger defect | **REFUTED** | 0 mismatches in 12,800 games, two independent derivations; 13 deterministic fixtures; five mutations, all caught |
-| **B** | scorekeeping or horn defect | **REFUTED** | No event carries a negative clock; nothing is emitted after termination; an expired possession ends at exactly zero; every awarded free throw is taken at a clock above zero and its makes reach the scoreboard; `anomaly.*` counters all zero on every arm |
-| **C** | score granularity | **REFUTED as a cause** | Possession increments college 0.539/0.029/0.283/0.142/0.007 and top domestic 0.504/0.018/0.296/0.175/0.008 for 0/1/2/3/4+ points. The −2 → 0 transition inside the final two minutes is 0.2777 for college and **0.3184** for top domestic: the competition with the worse overtime rate converts down-two possessions into level scores *more* often |
-| **D** | late-game decision quality | **REFUTED as a cause** | Top domestic outperforms college on nearly every per-possession endgame figure — no-attempt while level 0.1290 against 0.2135, level-afterward from down two 0.3213 against 0.2527 — and has the worse overtime rate. Shot selection is correct where it is decisive: down two inside the final minute, two-point attempts outnumber threes 0.5904 to 0.2570 (top domestic) and 0.5751 to 0.2857 (college) |
-| **E** | possession availability | **CONFIRMED, contributing** | The possessions-remaining table in §6; and free-throw event time charges 1.34–1.55 seconds of *game clock* per one-possession endgame possession, at most 11–15% of the final windows, where every ruleset modelled here stops the clock entirely |
-| **F** | margin variance | **CONFIRMED for top domestic, REFUTED for college** | College's width is right (SD 13.766, blowout 0.1492 inside 8–18%) and its overtime is still short. Top domestic's is not (SD 16.392, blowout 0.2275, 11 SE above band). But see the mirrored arm below: **narrowing the width does not buy overtime** |
-| **G** | roster population | **REFUTED, decisively** | §8 |
-| **H** | target validity | **NOT ESTABLISHED either way** | §9 |
+| **A** | overtime trigger defect | **NOT OBSERVED in tested coverage** | Reported 0 mismatches in 12,800 games; deterministic fixtures and five mutations |
+| **B** | scorekeeping or horn defect | **CHECKED INVARIANTS HELD; not exhaustive** | Award preservation does not validate FT clock consumption; see §5.35 |
+| **C** | score granularity | **NOT CAUSALLY ISOLATED** | Down-two conversion 0.2777 versus 0.3184 compares different competition profiles |
+| **D** | late-game decision quality | **NOT CAUSALLY ISOLATED** | Action/transition shares are observations, not proof of optimal or defect-free decisions |
+| **E** | possession availability | **PLAUSIBLE CONTRIBUTOR** | More remaining possessions observed; nominal FT durations are not exact charged time or a causal upper bound |
+| **F** | margin variance | **WIDTH DIFFERENCE OBSERVED; OT RESPONSE UNRESOLVED** | Mirror intervention changes width, with no detected OT effect at these sample sizes |
+| **G** | roster population | **NO DETECTED EFFECT OF TESTED INTERVENTION** | §8; absence of significance is not equivalence |
+| **H** | target validity | **EXTERNAL SUPPORT ADDED IN §5.35** | Five-season college/NBA recount supports keeping 4–8%; other levels unbenchmarked |
 
 #### 8. Fixed rosters against generated rosters
 
@@ -8500,23 +8516,21 @@ mirrored arms against 3.15–3.18 on the generated ones.
 | college blowout | 0.1492 | 0.1263 | −0.0229 | — |
 | top domestic blowout | 0.2275 | 0.1900 | −0.0375 | — |
 
-**Removing the entire between-team strength spread moves the margin distribution
-and does not move overtime at all.** The width narrows measurably in both
+**Mirroring the tested rosters moves the margin distribution without a detected
+overtime effect.** The width narrows measurably in both
 competitions and the blowout share falls by two to four percentage points, while
 the overtime rate changes by less than a fifth of its own standard error.
 
 That is a stronger result than the roster verdict alone. On a smooth curve,
 narrowing college's SD from 13.766 to 12.893 would raise the density at zero by
 6.7% and top domestic's from 16.392 to 15.158 by 8.2%; the observed changes are
-−5.8% and +1.0%. **Overtime in this engine is insensitive to margin width over
-the range a whole population's worth of team-strength spread covers**, which
-isolates the deficiency as missing *concentration at zero* rather than excess
-dispersion — including for top domestic, whose dispersion is separately and
-genuinely out of band.
+−5.8% and +1.0%. Those noisy rate differences do not demonstrate insensitivity
+to margin width or isolate concentration as the sole cause. Top domestic's
+dispersion remains separately out of band; §5.35 gives uncertainty around the
+OT differences rather than treating nonsignificance as equivalence.
 
-**Classification: not a roster-generation dependency.** No work-queue transfer
-to roster calibration is opened for overtime, because the population is not the
-cause.
+**Classification: unresolved population contribution.** No demonstrated OT
+repair is transferred to roster calibration from this intervention alone.
 
 **A fixture-construction property found while building the arm, reported and not
 repaired.** `match_for` builds home from `variation * 2` and away from
@@ -8707,6 +8721,64 @@ Beyond the gate, and specific to this section:
   Whether §9.4's "free throws use separate event time" means the game clock stops
   is genuinely ambiguous in the specification, and it is the same class of
   question the made-field-goal clock matrix needed a ruling for in §5.33.
+
+### 5.35 Clock-contract audit and independent external overtime recount
+
+**Scope: diagnostic and documentation corrections only.** Reviewed from
+`4037a74c75fbf2eaff6c39f80f4bb503df20ef74` on an isolated worktree; pre-existing
+edits in other worktrees were preserved. PR #1 at that head was verified open,
+draft and unmerged. GitHub Actions run `34520937141` completed successfully;
+both `simulation` and `test-report.xml` jobs succeeded. This confirms the
+previous handoff's pending CI, not certification.
+
+The complete review, source links, interpretation corrections, clock ownership
+map, replay output, reproduction and remaining owner decision are in
+[`docs/STAGE4_CLOCK_EVIDENCE_REVIEW.md`](docs/STAGE4_CLOCK_EVIDENCE_REVIEW.md).
+
+1. **Conclusions narrowed.** No tested trigger anomaly is not proof of no
+   defects. Cross-competition observations do not isolate a cause. The mirror
+   experiment detects no OT effect but does not establish equivalence or rule
+   out roster-population effects. A zero-centred Gaussian density is only a
+   reference approximation, not a required discrete margin distribution.
+2. **FT clock problem demonstrated, not just suspected.** The production
+   `_advance_dead_ball` → writer timestamp → reducer path decrements the game
+   clock, shot clock, and player time on FT events. A five-profile replay at
+   seed 991001 confirms nonzero charges in every profile. Later resets do not
+   make the intermediate decrement disappear. `tools/audit_free_throw_clock.gd`
+   reports this without institutionalizing the behaviour as a passing contract.
+   The existing item 22 explicitly reserves consumption-path changes for an
+   owner ruling. No FT constant, probability, pace or ruleset was changed.
+3. **External evidence available and independently recounted.** From saved
+   SportsDataverse ESPN-derived schedules: college conference 1,155/17,957 =
+   **6.43%** (five seasons); NBA regular season 310/6,150 = **5.04%**
+   (five seasons). The 4–8% target remains defensible for these two proxies.
+   College 2023–24's damaged local snapshot was rejected whole, then a fresh
+   complete publisher copy matching the previously recorded hash was obtained.
+   NBA All-Star/Cup-final games were excluded and play-ins kept separate. Two
+   contradictory college period/line-score records were quarantined. The old
+   helper was not reused; the denominator does not require a box-score join.
+
+`analysis/overtime_reference/recount.py` is a new independent standard-library
+implementation, not a call through the previous analysis helper. Its JSON
+contains source URLs, file hashes, exclusions, phase/season counts and Wilson
+intervals; 18 focused Python tests cover classification and failure paths.
+No raw third-party data is committed or loaded by the production game.
+
+**Owner queue reconciliation (supersedes the interpretive portions of items
+21–24 below):** retain cross-range checks without claiming an effect is ruled
+out; decide the stopped-clock FT contract on fidelity grounds; retain the
+college/top-domestic overtime band in light of external evidence; leave the
+roster artifact open without asserting it cannot affect overtime. Neither the
+free-throw nor desperation scenario arithmetic proves a causal upper bound.
+Other competition targets and the remaining calibration blockers are untouched.
+
+**Verification:** all eight local gate steps passed (exit 0); parse 259/0,
+attribute sensitivity 80/80, calibration smoke 15/15, GdUnit4 672/672 across
+52/52 suites with no failures. Python recount tests 18/18; independent pandas
+cross-check 26/26 cells; both JSON artifacts regenerate byte-identically;
+`git diff --check` clean. The added standalone diagnostic does not change the
+GdUnit test count. No production/specification/CI/golden files changed. Review
+commits are local on `codex/stage4-clock-evidence-review`, not pushed to PR #1.
 
 ## 6. Certification and workflow blockers
 
