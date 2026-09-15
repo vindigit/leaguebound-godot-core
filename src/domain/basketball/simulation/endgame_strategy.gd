@@ -396,10 +396,9 @@ static func minimum_miss_window_ms(balance: SimulationBalanceProfile) -> int:
 ## - **Enough clock left for the plan to happen at all** (`minimum_miss_window_ms`).
 ##   This is the floor the first version of the rule had no equivalent of, and
 ##   without it the decision fired in states where it could not possibly work:
-##   a free-throw trip charges `free_throw_event_seconds` of event time per
-##   attempt, so a trip that begins inside a 3.5-second window routinely
-##   arrives at its last attempt with a millisecond on the clock. Missing there
-##   buys a rebound the horn will interrupt, while making it is a free point.
+##   earlier rulesets incorrectly charged time during free throws. v16 keeps
+##   the award timestamp; the floor still protects a rebound and putback
+##   whose live action cannot fit in the remaining game time.
 ##   "A miss and an offensive rebound *can* tie it" has to be true of the clock
 ##   as well as of the arithmetic.
 ##

@@ -121,7 +121,9 @@ static func seed_for(scenario: StringName) -> int:
 			# always had. All six ledgers changed; in all six the first
 			# behavioural divergence is the throw-in after a made free throw,
 			# and `PROJECT_STATUS.md` §5.31 names the event for each.
-			return 71271
+			# v16 stopped free-throw clocks: 71271 no longer reaches OT.
+			# The deterministic search first finds 7919; other seeds retained.
+			return 7919
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

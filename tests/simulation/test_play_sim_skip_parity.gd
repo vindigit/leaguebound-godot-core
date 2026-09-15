@@ -26,7 +26,8 @@ const SEED: int = 20260815
 ## longer finishes level (`PROJECT_STATUS.md` §5.30, §5.31). Parity itself has
 ## never failed here: what fails is the fixture guard reporting that its game
 ## stopped reaching the state the fixture is named for.
-const OVERTIME_SEED: int = 71271
+## v16: use the re-derived golden overtime seed after stopped FT clocks.
+const OVERTIME_SEED: int = 7919
 
 
 ## Stepping possession by possession produces exactly the ledger a full Sim

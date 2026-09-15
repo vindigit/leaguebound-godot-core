@@ -103,13 +103,6 @@ func rebound_ms(random_source: RandomSource) -> int:
 		_pace_multiplier, random_source)
 
 
-## §9.4: "Dead-ball fouls and free throws use separate event time without
-## incorrectly consuming shot-clock time." The possession engine restores the
-## shot clock explicitly around these.
-func free_throw_ms() -> int:
-	return _balance.free_throw_event_seconds * 1000
-
-
 func dead_ball_ms() -> int:
 	return _balance.dead_ball_event_seconds * 1000
 

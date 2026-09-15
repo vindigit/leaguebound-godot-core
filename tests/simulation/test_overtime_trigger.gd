@@ -387,18 +387,20 @@ func test_a_free_throw_trip_drawn_before_the_horn_is_shot_in_full() -> void:
 		var awarded: int = 0
 		var taken: int = 0
 		var makes: int = 0
+		var award_clock: int = -1
 		for event in possession.events:
 			if event.event_type == MatchDomainEvent.FREE_THROW_AWARDED:
 				awarded += event.amount
+				award_clock = event.clock_ms
 			elif event.event_type == MatchDomainEvent.FREE_THROW_MADE:
 				taken += 1
 				makes += 1
 				assert_int(event.clock_ms).override_failure_message(
-					"a free throw was shot after the period expired").is_greater(0)
+					"free throws must retain the award timestamp").is_equal(award_clock)
 			elif event.event_type == MatchDomainEvent.FREE_THROW_MISSED:
 				taken += 1
 				assert_int(event.clock_ms).override_failure_message(
-					"a free throw was shot after the period expired").is_greater(0)
+					"free throws must retain the award timestamp").is_equal(award_clock)
 		if awarded == 0:
 			continue
 		trips += 1

@@ -572,9 +572,6 @@ var transition_seconds_min: int = 2
 var transition_seconds_max: int = 4
 var rebound_seconds_min: int = 1
 var rebound_seconds_max: int = 2
-## Â§9.4: "Dead-ball fouls and free throws use separate event time without
-## incorrectly consuming shot-clock time."
-var free_throw_event_seconds: int = 2
 var dead_ball_event_seconds: int = 1
 
 # --- transition, crash, and coverage shares ---------------------------------
@@ -731,6 +728,9 @@ var leading_foul_share: float = 0.30
 ## is the last meaningful possession, not the last few of a close game. Units:
 ## milliseconds of regulation remaining. Safe range 3000-20000.
 var leading_foul_clock_ms: int = 10000
+## v16: the historical derivation below no longer applies: free throws consume
+## no game time. The existing 7000ms coaching threshold is retained pending a
+## separate strategy decision, not retuned to compensate for clock correctness.
 ## The **emergency window**: at or below this much regulation time, a team
 ## trailing by exactly two deliberately misses the last free throw of a trip
 ## rather than shooting it to make, because the point cannot tie the game and a
@@ -913,7 +913,8 @@ func _init(
 	# (§5.33, work-queue item 20). Restarts change in every competition — high
 	# school loses its window entirely, the other four gain longer and
 	# period-dependent ones — so the ruleset is bumped again.
-	p_version: StringName = &"simulation-v15-made-field-goal-clock-matrix",
+	# v16: owner-approved free throws preserve both clocks and playing time.
+	p_version: StringName = &"simulation-v16-stopped-free-throw-clock",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1302,7 +1303,6 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"time.transition_seconds_max", &"seconds", float(transition_seconds_max), 1.0, 10.0)
 	_add(tunables, &"time.rebound_seconds_min", &"seconds", float(rebound_seconds_min), 0.0, 5.0)
 	_add(tunables, &"time.rebound_seconds_max", &"seconds", float(rebound_seconds_max), 1.0, 6.0)
-	_add(tunables, &"time.free_throw_event_seconds", &"seconds", float(free_throw_event_seconds), 0.0, 10.0)
 	_add(tunables, &"time.dead_ball_event_seconds", &"seconds", float(dead_ball_event_seconds), 0.0, 8.0)
 	_add(tunables, &"transition.share_base", &"probability", transition_share_base, 0.02, 0.60)
 	_add(tunables, &"transition.share_after_turnover", &"probability", transition_share_after_turnover, 0.05, 0.80)
