@@ -1,0 +1,47 @@
+{
+	"arms": [
+		{
+			"cache_repeat_equal": true,
+			"edge": 5.0,
+			"games": 24,
+			"margins": [
+				18.0,
+				3.0,
+				20.0,
+				42.0,
+				8.0,
+				26.0,
+				4.0,
+				6.0,
+				4.0,
+				33.0,
+				12.0,
+				-28.0,
+				37.0,
+				7.0,
+				19.0,
+				33.0,
+				-5.0,
+				4.0,
+				23.0,
+				3.0,
+				42.0,
+				35.0,
+				-8.0,
+				27.0
+			],
+			"maximum": 42.0,
+			"mean": 15.2083333333333,
+			"minimum": -28.0,
+			"sample_sd": 17.4455155983638,
+			"upsets": 3
+		}
+	],
+	"engine_version": "simulation-v17-stopped-foul-clock-and-live-rebound",
+	"godot": "4.7.1-stable (official)",
+	"label": "timing",
+	"pace": 0.891,
+	"portfolio_indices": "0..23 unchanged",
+	"seed_formula": "index * 15485863 + 3",
+	"witness_search": []
+}

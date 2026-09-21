@@ -1,0 +1,47 @@
+{
+	"arms": [
+		{
+			"cache_repeat_equal": true,
+			"edge": 5.0,
+			"games": 24,
+			"margins": [
+				35.0,
+				7.0,
+				38.0,
+				22.0,
+				43.0,
+				34.0,
+				12.0,
+				2.0,
+				-5.0,
+				34.0,
+				16.0,
+				2.0,
+				36.0,
+				22.0,
+				16.0,
+				18.0,
+				-9.0,
+				12.0,
+				35.0,
+				12.0,
+				38.0,
+				34.0,
+				-15.0,
+				24.0
+			],
+			"maximum": 43.0,
+			"mean": 19.2916666666667,
+			"minimum": -15.0,
+			"sample_sd": 16.4435243410171,
+			"upsets": 3
+		}
+	],
+	"engine_version": "simulation-v16-stopped-free-throw-clock",
+	"godot": "4.7.1-stable (official)",
+	"label": "baseline",
+	"pace": 0.891,
+	"portfolio_indices": "0..23 unchanged",
+	"seed_formula": "index * 15485863 + 3",
+	"witness_search": []
+}
