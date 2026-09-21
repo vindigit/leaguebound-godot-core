@@ -17,7 +17,10 @@ METRICS = {
  'regulation_possessions':('regulation_possessions','team_games'), 'overtime_possessions':('overtime_possessions','team_games'),
 }
 def load(label, comp):
- path = ROOT / 'reports' / f'pace_raw_{label}_{comp}_{comp}.json'
+ name = f'pace_raw_{label}_{comp}_{comp}.json'
+ path = OUT / 'reports' / name
+ if not path.exists():
+  path = ROOT / 'reports' / name
  data=json.loads(path.read_text()); rows=data['rows']
  assert len({r['seed'] for r in rows})==len(rows)
  assert [r['seed'] for r in rows]==list(range(data['seed_first'],data['seed_last']+1))

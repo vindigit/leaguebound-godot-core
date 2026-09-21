@@ -1,0 +1,48 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  overseas 25/200 pace=1.134100
+  overseas 50/200 pace=1.134100
+  overseas 75/200 pace=1.134100
+  overseas 100/200 pace=1.134100
+  overseas 125/200 pace=1.134100
+  overseas 150/200 pace=1.134100
+  overseas 175/200 pace=1.134100
+  overseas 200/200 pace=1.134100
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  overseas             71.4   78.2  1.094   43.1   34.8   34.8   77.0   22.8   14.6   25.6   52.9   16.0   5.0   3.6
+
+  home win rate / overtime / close / blowout, by competition:
+  overseas             52.5%    1.5%   27.0%   13.5%
+
+=== Competition basketball calibration ===
+  commit=928ebcf2d3fb97061f96fb33e33a9f2774584f5a godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=overseas/competition-v1 balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 85000 of 85001, seeds 17000001..17000200 inclusive n=200 complete games per competition elapsed=396781ms rate=0.5/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 200.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  overseas.possessions_per_game                             71.4325 ±0.2881  target[70.0000, 82.0000]  PASS
+  overseas.possession_estimate_per_game                     75.4889  INFORMATIONAL
+  overseas.points_per_game                                  78.1750 ±0.9741  INFORMATIONAL
+  overseas.points_per_possession                             1.0944 ±0.0134  target[1.0000, 1.1300]  PASS
+  overseas.field_goal_percentage                             0.4306 ±0.0055  target[0.4300, 0.5100]  PASS
+  overseas.three_point_percentage                            0.3478 ±0.0096  target[0.3200, 0.3900]  PASS
+  overseas.three_point_attempt_rate                          0.3479 ±0.0057  target[0.3000, 0.4600]  PASS
+  overseas.free_throw_percentage                             0.7700 ±0.0105  target[0.6900, 0.8200]  PASS
+  overseas.free_throw_attempt_rate                           0.2276 ±0.0050  target[0.2000, 0.3900]  PASS
+  overseas.turnovers_per_100_possessions                    14.6257  target[13.0000, 19.0000]  PASS
+  overseas.offensive_rebound_percentage                      0.2557 ±0.0071  target[0.2300, 0.3400]  PASS
+  overseas.assist_percentage                                 0.5289 ±0.0091  target[0.5000, 0.7200]  PASS
+  overseas.home_win_rate                                     0.5250 ±0.0686  target[0.5300, 0.5600]  FAIL
+  overseas.overtime_rate                                     0.0150 ±0.0190  target[0.0400, 0.0800]  FAIL
+  overseas.close_game_rate                                   0.2700 ±0.0611  target[0.2200, 0.3400]  PASS
+  overseas.blowout_rate                                      0.1350 ±0.0474  target[0.0800, 0.1800]  PASS
+  overseas.starter_mean_minutes                             24.4792 ±0.1727  INFORMATIONAL
+  overseas.team_leading_scorer_mean                         16.3475 ±0.3204  INFORMATIONAL
+  overseas.team_leading_scorer_p99                          26.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_train_slow_overseas.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL overseas.home_win_rate: estimate 0.5250 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL overseas.overtime_rate: estimate 0.0150 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  20 metric(s), 15 judged, 3 failure(s): FAIL

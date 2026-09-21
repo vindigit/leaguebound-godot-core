@@ -43,3 +43,24 @@ Canonical band judgments use point estimates; the supplemental Python
 `analyze.py` reports 95% normal-approximation game-cluster intervals and paired
 ratio-influence intervals. Those intervals are diagnostic and do not replace
 or weaken the canonical target/tolerance rules.
+
+### Fixed-fixture snapshot review
+
+`tools/audit_fixed_fixture_channels.gd` exactly reproduces the existing 24-game
+college fixture, variations 905000–905023, on the old head, corrected timing,
+and final candidate pace. Its field-goal accounting identities must hold.
+
+| Channel | Old head | Timing only | Final pace candidate |
+| --- | ---: | ---: | ---: |
+| Turnover fraction | 0.15341545 | 0.15427613 | 0.15530760 |
+| ORB extension fraction | 0.11870101 | 0.11906093 | 0.11218335 |
+| Offensive rebound share | 0.24179707 | 0.24457892 | 0.23555805 |
+| Assisted share | 0.64745509 | 0.64533133 | 0.64581641 |
+| Possessions/game, both teams | 148.833333 | 149.083333 | 138.166667 |
+
+Only the three pins beyond their existing tolerance are refreshed: extension,
+ORB share and possessions. Turnover and assist pins remain unchanged. The
+channel tolerance remains 0.004 and possession tolerance 2.0. These are fixture
+snapshots, not §14.1 target changes. All five underlying production mechanisms
+and probability values are unchanged by the pace fit; their effective game
+outcomes may change through duration, fatigue, lineup and action trajectories.

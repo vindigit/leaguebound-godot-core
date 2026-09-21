@@ -638,20 +638,21 @@ func test_the_compensation_channels_are_pinned_on_a_fixed_fixture() -> void:
 	var decomposition: PppDecomposition = _decompose(
 		CalibrationTargets.Competition.COLLEGE, DISTRIBUTION_GAMES)
 	var totals: PppDecomposition.Totals = decomposition.totals
-	# v16 restores live time previously charged to FT administration. The same
-	# 24 fixtures now yield TO 0.1534, ORB share 0.2418 and 148.83 possessions.
-	# Re-pin these observed channels; both tolerances and all balance targets
-	# stay unchanged. This diagnostic pin is not a claim that pace is in band.
+	# v17 stopped foul administration and the measured competition pace update
+	# change these same 24 fixtures. Only pins outside their existing tolerance
+	# are refreshed: extension 0.1122, ORB share 0.2356, possessions 138.17.
+	# The archived before/timing/final measurements are reproduced by
+	# tools/audit_fixed_fixture_channels.gd. No tolerance or balance target moves.
 
 	assert_float(totals.turnover_rate()).override_failure_message(
 		"turnover rate moved to %.4f on a fixed fixture" % totals.turnover_rate()
 	).is_equal_approx(0.1534, CHANNEL_TOLERANCE)
 	assert_float(totals.extension_rate()).override_failure_message(
 		"offensive-rebound extension rate moved to %.4f on a fixed fixture"
-		% totals.extension_rate()).is_equal_approx(0.1179, CHANNEL_TOLERANCE)
+		% totals.extension_rate()).is_equal_approx(0.1122, CHANNEL_TOLERANCE)
 	assert_float(totals.offensive_rebound_rate()).override_failure_message(
 		"offensive-rebound share moved to %.4f on a fixed fixture"
-		% totals.offensive_rebound_rate()).is_equal_approx(0.2418, CHANNEL_TOLERANCE)
+		% totals.offensive_rebound_rate()).is_equal_approx(0.2356, CHANNEL_TOLERANCE)
 	# **Four of the five pins move under `simulation-v14-restart-contract` and
 	# §5.32's pace re-derivation, and they are re-pinned rather than absorbed into
 	# a wider tolerance — which is what this test is for.**
@@ -680,7 +681,7 @@ func test_the_compensation_channels_are_pinned_on_a_fixed_fixture() -> void:
 	).is_equal_approx(0.6449, CHANNEL_TOLERANCE)
 	assert_float(totals.possessions_per_game()).override_failure_message(
 		"possessions per game moved to %.2f on a fixed fixture"
-		% totals.possessions_per_game()).is_equal_approx(148.83, 2.0)
+		% totals.possessions_per_game()).is_equal_approx(138.17, 2.0)
 
 
 # --- helpers -----------------------------------------------------------------
