@@ -474,44 +474,39 @@ func test_quick_two_does_not_depend_on_an_unspent_timeout() -> void:
 ## decision is in force. Its ledger tag must agree with every other action in
 ## that possession so activation reconstruction never silently drops it.
 func test_putbacks_carry_the_endgame_decision_in_force() -> void:
-	var found: int = 0
-	# The offensive-rebound *fixture* at seed 7043 contains the exact case this
-	# repair is for: a fourth-quarter putback while two-for-one is active.
-	#
-	# It used to be the committed `offensive_rebound` golden scenario, at that
-	# scenario's own seed 7001. `simulation-v13` moved the clock every possession
-	# starts on, and at 7001 the fourth-quarter putback now falls at a moment
-	# when no endgame decision is in force — the scenario still has its
-	# two-for-one and hold tags, and still has five putbacks, but the two no
-	# longer coincide. The golden seed is deliberately *not* moved for this: 7001
-	# still satisfies the requirement that scenario is named for, and rewriting a
-	# golden fixture to keep an unrelated suite green would be the wrong way
-	# round. This test owns its own seed instead, on the same fixture, found by
-	# reachability search over 7001-9001 (`PROJECT_STATUS.md` §5.30).
-	#
-	# Moved again from 7043 by `simulation-v14-restart-contract` for the same
-	# reason: a made free throw and a charged timeout no longer charge their
-	# throw-ins, so every possession after one starts on a different clock and
-	# 7043's putback again falls outside an active decision. The search over
-	# 7001-12000 found five qualifying seeds, 7001 among them — that is, the
-	# golden scenario's own seed satisfies this again — and 7095 is taken
-	# instead, deliberately, to keep the decoupling §5.30 established: this suite
-	# owns its seed so that a future ruleset moving the golden cannot break it
-	# for an unrelated reason (`PROJECT_STATUS.md` §5.31).
-	const TAGGED_PUTBACK_SEED: int = 7095
+	# v17's stopped non-bonus administration moves the whole match timeline.
+	# Seed 7095 now has four putbacks and no eligible two-for-one putback; all
+	# four tags agree with replayed state. The bounded 7096-7300 reachability
+	# search first found 7104 (period 4, 44215ms, away down 27, event 1152).
+	# See analysis/timing_pace_followup/putback_fixture_audit.json. This suite
+	# owns its fixture seed; the offensive_rebound golden remains untouched.
+	const TAGGED_PUTBACK_SEED: int = 7104
+	var input: MatchInput = MatchFixtureFactory.offensive_rebound_match()
 	var output: MatchSimulationOutput = MatchEngine.new().simulate_match(
-		MatchFixtureFactory.offensive_rebound_match(),
-		SeededRandomSource.new(TAGGED_PUTBACK_SEED))
-	for event in output.events:
-		if (
-			event.event_type == MatchDomainEvent.ACTION_SELECTED
-			and event.action_id == ActionFamily.id_of(ActionFamily.Value.PUTBACK)
-			and event.detail_id == EndgameStrategy.TAG_TWO_FOR_ONE
-		):
-			found += 1
-	assert_int(found).override_failure_message(
+		input, SeededRandomSource.new(TAGGED_PUTBACK_SEED))
+	var state := MatchSnapshot.new(input)
+	var reducer := MatchStateReducer.new(input)
+	var eligible: int = 0
+	var tagged: int = 0
+	for event: MatchDomainEvent in output.events:
+		if event.event_type == MatchDomainEvent.ACTION_SELECTED and event.action_id == ActionFamily.id_of(ActionFamily.Value.PUTBACK):
+			# Reconstruct the decision before the action load is applied, at the
+			# event's timestamp. Compare every putback tag, not only tagged ones.
+			var at_action: MatchSnapshot = state.copy()
+			reducer._advance_clock(at_action, event)
+			var context := PossessionContext.new(input, at_action, event.team_id, MatchupState.new({}), event.possession_id)
+			var expected: StringName = EndgameStrategy.active_tag(context, input.balance_profile)
+			assert_str(String(event.detail_id)).override_failure_message(
+				"putback event %d lost the decision active at %dms" % [event.sequence, event.clock_ms]).is_equal(String(expected))
+			if expected == EndgameStrategy.TAG_TWO_FOR_ONE:
+				eligible += 1
+			if event.detail_id == EndgameStrategy.TAG_TWO_FOR_ONE:
+				tagged += 1
+		reducer.apply_event(state, event)
+	assert_int(eligible).override_failure_message(
+		"the fixture no longer reaches its two-for-one putback branch").is_equal(1)
+	assert_int(tagged).override_failure_message(
 		"the known endgame putback lost its two-for-one ledger tag").is_equal(1)
-
 
 ## A profile whose two quick-two numbers leave no span is a rule that can never
 ## fire at any tier, and `validate()` refuses it rather than shipping a dead
