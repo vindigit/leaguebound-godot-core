@@ -340,32 +340,34 @@ static func action_multiplier(
 	return value
 
 
-## The deficit, immediately before the final attempt of a trip, at which
-## missing it on purpose is better than making it.
+## The authored deficit gate immediately before the final attempt of a trip.
 ##
 ## Down exactly two: the attempt is worth one point, so a make leaves the
-## offence down one with the ball dead and the opponent inbounding — the game
-## is over and lost. A miss is the only thing left that can still tie or win
-## it, because a miss is *live*: the offence can rebound it and shoot a two to
-## tie or a three to win. Down one, a make ties and there is nothing to miss
-## for. Down three or more, a make and a miss are both insufficient on their
-## own and the offence wants the point. Two, and only two, is the state where
-## the free throw cannot tie and the rebound can.
+## offence down one with the ball dead and the opponent inbounding. A miss
+## keeps open a chance to tie within the current possession because it is
+## live: the offence can rebound it and make a two-point putback. Down one,
+## a make ties. Larger deficits remain outside this existing coaching policy;
+## this gate makes no claim that a rebound and a three could never tie.
 const INTENTIONAL_MISS_DEFICIT: int = 2
 
 
-## The least regulation time in which a deliberately missed free throw can
-## still become a shot, derived from the clock model that will actually charge
-## for it rather than picked: `rebound_ms` draws up to `rebound_seconds_max`
-## for the board, and the putback that follows draws at least
-## `action_seconds_min`. Below their sum the offence cannot get the attempt the
-## miss exists to create.
-static func minimum_miss_window_ms(balance: SimulationBalanceProfile) -> int:
-	return (maxi(balance.rebound_seconds_max, 0) + maxi(balance.action_seconds_min, 0)) * 1000
+## Conservative clock floor that survives every configured live rebound draw.
+## ClockResolver scales and rounds the rebound by competition pace. _consume
+## expires the possession at equality, hence the additional millisecond.
+## A selected direct putback resolves at the rebound timestamp: it has no
+## action_ms draw. This does not guarantee a board or a putback, and smaller
+## rebound draws can survive below this conservative floor.
+## Null rules express the reference pace (1.0) used by balance validation.
+static func minimum_miss_window_ms(
+	balance: SimulationBalanceProfile,
+	rules: CompetitionRuleProfile = null,
+) -> int:
+	var pace: float = 1.0 if rules == null else rules.pace_multiplier
+	return maxi(0, int(roundf(float(balance.rebound_seconds_max) * 1000.0 * pace))) + 1
 
 
-## The intentional final-free-throw miss: mathematically necessary rather than
-## optional, so this is a plain condition rather than a probability roll.
+## The intentional final-free-throw miss is a deterministic coaching policy,
+## not a probability roll or a proof that make/foul/return is impossible.
 ##
 ## **This is a trailing team's decision, and previously it was a leading
 ## team's.** The rule as first written fired for a shooting team *ahead* by two
@@ -373,8 +375,8 @@ static func minimum_miss_window_ms(balance: SimulationBalanceProfile) -> int:
 ## last seconds wants to make the free throw — every point it adds is one more
 ## the opponent has to answer — and missing on purpose hands a live ball to a
 ## team that needs one. The version below fires only for the offence trailing
-## by exactly two before the attempt in hand, which is the single state where
-## the arithmetic says the point is worthless and the rebound is not (see
+## by exactly two before the attempt in hand, where the point cannot tie but
+## an offensive rebound and a two-point putback can (see
 ## `INTENTIONAL_MISS_DEFICIT`). A leading team never reaches it at any margin,
 ## clock, or attempt index.
 ##
@@ -391,16 +393,11 @@ static func minimum_miss_window_ms(balance: SimulationBalanceProfile) -> int:
 ##   rule profile where a missed last free throw is not live, missing is a
 ##   plain surrender of the ball, strictly worse than the point, and the rule
 ##   must not fire.
-## - The emergency clock window. With time for another possession, a made point
-##   plus a stop is the better plan and the offence takes the point.
-## - **Enough clock left for the plan to happen at all** (`minimum_miss_window_ms`).
-##   This is the floor the first version of the rule had no equivalent of, and
-##   without it the decision fired in states where it could not possibly work:
-##   earlier rulesets incorrectly charged time during free throws. v16 keeps
-##   the award timestamp; the floor still protects a rebound and putback
-##   whose live action cannot fit in the remaining game time.
-##   "A miss and an offensive rebound *can* tie it" has to be true of the clock
-##   as well as of the arithmetic.
+## - The authored emergency clock cap. This limits the coaching policy; stopped
+##   administration does not establish a unique clock-derived upper threshold.
+## - Enough clock for every configured rebound draw (`minimum_miss_window_ms`).
+##   v16 keeps the award timestamp. The floor protects the live rebound from
+##   the horn; a direct putback shares that timestamp if the offence earns it.
 ##
 ## The caller never consults `FreeThrowResolver` for this attempt — the shot is
 ## not attempted for real, so there is no probability to touch — and the miss
@@ -421,7 +418,7 @@ static func should_intentionally_miss_final_free_throw(
 		return false
 	if context.state.clock_ms > balance.intentional_miss_clock_ms:
 		return false
-	if context.state.clock_ms < minimum_miss_window_ms(balance):
+	if context.state.clock_ms < minimum_miss_window_ms(balance, context.input.rule_profile):
 		return false
 	return context.offense_margin() == -INTENTIONAL_MISS_DEFICIT
 

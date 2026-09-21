@@ -27,7 +27,8 @@ const SEED: int = 20260815
 ## never failed here: what fails is the fixture guard reporting that its game
 ## stopped reaching the state the fixture is named for.
 ## v16: use the re-derived golden overtime seed after stopped FT clocks.
-const OVERTIME_SEED: int = 7919
+## v17: nonbonus stopped administration requires the searched seed 190056.
+const OVERTIME_SEED: int = 190056
 
 
 ## Stepping possession by possession produces exactly the ledger a full Sim

@@ -103,10 +103,6 @@ func rebound_ms(random_source: RandomSource) -> int:
 		_pace_multiplier, random_source)
 
 
-func dead_ball_ms() -> int:
-	return _balance.dead_ball_event_seconds * 1000
-
-
 ## A pace multiplier around 1.0: below one is quicker, above one is slower.
 ##
 ## Three separable terms, each bounded on its own: the competition's pace

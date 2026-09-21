@@ -123,7 +123,8 @@ static func seed_for(scenario: StringName) -> int:
 			# and `PROJECT_STATUS.md` §5.31 names the event for each.
 			# v16 stopped free-throw clocks: 71271 no longer reaches OT.
 			# The deterministic search first finds 7919; other seeds retained.
-			return 7919
+			# v17 nonbonus stopped administration: search finds 190056.
+			return 190056
 		OFFENSIVE_REBOUND:
 			return 7001
 		FOUL_FREE_THROW:

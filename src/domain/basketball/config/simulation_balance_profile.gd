@@ -552,10 +552,8 @@ var settled_minimum_pairs_left: float = 1.0
 ## **This is not game-clock consumption and no resolver may charge it as such.**
 ## The game clock starts on the legal touch, so `ClockResolver` has no
 ## `inbound_ms` and `PossessionEngine` emits `INBOUND` at the possession's
-## starting clock (`PROJECT_STATUS.md` §5.30). The pair is retained because it
-## still describes a real duration that `intentional_miss_clock_ms` cites when it
-## derives its window from the clock model, and because presentation owns the
-## interval between a dead ball and the touch that restarts the clock.
+## starting clock (`PROJECT_STATUS.md` §5.30). These bands also describe the
+## running-clock made-basket inbound, where elapsed time is actually charged.
 var inbound_seconds_min: int = 2
 var inbound_seconds_max: int = 4
 var advance_seconds_min: int = 2
@@ -572,7 +570,6 @@ var transition_seconds_min: int = 2
 var transition_seconds_max: int = 4
 var rebound_seconds_min: int = 1
 var rebound_seconds_max: int = 2
-var dead_ball_event_seconds: int = 1
 
 # --- transition, crash, and coverage shares ---------------------------------
 var transition_share_base: float = 0.22
@@ -728,42 +725,15 @@ var leading_foul_share: float = 0.30
 ## is the last meaningful possession, not the last few of a close game. Units:
 ## milliseconds of regulation remaining. Safe range 3000-20000.
 var leading_foul_clock_ms: int = 10000
-## v16: the historical derivation below no longer applies: free throws consume
-## no game time. The existing 7000ms coaching threshold is retained pending a
-## separate strategy decision, not retuned to compensate for clock correctness.
-## The **emergency window**: at or below this much regulation time, a team
-## trailing by exactly two deliberately misses the last free throw of a trip
-## rather than shooting it to make, because the point cannot tie the game and a
-## live rebound can (`EndgameStrategy.should_intentionally_miss_final_free_throw`).
-##
-## Raised from 3500 by `simulation-v10-endgame-corrections`, and derived from
-## the clock model rather than picked. Above this window the offence has a real
-## alternative to missing: take the free point, concede the ball, foul
-## immediately and get it back. That plan needs the opponent's inbound
-## (`inbound_seconds_min`, 2s), the two-shot trip the foul buys them
-## (2 x `free_throw_event_seconds`, 4s), and one attempt of its own
-## (`action_seconds_min`, 1s) — seven seconds. Inside seven seconds the plan
-## does not fit and the miss is the only thing left; outside it the point is
-## worth more.
-##
-## **Under `simulation-v13` the inbound term no longer runs the game clock**, so
-## the same arithmetic now gives five seconds rather than seven and this window
-## is wider than its own derivation requires. It is left at 7000 deliberately:
-## narrowing it would change when a trailing team deliberately misses, which is
-## an end-of-regulation coaching decision and not the opening-clock defect §5.30
-## exists to fix. Recorded as a known, bounded conservatism rather than retuned
-## as a side effect.
-##
-## 3500 was not wrong so much as unreachable once
-## `EndgameStrategy.minimum_miss_window_ms` put a floor underneath it: a
-## free-throw trip charges two seconds of event time per attempt, so a trip
-## beginning inside 3.5 seconds arrives at its last attempt with almost nothing
-## left, and the eligible band between the floor and 3500 was about half a
-## second wide. Measured across 2,000 games at 3500, every intentional miss the
-## engine took had its possession end on the horn before the rebound it was
-## taken for (`PROJECT_STATUS.md` §5.26).
-##
-## Units: milliseconds of regulation remaining. Safe range 1000-8000.
+## Authored emergency coaching cap for intentionally missing a final free
+## throw while trailing by exactly two. The former 7000ms derivation charged
+## stopped inbound and free-throw administration and is invalid. The actual
+## make/foul/return path can skip an advance at the horn and foul before an
+## action-time draw, so no unique positive upper threshold follows from it.
+## Preserve this policy cap; change only the proven live-rebound survival floor
+## in EndgameStrategy. See docs/STAGE4_V16_TIMING_FOLLOWUP.md.
+## Units: milliseconds remaining in final regulation or overtime.
+## Safe range 1000-8000.
 var intentional_miss_clock_ms: int = 7000
 ## The most regulation time that can remain for gaining the ball in the
 ## frontcourt to be worth an allowance.
@@ -914,7 +884,9 @@ func _init(
 	# school loses its window entirely, the other four gain longer and
 	# period-dependent ones — so the ruleset is bumped again.
 	# v16: owner-approved free throws preserve both clocks and playing time.
-	p_version: StringName = &"simulation-v16-stopped-free-throw-clock",
+	# v17: nonbonus administration stops both clocks; intentional-miss
+	# feasibility uses the pace-scaled live rebound and strict horn.
+	p_version: StringName = &"simulation-v17-stopped-foul-clock-and-live-rebound",
 ) -> void:
 	assert(not p_profile_id.is_empty() and not p_version.is_empty(),
 		"balance identity and version are required")
@@ -1303,7 +1275,6 @@ func describe_tunables() -> Array[BalanceTunable]:
 	_add(tunables, &"time.transition_seconds_max", &"seconds", float(transition_seconds_max), 1.0, 10.0)
 	_add(tunables, &"time.rebound_seconds_min", &"seconds", float(rebound_seconds_min), 0.0, 5.0)
 	_add(tunables, &"time.rebound_seconds_max", &"seconds", float(rebound_seconds_max), 1.0, 6.0)
-	_add(tunables, &"time.dead_ball_event_seconds", &"seconds", float(dead_ball_event_seconds), 0.0, 8.0)
 	_add(tunables, &"transition.share_base", &"probability", transition_share_base, 0.02, 0.60)
 	_add(tunables, &"transition.share_after_turnover", &"probability", transition_share_after_turnover, 0.05, 0.80)
 	_add(tunables, &"rebound.crash_share_base", &"probability", crash_share_base, 0.05, 0.80)
@@ -1391,19 +1362,15 @@ func validate() -> PackedStringArray:
 	_require_monotonic(failures, &"baseline_free_throw", baseline_free_throw)
 	if absf(player_preference_share + coach_preference_share - 1.0) > 0.000001:
 		failures.append("the Â§12.3 player and coach shares must sum to 1.0")
-	# The intentional-miss window has to be wide enough to contain the plan it
-	# exists for. `EndgameStrategy.minimum_miss_window_ms` is the clock the
-	# rebound and the shot after it will actually be charged, so a window at or
-	# below that floor is a rule that can never usefully fire — which is how it
-	# shipped at v9 once the floor was added (`PROJECT_STATUS.md` §5.26). This
-	# keeps the two numbers related by validation rather than by a comment.
+	# Reference-pace configuration sanity. Runtime eligibility computes the
+	# conservative rebound floor again using the active competition's pace.
+	# Equality leaves exactly one millisecond after the maximum rebound draw.
 	var miss_floor: int = EndgameStrategy.minimum_miss_window_ms(self)
-	if intentional_miss_clock_ms <= miss_floor:
+	if intentional_miss_clock_ms < miss_floor:
 		failures.append(
-			"the intentional-miss window (%dms) must exceed the rebound-and-shot "
+			"the intentional-miss window (%dms) must reach the reference-pace "
 			% intentional_miss_clock_ms
-			+ "floor it is measured against (%dms), or the rule can never fire "
-			% miss_floor + "in a state where the miss buys an attempt")
+			+ "live-rebound survival floor (%dms)" % miss_floor)
 	# Quick-two is defined as a span *past* the tie-seeking window rather than
 	# as an absolute clock (`EndgameStrategy.quick_two_span_ms`), because that
 	# window moves with the stakes tier. The two numbers the span is built

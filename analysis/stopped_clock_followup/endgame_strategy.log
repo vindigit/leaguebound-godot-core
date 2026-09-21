@@ -1,0 +1,133 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_off_outside_its_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_off_outside_its_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_on_for_a_trailing_or_tied_team_with_a_second_possession_to_win[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_on_for_a_trailing_or_tied_team_with_a_second_possession_to_win[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_off_outside_its_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_off_outside_its_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_on_for_a_leading_team_with_the_game_in_hand[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_on_for_a_leading_team_with_the_game_in_hand[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_clock_condition_binds_only_the_tied_team[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_clock_condition_binds_only_the_tied_team[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_hold_are_mutually_exclusive[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_hold_are_mutually_exclusive[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_needs_the_exact_deficit_and_the_outer_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_needs_the_exact_deficit_and_the_outer_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_is_on_only_for_the_truly_final_possession[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_is_on_only_for_the_truly_final_possession[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_leading_team_at_every_lead[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_leading_team_at_every_lead[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_deficit_the_clock_cannot_close[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_deficit_the_clock_cannot_close[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_selected_designed_play_action_releases_before_the_horn[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_selected_designed_play_action_releases_before_the_horn[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_final_release_deadline_is_scoped_to_a_tieable_designed_play[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_final_release_deadline_is_scoped_to_a_tieable_designed_play[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_recoverable_deficit_grows_one_possession_at_a_time[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_recoverable_deficit_grows_one_possession_at_a_time[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designated_closer_is_the_best_shot_selection_rating_on_the_floor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designated_closer_is_the_best_shot_selection_rating_on_the_floor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_action_multiplier_is_the_identity_through_ordinary_basketball[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_action_multiplier_is_the_identity_through_ordinary_basketball[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_reweights_reset_versus_a_direct_shot[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_reweights_reset_versus_a_direct_shot[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_stops_boosting_the_reset_once_the_shot_clock_is_late[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_stops_boosting_the_reset_once_the_shot_clock_is_late[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_swings_two_point_weight_against_three_point_weight[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_swings_two_point_weight_against_three_point_weight[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_boosts_only_the_designated_actor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_boosts_only_the_designated_actor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 19ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_never_intentionally_misses[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_never_intentionally_misses[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 35ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_profile_keeps_the_miss_window_above_its_own_floor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_profile_keeps_the_miss_window_above_its_own_floor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_never_touches_free_throw_probability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_never_touches_free_throw_probability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 11ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_timeout_advance_possession_skips_the_backcourt_walk[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_timeout_advance_possession_skips_the_backcourt_walk[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 44ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_fires_only_when_eligible[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_fires_only_when_eligible[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_when_ineligible[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_when_ineligible[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_outside_the_bonus[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_outside_the_bonus[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_designed_play_are_reachable_in_real_games[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_designed_play_are_reachable_in_real_games[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 41s 506ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 35 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 42s 443ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 35 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (1/1)[0m
+[38;2;233;150;122mExecuted test cases : (35/35)[0m
+[38;2;233;150;122mTotal execution time: 2min 42s 443ms[0m
+[38;2;255;255;255m [0m[38;2;100;149;237mOpen XML Report at: file://C:/Users/valexander/leaguebound-godot-core/reports/report_116/results.xml[0m
+[38;2;100;149;237mOpen HTML Report at: file://C:/Users/valexander/leaguebound-godot-core/reports/report_116/index.html[0m
+[38;2;233;150;122mExit code: 0[0m
+Run dispose test resources

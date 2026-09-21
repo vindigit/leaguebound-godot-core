@@ -926,9 +926,9 @@ func _resolve_defensive_foul_consequences(
 	var team_fouls: int = _context.defense_state().team_fouls
 	var attempts: int = _rules.bonus_free_throws_for(team_fouls)
 	if attempts <= 0:
-		_consume(_clock.dead_ball_ms())
-		if _terminated:
-			return
+		# The whistle stops both clocks. Administration is presentation time,
+		# just as for awarded free throws; only subsequent live play consumes
+		# time. Preserve the rules' reset without inventing elapsed time.
 		_emit(
 			MatchDomainEvent.SHOT_CLOCK_RESET, _context.offense.team_id,
 			_context.ball_handler_id, &"", &"", &"", &"", &"", 0,

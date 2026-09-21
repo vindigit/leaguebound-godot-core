@@ -1,0 +1,57 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_nonbonus_whistle_preserves_clock_minutes_and_resets_without_expiry[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_nonbonus_whistle_preserves_clock_minutes_and_resets_without_expiry[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 314ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_paced_rebound_boundary_and_eligibility[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_paced_rebound_boundary_and_eligibility[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 57ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_boundary_intentional_miss_has_live_contested_board_and_same_timestamp_putback[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_boundary_intentional_miss_has_live_contested_board_and_same_timestamp_putback[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 772ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_stopped_clock_followup.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above[0m[38;2;178;34;34m[1m FAILED[0m[38;2;100;149;237m 146ms[0m
+  [38;2;0;206;209m[1m[4mReport:[0m
+  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ '[38;2;30;144;255mfalse[0m'
+ but was
+ '[38;2;30;144;255mtrue[0m'[0m[38;2;173;216;230m	at 'test_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above' in res://tests/simulation/test_stopped_clock_followup.gd:121[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ '[38;2;30;144;255mfalse[0m'
+ but was
+ '[38;2;30;144;255mtrue[0m'[0m[38;2;173;216;230m	at 'test_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above' in res://tests/simulation/test_stopped_clock_followup.gd:121[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ '[38;2;30;144;255mfalse[0m'
+ but was
+ '[38;2;30;144;255mtrue[0m'[0m[38;2;173;216;230m	at 'test_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above' in res://tests/simulation/test_stopped_clock_followup.gd:121[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ '[38;2;30;144;255mfalse[0m'
+ but was
+ '[38;2;30;144;255mtrue[0m'[0m[38;2;173;216;230m	at 'test_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above' in res://tests/simulation/test_stopped_clock_followup.gd:121[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ '[38;2;30;144;255mfalse[0m'
+ but was
+ '[38;2;30;144;255mtrue[0m'[0m[38;2;173;216;230m	at 'test_maximum_rebound_draw_expires_at_equality_and_survives_one_ms_above' in res://tests/simulation/test_stopped_clock_followup.gd:121[0m[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 4 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 375ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 4 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (1/1)[0m
+[38;2;233;150;122mExecuted test cases : (4/4)[0m
+[38;2;233;150;122mTotal execution time: 2s 375ms[0m
+[38;2;255;255;255m [0m[38;2;100;149;237mOpen XML Report at: file://C:/Users/valexander/AppData/Local/Temp/leaguebound-timing-048e7a3122c94a05bcf6dc3a47a44719/reports/report_10/results.xml[0m
+[38;2;100;149;237mOpen HTML Report at: file://C:/Users/valexander/AppData/Local/Temp/leaguebound-timing-048e7a3122c94a05bcf6dc3a47a44719/reports/report_10/index.html[0m
+[38;2;178;34;34mExit code: 100[0m
+Run dispose test resources

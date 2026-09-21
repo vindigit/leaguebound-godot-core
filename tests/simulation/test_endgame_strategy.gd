@@ -539,17 +539,15 @@ func test_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable() 
 	).is_false()
 
 
-## The window has a floor as well as a ceiling, and the floor is what makes the
-## rule about a plan rather than about a gesture. A miss buys a rebound and the
-## shot after it; below the clock those two will actually be charged, it buys
-## neither, and the free point is worth more.
+## The conservative floor survives every configured paced rebound duration.
+## Smaller draws can fit below it; direct putbacks cost no extra action time.
 func test_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need() -> void:
 	var input: MatchInput = MatchFixtureFactory.standard_match()
 	var balance: SimulationBalanceProfile = input.balance_profile
 	var rules: CompetitionRuleProfile = input.rule_profile
-	var floor_ms: int = EndgameStrategy.minimum_miss_window_ms(balance)
+	var floor_ms: int = EndgameStrategy.minimum_miss_window_ms(balance, rules)
 	assert_int(floor_ms).is_equal(
-		(balance.rebound_seconds_max + balance.action_seconds_min) * 1000)
+		roundi(balance.rebound_seconds_max * 1000.0 * rules.pace_multiplier) + 1)
 
 	# At the floor exactly, the plan still fits.
 	var at_floor: PossessionContext = _context(
@@ -558,8 +556,7 @@ func test_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need() -
 		EndgameStrategy.should_intentionally_miss_final_free_throw(at_floor, balance, 1, 2)
 	).is_true()
 
-	# One millisecond under it, and at the millisecond a free-throw trip
-	# actually leaves on the clock, it does not.
+	# Below that conservative boundary, the policy declines the intentional miss.
 	for clock: int in [floor_ms - 1, 1]:
 		var too_late: PossessionContext = _context(
 			input, _snapshot_at(input, rules.regulation_periods, clock, -2), input.home.team_id)
@@ -568,17 +565,17 @@ func test_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need() -
 		).override_failure_message("clock %d" % clock).is_false()
 
 
-## And the profile refuses to ship a window that cannot contain that floor,
-## which is how the rule shipped at v9 once the floor was known: an eligible
-## band half a second wide is a rule that never fires.
+## Reference validation rejects an empty inclusive clock band.
 func test_the_shipped_profile_keeps_the_miss_window_above_its_own_floor() -> void:
 	var balance := SimulationBalanceProfile.new()
 	assert_int(balance.intentional_miss_clock_ms).is_greater(
 		EndgameStrategy.minimum_miss_window_ms(balance))
 	assert_array(balance.validate()).is_empty()
 
-	# And the validation is real: a window at the floor is rejected by name.
+	# A one-millisecond inclusive band is valid; below the floor is not.
 	balance.intentional_miss_clock_ms = EndgameStrategy.minimum_miss_window_ms(balance)
+	assert_array(balance.validate()).is_empty()
+	balance.intentional_miss_clock_ms = EndgameStrategy.minimum_miss_window_ms(balance) - 1
 	var failures: PackedStringArray = balance.validate()
 	assert_int(failures.size()).is_equal(1)
 	assert_str(failures[0]).contains("intentional-miss window")
