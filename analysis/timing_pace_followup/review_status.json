@@ -1,0 +1,21 @@
+{
+  "timing_builder": "timing_builder",
+  "tests_builder": "tests_builder",
+  "golden_timing_regression": "ACCEPT",
+  "pace_and_regression_builder": "root",
+  "regression_critic": "timing_builder",
+  "tests_and_mutations": "ACCEPT",
+  "date": "2026-09-21",
+  "timing_correctness": "ACCEPT",
+  "final_regression": "ACCEPT: independent regression critic audited all eight gate steps, 684 actual test cases across 54 suites, and honest regression disclosures",
+  "timing_and_test_critic": "timing_critic",
+  "final_pace": "ACCEPT: independent timing/test/pace critic accepted final local timing, tests, matched derivation and both untouched ranges",
+  "freeze_provenance": "ACCEPT: independent critic verified source tree, profile hash, unmodified calibration inputs and freeze-before-launch chronology",
+  "validation_a": "ACCEPT: critic independently verified all five raw/canonical cells, exact seeds, counts, source identity, unchanged bands and clustered intervals",
+  "putback_fixture": "ACCEPT: independent replay, 19 focused passes, and assertion-killed tag-removal mutant; test-only commit 401be24",
+  "validation_b": "ACCEPT: all five raw/canonical cells independently verified; all ten heldout possession bands pass",
+  "heldout_regression_inventory": "ACCEPT: critic verified all failures, including narrowly failed top B three-point-attempt rate",
+  "venue_diagnostics": "ACCEPT: all five raw-triple estimators and intervals independently reproduced; overseas legacy cap FAIL retained; paired metrics pass; diagnosis only",
+  "score_margin_test_contract": "ACCEPT: explicit finite-sample proxy replacement; original 24 preserved; 19 focused passes; valid-ledger forced-favorite mutant killed; test-only commit 54fdffd",
+  "review_scope": "Final local evidence only. Published-head CI and draft/unmerged verification are recorded on PR #1 after fast-forward publication."
+}

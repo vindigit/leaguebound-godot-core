@@ -15,3 +15,17 @@ Commands from repository root, using the pinned Godot binary:
 `putback_wiring_mutation.json` records the exact test source and production-engine hashes. It runs the corrected test method in isolation, then removes only the putback writer's tag: baseline 1/1 green; mutant killed with 2 assertion failures and 0 errors. The temporary source is restored; shared production files are never mutated. The full focused-suite log is `endgame_corrections_fixture_recheck.log`.
 
 Focused suite result: **19/19 passed, 0 errors, 0 failures**, exit 0 (5min 13s 811ms).
+
+## Fresh-checkout mutation prerequisite
+
+The supplementary mutation runner reuses the isolated copy named in
+`analysis/stopped_clock_followup/final_pace_mutations/results.json`. Its archived
+machine path is not portable. Before either supplementary mutation on a fresh
+checkout, recreate that isolated copy and provenance with:
+
+```powershell
+.\tools\run_timing_mutations.ps1 -GodotBin $GodotBin -OutputDirectory analysis/stopped_clock_followup/final_pace_mutations
+```
+
+Then run the putback/upset mutation command above. This prerequisite also reruns
+the nine timing mutants; it never mutates the shared production checkout.

@@ -41,3 +41,17 @@ From repository root, with `$GodotBin` set to the pinned executable:
 The failed initial diagnostic-only launch and restart are disclosed in `score_margin_audit_restart_note.txt`; it supplied no accepted measurements. The full focused suite output is `score_margin_focused_recheck.log`. The complete eight-step gate must be rerun after this correction; focused successes are not stitched into an earlier failed gate.
 
 Verification results: full score-margin suite **19/19 passed**, 0 errors, 0 failures, exit 0 (2min 27s 558ms). Isolated witness baseline **1/1 passed**; the valid-ledger forced-favorite mutant was killed by exactly **2 upset-reachability assertion failures**, with all rating, ledger, completion, reconciliation, and repeat checks passing. The restored engine and final test hashes are recorded in upset_witness_mutation.json.
+
+## Fresh-checkout mutation prerequisite
+
+The supplementary mutation runner reuses the isolated copy named in
+`analysis/stopped_clock_followup/final_pace_mutations/results.json`. Its archived
+machine path is not portable. Before either supplementary mutation on a fresh
+checkout, recreate that isolated copy and provenance with:
+
+```powershell
+.\tools\run_timing_mutations.ps1 -GodotBin $GodotBin -OutputDirectory analysis/stopped_clock_followup/final_pace_mutations
+```
+
+Then run the putback/upset mutation command above. This prerequisite also reruns
+the nine timing mutants; it never mutates the shared production checkout.

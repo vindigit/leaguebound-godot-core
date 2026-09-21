@@ -1,0 +1,1567 @@
+{
+  "schema": "leaguebound.calibration.report/1",
+  "context": {
+    "report_id": "attribute_sensitivity",
+    "title": "Attribute marginal-value and sensitivity",
+    "commit_sha": "54fdffd1805251f9b2ee1828d4c2caf98ab871f9",
+    "commit_note": "",
+    "godot_version": "4.7.1-stable (official)",
+    "build_mode": "editor-debug (asserts active)",
+    "rules_profile": {
+      "id": "top_domestic_pro",
+      "version": "competition-v2-stopped-clock-pace"
+    },
+    "balance_profile": {
+      "id": "simulation_baseline",
+      "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+    },
+    "ratings_profile_version": "ratings-v1",
+    "targets_version": "calibration-targets-v1",
+    "rng": {
+      "algorithm": "godot-pcg32-v1",
+      "stream_key_version": "sha256-stream-key-v1"
+    },
+    "seeds": "1..100000 per test point",
+    "seed_range": {
+      "start": 0,
+      "end": 0
+    },
+    "shard": {
+      "index": 0,
+      "count": 1
+    },
+    "competition": "",
+    "certification": {
+      "required_sample": 0,
+      "source": ""
+    },
+    "sample_count": 100000,
+    "sample_unit": "resolutions per probability test point",
+    "elapsed_ms": 114,
+    "throughput_per_second": 877192.98245614,
+    "notes": [
+      "Â§27.1 isolated-boundary sample is 100000 resolutions per test point; this run used 100000.",
+      "Capability movements are exact functions of the ratings and carry no interval. Probability movements are sampled and carry Wilson intervals.",
+      "Box-score, role-relative, team-impact, and fatigue/availability observables are NOT covered by this run; they require the match-level suite."
+    ]
+  },
+  "summary": {
+    "passed": true,
+    "metric_count": 80,
+    "judged_metric_count": 80,
+    "failure_count": 0
+  },
+  "metrics": [
+    {
+      "metric": "sample.meets_certification_size",
+      "definition": "Whether this run reached the Â§27.1 isolated-boundary sample size.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 100000,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.1"
+      }
+    },
+    {
+      "metric": "attribute.short_range.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.short_range.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers rim_touch_finish.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.short_range.effect_50_to_80",
+      "definition": "Relative increase in rim_touch_finish from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.dunking.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.dunking.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers dunk_threat.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.dunking.effect_50_to_80",
+      "definition": "Relative increase in dunk_threat from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.mid_range.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.mid_range.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers midrange_shotmaking.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.mid_range.effect_50_to_80",
+      "definition": "Relative increase in midrange_shotmaking from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.857142857142857,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.three_point.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.three_point.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers three_point_shotmaking.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.three_point.effect_50_to_80",
+      "definition": "Relative increase in three_point_shotmaking from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.888086642599278,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.free_throw.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.free_throw.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers free_throw_shotmaking.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.free_throw.effect_50_to_80",
+      "definition": "Relative increase in free_throw_shotmaking from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 1.05343511450382,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.handle.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.handle.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers ball_security.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.handle.effect_50_to_80",
+      "definition": "Relative increase in ball_security from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.644628099173554,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.passing.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.passing.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers pass_accuracy.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.passing.effect_50_to_80",
+      "definition": "Relative increase in pass_accuracy from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.644628099173554,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.vision.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.vision.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers pass_read_quality.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.vision.effect_50_to_80",
+      "definition": "Relative increase in pass_read_quality from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_iq.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_iq.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers shot_selection.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_iq.effect_50_to_80",
+      "definition": "Relative increase in shot_selection from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.823529411764706,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.perimeter_defense.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.perimeter_defense.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers point_of_attack_containment.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.perimeter_defense.effect_50_to_80",
+      "definition": "Relative increase in point_of_attack_containment from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.519685039370078,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.interior_defense.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.interior_defense.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers interior_positioning.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.interior_defense.effect_50_to_80",
+      "definition": "Relative increase in interior_positioning from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.stealing.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.stealing.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers passing_lane_defense.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.stealing.effect_50_to_80",
+      "definition": "Relative increase in passing_lane_defense from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.blocking.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.blocking.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers rim_protection.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.blocking.effect_50_to_80",
+      "definition": "Relative increase in rim_protection from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.519685039370079,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_iq.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_iq.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers help_recognition.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_iq.effect_50_to_80",
+      "definition": "Relative increase in help_recognition from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.909090909090909,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_rebounding.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_rebounding.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers offensive_rebound_positioning.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.offensive_rebounding.effect_50_to_80",
+      "definition": "Relative increase in offensive_rebound_positioning from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290323,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_rebounding.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_rebounding.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers defensive_rebound_positioning.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.defensive_rebounding.effect_50_to_80",
+      "definition": "Relative increase in defensive_rebound_positioning from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290323,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.speed.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.speed.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers court_speed.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.speed.effect_50_to_80",
+      "definition": "Relative increase in court_speed from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 1.2,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.strength.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.strength.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers contact_force.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.strength.effect_50_to_80",
+      "definition": "Relative increase in contact_force from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 1.2,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.stamina.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.stamina.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers work_capacity.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.stamina.effect_50_to_80",
+      "definition": "Relative increase in work_capacity from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 1.2,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.vertical.is_addressed",
+      "definition": "The attribute is weighted by at least one Â§5.2 capability.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "attribute.vertical.monotonic",
+      "definition": "Raising the attribute across [40, 50, 65, 80, 90] never lowers burst_reach.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 0,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "attribute.vertical.effect_50_to_80",
+      "definition": "Relative increase in burst_reach from rating 50 to rating 80, every other rating held at 65. Exact: the Â§5.2 mean is a deterministic function.",
+      "denominator": "capability evaluations",
+      "estimate": 0.580645161290322,
+      "sample_count": 5,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.ball_security",
+      "definition": "Movement in ball_security from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill handle over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.307692307692308,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.handle_creation",
+      "definition": "Movement in handle_creation from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill handle over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.363636363636364,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.pass_accuracy",
+      "definition": "Movement in pass_accuracy from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill passing over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.307692307692308,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.pass_read_quality",
+      "definition": "Movement in pass_read_quality from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill vision over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.416666666666667,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.rim_touch_finish",
+      "definition": "Movement in rim_touch_finish from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill short_range over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.25,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.midrange_shotmaking",
+      "definition": "Movement in midrange_shotmaking from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill mid_range over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.25,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.three_point_shotmaking",
+      "definition": "Movement in three_point_shotmaking from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill three_point over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.219512195121951,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.free_throw_shotmaking",
+      "definition": "Movement in free_throw_shotmaking from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill free_throw over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.0869565217391304,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.offensive_iq.in.offensive_rebound_positioning",
+      "definition": "Movement in offensive_rebound_positioning from raising offensive_iq 50 to 80, as a share of the movement from raising its named primary skill offensive_rebounding over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.166666666666667,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.point_of_attack_containment",
+      "definition": "Movement in point_of_attack_containment from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill perimeter_defense over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.272727272727273,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.perimeter_contest",
+      "definition": "Movement in perimeter_contest from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill perimeter_defense over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.363636363636364,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.interior_positioning",
+      "definition": "Movement in interior_positioning from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill interior_defense over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.333333333333334,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.rim_protection",
+      "definition": "Movement in rim_protection from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill blocking over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.272727272727272,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.passing_lane_defense",
+      "definition": "Movement in passing_lane_defense from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill stealing over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.416666666666667,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.on_ball_disruption",
+      "definition": "Movement in on_ball_disruption from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill stealing over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.272727272727273,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "amplifier.defensive_iq.in.defensive_rebound_positioning",
+      "definition": "Movement in defensive_rebound_positioning from raising defensive_iq 50 to 80, as a share of the movement from raising its named primary skill defensive_rebounding over the same range.",
+      "denominator": "capability evaluations",
+      "estimate": 0.166666666666667,
+      "sample_count": 2,
+      "verdict": "pass",
+      "target": {
+        "minimum": 0.0,
+        "maximum": 0.6,
+        "source": "BALANCE_SPEC.md Â§5.2"
+      }
+    },
+    {
+      "metric": "shot.short_range.close_non_rim.effect_50_to_80",
+      "definition": "Relative increase in realized make rate from short_range at 50 to short_range at 80, sampled from the open, balanced Â§13.1 baseline.",
+      "denominator": "sampled attempts",
+      "estimate": 0.260207861006981,
+      "sample_count": 200000,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.00435296254958818,
+        "low": 0.255854898457393,
+        "high": 0.264560823556569
+      },
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "shot.mid_range.midrange.effect_50_to_80",
+      "definition": "Relative increase in realized make rate from mid_range at 50 to mid_range at 80, sampled from the open, balanced Â§13.1 baseline.",
+      "denominator": "sampled attempts",
+      "estimate": 0.435420295169126,
+      "sample_count": 200000,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.00424571134027871,
+        "low": 0.431174583828848,
+        "high": 0.439666006509405
+      },
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    },
+    {
+      "metric": "shot.three_point.standard_three.effect_50_to_80",
+      "definition": "Relative increase in realized make rate from three_point at 50 to three_point at 80, sampled from the open, balanced Â§13.1 baseline.",
+      "denominator": "sampled attempts",
+      "estimate": 0.46974817398888,
+      "sample_count": 200000,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.00411280861527223,
+        "low": 0.465635365373608,
+        "high": 0.473860982604153
+      },
+      "target": {
+        "minimum": 0.1,
+        "maximum": 100.0,
+        "source": "BALANCE_SPEC.md §27.2"
+      }
+    }
+  ],
+  "sections": {
+    "attribute_rows": [
+      {
+        "attribute": "short_range",
+        "addressed": true,
+        "primary_capabilities": [
+          "rim_touch_finish"
+        ],
+        "weighted_capabilities": [
+          "rim_touch_finish"
+        ],
+        "probe_capability": "rim_touch_finish",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      },
+      {
+        "attribute": "dunking",
+        "addressed": true,
+        "primary_capabilities": [
+          "dunk_threat"
+        ],
+        "weighted_capabilities": [
+          "dunk_threat"
+        ],
+        "probe_capability": "dunk_threat",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      },
+      {
+        "attribute": "mid_range",
+        "addressed": true,
+        "primary_capabilities": [
+          "midrange_shotmaking"
+        ],
+        "weighted_capabilities": [
+          "midrange_shotmaking"
+        ],
+        "probe_capability": "midrange_shotmaking",
+        "curve": [
+          0.27027027027027,
+          0.378378378378378,
+          0.540540540540541,
+          0.702702702702703,
+          0.810810810810811
+        ],
+        "relative_effect_50_to_80": 0.857142857142857,
+        "monotonic": true
+      },
+      {
+        "attribute": "three_point",
+        "addressed": true,
+        "primary_capabilities": [
+          "three_point_shotmaking"
+        ],
+        "weighted_capabilities": [
+          "three_point_shotmaking"
+        ],
+        "probe_capability": "three_point_shotmaking",
+        "curve": [
+          0.263513513513513,
+          0.374324324324324,
+          0.540540540540541,
+          0.706756756756757,
+          0.817567567567568
+        ],
+        "relative_effect_50_to_80": 0.888086642599278,
+        "monotonic": true
+      },
+      {
+        "attribute": "free_throw",
+        "addressed": true,
+        "primary_capabilities": [
+          "free_throw_shotmaking"
+        ],
+        "weighted_capabilities": [
+          "free_throw_shotmaking"
+        ],
+        "probe_capability": "free_throw_shotmaking",
+        "curve": [
+          0.22972972972973,
+          0.354054054054054,
+          0.540540540540541,
+          0.727027027027027,
+          0.851351351351351
+        ],
+        "relative_effect_50_to_80": 1.05343511450382,
+        "monotonic": true
+      },
+      {
+        "attribute": "handle",
+        "addressed": true,
+        "primary_capabilities": [
+          "ball_security",
+          "handle_creation"
+        ],
+        "weighted_capabilities": [
+          "ball_security",
+          "handle_creation"
+        ],
+        "probe_capability": "ball_security",
+        "curve": [
+          0.320945945945946,
+          0.408783783783784,
+          0.540540540540541,
+          0.672297297297297,
+          0.760135135135135
+        ],
+        "relative_effect_50_to_80": 0.644628099173554,
+        "monotonic": true
+      },
+      {
+        "attribute": "passing",
+        "addressed": true,
+        "primary_capabilities": [
+          "pass_accuracy"
+        ],
+        "weighted_capabilities": [
+          "pass_accuracy",
+          "pass_read_quality"
+        ],
+        "probe_capability": "pass_accuracy",
+        "curve": [
+          0.320945945945946,
+          0.408783783783784,
+          0.540540540540541,
+          0.672297297297297,
+          0.760135135135135
+        ],
+        "relative_effect_50_to_80": 0.644628099173554,
+        "monotonic": true
+      },
+      {
+        "attribute": "vision",
+        "addressed": true,
+        "primary_capabilities": [
+          "pass_read_quality"
+        ],
+        "weighted_capabilities": [
+          "pass_accuracy",
+          "pass_read_quality",
+          "shot_selection",
+          "off_ball_timing"
+        ],
+        "probe_capability": "pass_read_quality",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      },
+      {
+        "attribute": "offensive_iq",
+        "addressed": true,
+        "primary_capabilities": [
+          "shot_selection",
+          "off_ball_timing"
+        ],
+        "weighted_capabilities": [
+          "ball_security",
+          "handle_creation",
+          "pass_accuracy",
+          "pass_read_quality",
+          "shot_selection",
+          "rim_touch_finish",
+          "midrange_shotmaking",
+          "three_point_shotmaking",
+          "free_throw_shotmaking",
+          "off_ball_timing",
+          "offensive_rebound_positioning"
+        ],
+        "probe_capability": "shot_selection",
+        "curve": [
+          0.25,
+          0.344594594594595,
+          0.486486486486487,
+          0.628378378378378,
+          0.722972972972973
+        ],
+        "relative_effect_50_to_80": 0.823529411764706,
+        "monotonic": true
+      },
+      {
+        "attribute": "perimeter_defense",
+        "addressed": true,
+        "primary_capabilities": [
+          "point_of_attack_containment",
+          "perimeter_contest"
+        ],
+        "weighted_capabilities": [
+          "point_of_attack_containment",
+          "perimeter_contest",
+          "on_ball_disruption"
+        ],
+        "probe_capability": "point_of_attack_containment",
+        "curve": [
+          0.35472972972973,
+          0.429054054054054,
+          0.540540540540541,
+          0.652027027027027,
+          0.726351351351351
+        ],
+        "relative_effect_50_to_80": 0.519685039370078,
+        "monotonic": true
+      },
+      {
+        "attribute": "interior_defense",
+        "addressed": true,
+        "primary_capabilities": [
+          "interior_positioning"
+        ],
+        "weighted_capabilities": [
+          "interior_positioning",
+          "rim_protection"
+        ],
+        "probe_capability": "interior_positioning",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      },
+      {
+        "attribute": "stealing",
+        "addressed": true,
+        "primary_capabilities": [
+          "passing_lane_defense",
+          "on_ball_disruption"
+        ],
+        "weighted_capabilities": [
+          "passing_lane_defense",
+          "on_ball_disruption"
+        ],
+        "probe_capability": "passing_lane_defense",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      },
+      {
+        "attribute": "blocking",
+        "addressed": true,
+        "primary_capabilities": [
+          "rim_protection"
+        ],
+        "weighted_capabilities": [
+          "rim_protection"
+        ],
+        "probe_capability": "rim_protection",
+        "curve": [
+          0.35472972972973,
+          0.429054054054054,
+          0.540540540540541,
+          0.652027027027027,
+          0.726351351351352
+        ],
+        "relative_effect_50_to_80": 0.519685039370079,
+        "monotonic": true
+      },
+      {
+        "attribute": "defensive_iq",
+        "addressed": true,
+        "primary_capabilities": [
+          "help_recognition"
+        ],
+        "weighted_capabilities": [
+          "point_of_attack_containment",
+          "perimeter_contest",
+          "interior_positioning",
+          "rim_protection",
+          "passing_lane_defense",
+          "on_ball_disruption",
+          "help_recognition",
+          "defensive_rebound_positioning"
+        ],
+        "probe_capability": "help_recognition",
+        "curve": [
+          0.233108108108108,
+          0.334459459459459,
+          0.486486486486487,
+          0.638513513513514,
+          0.739864864864865
+        ],
+        "relative_effect_50_to_80": 0.909090909090909,
+        "monotonic": true
+      },
+      {
+        "attribute": "offensive_rebounding",
+        "addressed": true,
+        "primary_capabilities": [
+          "offensive_rebound_positioning"
+        ],
+        "weighted_capabilities": [
+          "offensive_rebound_positioning"
+        ],
+        "probe_capability": "offensive_rebound_positioning",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290323,
+        "monotonic": true
+      },
+      {
+        "attribute": "defensive_rebounding",
+        "addressed": true,
+        "primary_capabilities": [
+          "defensive_rebound_positioning"
+        ],
+        "weighted_capabilities": [
+          "defensive_rebound_positioning"
+        ],
+        "probe_capability": "defensive_rebound_positioning",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290323,
+        "monotonic": true
+      },
+      {
+        "attribute": "speed",
+        "addressed": true,
+        "primary_capabilities": [
+          "court_speed"
+        ],
+        "weighted_capabilities": [
+          "handle_creation",
+          "rim_touch_finish",
+          "dunk_threat",
+          "off_ball_timing",
+          "point_of_attack_containment",
+          "perimeter_contest",
+          "passing_lane_defense",
+          "on_ball_disruption",
+          "help_recognition",
+          "court_speed",
+          "burst_reach"
+        ],
+        "probe_capability": "court_speed",
+        "curve": [
+          0.202702702702703,
+          0.337837837837838,
+          0.540540540540541,
+          0.743243243243243,
+          0.878378378378378
+        ],
+        "relative_effect_50_to_80": 1.2,
+        "monotonic": true
+      },
+      {
+        "attribute": "strength",
+        "addressed": true,
+        "primary_capabilities": [
+          "contact_force"
+        ],
+        "weighted_capabilities": [
+          "ball_security",
+          "rim_touch_finish",
+          "dunk_threat",
+          "offensive_rebound_positioning",
+          "point_of_attack_containment",
+          "interior_positioning",
+          "defensive_rebound_positioning",
+          "contact_force"
+        ],
+        "probe_capability": "contact_force",
+        "curve": [
+          0.202702702702703,
+          0.337837837837838,
+          0.540540540540541,
+          0.743243243243243,
+          0.878378378378378
+        ],
+        "relative_effect_50_to_80": 1.2,
+        "monotonic": true
+      },
+      {
+        "attribute": "stamina",
+        "addressed": true,
+        "primary_capabilities": [
+          "work_capacity"
+        ],
+        "weighted_capabilities": [
+          "work_capacity"
+        ],
+        "probe_capability": "work_capacity",
+        "curve": [
+          0.202702702702703,
+          0.337837837837838,
+          0.540540540540541,
+          0.743243243243243,
+          0.878378378378378
+        ],
+        "relative_effect_50_to_80": 1.2,
+        "monotonic": true
+      },
+      {
+        "attribute": "vertical",
+        "addressed": true,
+        "primary_capabilities": [
+          "burst_reach"
+        ],
+        "weighted_capabilities": [
+          "dunk_threat",
+          "offensive_rebound_positioning",
+          "perimeter_contest",
+          "rim_protection",
+          "defensive_rebound_positioning",
+          "burst_reach"
+        ],
+        "probe_capability": "burst_reach",
+        "curve": [
+          0.337837837837838,
+          0.418918918918919,
+          0.540540540540541,
+          0.662162162162162,
+          0.743243243243243
+        ],
+        "relative_effect_50_to_80": 0.580645161290322,
+        "monotonic": true
+      }
+    ]
+  }
+}
