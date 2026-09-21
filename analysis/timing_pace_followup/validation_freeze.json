@@ -1,0 +1,29 @@
+{
+  "validation_games_per_competition_per_range": 400,
+  "src_tree": "c7bfee6dc84e6510b264ecfe375962a722b613fe",
+  "venue_environment": 0.5,
+  "venue_range": "diagnosis",
+  "frozen_utc": "2026-09-21T17:00:28.9177972Z",
+  "venue_pairs_per_competition": 200,
+  "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+  "venue_mode": "mirror",
+  "values": {
+    "college": 1.143,
+    "high_school": 0.92,
+    "development": 1.009,
+    "top_domestic_pro": 0.956,
+    "overseas": 1.057
+  },
+  "profile_sha256": "6907C519B9FC9A31DB5F37DF93F38917938488B196E89034B46A7E6D3707BC3D",
+  "training_recheck_passes": 5,
+  "validation_variations": [
+    [
+      18000000,
+      18000399
+    ],
+    [
+      19000000,
+      19000399
+    ]
+  ]
+}

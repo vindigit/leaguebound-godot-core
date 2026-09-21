@@ -21,7 +21,7 @@ def load(label, comp):
  path = OUT / 'reports' / name
  if not path.exists():
   path = ROOT / 'reports' / name
- data=json.loads(path.read_text()); rows=data['rows']
+ data=json.loads(path.read_text(encoding="utf-8-sig")); rows=data['rows']
  assert len({r['seed'] for r in rows})==len(rows)
  assert [r['seed'] for r in rows]==list(range(data['seed_first'],data['seed_last']+1))
  for r in rows:

@@ -1,0 +1,407 @@
+{
+  "high_school": {
+    "pace": 0.92,
+    "seed_first": 19000001,
+    "seed_last": 19000400,
+    "games": 400,
+    "metrics": {
+      "possessions": {
+        "estimate": 66.42875,
+        "half_width_95_normal_game_cluster": 0.29560111169757486
+      },
+      "points_per_game": {
+        "estimate": 63.215,
+        "half_width_95_normal_game_cluster": 0.7127336516859676
+      },
+      "ppp": {
+        "estimate": 0.9516210977927478,
+        "half_width_95_normal_game_cluster": 0.010275033309268341
+      },
+      "fg": {
+        "estimate": 0.3848187683747361,
+        "half_width_95_normal_game_cluster": 0.004194191356852608
+      },
+      "three": {
+        "estimate": 0.3075160970777613,
+        "half_width_95_normal_game_cluster": 0.0068579441617926135
+      },
+      "ft": {
+        "estimate": 0.669405558936904,
+        "half_width_95_normal_game_cluster": 0.009099561659067517
+      },
+      "three_attempt_rate": {
+        "estimate": 0.31869931532526985,
+        "half_width_95_normal_game_cluster": 0.004428087206834389
+      },
+      "fta_rate": {
+        "estimate": 0.19451076340245851,
+        "half_width_95_normal_game_cluster": 0.004980437596260894
+      },
+      "turnover_rate": {
+        "estimate": 0.16508288956212483,
+        "half_width_95_normal_game_cluster": 0.003347189475507837
+      },
+      "orb": {
+        "estimate": 0.255497665606604,
+        "half_width_95_normal_game_cluster": 0.005026506614751771
+      },
+      "assist": {
+        "estimate": 0.4886427729067323,
+        "half_width_95_normal_game_cluster": 0.006941585960733794
+      },
+      "home_win": {
+        "estimate": 0.5675,
+        "half_width_95_normal_game_cluster": 0.04861223764776527
+      },
+      "overtime": {
+        "estimate": 0.03,
+        "half_width_95_normal_game_cluster": 0.01673848386519111
+      },
+      "close": {
+        "estimate": 0.285,
+        "half_width_95_normal_game_cluster": 0.04429401765475785
+      },
+      "blowout": {
+        "estimate": 0.1,
+        "half_width_95_normal_game_cluster": 0.029436819050119422
+      },
+      "regulation_possessions": {
+        "estimate": 66.14125,
+        "half_width_95_normal_game_cluster": 0.24751783853843107
+      },
+      "overtime_possessions": {
+        "estimate": 0.2875,
+        "half_width_95_normal_game_cluster": 0.16531841949571563
+      }
+    },
+    "possession_band": [
+      61,
+      72
+    ],
+    "possession_pass": true
+  },
+  "college": {
+    "pace": 1.143,
+    "seed_first": 19000001,
+    "seed_last": 19000400,
+    "games": 400,
+    "metrics": {
+      "possessions": {
+        "estimate": 68.16625,
+        "half_width_95_normal_game_cluster": 0.2556231012025733
+      },
+      "points_per_game": {
+        "estimate": 70.39125,
+        "half_width_95_normal_game_cluster": 0.7352909029586074
+      },
+      "ppp": {
+        "estimate": 1.0326407863128748,
+        "half_width_95_normal_game_cluster": 0.010429550479125591
+      },
+      "fg": {
+        "estimate": 0.40441176470588236,
+        "half_width_95_normal_game_cluster": 0.0041668305588505265
+      },
+      "three": {
+        "estimate": 0.315726083964212,
+        "half_width_95_normal_game_cluster": 0.007058738875763966
+      },
+      "ft": {
+        "estimate": 0.7185337288006692,
+        "half_width_95_normal_game_cluster": 0.007998152322493065
+      },
+      "three_attempt_rate": {
+        "estimate": 0.3409730913642053,
+        "half_width_95_normal_game_cluster": 0.003978879432752469
+      },
+      "fta_rate": {
+        "estimate": 0.2571378285356696,
+        "half_width_95_normal_game_cluster": 0.006343092485464856
+      },
+      "turnover_rate": {
+        "estimate": 0.15610731116938367,
+        "half_width_95_normal_game_cluster": 0.0030560208955059567
+      },
+      "orb": {
+        "estimate": 0.2484865068235455,
+        "half_width_95_normal_game_cluster": 0.004913920518452809
+      },
+      "assist": {
+        "estimate": 0.5252417794970986,
+        "half_width_95_normal_game_cluster": 0.006926068499717973
+      },
+      "home_win": {
+        "estimate": 0.5175,
+        "half_width_95_normal_game_cluster": 0.04903130578893878
+      },
+      "overtime": {
+        "estimate": 0.005,
+        "half_width_95_normal_game_cluster": 0.006920957240353897
+      },
+      "close": {
+        "estimate": 0.25,
+        "half_width_95_normal_game_cluster": 0.04248838850668188
+      },
+      "blowout": {
+        "estimate": 0.1425,
+        "half_width_95_normal_game_cluster": 0.034300000000000004
+      },
+      "regulation_possessions": {
+        "estimate": 68.12125,
+        "half_width_95_normal_game_cluster": 0.24888039763018982
+      },
+      "overtime_possessions": {
+        "estimate": 0.045,
+        "half_width_95_normal_game_cluster": 0.06238514780511998
+      }
+    },
+    "possession_band": [
+      64,
+      73
+    ],
+    "possession_pass": true
+  },
+  "development": {
+    "pace": 1.009,
+    "seed_first": 19000001,
+    "seed_last": 19000400,
+    "games": 400,
+    "metrics": {
+      "possessions": {
+        "estimate": 94.35625,
+        "half_width_95_normal_game_cluster": 0.33686564979049427
+      },
+      "points_per_game": {
+        "estimate": 102.48875,
+        "half_width_95_normal_game_cluster": 0.8811699712822003
+      },
+      "ppp": {
+        "estimate": 1.0861893091342651,
+        "half_width_95_normal_game_cluster": 0.008660983415253582
+      },
+      "fg": {
+        "estimate": 0.42892754110298853,
+        "half_width_95_normal_game_cluster": 0.0036756101020561844
+      },
+      "three": {
+        "estimate": 0.34481376047472034,
+        "half_width_95_normal_game_cluster": 0.005599381158141856
+      },
+      "ft": {
+        "estimate": 0.760243077308608,
+        "half_width_95_normal_game_cluster": 0.006814290892374561
+      },
+      "three_attempt_rate": {
+        "estimate": 0.34928437386214045,
+        "half_width_95_normal_game_cluster": 0.0033574097431343175
+      },
+      "fta_rate": {
+        "estimate": 0.22353863820967426,
+        "half_width_95_normal_game_cluster": 0.005040202480399737
+      },
+      "turnover_rate": {
+        "estimate": 0.1534609525071206,
+        "half_width_95_normal_game_cluster": 0.0026241921604790294
+      },
+      "orb": {
+        "estimate": 0.2524271844660194,
+        "half_width_95_normal_game_cluster": 0.0043512637291664436
+      },
+      "assist": {
+        "estimate": 0.5421836228287841,
+        "half_width_95_normal_game_cluster": 0.00558475276857643
+      },
+      "home_win": {
+        "estimate": 0.5725,
+        "half_width_95_normal_game_cluster": 0.048542867653240264
+      },
+      "overtime": {
+        "estimate": 0.0275,
+        "half_width_95_normal_game_cluster": 0.016046516810647286
+      },
+      "close": {
+        "estimate": 0.235,
+        "half_width_95_normal_game_cluster": 0.04160392187990783
+      },
+      "blowout": {
+        "estimate": 0.1875,
+        "half_width_95_normal_game_cluster": 0.03829851584316908
+      },
+      "regulation_possessions": {
+        "estimate": 94.07,
+        "half_width_95_normal_game_cluster": 0.28729356829898733
+      },
+      "overtime_possessions": {
+        "estimate": 0.28625,
+        "half_width_95_normal_game_cluster": 0.1682793647636666
+      }
+    },
+    "possession_band": [
+      88,
+      101
+    ],
+    "possession_pass": true
+  },
+  "overseas": {
+    "pace": 1.057,
+    "seed_first": 19000001,
+    "seed_last": 19000400,
+    "games": 400,
+    "metrics": {
+      "possessions": {
+        "estimate": 75.68125,
+        "half_width_95_normal_game_cluster": 0.30247870919710007
+      },
+      "points_per_game": {
+        "estimate": 83.42625,
+        "half_width_95_normal_game_cluster": 0.8088220158830947
+      },
+      "ppp": {
+        "estimate": 1.1023371046329176,
+        "half_width_95_normal_game_cluster": 0.009687587307680918
+      },
+      "fg": {
+        "estimate": 0.43314514149454714,
+        "half_width_95_normal_game_cluster": 0.0039870967175331925
+      },
+      "three": {
+        "estimate": 0.3510032202130295,
+        "half_width_95_normal_game_cluster": 0.006359133591018323
+      },
+      "ft": {
+        "estimate": 0.7735507246376812,
+        "half_width_95_normal_game_cluster": 0.007630002710647246
+      },
+      "three_attempt_rate": {
+        "estimate": 0.3539117017919136,
+        "half_width_95_normal_game_cluster": 0.0038074159075960658
+      },
+      "fta_rate": {
+        "estimate": 0.23228249815899288,
+        "half_width_95_normal_game_cluster": 0.005905639798372825
+      },
+      "turnover_rate": {
+        "estimate": 0.1494590800231233,
+        "half_width_95_normal_game_cluster": 0.002865152750176738
+      },
+      "orb": {
+        "estimate": 0.2596793757991017,
+        "half_width_95_normal_game_cluster": 0.0049232646062803715
+      },
+      "assist": {
+        "estimate": 0.543839054404145,
+        "half_width_95_normal_game_cluster": 0.006428142728793912
+      },
+      "home_win": {
+        "estimate": 0.5375,
+        "half_width_95_normal_game_cluster": 0.04892318540503509
+      },
+      "overtime": {
+        "estimate": 0.0325,
+        "half_width_95_normal_game_cluster": 0.017399500900282954
+      },
+      "close": {
+        "estimate": 0.2375,
+        "half_width_95_normal_game_cluster": 0.041756237059070986
+      },
+      "blowout": {
+        "estimate": 0.1325,
+        "half_width_95_normal_game_cluster": 0.03326689782994606
+      },
+      "regulation_possessions": {
+        "estimate": 75.32375,
+        "half_width_95_normal_game_cluster": 0.2247644787795719
+      },
+      "overtime_possessions": {
+        "estimate": 0.3575,
+        "half_width_95_normal_game_cluster": 0.19991392577631567
+      }
+    },
+    "possession_band": [
+      70,
+      82
+    ],
+    "possession_pass": true
+  },
+  "top_domestic_pro": {
+    "pace": 0.956,
+    "seed_first": 19000001,
+    "seed_last": 19000400,
+    "games": 400,
+    "metrics": {
+      "possessions": {
+        "estimate": 99.4175,
+        "half_width_95_normal_game_cluster": 0.3094281859829543
+      },
+      "points_per_game": {
+        "estimate": 115.6525,
+        "half_width_95_normal_game_cluster": 0.9241746718208024
+      },
+      "ppp": {
+        "estimate": 1.1633012296627858,
+        "half_width_95_normal_game_cluster": 0.009039688325313273
+      },
+      "fg": {
+        "estimate": 0.4534871456822676,
+        "half_width_95_normal_game_cluster": 0.0036115277921089954
+      },
+      "three": {
+        "estimate": 0.3760117194652994,
+        "half_width_95_normal_game_cluster": 0.006081430522429244
+      },
+      "ft": {
+        "estimate": 0.8007257153054548,
+        "half_width_95_normal_game_cluster": 0.006076855939204451
+      },
+      "three_attempt_rate": {
+        "estimate": 0.35998681608437705,
+        "half_width_95_normal_game_cluster": 0.0034180853342357514
+      },
+      "fta_rate": {
+        "estimate": 0.22163480553724457,
+        "half_width_95_normal_game_cluster": 0.005110568015541468
+      },
+      "turnover_rate": {
+        "estimate": 0.14051852038122062,
+        "half_width_95_normal_game_cluster": 0.002366593686488357
+      },
+      "orb": {
+        "estimate": 0.2522059961814335,
+        "half_width_95_normal_game_cluster": 0.004176058406558122
+      },
+      "assist": {
+        "estimate": 0.5800796581097188,
+        "half_width_95_normal_game_cluster": 0.0051739898611866
+      },
+      "home_win": {
+        "estimate": 0.5975,
+        "half_width_95_normal_game_cluster": 0.0481195459429366
+      },
+      "overtime": {
+        "estimate": 0.015,
+        "half_width_95_normal_game_cluster": 0.01192705901897468
+      },
+      "close": {
+        "estimate": 0.215,
+        "half_width_95_normal_game_cluster": 0.04031101020638963
+      },
+      "blowout": {
+        "estimate": 0.2175,
+        "half_width_95_normal_game_cluster": 0.04048008607230291
+      },
+      "regulation_possessions": {
+        "estimate": 99.25,
+        "half_width_95_normal_game_cluster": 0.28292290190271385
+      },
+      "overtime_possessions": {
+        "estimate": 0.1675,
+        "half_width_95_normal_game_cluster": 0.13371157293533759
+      }
+    },
+    "possession_band": [
+      96,
+      103
+    ],
+    "possession_pass": true
+  }
+}

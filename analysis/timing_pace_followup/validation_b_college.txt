@@ -1,0 +1,57 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  college 25/400 pace=1.143000
+  college 50/400 pace=1.143000
+  college 75/400 pace=1.143000
+  college 100/400 pace=1.143000
+  college 125/400 pace=1.143000
+  college 150/400 pace=1.143000
+  college 175/400 pace=1.143000
+  college 200/400 pace=1.143000
+  college 225/400 pace=1.143000
+  college 250/400 pace=1.143000
+  college 275/400 pace=1.143000
+  college 300/400 pace=1.143000
+  college 325/400 pace=1.143000
+  college 350/400 pace=1.143000
+  college 375/400 pace=1.143000
+  college 400/400 pace=1.143000
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  college              68.2   70.4  1.033   40.4   31.6   34.1   71.9   25.7   15.6   24.8   52.5   15.5   5.1   2.8
+
+  home win rate / overtime / close / blowout, by competition:
+  college              51.7%    0.5%   25.0%   14.2%
+
+=== Competition basketball calibration ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=college/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 47500 of 47501, seeds 19000001..19000400 inclusive n=400 complete games per competition elapsed=977213ms rate=0.4/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 400.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  college.possessions_per_game                              68.1663 ±0.1854  target[64.0000, 73.0000]  PASS
+  college.possession_estimate_per_game                      72.7119  INFORMATIONAL
+  college.points_per_game                                   70.3912 ±0.7018  INFORMATIONAL
+  college.points_per_possession                              1.0326 ±0.0101  target[0.9800, 1.1000]  PASS
+  college.field_goal_percentage                              0.4044 ±0.0042  target[0.4200, 0.4900]  FAIL
+  college.three_point_percentage                             0.3157 ±0.0069  target[0.3100, 0.3800]  PASS
+  college.three_point_attempt_rate                           0.3410 ±0.0041  target[0.3200, 0.4600]  PASS
+  college.free_throw_percentage                              0.7185 ±0.0077  target[0.6700, 0.7900]  PASS
+  college.free_throw_attempt_rate                            0.2571 ±0.0038  target[0.2000, 0.3800]  PASS
+  college.turnovers_per_100_possessions                     15.6107  target[15.0000, 21.0000]  PASS
+  college.offensive_rebound_percentage                       0.2485 ±0.0050  target[0.2400, 0.3400]  PASS
+  college.assist_percentage                                  0.5252 ±0.0068  target[0.4800, 0.6800]  PASS
+  college.home_win_rate                                      0.5175 ±0.0487  target[0.5300, 0.5600]  FAIL
+  college.overtime_rate                                      0.0050 ±0.0083  target[0.0400, 0.0800]  FAIL
+  college.close_game_rate                                    0.2500 ±0.0423  target[0.2200, 0.3400]  PASS
+  college.blowout_rate                                       0.1425 ±0.0343  target[0.0800, 0.1800]  PASS
+  college.starter_mean_minutes                              24.7469 ±0.1198  INFORMATIONAL
+  college.team_leading_scorer_mean                          15.4038 ±0.2302  INFORMATIONAL
+  college.team_leading_scorer_p99                           24.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_b_college.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL college.field_goal_percentage: estimate 0.4044 outside BALANCE_SPEC.md §14.1 target [0.4200, 0.4900]
+  FAIL college.home_win_rate: estimate 0.5175 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL college.overtime_rate: estimate 0.0050 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  20 metric(s), 15 judged, 4 failure(s): FAIL

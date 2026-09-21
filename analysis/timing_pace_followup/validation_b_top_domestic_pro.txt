@@ -1,0 +1,61 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  top_domestic_pro 25/400 pace=0.956000
+  top_domestic_pro 50/400 pace=0.956000
+  top_domestic_pro 75/400 pace=0.956000
+  top_domestic_pro 100/400 pace=0.956000
+  top_domestic_pro 125/400 pace=0.956000
+  top_domestic_pro 150/400 pace=0.956000
+  top_domestic_pro 175/400 pace=0.956000
+  top_domestic_pro 200/400 pace=0.956000
+  top_domestic_pro 225/400 pace=0.956000
+  top_domestic_pro 250/400 pace=0.956000
+  top_domestic_pro 275/400 pace=0.956000
+  top_domestic_pro 300/400 pace=0.956000
+  top_domestic_pro 325/400 pace=0.956000
+  top_domestic_pro 350/400 pace=0.956000
+  top_domestic_pro 375/400 pace=0.956000
+  top_domestic_pro 400/400 pace=0.956000
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  top_domestic_pro     99.4  115.7  1.163   45.3   37.6   36.0   80.1   22.2   14.1   25.2   58.0   22.2   7.2   5.2
+
+  home win rate / overtime / close / blowout, by competition:
+  top_domestic_pro     59.8%    1.5%   21.5%   21.8%
+
+=== Competition basketball calibration ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=top_domestic_pro/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 47500 of 47501, seeds 19000001..19000400 inclusive n=400 complete games per competition elapsed=1436299ms rate=0.3/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 400.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  top_domestic_pro.possessions_per_game                     99.4175 ±0.2273  target[96.0000, 103.0000]  PASS
+  top_domestic_pro.possession_estimate_per_game            105.8098  INFORMATIONAL
+  top_domestic_pro.points_per_game                         115.6525 ±0.8600  INFORMATIONAL
+  top_domestic_pro.points_per_possession                     1.1633 ±0.0085  target[1.0800, 1.1800]  PASS
+  top_domestic_pro.field_goal_percentage                     0.4535 ±0.0035  target[0.4500, 0.5100]  PASS
+  top_domestic_pro.three_point_percentage                    0.3760 ±0.0057  target[0.3400, 0.4000]  PASS
+  top_domestic_pro.three_point_attempt_rate                  0.3600 ±0.0034  target[0.3600, 0.4900]  FAIL
+  top_domestic_pro.free_throw_percentage                     0.8007 ±0.0060  target[0.7300, 0.8300]  PASS
+  top_domestic_pro.free_throw_attempt_rate                   0.2216 ±0.0030  target[0.1800, 0.3400]  PASS
+  top_domestic_pro.turnovers_per_100_possessions            14.0519  target[11.0000, 16.0000]  PASS
+  top_domestic_pro.offensive_rebound_percentage              0.2522 ±0.0043  target[0.2000, 0.3100]  PASS
+  top_domestic_pro.assist_percentage                         0.5801 ±0.0052  target[0.5200, 0.7200]  PASS
+  top_domestic_pro.home_win_rate                             0.5975 ±0.0478  target[0.5300, 0.5600]  FAIL
+  top_domestic_pro.overtime_rate                             0.0150 ±0.0127  target[0.0400, 0.0800]  FAIL
+  top_domestic_pro.close_game_rate                           0.2150 ±0.0402  target[0.2200, 0.3400]  FAIL
+  top_domestic_pro.blowout_rate                              0.2175 ±0.0403  target[0.0800, 0.1800]  FAIL
+  top_domestic_pro.starter_mean_minutes                     29.2102 ±0.1577  target[27.0000, 35.0000]  PASS
+  top_domestic_pro.star_mean_minutes                        32.0551  target[12.0000, 36.0000]  PASS
+  top_domestic_pro.rotation_mean_minutes                    20.8674  target[12.0000, 36.0000]  PASS
+  top_domestic_pro.team_leading_scorer_mean                 22.9338 ±0.3039  INFORMATIONAL
+  top_domestic_pro.team_leading_scorer_p99                  35.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_b_top_domestic_pro.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL top_domestic_pro.three_point_attempt_rate: estimate 0.3600 outside BALANCE_SPEC.md §14.1 target [0.3600, 0.4900]
+  FAIL top_domestic_pro.home_win_rate: estimate 0.5975 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL top_domestic_pro.overtime_rate: estimate 0.0150 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  FAIL top_domestic_pro.close_game_rate: estimate 0.2150 outside BALANCE_SPEC.md §14.2 target [0.2200, 0.3400]
+  FAIL top_domestic_pro.blowout_rate: estimate 0.2175 outside BALANCE_SPEC.md §14.2 target [0.0800, 0.1800]
+  22 metric(s), 18 judged, 6 failure(s): FAIL
