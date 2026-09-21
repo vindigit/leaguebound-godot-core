@@ -1,0 +1,217 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  development: 50/200 matched pairs (150 complete games)
+  development: 100/200 matched pairs (300 complete games)
+  development: 150/200 matched pairs (450 complete games)
+  development: 200/200 matched pairs (600 complete games)
+
+=== Home-court advantage diagnostic ===
+  commit=401be246fded71af173326cb8c53d7b95b626fad godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=domestic_development/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 0 of 1, seeds 710001..710200 inclusive n=200 complete games per arm per competition elapsed=1552904ms rate=0.1/s
+  note: BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.
+  note: Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.
+  note: Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.
+  note: Fixture mode: mirror; home environment 0.500; neutral environment 0.000.
+  note: Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.
+  note: OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.
+  note: `home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.
+  note: Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for.
+
+  development.home.win_rate                                  0.5350 ±0.0691  INFORMATIONAL
+  development.neutral.win_rate                               0.4750 ±0.0692  INFORMATIONAL
+  development.neutral.mean_margin                           -1.7850 ±1.9002  INFORMATIONAL
+  development.home.mean_margin                               0.1100 ±1.8555  INFORMATIONAL
+  development.home.median_margin                             2.0000  INFORMATIONAL
+  development.reversed.win_rate                              0.5550 ±0.0689  INFORMATIONAL
+  development.reversed.mean_margin                           2.5450 ±1.9674  INFORMATIONAL
+  development.home.points_per_100_contribution               1.9301  INFORMATIONAL
+  development.home.combined_cap_respected                    1.0000  target[1.0000, 1.0000]  PASS
+  development.home.environment_margin_gain                   1.8950 ±1.2794  INFORMATIONAL
+  development.reversed.environment_margin_gain               0.7600 ±1.2279  INFORMATIONAL
+  development.home.environment_win_gain                      0.0600 ±0.0567  INFORMATIONAL
+  development.reversed.environment_win_gain                  0.0300 ±0.0588  INFORMATIONAL
+  development.home.home_arm_points_per_100                   2.0092 ±1.3565  INFORMATIONAL
+  development.venue_reversal_agrees                          1.0000  target[1.0000, 1.0000]  PASS
+  development.home.venue.points_per_possession               1.0901  INFORMATIONAL
+  development.home.visitor.points_per_possession             1.0874  INFORMATIONAL
+  development.home.delta.points_per_possession               0.0027  INFORMATIONAL
+  development.home.venue.possessions_per_game               94.3150  INFORMATIONAL
+  development.home.visitor.possessions_per_game             94.4500  INFORMATIONAL
+  development.home.delta.possessions_per_game               -0.1350  INFORMATIONAL
+  development.home.venue.field_goal_percentage               0.4212  INFORMATIONAL
+  development.home.visitor.field_goal_percentage             0.4309  INFORMATIONAL
+  development.home.delta.field_goal_percentage              -0.0097  INFORMATIONAL
+  development.home.venue.two_point_percentage                0.4641  INFORMATIONAL
+  development.home.visitor.two_point_percentage              0.4750  INFORMATIONAL
+  development.home.delta.two_point_percentage               -0.0109  INFORMATIONAL
+  development.home.venue.three_point_percentage              0.3425  INFORMATIONAL
+  development.home.visitor.three_point_percentage            0.3487  INFORMATIONAL
+  development.home.delta.three_point_percentage             -0.0062  INFORMATIONAL
+  development.home.venue.three_point_attempt_rate            0.3527  INFORMATIONAL
+  development.home.visitor.three_point_attempt_rate          0.3490  INFORMATIONAL
+  development.home.delta.three_point_attempt_rate            0.0037  INFORMATIONAL
+  development.home.venue.free_throw_percentage               0.7736  INFORMATIONAL
+  development.home.visitor.free_throw_percentage             0.7617  INFORMATIONAL
+  development.home.delta.free_throw_percentage               0.0119  INFORMATIONAL
+  development.home.venue.free_throw_attempt_rate             0.2398  INFORMATIONAL
+  development.home.visitor.free_throw_attempt_rate           0.2106  INFORMATIONAL
+  development.home.delta.free_throw_attempt_rate             0.0293  INFORMATIONAL
+  development.home.venue.turnovers_per_100                  15.1726  INFORMATIONAL
+  development.home.visitor.turnovers_per_100                15.2303  INFORMATIONAL
+  development.home.delta.turnovers_per_100                  -0.0577  INFORMATIONAL
+  development.home.venue.offensive_rebound_percentage        0.2561  INFORMATIONAL
+  development.home.visitor.offensive_rebound_percentage       0.2569  INFORMATIONAL
+  development.home.delta.offensive_rebound_percentage       -0.0008  INFORMATIONAL
+  development.home.venue.assist_percentage                   0.5422  INFORMATIONAL
+  development.home.visitor.assist_percentage                 0.5538  INFORMATIONAL
+  development.home.delta.assist_percentage                  -0.0116  INFORMATIONAL
+  development.home.venue.conditional_assist_rate             0.8862  INFORMATIONAL
+  development.home.visitor.conditional_assist_rate           0.8976  INFORMATIONAL
+  development.home.delta.conditional_assist_rate            -0.0114  INFORMATIONAL
+  development.home.venue.fouls_per_game                     20.3800  INFORMATIONAL
+  development.home.visitor.fouls_per_game                   22.0150  INFORMATIONAL
+  development.home.delta.fouls_per_game                     -1.6350  INFORMATIONAL
+  development.home.venue.steals_per_game                     6.7050  INFORMATIONAL
+  development.home.visitor.steals_per_game                   7.0550  INFORMATIONAL
+  development.home.delta.steals_per_game                    -0.3500  INFORMATIONAL
+  development.home.venue.blocks_per_game                     4.4200  INFORMATIONAL
+  development.home.visitor.blocks_per_game                   4.2950  INFORMATIONAL
+  development.home.delta.blocks_per_game                     0.1250  INFORMATIONAL
+  development.home.venue.timeouts_per_game                   1.6900  INFORMATIONAL
+  development.home.visitor.timeouts_per_game                 1.7550  INFORMATIONAL
+  development.home.delta.timeouts_per_game                  -0.0650  INFORMATIONAL
+  development.home.venue.substitutions_per_game             42.5650  INFORMATIONAL
+  development.home.visitor.substitutions_per_game           43.3150  INFORMATIONAL
+  development.home.delta.substitutions_per_game             -0.7500  INFORMATIONAL
+  development.home.overtime_rate                             0.0200  INFORMATIONAL
+  development.home.close_game_rate                           0.2100  INFORMATIONAL
+  development.home.blowout_rate                              0.1200  INFORMATIONAL
+  development.home.margin_standard_deviation                13.3878  INFORMATIONAL
+  development.neutral.venue.points_per_possession            1.0802  INFORMATIONAL
+  development.neutral.visitor.points_per_possession          1.0968  INFORMATIONAL
+  development.neutral.delta.points_per_possession           -0.0166  INFORMATIONAL
+  development.neutral.venue.possessions_per_game            94.4400  INFORMATIONAL
+  development.neutral.visitor.possessions_per_game          94.6400  INFORMATIONAL
+  development.neutral.delta.possessions_per_game            -0.2000  INFORMATIONAL
+  development.neutral.venue.field_goal_percentage            0.4222  INFORMATIONAL
+  development.neutral.visitor.field_goal_percentage          0.4308  INFORMATIONAL
+  development.neutral.delta.field_goal_percentage           -0.0086  INFORMATIONAL
+  development.neutral.venue.two_point_percentage             0.4659  INFORMATIONAL
+  development.neutral.visitor.two_point_percentage           0.4728  INFORMATIONAL
+  development.neutral.delta.two_point_percentage            -0.0069  INFORMATIONAL
+  development.neutral.venue.three_point_percentage           0.3413  INFORMATIONAL
+  development.neutral.visitor.three_point_percentage         0.3530  INFORMATIONAL
+  development.neutral.delta.three_point_percentage          -0.0117  INFORMATIONAL
+  development.neutral.venue.three_point_attempt_rate         0.3502  INFORMATIONAL
+  development.neutral.visitor.three_point_attempt_rate       0.3501  INFORMATIONAL
+  development.neutral.delta.three_point_attempt_rate         0.0002  INFORMATIONAL
+  development.neutral.venue.free_throw_percentage            0.7790  INFORMATIONAL
+  development.neutral.visitor.free_throw_percentage          0.7622  INFORMATIONAL
+  development.neutral.delta.free_throw_percentage            0.0169  INFORMATIONAL
+  development.neutral.venue.free_throw_attempt_rate          0.2255  INFORMATIONAL
+  development.neutral.visitor.free_throw_attempt_rate        0.2227  INFORMATIONAL
+  development.neutral.delta.free_throw_attempt_rate          0.0028  INFORMATIONAL
+  development.neutral.venue.turnovers_per_100               15.6501  INFORMATIONAL
+  development.neutral.visitor.turnovers_per_100             14.9250  INFORMATIONAL
+  development.neutral.delta.turnovers_per_100                0.7252  INFORMATIONAL
+  development.neutral.venue.offensive_rebound_percentage       0.2582  INFORMATIONAL
+  development.neutral.visitor.offensive_rebound_percentage       0.2548  INFORMATIONAL
+  development.neutral.delta.offensive_rebound_percentage       0.0034  INFORMATIONAL
+  development.neutral.venue.assist_percentage                0.5371  INFORMATIONAL
+  development.neutral.visitor.assist_percentage              0.5551  INFORMATIONAL
+  development.neutral.delta.assist_percentage               -0.0180  INFORMATIONAL
+  development.neutral.venue.conditional_assist_rate          0.8867  INFORMATIONAL
+  development.neutral.visitor.conditional_assist_rate        0.8977  INFORMATIONAL
+  development.neutral.delta.conditional_assist_rate         -0.0110  INFORMATIONAL
+  development.neutral.venue.fouls_per_game                  21.0850  INFORMATIONAL
+  development.neutral.visitor.fouls_per_game                21.2850  INFORMATIONAL
+  development.neutral.delta.fouls_per_game                  -0.2000  INFORMATIONAL
+  development.neutral.venue.steals_per_game                  6.6950  INFORMATIONAL
+  development.neutral.visitor.steals_per_game                7.0500  INFORMATIONAL
+  development.neutral.delta.steals_per_game                 -0.3550  INFORMATIONAL
+  development.neutral.venue.blocks_per_game                  4.4300  INFORMATIONAL
+  development.neutral.visitor.blocks_per_game                4.2950  INFORMATIONAL
+  development.neutral.delta.blocks_per_game                  0.1350  INFORMATIONAL
+  development.neutral.venue.timeouts_per_game                1.7650  INFORMATIONAL
+  development.neutral.visitor.timeouts_per_game              1.7500  INFORMATIONAL
+  development.neutral.delta.timeouts_per_game                0.0150  INFORMATIONAL
+  development.neutral.venue.substitutions_per_game          42.7800  INFORMATIONAL
+  development.neutral.visitor.substitutions_per_game        43.6800  INFORMATIONAL
+  development.neutral.delta.substitutions_per_game          -0.9000  INFORMATIONAL
+  development.neutral.overtime_rate                          0.0300  INFORMATIONAL
+  development.neutral.close_game_rate                        0.2450  INFORMATIONAL
+  development.neutral.blowout_rate                           0.1350  INFORMATIONAL
+  development.neutral.margin_standard_deviation             13.7109  INFORMATIONAL
+  development.reversed.venue.points_per_possession           1.0996  INFORMATIONAL
+  development.reversed.visitor.points_per_possession         1.0746  INFORMATIONAL
+  development.reversed.delta.points_per_possession           0.0251  INFORMATIONAL
+  development.reversed.venue.possessions_per_game           94.7100  INFORMATIONAL
+  development.reversed.visitor.possessions_per_game         94.5500  INFORMATIONAL
+  development.reversed.delta.possessions_per_game            0.1600  INFORMATIONAL
+  development.reversed.venue.field_goal_percentage           0.4270  INFORMATIONAL
+  development.reversed.visitor.field_goal_percentage         0.4245  INFORMATIONAL
+  development.reversed.delta.field_goal_percentage           0.0025  INFORMATIONAL
+  development.reversed.venue.two_point_percentage            0.4710  INFORMATIONAL
+  development.reversed.visitor.two_point_percentage          0.4674  INFORMATIONAL
+  development.reversed.delta.two_point_percentage            0.0036  INFORMATIONAL
+  development.reversed.venue.three_point_percentage          0.3455  INFORMATIONAL
+  development.reversed.visitor.three_point_percentage        0.3445  INFORMATIONAL
+  development.reversed.delta.three_point_percentage          0.0010  INFORMATIONAL
+  development.reversed.venue.three_point_attempt_rate        0.3507  INFORMATIONAL
+  development.reversed.visitor.three_point_attempt_rate       0.3493  INFORMATIONAL
+  development.reversed.delta.three_point_attempt_rate        0.0013  INFORMATIONAL
+  development.reversed.venue.free_throw_percentage           0.7614  INFORMATIONAL
+  development.reversed.visitor.free_throw_percentage         0.7622  INFORMATIONAL
+  development.reversed.delta.free_throw_percentage          -0.0009  INFORMATIONAL
+  development.reversed.venue.free_throw_attempt_rate         0.2341  INFORMATIONAL
+  development.reversed.visitor.free_throw_attempt_rate       0.2159  INFORMATIONAL
+  development.reversed.delta.free_throw_attempt_rate         0.0182  INFORMATIONAL
+  development.reversed.venue.turnovers_per_100              14.7081  INFORMATIONAL
+  development.reversed.visitor.turnovers_per_100            15.8752  INFORMATIONAL
+  development.reversed.delta.turnovers_per_100              -1.1671  INFORMATIONAL
+  development.reversed.venue.offensive_rebound_percentage       0.2550  INFORMATIONAL
+  development.reversed.visitor.offensive_rebound_percentage       0.2598  INFORMATIONAL
+  development.reversed.delta.offensive_rebound_percentage      -0.0047  INFORMATIONAL
+  development.reversed.venue.assist_percentage               0.5551  INFORMATIONAL
+  development.reversed.visitor.assist_percentage             0.5404  INFORMATIONAL
+  development.reversed.delta.assist_percentage               0.0146  INFORMATIONAL
+  development.reversed.venue.conditional_assist_rate         0.8960  INFORMATIONAL
+  development.reversed.visitor.conditional_assist_rate       0.8848  INFORMATIONAL
+  development.reversed.delta.conditional_assist_rate         0.0111  INFORMATIONAL
+  development.reversed.venue.fouls_per_game                 20.6900  INFORMATIONAL
+  development.reversed.visitor.fouls_per_game               21.9150  INFORMATIONAL
+  development.reversed.delta.fouls_per_game                 -1.2250  INFORMATIONAL
+  development.reversed.venue.steals_per_game                 6.9350  INFORMATIONAL
+  development.reversed.visitor.steals_per_game               6.8700  INFORMATIONAL
+  development.reversed.delta.steals_per_game                 0.0650  INFORMATIONAL
+  development.reversed.venue.blocks_per_game                 4.3950  INFORMATIONAL
+  development.reversed.visitor.blocks_per_game               4.5300  INFORMATIONAL
+  development.reversed.delta.blocks_per_game                -0.1350  INFORMATIONAL
+  development.reversed.venue.timeouts_per_game               1.7150  INFORMATIONAL
+  development.reversed.visitor.timeouts_per_game             1.8750  INFORMATIONAL
+  development.reversed.delta.timeouts_per_game              -0.1600  INFORMATIONAL
+  development.reversed.venue.substitutions_per_game         44.2700  INFORMATIONAL
+  development.reversed.visitor.substitutions_per_game       43.9350  INFORMATIONAL
+  development.reversed.delta.substitutions_per_game          0.3350  INFORMATIONAL
+  development.reversed.overtime_rate                         0.0600  INFORMATIONAL
+  development.reversed.close_game_rate                       0.2000  INFORMATIONAL
+  development.reversed.blowout_rate                          0.1350  INFORMATIONAL
+  development.reversed.margin_standard_deviation            14.1956  INFORMATIONAL
+  development.venue.raw_home_win_rate                        0.5350  INFORMATIONAL
+  development.venue.neutral_home_win_rate                    0.4750  INFORMATIONAL
+  development.venue.attributable_home_win_rate               0.5450 ±0.0320  target[0.5300, 0.5600]  PASS
+  development.venue.canonical_form_agrees                    1.0000  target[1.0000, 1.0000]  PASS
+  development.venue.paired_win_rate_change                   0.0450 ±0.0320  INFORMATIONAL
+  development.venue.raw_margin_difference                    0.1100  INFORMATIONAL
+  development.venue.paired_margin_difference                 1.3275 ±0.7306  INFORMATIONAL
+  development.venue.points_per_100                           1.4049 ±0.7732  INFORMATIONAL
+  development.venue.points_per_100_standard_error            0.3945  INFORMATIONAL
+  development.venue.cap_respected                            1.0000  target[1.0000, 1.0000]  PASS
+  development.venue.reversal_agrees                          1.0000  target[1.0000, 1.0000]  PASS
+  development.venue.matched_pairs                          200.0000  INFORMATIONAL
+  development.venue.complete_games                         600.0000  INFORMATIONAL
+  development.venue.sample_well_formed                       1.0000  target[1.0000, 1.0000]  PASS
+  development.venue.sample_complete                          1.0000  target[1.0000, 1.0000]  PASS
+  development.venue.certification_sample_reached             0.0060  INFORMATIONAL
+
+  report: res://reports/home_court_diagnostics_v17_development.json
+  196 metric(s), 8 judged, 0 failures: PASS

@@ -1,0 +1,217 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  top_domestic_pro: 50/200 matched pairs (150 complete games)
+  top_domestic_pro: 100/200 matched pairs (300 complete games)
+  top_domestic_pro: 150/200 matched pairs (450 complete games)
+  top_domestic_pro: 200/200 matched pairs (600 complete games)
+
+=== Home-court advantage diagnostic ===
+  commit=401be246fded71af173326cb8c53d7b95b626fad godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=top_domestic_pro/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 0 of 1, seeds 710001..710200 inclusive n=200 complete games per arm per competition elapsed=1528210ms rate=0.1/s
+  note: BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.
+  note: Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.
+  note: Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.
+  note: Fixture mode: mirror; home environment 0.500; neutral environment 0.000.
+  note: Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.
+  note: OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.
+  note: `home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.
+  note: Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for.
+
+  top_domestic_pro.home.win_rate                             0.5200 ±0.0692  INFORMATIONAL
+  top_domestic_pro.neutral.win_rate                          0.5250 ±0.0692  INFORMATIONAL
+  top_domestic_pro.neutral.mean_margin                       0.2750 ±2.0283  INFORMATIONAL
+  top_domestic_pro.home.mean_margin                          0.9400 ±2.0459  INFORMATIONAL
+  top_domestic_pro.home.median_margin                        2.0000  INFORMATIONAL
+  top_domestic_pro.reversed.win_rate                         0.5500 ±0.0689  INFORMATIONAL
+  top_domestic_pro.reversed.mean_margin                      1.8300 ±1.9259  INFORMATIONAL
+  top_domestic_pro.home.points_per_100_contribution          0.6327  INFORMATIONAL
+  top_domestic_pro.home.combined_cap_respected               1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.home.environment_margin_gain              0.6650 ±1.1377  INFORMATIONAL
+  top_domestic_pro.reversed.environment_margin_gain          2.1050 ±1.1598  INFORMATIONAL
+  top_domestic_pro.home.environment_win_gain                -0.0050 ±0.0491  INFORMATIONAL
+  top_domestic_pro.reversed.environment_win_gain             0.0750 ±0.0519  INFORMATIONAL
+  top_domestic_pro.home.home_arm_points_per_100              0.6687 ±1.1441  INFORMATIONAL
+  top_domestic_pro.venue_reversal_agrees                     1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.home.venue.points_per_possession          1.1659  INFORMATIONAL
+  top_domestic_pro.home.visitor.points_per_possession        1.1544  INFORMATIONAL
+  top_domestic_pro.home.delta.points_per_possession          0.0115  INFORMATIONAL
+  top_domestic_pro.home.venue.possessions_per_game          99.4450  INFORMATIONAL
+  top_domestic_pro.home.visitor.possessions_per_game        99.6200  INFORMATIONAL
+  top_domestic_pro.home.delta.possessions_per_game          -0.1750  INFORMATIONAL
+  top_domestic_pro.home.venue.field_goal_percentage          0.4510  INFORMATIONAL
+  top_domestic_pro.home.visitor.field_goal_percentage        0.4506  INFORMATIONAL
+  top_domestic_pro.home.delta.field_goal_percentage          0.0004  INFORMATIONAL
+  top_domestic_pro.home.venue.two_point_percentage           0.4971  INFORMATIONAL
+  top_domestic_pro.home.visitor.two_point_percentage         0.4951  INFORMATIONAL
+  top_domestic_pro.home.delta.two_point_percentage           0.0020  INFORMATIONAL
+  top_domestic_pro.home.venue.three_point_percentage         0.3690  INFORMATIONAL
+  top_domestic_pro.home.visitor.three_point_percentage       0.3720  INFORMATIONAL
+  top_domestic_pro.home.delta.three_point_percentage        -0.0031  INFORMATIONAL
+  top_domestic_pro.home.venue.three_point_attempt_rate       0.3595  INFORMATIONAL
+  top_domestic_pro.home.visitor.three_point_attempt_rate       0.3617  INFORMATIONAL
+  top_domestic_pro.home.delta.three_point_attempt_rate      -0.0022  INFORMATIONAL
+  top_domestic_pro.home.venue.free_throw_percentage          0.8042  INFORMATIONAL
+  top_domestic_pro.home.visitor.free_throw_percentage        0.7907  INFORMATIONAL
+  top_domestic_pro.home.delta.free_throw_percentage          0.0135  INFORMATIONAL
+  top_domestic_pro.home.venue.free_throw_attempt_rate        0.2354  INFORMATIONAL
+  top_domestic_pro.home.visitor.free_throw_attempt_rate       0.2158  INFORMATIONAL
+  top_domestic_pro.home.delta.free_throw_attempt_rate        0.0196  INFORMATIONAL
+  top_domestic_pro.home.venue.turnovers_per_100             14.0329  INFORMATIONAL
+  top_domestic_pro.home.visitor.turnovers_per_100           13.9982  INFORMATIONAL
+  top_domestic_pro.home.delta.turnovers_per_100              0.0347  INFORMATIONAL
+  top_domestic_pro.home.venue.offensive_rebound_percentage       0.2545  INFORMATIONAL
+  top_domestic_pro.home.visitor.offensive_rebound_percentage       0.2518  INFORMATIONAL
+  top_domestic_pro.home.delta.offensive_rebound_percentage       0.0027  INFORMATIONAL
+  top_domestic_pro.home.venue.assist_percentage              0.5733  INFORMATIONAL
+  top_domestic_pro.home.visitor.assist_percentage            0.5749  INFORMATIONAL
+  top_domestic_pro.home.delta.assist_percentage             -0.0016  INFORMATIONAL
+  top_domestic_pro.home.venue.conditional_assist_rate        0.9243  INFORMATIONAL
+  top_domestic_pro.home.visitor.conditional_assist_rate       0.9307  INFORMATIONAL
+  top_domestic_pro.home.delta.conditional_assist_rate       -0.0063  INFORMATIONAL
+  top_domestic_pro.home.venue.fouls_per_game                21.9300  INFORMATIONAL
+  top_domestic_pro.home.visitor.fouls_per_game              22.7200  INFORMATIONAL
+  top_domestic_pro.home.delta.fouls_per_game                -0.7900  INFORMATIONAL
+  top_domestic_pro.home.venue.steals_per_game                7.0300  INFORMATIONAL
+  top_domestic_pro.home.visitor.steals_per_game              7.2050  INFORMATIONAL
+  top_domestic_pro.home.delta.steals_per_game               -0.1750  INFORMATIONAL
+  top_domestic_pro.home.venue.blocks_per_game                5.2050  INFORMATIONAL
+  top_domestic_pro.home.visitor.blocks_per_game              5.2900  INFORMATIONAL
+  top_domestic_pro.home.delta.blocks_per_game               -0.0850  INFORMATIONAL
+  top_domestic_pro.home.venue.timeouts_per_game              1.8250  INFORMATIONAL
+  top_domestic_pro.home.visitor.timeouts_per_game            2.0050  INFORMATIONAL
+  top_domestic_pro.home.delta.timeouts_per_game             -0.1800  INFORMATIONAL
+  top_domestic_pro.home.venue.substitutions_per_game        44.6850  INFORMATIONAL
+  top_domestic_pro.home.visitor.substitutions_per_game      43.7700  INFORMATIONAL
+  top_domestic_pro.home.delta.substitutions_per_game         0.9150  INFORMATIONAL
+  top_domestic_pro.home.overtime_rate                        0.0150  INFORMATIONAL
+  top_domestic_pro.home.close_game_rate                      0.2100  INFORMATIONAL
+  top_domestic_pro.home.blowout_rate                         0.1650  INFORMATIONAL
+  top_domestic_pro.home.margin_standard_deviation           14.7620  INFORMATIONAL
+  top_domestic_pro.neutral.venue.points_per_possession       1.1643  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.points_per_possession       1.1591  INFORMATIONAL
+  top_domestic_pro.neutral.delta.points_per_possession       0.0052  INFORMATIONAL
+  top_domestic_pro.neutral.venue.possessions_per_game       99.4000  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.possessions_per_game      99.6050  INFORMATIONAL
+  top_domestic_pro.neutral.delta.possessions_per_game       -0.2050  INFORMATIONAL
+  top_domestic_pro.neutral.venue.field_goal_percentage       0.4544  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.field_goal_percentage       0.4512  INFORMATIONAL
+  top_domestic_pro.neutral.delta.field_goal_percentage       0.0032  INFORMATIONAL
+  top_domestic_pro.neutral.venue.two_point_percentage        0.4990  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.two_point_percentage       0.4961  INFORMATIONAL
+  top_domestic_pro.neutral.delta.two_point_percentage        0.0029  INFORMATIONAL
+  top_domestic_pro.neutral.venue.three_point_percentage       0.3743  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.three_point_percentage       0.3729  INFORMATIONAL
+  top_domestic_pro.neutral.delta.three_point_percentage       0.0014  INFORMATIONAL
+  top_domestic_pro.neutral.venue.three_point_attempt_rate       0.3578  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.three_point_attempt_rate       0.3644  INFORMATIONAL
+  top_domestic_pro.neutral.delta.three_point_attempt_rate      -0.0066  INFORMATIONAL
+  top_domestic_pro.neutral.venue.free_throw_percentage       0.8122  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.free_throw_percentage       0.8006  INFORMATIONAL
+  top_domestic_pro.neutral.delta.free_throw_percentage       0.0116  INFORMATIONAL
+  top_domestic_pro.neutral.venue.free_throw_attempt_rate       0.2236  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.free_throw_attempt_rate       0.2240  INFORMATIONAL
+  top_domestic_pro.neutral.delta.free_throw_attempt_rate      -0.0003  INFORMATIONAL
+  top_domestic_pro.neutral.venue.turnovers_per_100          14.3260  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.turnovers_per_100        14.1559  INFORMATIONAL
+  top_domestic_pro.neutral.delta.turnovers_per_100           0.1700  INFORMATIONAL
+  top_domestic_pro.neutral.venue.offensive_rebound_percentage       0.2533  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.offensive_rebound_percentage       0.2504  INFORMATIONAL
+  top_domestic_pro.neutral.delta.offensive_rebound_percentage       0.0029  INFORMATIONAL
+  top_domestic_pro.neutral.venue.assist_percentage           0.5686  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.assist_percentage         0.5806  INFORMATIONAL
+  top_domestic_pro.neutral.delta.assist_percentage          -0.0120  INFORMATIONAL
+  top_domestic_pro.neutral.venue.conditional_assist_rate       0.9224  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.conditional_assist_rate       0.9314  INFORMATIONAL
+  top_domestic_pro.neutral.delta.conditional_assist_rate      -0.0090  INFORMATIONAL
+  top_domestic_pro.neutral.venue.fouls_per_game             22.2850  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.fouls_per_game           22.3150  INFORMATIONAL
+  top_domestic_pro.neutral.delta.fouls_per_game             -0.0300  INFORMATIONAL
+  top_domestic_pro.neutral.venue.steals_per_game             7.2050  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.steals_per_game           7.3000  INFORMATIONAL
+  top_domestic_pro.neutral.delta.steals_per_game            -0.0950  INFORMATIONAL
+  top_domestic_pro.neutral.venue.blocks_per_game             5.2850  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.blocks_per_game           5.1850  INFORMATIONAL
+  top_domestic_pro.neutral.delta.blocks_per_game             0.1000  INFORMATIONAL
+  top_domestic_pro.neutral.venue.timeouts_per_game           1.7900  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.timeouts_per_game         1.9300  INFORMATIONAL
+  top_domestic_pro.neutral.delta.timeouts_per_game          -0.1400  INFORMATIONAL
+  top_domestic_pro.neutral.venue.substitutions_per_game      45.0550  INFORMATIONAL
+  top_domestic_pro.neutral.visitor.substitutions_per_game      44.0600  INFORMATIONAL
+  top_domestic_pro.neutral.delta.substitutions_per_game       0.9950  INFORMATIONAL
+  top_domestic_pro.neutral.overtime_rate                     0.0150  INFORMATIONAL
+  top_domestic_pro.neutral.close_game_rate                   0.2250  INFORMATIONAL
+  top_domestic_pro.neutral.blowout_rate                      0.1500  INFORMATIONAL
+  top_domestic_pro.neutral.margin_standard_deviation        14.6349  INFORMATIONAL
+  top_domestic_pro.reversed.venue.points_per_possession       1.1732  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.points_per_possession       1.1556  INFORMATIONAL
+  top_domestic_pro.reversed.delta.points_per_possession       0.0175  INFORMATIONAL
+  top_domestic_pro.reversed.venue.possessions_per_game      99.3750  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.possessions_per_game      99.3000  INFORMATIONAL
+  top_domestic_pro.reversed.delta.possessions_per_game       0.0750  INFORMATIONAL
+  top_domestic_pro.reversed.venue.field_goal_percentage       0.4502  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.field_goal_percentage       0.4553  INFORMATIONAL
+  top_domestic_pro.reversed.delta.field_goal_percentage      -0.0051  INFORMATIONAL
+  top_domestic_pro.reversed.venue.two_point_percentage       0.4963  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.two_point_percentage       0.5016  INFORMATIONAL
+  top_domestic_pro.reversed.delta.two_point_percentage      -0.0053  INFORMATIONAL
+  top_domestic_pro.reversed.venue.three_point_percentage       0.3694  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.three_point_percentage       0.3722  INFORMATIONAL
+  top_domestic_pro.reversed.delta.three_point_percentage      -0.0028  INFORMATIONAL
+  top_domestic_pro.reversed.venue.three_point_attempt_rate       0.3637  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.three_point_attempt_rate       0.3581  INFORMATIONAL
+  top_domestic_pro.reversed.delta.three_point_attempt_rate       0.0056  INFORMATIONAL
+  top_domestic_pro.reversed.venue.free_throw_percentage       0.7948  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.free_throw_percentage       0.8072  INFORMATIONAL
+  top_domestic_pro.reversed.delta.free_throw_percentage      -0.0124  INFORMATIONAL
+  top_domestic_pro.reversed.venue.free_throw_attempt_rate       0.2385  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.free_throw_attempt_rate       0.2069  INFORMATIONAL
+  top_domestic_pro.reversed.delta.free_throw_attempt_rate       0.0316  INFORMATIONAL
+  top_domestic_pro.reversed.venue.turnovers_per_100         13.5950  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.turnovers_per_100       14.3706  INFORMATIONAL
+  top_domestic_pro.reversed.delta.turnovers_per_100         -0.7756  INFORMATIONAL
+  top_domestic_pro.reversed.venue.offensive_rebound_percentage       0.2524  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.offensive_rebound_percentage       0.2564  INFORMATIONAL
+  top_domestic_pro.reversed.delta.offensive_rebound_percentage      -0.0041  INFORMATIONAL
+  top_domestic_pro.reversed.venue.assist_percentage          0.5781  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.assist_percentage        0.5721  INFORMATIONAL
+  top_domestic_pro.reversed.delta.assist_percentage          0.0061  INFORMATIONAL
+  top_domestic_pro.reversed.venue.conditional_assist_rate       0.9316  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.conditional_assist_rate       0.9285  INFORMATIONAL
+  top_domestic_pro.reversed.delta.conditional_assist_rate       0.0031  INFORMATIONAL
+  top_domestic_pro.reversed.venue.fouls_per_game            21.4750  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.fouls_per_game          23.0950  INFORMATIONAL
+  top_domestic_pro.reversed.delta.fouls_per_game            -1.6200  INFORMATIONAL
+  top_domestic_pro.reversed.venue.steals_per_game            7.3100  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.steals_per_game          7.0500  INFORMATIONAL
+  top_domestic_pro.reversed.delta.steals_per_game            0.2600  INFORMATIONAL
+  top_domestic_pro.reversed.venue.blocks_per_game            5.0850  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.blocks_per_game          5.1850  INFORMATIONAL
+  top_domestic_pro.reversed.delta.blocks_per_game           -0.1000  INFORMATIONAL
+  top_domestic_pro.reversed.venue.timeouts_per_game          1.8700  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.timeouts_per_game        1.8850  INFORMATIONAL
+  top_domestic_pro.reversed.delta.timeouts_per_game         -0.0150  INFORMATIONAL
+  top_domestic_pro.reversed.venue.substitutions_per_game      43.4350  INFORMATIONAL
+  top_domestic_pro.reversed.visitor.substitutions_per_game      44.4500  INFORMATIONAL
+  top_domestic_pro.reversed.delta.substitutions_per_game      -1.0150  INFORMATIONAL
+  top_domestic_pro.reversed.overtime_rate                    0.0150  INFORMATIONAL
+  top_domestic_pro.reversed.close_game_rate                  0.2400  INFORMATIONAL
+  top_domestic_pro.reversed.blowout_rate                     0.1350  INFORMATIONAL
+  top_domestic_pro.reversed.margin_standard_deviation       13.8959  INFORMATIONAL
+  top_domestic_pro.venue.raw_home_win_rate                   0.5200  INFORMATIONAL
+  top_domestic_pro.venue.neutral_home_win_rate               0.5250  INFORMATIONAL
+  top_domestic_pro.venue.attributable_home_win_rate          0.5350 ±0.0330  target[0.5300, 0.5600]  PASS
+  top_domestic_pro.venue.canonical_form_agrees               1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.venue.paired_win_rate_change              0.0350 ±0.0330  INFORMATIONAL
+  top_domestic_pro.venue.raw_margin_difference               0.9400  INFORMATIONAL
+  top_domestic_pro.venue.paired_margin_difference            1.3850 ±0.7448  INFORMATIONAL
+  top_domestic_pro.venue.points_per_100                      1.3933 ±0.7492  INFORMATIONAL
+  top_domestic_pro.venue.points_per_100_standard_error       0.3822  INFORMATIONAL
+  top_domestic_pro.venue.cap_respected                       1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.venue.reversal_agrees                     1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.venue.matched_pairs                     200.0000  INFORMATIONAL
+  top_domestic_pro.venue.complete_games                    600.0000  INFORMATIONAL
+  top_domestic_pro.venue.sample_well_formed                  1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.venue.sample_complete                     1.0000  target[1.0000, 1.0000]  PASS
+  top_domestic_pro.venue.certification_sample_reached        0.0060  INFORMATIONAL
+
+  report: res://reports/home_court_diagnostics_v17_top_domestic_pro.json
+  196 metric(s), 8 judged, 0 failures: PASS

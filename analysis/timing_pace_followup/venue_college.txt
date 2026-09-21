@@ -1,0 +1,217 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  college: 50/200 matched pairs (150 complete games)
+  college: 100/200 matched pairs (300 complete games)
+  college: 150/200 matched pairs (450 complete games)
+  college: 200/200 matched pairs (600 complete games)
+
+=== Home-court advantage diagnostic ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=college/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 0 of 1, seeds 710001..710200 inclusive n=200 complete games per arm per competition elapsed=1527050ms rate=0.1/s
+  note: BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.
+  note: Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.
+  note: Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.
+  note: Fixture mode: mirror; home environment 0.500; neutral environment 0.000.
+  note: Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.
+  note: OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.
+  note: `home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.
+  note: Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for.
+
+  college.home.win_rate                                      0.5050 ±0.0693  INFORMATIONAL
+  college.neutral.win_rate                                   0.4700 ±0.0692  INFORMATIONAL
+  college.neutral.mean_margin                               -0.8100 ±1.7002  INFORMATIONAL
+  college.home.mean_margin                                   0.2700 ±1.6639  INFORMATIONAL
+  college.home.median_margin                                 1.0000  INFORMATIONAL
+  college.reversed.win_rate                                  0.5700 ±0.0686  INFORMATIONAL
+  college.reversed.mean_margin                               2.0950 ±1.5717  INFORMATIONAL
+  college.home.points_per_100_contribution                   1.4749  INFORMATIONAL
+  college.home.combined_cap_respected                        1.0000  target[1.0000, 1.0000]  PASS
+  college.home.environment_margin_gain                       1.0800 ±1.0020  INFORMATIONAL
+  college.reversed.environment_margin_gain                   1.2850 ±0.9104  INFORMATIONAL
+  college.home.environment_win_gain                          0.0350 ±0.0527  INFORMATIONAL
+  college.reversed.environment_win_gain                      0.0400 ±0.0498  INFORMATIONAL
+  college.home.home_arm_points_per_100                       1.5843 ±1.4698  INFORMATIONAL
+  college.venue_reversal_agrees                              1.0000  target[1.0000, 1.0000]  PASS
+  college.home.venue.points_per_possession                   1.0466  INFORMATIONAL
+  college.home.visitor.points_per_possession                 1.0422  INFORMATIONAL
+  college.home.delta.points_per_possession                   0.0043  INFORMATIONAL
+  college.home.venue.possessions_per_game                   68.1700  INFORMATIONAL
+  college.home.visitor.possessions_per_game                 68.1950  INFORMATIONAL
+  college.home.delta.possessions_per_game                   -0.0250  INFORMATIONAL
+  college.home.venue.field_goal_percentage                   0.4102  INFORMATIONAL
+  college.home.visitor.field_goal_percentage                 0.4121  INFORMATIONAL
+  college.home.delta.field_goal_percentage                  -0.0019  INFORMATIONAL
+  college.home.venue.two_point_percentage                    0.4528  INFORMATIONAL
+  college.home.visitor.two_point_percentage                  0.4533  INFORMATIONAL
+  college.home.delta.two_point_percentage                   -0.0004  INFORMATIONAL
+  college.home.venue.three_point_percentage                  0.3278  INFORMATIONAL
+  college.home.visitor.three_point_percentage                0.3306  INFORMATIONAL
+  college.home.delta.three_point_percentage                 -0.0029  INFORMATIONAL
+  college.home.venue.three_point_attempt_rate                0.3406  INFORMATIONAL
+  college.home.visitor.three_point_attempt_rate              0.3356  INFORMATIONAL
+  college.home.delta.three_point_attempt_rate                0.0050  INFORMATIONAL
+  college.home.venue.free_throw_percentage                   0.7203  INFORMATIONAL
+  college.home.visitor.free_throw_percentage                 0.7136  INFORMATIONAL
+  college.home.delta.free_throw_percentage                   0.0068  INFORMATIONAL
+  college.home.venue.free_throw_attempt_rate                 0.2480  INFORMATIONAL
+  college.home.visitor.free_throw_attempt_rate               0.2361  INFORMATIONAL
+  college.home.delta.free_throw_attempt_rate                 0.0119  INFORMATIONAL
+  college.home.venue.turnovers_per_100                      15.8427  INFORMATIONAL
+  college.home.visitor.turnovers_per_100                    15.5437  INFORMATIONAL
+  college.home.delta.turnovers_per_100                       0.2991  INFORMATIONAL
+  college.home.venue.offensive_rebound_percentage            0.2574  INFORMATIONAL
+  college.home.visitor.offensive_rebound_percentage          0.2541  INFORMATIONAL
+  college.home.delta.offensive_rebound_percentage            0.0033  INFORMATIONAL
+  college.home.venue.assist_percentage                       0.5237  INFORMATIONAL
+  college.home.visitor.assist_percentage                     0.5232  INFORMATIONAL
+  college.home.delta.assist_percentage                       0.0005  INFORMATIONAL
+  college.home.venue.conditional_assist_rate                 0.8341  INFORMATIONAL
+  college.home.visitor.conditional_assist_rate               0.8410  INFORMATIONAL
+  college.home.delta.conditional_assist_rate                -0.0069  INFORMATIONAL
+  college.home.venue.fouls_per_game                         15.1100  INFORMATIONAL
+  college.home.visitor.fouls_per_game                       15.2500  INFORMATIONAL
+  college.home.delta.fouls_per_game                         -0.1400  INFORMATIONAL
+  college.home.venue.steals_per_game                         4.9750  INFORMATIONAL
+  college.home.visitor.steals_per_game                       5.3150  INFORMATIONAL
+  college.home.delta.steals_per_game                        -0.3400  INFORMATIONAL
+  college.home.venue.blocks_per_game                         2.8100  INFORMATIONAL
+  college.home.visitor.blocks_per_game                       2.9250  INFORMATIONAL
+  college.home.delta.blocks_per_game                        -0.1150  INFORMATIONAL
+  college.home.venue.timeouts_per_game                       1.1100  INFORMATIONAL
+  college.home.visitor.timeouts_per_game                     1.2350  INFORMATIONAL
+  college.home.delta.timeouts_per_game                      -0.1250  INFORMATIONAL
+  college.home.venue.substitutions_per_game                 34.5550  INFORMATIONAL
+  college.home.visitor.substitutions_per_game               34.2600  INFORMATIONAL
+  college.home.delta.substitutions_per_game                  0.2950  INFORMATIONAL
+  college.home.overtime_rate                                 0.0350  INFORMATIONAL
+  college.home.close_game_rate                               0.3050  INFORMATIONAL
+  college.home.blowout_rate                                  0.0550  INFORMATIONAL
+  college.home.margin_standard_deviation                    12.0053  INFORMATIONAL
+  college.neutral.venue.points_per_possession                1.0346  INFORMATIONAL
+  college.neutral.visitor.points_per_possession              1.0450  INFORMATIONAL
+  college.neutral.delta.points_per_possession               -0.0104  INFORMATIONAL
+  college.neutral.venue.possessions_per_game                68.3000  INFORMATIONAL
+  college.neutral.visitor.possessions_per_game              68.3950  INFORMATIONAL
+  college.neutral.delta.possessions_per_game                -0.0950  INFORMATIONAL
+  college.neutral.venue.field_goal_percentage                0.4107  INFORMATIONAL
+  college.neutral.visitor.field_goal_percentage              0.4114  INFORMATIONAL
+  college.neutral.delta.field_goal_percentage               -0.0007  INFORMATIONAL
+  college.neutral.venue.two_point_percentage                 0.4558  INFORMATIONAL
+  college.neutral.visitor.two_point_percentage               0.4532  INFORMATIONAL
+  college.neutral.delta.two_point_percentage                 0.0026  INFORMATIONAL
+  college.neutral.venue.three_point_percentage               0.3243  INFORMATIONAL
+  college.neutral.visitor.three_point_percentage             0.3294  INFORMATIONAL
+  college.neutral.delta.three_point_percentage              -0.0051  INFORMATIONAL
+  college.neutral.venue.three_point_attempt_rate             0.3427  INFORMATIONAL
+  college.neutral.visitor.three_point_attempt_rate           0.3373  INFORMATIONAL
+  college.neutral.delta.three_point_attempt_rate             0.0054  INFORMATIONAL
+  college.neutral.venue.free_throw_percentage                0.7182  INFORMATIONAL
+  college.neutral.visitor.free_throw_percentage              0.7182  INFORMATIONAL
+  college.neutral.delta.free_throw_percentage               -0.0000  INFORMATIONAL
+  college.neutral.venue.free_throw_attempt_rate              0.2351  INFORMATIONAL
+  college.neutral.visitor.free_throw_attempt_rate            0.2469  INFORMATIONAL
+  college.neutral.delta.free_throw_attempt_rate             -0.0119  INFORMATIONAL
+  college.neutral.venue.turnovers_per_100                   16.1567  INFORMATIONAL
+  college.neutral.visitor.turnovers_per_100                 15.5055  INFORMATIONAL
+  college.neutral.delta.turnovers_per_100                    0.6511  INFORMATIONAL
+  college.neutral.venue.offensive_rebound_percentage         0.2538  INFORMATIONAL
+  college.neutral.visitor.offensive_rebound_percentage       0.2533  INFORMATIONAL
+  college.neutral.delta.offensive_rebound_percentage         0.0005  INFORMATIONAL
+  college.neutral.venue.assist_percentage                    0.5213  INFORMATIONAL
+  college.neutral.visitor.assist_percentage                  0.5259  INFORMATIONAL
+  college.neutral.delta.assist_percentage                   -0.0046  INFORMATIONAL
+  college.neutral.venue.conditional_assist_rate              0.8319  INFORMATIONAL
+  college.neutral.visitor.conditional_assist_rate            0.8383  INFORMATIONAL
+  college.neutral.delta.conditional_assist_rate             -0.0063  INFORMATIONAL
+  college.neutral.venue.fouls_per_game                      15.4550  INFORMATIONAL
+  college.neutral.visitor.fouls_per_game                    14.9350  INFORMATIONAL
+  college.neutral.delta.fouls_per_game                       0.5200  INFORMATIONAL
+  college.neutral.venue.steals_per_game                      5.0150  INFORMATIONAL
+  college.neutral.visitor.steals_per_game                    5.1100  INFORMATIONAL
+  college.neutral.delta.steals_per_game                     -0.0950  INFORMATIONAL
+  college.neutral.venue.blocks_per_game                      2.9100  INFORMATIONAL
+  college.neutral.visitor.blocks_per_game                    2.9000  INFORMATIONAL
+  college.neutral.delta.blocks_per_game                      0.0100  INFORMATIONAL
+  college.neutral.venue.timeouts_per_game                    1.2000  INFORMATIONAL
+  college.neutral.visitor.timeouts_per_game                  1.2150  INFORMATIONAL
+  college.neutral.delta.timeouts_per_game                   -0.0150  INFORMATIONAL
+  college.neutral.venue.substitutions_per_game              34.2100  INFORMATIONAL
+  college.neutral.visitor.substitutions_per_game            33.9900  INFORMATIONAL
+  college.neutral.delta.substitutions_per_game               0.2200  INFORMATIONAL
+  college.neutral.overtime_rate                              0.0450  INFORMATIONAL
+  college.neutral.close_game_rate                            0.3050  INFORMATIONAL
+  college.neutral.blowout_rate                               0.0850  INFORMATIONAL
+  college.neutral.margin_standard_deviation                 12.2677  INFORMATIONAL
+  college.reversed.venue.points_per_possession               1.0523  INFORMATIONAL
+  college.reversed.visitor.points_per_possession             1.0221  INFORMATIONAL
+  college.reversed.delta.points_per_possession               0.0302  INFORMATIONAL
+  college.reversed.venue.possessions_per_game               68.3850  INFORMATIONAL
+  college.reversed.visitor.possessions_per_game             68.3550  INFORMATIONAL
+  college.reversed.delta.possessions_per_game                0.0300  INFORMATIONAL
+  college.reversed.venue.field_goal_percentage               0.4078  INFORMATIONAL
+  college.reversed.visitor.field_goal_percentage             0.4093  INFORMATIONAL
+  college.reversed.delta.field_goal_percentage              -0.0014  INFORMATIONAL
+  college.reversed.venue.two_point_percentage                0.4495  INFORMATIONAL
+  college.reversed.visitor.two_point_percentage              0.4532  INFORMATIONAL
+  college.reversed.delta.two_point_percentage               -0.0037  INFORMATIONAL
+  college.reversed.venue.three_point_percentage              0.3257  INFORMATIONAL
+  college.reversed.visitor.three_point_percentage            0.3261  INFORMATIONAL
+  college.reversed.delta.three_point_percentage             -0.0004  INFORMATIONAL
+  college.reversed.venue.three_point_attempt_rate            0.3368  INFORMATIONAL
+  college.reversed.visitor.three_point_attempt_rate          0.3459  INFORMATIONAL
+  college.reversed.delta.three_point_attempt_rate           -0.0090  INFORMATIONAL
+  college.reversed.venue.free_throw_percentage               0.7185  INFORMATIONAL
+  college.reversed.visitor.free_throw_percentage             0.7114  INFORMATIONAL
+  college.reversed.delta.free_throw_percentage               0.0071  INFORMATIONAL
+  college.reversed.venue.free_throw_attempt_rate             0.2642  INFORMATIONAL
+  college.reversed.visitor.free_throw_attempt_rate           0.2220  INFORMATIONAL
+  college.reversed.delta.free_throw_attempt_rate             0.0422  INFORMATIONAL
+  college.reversed.venue.turnovers_per_100                  14.9740  INFORMATIONAL
+  college.reversed.visitor.turnovers_per_100                16.2826  INFORMATIONAL
+  college.reversed.delta.turnovers_per_100                  -1.3086  INFORMATIONAL
+  college.reversed.venue.offensive_rebound_percentage        0.2533  INFORMATIONAL
+  college.reversed.visitor.offensive_rebound_percentage       0.2518  INFORMATIONAL
+  college.reversed.delta.offensive_rebound_percentage        0.0015  INFORMATIONAL
+  college.reversed.venue.assist_percentage                   0.5212  INFORMATIONAL
+  college.reversed.visitor.assist_percentage                 0.5194  INFORMATIONAL
+  college.reversed.delta.assist_percentage                   0.0018  INFORMATIONAL
+  college.reversed.venue.conditional_assist_rate             0.8355  INFORMATIONAL
+  college.reversed.visitor.conditional_assist_rate           0.8291  INFORMATIONAL
+  college.reversed.delta.conditional_assist_rate             0.0064  INFORMATIONAL
+  college.reversed.venue.fouls_per_game                     14.6000  INFORMATIONAL
+  college.reversed.visitor.fouls_per_game                   16.1150  INFORMATIONAL
+  college.reversed.delta.fouls_per_game                     -1.5150  INFORMATIONAL
+  college.reversed.venue.steals_per_game                     5.0350  INFORMATIONAL
+  college.reversed.visitor.steals_per_game                   5.0350  INFORMATIONAL
+  college.reversed.delta.steals_per_game                     0.0000  INFORMATIONAL
+  college.reversed.venue.blocks_per_game                     2.9750  INFORMATIONAL
+  college.reversed.visitor.blocks_per_game                   3.0250  INFORMATIONAL
+  college.reversed.delta.blocks_per_game                    -0.0500  INFORMATIONAL
+  college.reversed.venue.timeouts_per_game                   1.2050  INFORMATIONAL
+  college.reversed.visitor.timeouts_per_game                 1.2350  INFORMATIONAL
+  college.reversed.delta.timeouts_per_game                  -0.0300  INFORMATIONAL
+  college.reversed.venue.substitutions_per_game             34.0100  INFORMATIONAL
+  college.reversed.visitor.substitutions_per_game           34.1050  INFORMATIONAL
+  college.reversed.delta.substitutions_per_game             -0.0950  INFORMATIONAL
+  college.reversed.overtime_rate                             0.0500  INFORMATIONAL
+  college.reversed.close_game_rate                           0.3700  INFORMATIONAL
+  college.reversed.blowout_rate                              0.0650  INFORMATIONAL
+  college.reversed.margin_standard_deviation                11.3406  INFORMATIONAL
+  college.venue.raw_home_win_rate                            0.5050  INFORMATIONAL
+  college.venue.neutral_home_win_rate                        0.4700  INFORMATIONAL
+  college.venue.attributable_home_win_rate                   0.5375 ±0.0318  target[0.5300, 0.5600]  PASS
+  college.venue.canonical_form_agrees                        1.0000  target[1.0000, 1.0000]  PASS
+  college.venue.paired_win_rate_change                       0.0375 ±0.0318  INFORMATIONAL
+  college.venue.raw_margin_difference                        0.2700  INFORMATIONAL
+  college.venue.paired_margin_difference                     1.1825 ±0.5590  INFORMATIONAL
+  college.venue.points_per_100                               1.7317 ±0.8187  INFORMATIONAL
+  college.venue.points_per_100_standard_error                0.4177  INFORMATIONAL
+  college.venue.cap_respected                                1.0000  target[1.0000, 1.0000]  PASS
+  college.venue.reversal_agrees                              1.0000  target[1.0000, 1.0000]  PASS
+  college.venue.matched_pairs                              200.0000  INFORMATIONAL
+  college.venue.complete_games                             600.0000  INFORMATIONAL
+  college.venue.sample_well_formed                           1.0000  target[1.0000, 1.0000]  PASS
+  college.venue.sample_complete                              1.0000  target[1.0000, 1.0000]  PASS
+  college.venue.certification_sample_reached                 0.0060  INFORMATIONAL
+
+  report: res://reports/home_court_diagnostics_v17_college.json
+  196 metric(s), 8 judged, 0 failures: PASS

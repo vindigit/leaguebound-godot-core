@@ -1,0 +1,4242 @@
+{
+  "schema": "leaguebound.calibration.report/1",
+  "context": {
+    "report_id": "home_court_diagnostics",
+    "title": "Home-court advantage diagnostic",
+    "commit_sha": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+    "commit_note": "",
+    "godot_version": "4.7.1-stable (official)",
+    "build_mode": "editor-debug (asserts active)",
+    "rules_profile": {
+      "id": "overseas",
+      "version": "competition-v2-stopped-clock-pace"
+    },
+    "balance_profile": {
+      "id": "simulation_baseline",
+      "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+    },
+    "ratings_profile_version": "ratings-v1",
+    "targets_version": "calibration-targets-v1",
+    "rng": {
+      "algorithm": "godot-pcg32-v1",
+      "stream_key_version": "sha256-stream-key-v1"
+    },
+    "seeds": "shard 0 of 1, seeds 710001..710200 inclusive",
+    "seed_range": {
+      "start": 710001,
+      "end": 710200
+    },
+    "shard": {
+      "index": 0,
+      "count": 1
+    },
+    "competition": "overseas",
+    "certification": {
+      "required_sample": 100000,
+      "source": "BALANCE_SPEC.md §27.1"
+    },
+    "sample_count": 200,
+    "sample_unit": "complete games per arm per competition",
+    "elapsed_ms": 1553223,
+    "throughput_per_second": 0.128764510955607,
+    "notes": [
+      "BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.",
+      "Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.",
+      "Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.",
+      "Fixture mode: mirror; home environment 0.500; neutral environment 0.000.",
+      "Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.",
+      "OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.",
+      "`home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.",
+      "Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for."
+    ]
+  },
+  "summary": {
+    "passed": false,
+    "metric_count": 196,
+    "judged_metric_count": 8,
+    "failure_count": 1
+  },
+  "metrics": [
+    {
+      "metric": "overseas.home.win_rate",
+      "definition": "Share of decided games won by the team playing at its own venue, between two identical rosters at the production home environment. INFORMATIONAL population diagnostic: §14.2 is judged by `venue.attributable_home_win_rate`, the paired venue-side estimator.",
+      "denominator": "decided games",
+      "estimate": 0.585,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0682865352725791,
+        "low": 0.516713464727421,
+        "high": 0.653286535272579
+      }
+    },
+    {
+      "metric": "overseas.neutral.win_rate",
+      "definition": "Share of decided games won by the nominal home team with the §19.4 environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.505,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.069291726917864,
+        "low": 0.435708273082136,
+        "high": 0.574291726917864
+      }
+    },
+    {
+      "metric": "overseas.neutral.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin with the environment at zero.",
+      "denominator": "complete games",
+      "estimate": 0.77,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.7752203619459,
+        "low": -1.0052203619459,
+        "high": 2.5452203619459
+      }
+    },
+    {
+      "metric": "overseas.home.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 2.645,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.83580058030639,
+        "low": 0.809199419693613,
+        "high": 4.48080058030639
+      }
+    },
+    {
+      "metric": "overseas.home.median_margin",
+      "definition": "Median venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 4.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.win_rate",
+      "definition": "Share of decided games won by the venue side after home and away are swapped. It must reproduce the home arm, not the neutral arm.",
+      "denominator": "decided games",
+      "estimate": 0.53,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.069170347958169,
+        "low": 0.460829652041831,
+        "high": 0.599170347958169
+      }
+    },
+    {
+      "metric": "overseas.reversed.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin after the venue is swapped.",
+      "denominator": "complete games",
+      "estimate": 0.295,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.7430719211817,
+        "low": -1.4480719211817,
+        "high": 2.0380719211817
+      }
+    },
+    {
+      "metric": "overseas.home.points_per_100_contribution",
+      "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+      "denominator": "points per 100 possessions",
+      "estimate": 2.63216429108761,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.combined_cap_respected",
+      "definition": "The measured environment contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 0.0,
+      "sample_count": 200,
+      "verdict": "fail",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "overseas.home.environment_margin_gain",
+      "definition": "Mean per-game venue-minus-neutral final margin for the same roster at the same seed. The §19.4 environment with everything else cancelled.",
+      "denominator": "matched pairs",
+      "estimate": 1.875,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.02279030845789,
+        "low": 0.852209691542114,
+        "high": 2.89779030845789
+      }
+    },
+    {
+      "metric": "overseas.reversed.environment_margin_gain",
+      "definition": "The same quantity measured from the other bench after the venue is swapped. It must agree with the home arm in sign and size.",
+      "denominator": "matched pairs",
+      "estimate": 1.065,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.997191516612541,
+        "low": 0.0678084833874589,
+        "high": 2.06219151661254
+      }
+    },
+    {
+      "metric": "overseas.home.environment_win_gain",
+      "definition": "Mean per-game change in the venue side's win/draw value from playing at home rather than neutral. Add 0.50 to read it as a home win rate.",
+      "denominator": "matched pairs",
+      "estimate": 0.08,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0544534174626976,
+        "low": 0.0255465825373024,
+        "high": 0.134453417462698
+      }
+    },
+    {
+      "metric": "overseas.reversed.environment_win_gain",
+      "definition": "The same quantity after the venue is swapped.",
+      "denominator": "matched pairs",
+      "estimate": 0.035,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0595624768055869,
+        "low": -0.0245624768055869,
+        "high": 0.0945624768055869
+      }
+    },
+    {
+      "metric": "overseas.home.home_arm_points_per_100",
+      "definition": "Paired venue-minus-neutral margin per 100 venue possessions, from the home arm alone. One of two estimates of the same quantity and the noisier of the pair. Published for comparison; §17.4 is NOT judged on this figure.",
+      "denominator": "points per 100 possessions",
+      "estimate": 2.48657250845435,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.35639587355996,
+        "low": 1.13017663489439,
+        "high": 3.8429683820143
+      }
+    },
+    {
+      "metric": "overseas.venue_reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals. Cross-checks `venue.reversal_agrees`, which computes the same verdict from the estimator; the two must agree.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "overseas.home.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.11550958159273,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.07907284768212,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0364367339106133,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 75.405,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 75.5,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0949999999999989,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.439699374868301,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.434693299334183,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00500607553411758,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.488603219185481,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.479895390650539,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0087078285349419,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.348795180722892,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.350738716858935,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00194353613604387,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.349792793425581,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.349978750531237,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.000185957105655499,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.768493560946391,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.763096429763096,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00539713118329466,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.234529746435345,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.212282192945176,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0222475534901682,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 14.4088588289901,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 15.7086092715232,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -1.29975044253306,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.255336073180432,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.257040856802856,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00170478362242382,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.542492012779553,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.54081798924556,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00167402353399304,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.901273885350318,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.90881708652793,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00754320117761142,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.785,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 17.525,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -1.74,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.345,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.12,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.225,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 3.35,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 3.5,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.15,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.055,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.505,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.45,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 39.135,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 39.35,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.215000000000003,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.02,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.29,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.12,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.home.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 13.2459901963352,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.10028444797248,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.09016935697274,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0101150909997372,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 75.585,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 75.58,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00499999999999545,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.437403182650331,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.434419263456091,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00298391919424029,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.482825874959367,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.47923742741317,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00358844754619747,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.353106776593605,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.352493490887242,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00061328570636332,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.350161949021265,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.353611898016997,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00344994899573253,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.770898805782527,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.764265668849392,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00663313693313472,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.224052950288692,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.227124645892351,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00307169560365952,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 14.8905206059403,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 15.6853664990738,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.794845893133497,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.254203627697604,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.260335490688152,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00613186299054858,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.541693496458467,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.541734594065862,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0000410976073950131,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.902144772117963,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.905696375034069,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00355160291610668,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 16.6,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 16.995,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.395,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.36,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.165,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.195,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 3.345,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 3.515,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.17,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.17,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.355,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.185,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 38.665,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 39.235,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.57,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.025,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.29,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.neutral.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 12.8088811840039,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.10066627086219,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.09677419354839,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00389207731380714,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 75.795,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 75.795,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.435423573393525,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.439786531844674,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00436295845114909,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.478449209443362,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.489417127971345,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0109679185279833,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.355047541978556,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.34884645982498,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0062010821535754,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.348663327925513,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.353065093743417,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00440176581790375,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.77134328358209,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.760453808752026,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0108894748300636,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.236298229526698,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.216628045783302,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0196701837433964,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 15.1988917474767,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 15.0603601820701,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.138531565406691,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.256995776135164,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.256867406233492,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.000128369901671865,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.54122792807387,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.549576880089414,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00834895201554386,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.905420054200542,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.906743940990516,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0013238867899743,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 16.645,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 16.985,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.34,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.165,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.455,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.29,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 3.42,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 3.29,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.13,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.36,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.185,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.175,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 39.1,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 39.08,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0200000000000031,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.035,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.25,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.1,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.reversed.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 12.5769181179943,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.raw_home_win_rate",
+      "definition": "Share of decided games won by the venue side at the production environment, with nothing subtracted.",
+      "denominator": "decided games",
+      "estimate": 0.585,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.neutral_home_win_rate",
+      "definition": "The same share on the identical fixtures with the environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.505,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.attributable_home_win_rate",
+      "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+      "denominator": "matched pairs",
+      "estimate": 0.5575,
+      "sample_count": 200,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0334451256861265,
+        "low": 0.524054874313873,
+        "high": 0.590945125686127
+      },
+      "target": {
+        "minimum": 0.53,
+        "maximum": 0.56,
+        "source": "BALANCE_SPEC.md §14.2"
+      }
+    },
+    {
+      "metric": "overseas.venue.canonical_form_agrees",
+      "definition": "The paired-fixture estimator and the directly-computed canonical form 0.5 x [P(home arm) + P(reversed arm)] return the same value.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "owner ruling, §14.2 home-win estimator"
+      }
+    },
+    {
+      "metric": "overseas.venue.paired_win_rate_change",
+      "definition": "The venue-attributable change in win rate on its own, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 0.0575,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0334451256861265,
+        "low": 0.0240548743138735,
+        "high": 0.0909451256861265
+      }
+    },
+    {
+      "metric": "overseas.venue.raw_margin_difference",
+      "definition": "Mean venue-minus-visitor final margin at the production environment, unadjusted.",
+      "denominator": "complete games",
+      "estimate": 2.645,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.paired_margin_difference",
+      "definition": "The venue's effect on final margin with the roster, the matchup and the seed cancelled, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 1.47,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.606609502267485,
+        "low": 0.863390497732515,
+        "high": 2.07660950226749
+      }
+    },
+    {
+      "metric": "overseas.venue.points_per_100",
+      "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+      "denominator": "points per 100 possessions",
+      "estimate": 1.9445730537734,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.802446593382479,
+        "low": 1.14212646039092,
+        "high": 2.74701964715588
+      }
+    },
+    {
+      "metric": "overseas.venue.points_per_100_standard_error",
+      "definition": "Standard error of the paired venue contribution.",
+      "denominator": "matched pairs",
+      "estimate": 0.409411527235959,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.cap_respected",
+      "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "overseas.venue.reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "overseas.venue.matched_pairs",
+      "definition": "Independent matched fixtures behind every paired figure above. This is the sample size.",
+      "denominator": "matched pairs",
+      "estimate": 200.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.complete_games",
+      "definition": "Complete games simulated behind those pairs, which is three per pair — one in each arm. Three simulations of one fixture are one piece of independent evidence, and this figure is NOT the sample size.",
+      "denominator": "complete games",
+      "estimate": 600.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "overseas.venue.sample_well_formed",
+      "definition": "Every fixture offered carries all three arms, nothing was observed twice, and no shard overlapped another.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "overseas.venue.sample_complete",
+      "definition": "The estimator holds every matched pair the run asked for.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "overseas.venue.certification_sample_reached",
+      "definition": "Share of §27.1's certifying sample this run reached, against 100000 complete games per competition. Zero point something is not certification. Source: BALANCE_SPEC.md §27.1",
+      "denominator": "complete games",
+      "estimate": 0.006,
+      "sample_count": 200,
+      "verdict": "informational"
+    }
+  ],
+  "sections": {
+    "matched_arms": [
+      {
+        "arm": "home",
+        "competition": "overseas",
+        "games": 200,
+        "venue_win_rate": 0.585,
+        "mean_margin": 2.645,
+        "median_margin": 4.0,
+        "margin_standard_deviation": 13.2459901963352,
+        "overtime_rate": 0.02,
+        "close_game_rate": 0.29,
+        "blowout_rate": 0.12,
+        "points_per_100_gap": 3.64367339106133,
+        "venue_points_per_possession": 1.11550958159273,
+        "visitor_points_per_possession": 1.07907284768212,
+        "venue_possessions_per_game": 75.405,
+        "visitor_possessions_per_game": 75.5,
+        "venue_field_goal_percentage": 0.439699374868301,
+        "visitor_field_goal_percentage": 0.434693299334183,
+        "venue_two_point_percentage": 0.488603219185481,
+        "visitor_two_point_percentage": 0.479895390650539,
+        "venue_three_point_percentage": 0.348795180722892,
+        "visitor_three_point_percentage": 0.350738716858935,
+        "venue_three_point_attempt_rate": 0.349792793425581,
+        "visitor_three_point_attempt_rate": 0.349978750531237,
+        "venue_free_throw_percentage": 0.768493560946391,
+        "visitor_free_throw_percentage": 0.763096429763096,
+        "venue_free_throw_attempt_rate": 0.234529746435345,
+        "visitor_free_throw_attempt_rate": 0.212282192945176,
+        "venue_turnovers_per_100": 14.4088588289901,
+        "visitor_turnovers_per_100": 15.7086092715232,
+        "venue_offensive_rebound_percentage": 0.255336073180432,
+        "visitor_offensive_rebound_percentage": 0.257040856802856,
+        "venue_assist_percentage": 0.542492012779553,
+        "visitor_assist_percentage": 0.54081798924556,
+        "venue_conditional_assist_rate": 0.901273885350318,
+        "visitor_conditional_assist_rate": 0.90881708652793,
+        "venue_fouls_per_game": 15.785,
+        "visitor_fouls_per_game": 17.525,
+        "venue_steals_per_game": 5.345,
+        "visitor_steals_per_game": 5.12,
+        "venue_blocks_per_game": 3.35,
+        "visitor_blocks_per_game": 3.5,
+        "venue_timeouts_per_game": 1.055,
+        "visitor_timeouts_per_game": 1.505,
+        "venue_substitutions_per_game": 39.135,
+        "visitor_substitutions_per_game": 39.35,
+        "venue_action_mix": {
+          "pass_swing": 0.322696821639047,
+          "drive": 0.0741197803858359,
+          "pull_up": 0.151110663375812,
+          "post_action": 0.0177303178360953,
+          "pick_action": 0.0483554122802599,
+          "handoff": 0.0591850098221931,
+          "off_ball_cut": 0.109076713846774,
+          "relocation": 0.0958797159119529,
+          "screen": 0.0842441948320153,
+          "reset": 0.018511056263537,
+          "transition_attack": 0.00992293356167834,
+          "putback": 0.00916738024479927
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.324291681344673,
+          "drive": 0.0713854360626038,
+          "pull_up": 0.151628000603895,
+          "post_action": 0.0178400684414473,
+          "pick_action": 0.0470534950430275,
+          "handoff": 0.0585023400936037,
+          "off_ball_cut": 0.109707614111016,
+          "relocation": 0.0966483820643148,
+          "screen": 0.0861053796990589,
+          "reset": 0.0176387700669317,
+          "transition_attack": 0.00971264657037894,
+          "putback": 0.00948618589904887
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.119758376062373,
+          "close_non_rim": 0.2925475872726,
+          "midrange": 0.237901243239447,
+          "standard_three": 0.253705134508675,
+          "deep_three": 0.0960876589169067
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.113047173820654,
+          "close_non_rim": 0.294092647683808,
+          "midrange": 0.242881427964301,
+          "standard_three": 0.25414364640884,
+          "deep_three": 0.0958351041223969
+        }
+      },
+      {
+        "arm": "neutral",
+        "competition": "overseas",
+        "games": 200,
+        "venue_win_rate": 0.505,
+        "mean_margin": 0.77,
+        "median_margin": 1.0,
+        "margin_standard_deviation": 12.8088811840039,
+        "overtime_rate": 0.025,
+        "close_game_rate": 0.29,
+        "blowout_rate": 0.105,
+        "points_per_100_gap": 1.01150909997372,
+        "venue_points_per_possession": 1.10028444797248,
+        "visitor_points_per_possession": 1.09016935697274,
+        "venue_possessions_per_game": 75.585,
+        "visitor_possessions_per_game": 75.58,
+        "venue_field_goal_percentage": 0.437403182650331,
+        "visitor_field_goal_percentage": 0.434419263456091,
+        "venue_two_point_percentage": 0.482825874959367,
+        "visitor_two_point_percentage": 0.47923742741317,
+        "venue_three_point_percentage": 0.353106776593605,
+        "visitor_three_point_percentage": 0.352493490887242,
+        "venue_three_point_attempt_rate": 0.350161949021265,
+        "visitor_three_point_attempt_rate": 0.353611898016997,
+        "venue_free_throw_percentage": 0.770898805782527,
+        "visitor_free_throw_percentage": 0.764265668849392,
+        "venue_free_throw_attempt_rate": 0.224052950288692,
+        "visitor_free_throw_attempt_rate": 0.227124645892351,
+        "venue_turnovers_per_100": 14.8905206059403,
+        "visitor_turnovers_per_100": 15.6853664990738,
+        "venue_offensive_rebound_percentage": 0.254203627697604,
+        "visitor_offensive_rebound_percentage": 0.260335490688152,
+        "venue_assist_percentage": 0.541693496458467,
+        "visitor_assist_percentage": 0.541734594065862,
+        "venue_conditional_assist_rate": 0.902144772117963,
+        "visitor_conditional_assist_rate": 0.905696375034069,
+        "venue_fouls_per_game": 16.6,
+        "visitor_fouls_per_game": 16.995,
+        "venue_steals_per_game": 5.36,
+        "visitor_steals_per_game": 5.165,
+        "venue_blocks_per_game": 3.345,
+        "visitor_blocks_per_game": 3.515,
+        "venue_timeouts_per_game": 1.17,
+        "visitor_timeouts_per_game": 1.355,
+        "venue_substitutions_per_game": 38.665,
+        "visitor_substitutions_per_game": 39.235,
+        "venue_action_mix": {
+          "pass_swing": 0.322281702944296,
+          "drive": 0.0734306348164234,
+          "pull_up": 0.150724710873188,
+          "post_action": 0.0182314024544215,
+          "pick_action": 0.049871218625322,
+          "handoff": 0.0586586536033534,
+          "off_ball_cut": 0.109388414726529,
+          "relocation": 0.0960557547598606,
+          "screen": 0.0848947022877632,
+          "reset": 0.0184334124539165,
+          "transition_attack": 0.00896419372758952,
+          "putback": 0.009065198727337
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.324222668004012,
+          "drive": 0.0712637913741224,
+          "pull_up": 0.151780341023069,
+          "post_action": 0.0185055165496489,
+          "pick_action": 0.0480190571715145,
+          "handoff": 0.0582748244734203,
+          "off_ball_cut": 0.109302908726179,
+          "relocation": 0.0952607823470411,
+          "screen": 0.0874122367101304,
+          "reset": 0.0178786359077232,
+          "transition_attack": 0.00882647943831495,
+          "putback": 0.00925275827482447
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.115476693423461,
+          "close_non_rim": 0.293761442050415,
+          "midrange": 0.240599915504858,
+          "standard_three": 0.253203774116322,
+          "deep_three": 0.096958174904943
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.113951841359773,
+          "close_non_rim": 0.293484419263456,
+          "midrange": 0.238951841359773,
+          "standard_three": 0.254886685552408,
+          "deep_three": 0.0987252124645892
+        }
+      },
+      {
+        "arm": "reversed",
+        "competition": "overseas",
+        "games": 200,
+        "venue_win_rate": 0.53,
+        "mean_margin": 0.295,
+        "median_margin": 2.0,
+        "margin_standard_deviation": 12.5769181179943,
+        "overtime_rate": 0.035,
+        "close_game_rate": 0.25,
+        "blowout_rate": 0.1,
+        "points_per_100_gap": 0.389207731380714,
+        "venue_points_per_possession": 1.10066627086219,
+        "visitor_points_per_possession": 1.09677419354839,
+        "venue_possessions_per_game": 75.795,
+        "visitor_possessions_per_game": 75.795,
+        "venue_field_goal_percentage": 0.435423573393525,
+        "visitor_field_goal_percentage": 0.439786531844674,
+        "venue_two_point_percentage": 0.478449209443362,
+        "visitor_two_point_percentage": 0.489417127971345,
+        "venue_three_point_percentage": 0.355047541978556,
+        "visitor_three_point_percentage": 0.34884645982498,
+        "venue_three_point_attempt_rate": 0.348663327925513,
+        "visitor_three_point_attempt_rate": 0.353065093743417,
+        "venue_free_throw_percentage": 0.77134328358209,
+        "visitor_free_throw_percentage": 0.760453808752026,
+        "venue_free_throw_attempt_rate": 0.236298229526698,
+        "visitor_free_throw_attempt_rate": 0.216628045783302,
+        "venue_turnovers_per_100": 15.1988917474767,
+        "visitor_turnovers_per_100": 15.0603601820701,
+        "venue_offensive_rebound_percentage": 0.256995776135164,
+        "visitor_offensive_rebound_percentage": 0.256867406233492,
+        "venue_assist_percentage": 0.54122792807387,
+        "visitor_assist_percentage": 0.549576880089414,
+        "venue_conditional_assist_rate": 0.905420054200542,
+        "visitor_conditional_assist_rate": 0.906743940990516,
+        "venue_fouls_per_game": 16.645,
+        "visitor_fouls_per_game": 16.985,
+        "venue_steals_per_game": 5.165,
+        "visitor_steals_per_game": 5.455,
+        "venue_blocks_per_game": 3.42,
+        "visitor_blocks_per_game": 3.29,
+        "venue_timeouts_per_game": 1.36,
+        "visitor_timeouts_per_game": 1.185,
+        "venue_substitutions_per_game": 39.1,
+        "visitor_substitutions_per_game": 39.08,
+        "venue_action_mix": {
+          "pass_swing": 0.322845691382766,
+          "drive": 0.0712424849699399,
+          "pull_up": 0.151978957915832,
+          "post_action": 0.018061122244489,
+          "pick_action": 0.0482965931863727,
+          "handoff": 0.0587925851703407,
+          "off_ball_cut": 0.111397795591182,
+          "relocation": 0.094438877755511,
+          "screen": 0.0861973947895792,
+          "reset": 0.0184619238476954,
+          "transition_attack": 0.0092935871743487,
+          "putback": 0.00899298597194389
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.324412433661865,
+          "drive": 0.072984584281021,
+          "pull_up": 0.150720242608036,
+          "post_action": 0.0184230477634572,
+          "pick_action": 0.049305029062421,
+          "handoff": 0.0581501137225171,
+          "off_ball_cut": 0.10841546626232,
+          "relocation": 0.0955016426585797,
+          "screen": 0.0853171594642406,
+          "reset": 0.0182461460702552,
+          "transition_attack": 0.00957796310336113,
+          "putback": 0.0089461713419257
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.114974959441349,
+          "close_non_rim": 0.294138393172039,
+          "midrange": 0.242223319461099,
+          "standard_three": 0.252310079706567,
+          "deep_three": 0.0963532482189462
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.118390562460501,
+          "close_non_rim": 0.288603328417948,
+          "midrange": 0.239941015378134,
+          "standard_three": 0.256021346815533,
+          "deep_three": 0.0970437469278843
+        }
+      }
+    ],
+    "venue_effect_estimator": [
+      {
+        "pairs": 200,
+        "unique_games": 600,
+        "incomplete_fixtures": 0,
+        "duplicate_attempts": 0,
+        "overlapping_keys": 0,
+        "well_formed": true,
+        "raw_home_win_rate": 0.585,
+        "neutral_home_win_rate": 0.505,
+        "venue_attributable_win_rate": 0.5575,
+        "venue_attributable_win_rate_half_width": 0.0334451256861265,
+        "raw_margin_difference": 2.645,
+        "paired_margin_difference": 1.47,
+        "paired_margin_half_width": 0.606609502267485,
+        "points_per_100": 1.9445730537734,
+        "points_per_100_half_width": 0.802446593382479,
+        "points_per_100_standard_error": 0.409411527235959,
+        "home_arm_points_per_100": 2.48032277267015,
+        "possession_base": 75.595,
+        "cap_respected": true,
+        "venue_reversal_agrees": true,
+        "competition": "overseas"
+      }
+    ],
+    "venue_paired_fixtures": [
+      {
+        "fixture": "overseas/710000",
+        "home_margin": 8.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710001",
+        "home_margin": -2.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710002",
+        "home_margin": 16.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -17.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710003",
+        "home_margin": 5.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710004",
+        "home_margin": 2.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710005",
+        "home_margin": -10.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710006",
+        "home_margin": -5.0,
+        "home_possessions": 81.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 82.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 82.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710007",
+        "home_margin": 23.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 23.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -28.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710008",
+        "home_margin": 12.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710009",
+        "home_margin": -15.0,
+        "home_possessions": 80.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 81.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710010",
+        "home_margin": 11.0,
+        "home_possessions": 80.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 81.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710011",
+        "home_margin": -7.0,
+        "home_possessions": 80.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710012",
+        "home_margin": 17.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710013",
+        "home_margin": 11.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710014",
+        "home_margin": 19.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710015",
+        "home_margin": 10.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 88.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710016",
+        "home_margin": 18.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 25.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710017",
+        "home_margin": -11.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710018",
+        "home_margin": 29.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 29.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710019",
+        "home_margin": -13.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710020",
+        "home_margin": 5.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710021",
+        "home_margin": -5.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710022",
+        "home_margin": 11.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710023",
+        "home_margin": 8.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710024",
+        "home_margin": 14.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710025",
+        "home_margin": 1.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710026",
+        "home_margin": -5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710027",
+        "home_margin": 5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710028",
+        "home_margin": -19.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710029",
+        "home_margin": 7.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710030",
+        "home_margin": -7.0,
+        "home_possessions": 79.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710031",
+        "home_margin": 6.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710032",
+        "home_margin": -18.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710033",
+        "home_margin": 8.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710034",
+        "home_margin": 21.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710035",
+        "home_margin": 6.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710036",
+        "home_margin": 3.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710037",
+        "home_margin": 20.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710038",
+        "home_margin": -7.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710039",
+        "home_margin": 1.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710040",
+        "home_margin": -1.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710041",
+        "home_margin": 3.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710042",
+        "home_margin": 7.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710043",
+        "home_margin": -19.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710044",
+        "home_margin": -3.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710045",
+        "home_margin": 5.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710046",
+        "home_margin": 4.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 81.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710047",
+        "home_margin": 13.0,
+        "home_possessions": 79.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710048",
+        "home_margin": 18.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710049",
+        "home_margin": -13.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -21.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710050",
+        "home_margin": 16.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 33.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -33.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710051",
+        "home_margin": 19.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710052",
+        "home_margin": 38.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -27.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710053",
+        "home_margin": 7.0,
+        "home_possessions": 79.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710054",
+        "home_margin": -1.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -19.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 24.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710055",
+        "home_margin": -4.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710056",
+        "home_margin": -11.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710057",
+        "home_margin": 8.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710058",
+        "home_margin": 12.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710059",
+        "home_margin": 1.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710060",
+        "home_margin": 18.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710061",
+        "home_margin": -5.0,
+        "home_possessions": 81.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 81.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710062",
+        "home_margin": 7.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710063",
+        "home_margin": -11.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710064",
+        "home_margin": 17.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710065",
+        "home_margin": 28.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710066",
+        "home_margin": 17.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 25.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": -25.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710067",
+        "home_margin": -13.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 24.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710068",
+        "home_margin": -11.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710069",
+        "home_margin": -4.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710070",
+        "home_margin": 5.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710071",
+        "home_margin": 9.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710072",
+        "home_margin": -6.0,
+        "home_possessions": 83.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710073",
+        "home_margin": -4.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710074",
+        "home_margin": 20.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710075",
+        "home_margin": 4.0,
+        "home_possessions": 92.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 81.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710076",
+        "home_margin": 15.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710077",
+        "home_margin": 9.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710078",
+        "home_margin": -11.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710079",
+        "home_margin": -11.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710080",
+        "home_margin": 6.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710081",
+        "home_margin": 6.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 98.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710082",
+        "home_margin": -15.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710083",
+        "home_margin": 12.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710084",
+        "home_margin": 10.0,
+        "home_possessions": 78.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710085",
+        "home_margin": -22.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -38.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 38.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710086",
+        "home_margin": 1.0,
+        "home_possessions": 78.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710087",
+        "home_margin": -12.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710088",
+        "home_margin": 10.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 19.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710089",
+        "home_margin": -10.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710090",
+        "home_margin": 4.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 19.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710091",
+        "home_margin": 3.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710092",
+        "home_margin": -3.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710093",
+        "home_margin": 13.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710094",
+        "home_margin": 34.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 34.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -27.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710095",
+        "home_margin": 15.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 22.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710096",
+        "home_margin": -17.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710097",
+        "home_margin": 16.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 26.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710098",
+        "home_margin": -27.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -23.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 24.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710099",
+        "home_margin": -17.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710100",
+        "home_margin": -1.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 82.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710101",
+        "home_margin": -8.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710102",
+        "home_margin": -16.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710103",
+        "home_margin": -5.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710104",
+        "home_margin": -7.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710105",
+        "home_margin": 5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 90.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710106",
+        "home_margin": -26.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -30.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 32.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710107",
+        "home_margin": 13.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710108",
+        "home_margin": -19.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -22.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710109",
+        "home_margin": 7.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710110",
+        "home_margin": 15.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -15.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710111",
+        "home_margin": -13.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710112",
+        "home_margin": -7.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710113",
+        "home_margin": 18.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710114",
+        "home_margin": -9.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710115",
+        "home_margin": 15.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710116",
+        "home_margin": -4.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 19.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710117",
+        "home_margin": 8.0,
+        "home_possessions": 78.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710118",
+        "home_margin": 4.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710119",
+        "home_margin": -2.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710120",
+        "home_margin": 18.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710121",
+        "home_margin": 3.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710122",
+        "home_margin": 14.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710123",
+        "home_margin": 25.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710124",
+        "home_margin": 2.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710125",
+        "home_margin": 13.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710126",
+        "home_margin": 7.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710127",
+        "home_margin": 22.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710128",
+        "home_margin": -23.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710129",
+        "home_margin": -5.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710130",
+        "home_margin": 11.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 89.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710131",
+        "home_margin": 4.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710132",
+        "home_margin": 29.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710133",
+        "home_margin": -16.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -19.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 19.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710134",
+        "home_margin": -5.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 86.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710135",
+        "home_margin": -1.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710136",
+        "home_margin": -9.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710137",
+        "home_margin": -18.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710138",
+        "home_margin": -11.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710139",
+        "home_margin": 24.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 24.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -17.0,
+        "reversed_possessions": 70.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710140",
+        "home_margin": 2.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710141",
+        "home_margin": -8.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 85.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710142",
+        "home_margin": 8.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710143",
+        "home_margin": 26.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -27.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710144",
+        "home_margin": 7.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710145",
+        "home_margin": 5.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710146",
+        "home_margin": -4.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710147",
+        "home_margin": 22.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 19.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710148",
+        "home_margin": 11.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710149",
+        "home_margin": -8.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710150",
+        "home_margin": -11.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710151",
+        "home_margin": 6.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710152",
+        "home_margin": -6.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710153",
+        "home_margin": -8.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 23.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710154",
+        "home_margin": 11.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710155",
+        "home_margin": 31.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710156",
+        "home_margin": 4.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710157",
+        "home_margin": 4.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 71.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710158",
+        "home_margin": 19.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 19.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710159",
+        "home_margin": 5.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710160",
+        "home_margin": 14.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710161",
+        "home_margin": -26.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710162",
+        "home_margin": 8.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710163",
+        "home_margin": 5.0,
+        "home_possessions": 76.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710164",
+        "home_margin": -24.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710165",
+        "home_margin": -7.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710166",
+        "home_margin": 12.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710167",
+        "home_margin": -14.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710168",
+        "home_margin": 27.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 25.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710169",
+        "home_margin": -7.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710170",
+        "home_margin": 5.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710171",
+        "home_margin": -14.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710172",
+        "home_margin": 7.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 72.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710173",
+        "home_margin": -4.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710174",
+        "home_margin": 37.0,
+        "home_possessions": 79.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 81.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710175",
+        "home_margin": 6.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 86.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710176",
+        "home_margin": -5.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 21.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710177",
+        "home_margin": -2.0,
+        "home_possessions": 78.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710178",
+        "home_margin": -4.0,
+        "home_possessions": 77.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 77.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 88.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710179",
+        "home_margin": 12.0,
+        "home_possessions": 81.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 82.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710180",
+        "home_margin": 2.0,
+        "home_possessions": 81.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 87.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 83.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710181",
+        "home_margin": 8.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710182",
+        "home_margin": 5.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710183",
+        "home_margin": -1.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 78.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710184",
+        "home_margin": -12.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710185",
+        "home_margin": -7.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710186",
+        "home_margin": 2.0,
+        "home_possessions": 84.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 75.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710187",
+        "home_margin": 22.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 78.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 80.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710188",
+        "home_margin": 1.0,
+        "home_possessions": 80.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 79.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710189",
+        "home_margin": -8.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710190",
+        "home_margin": -20.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -24.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710191",
+        "home_margin": 9.0,
+        "home_possessions": 85.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710192",
+        "home_margin": -25.0,
+        "home_possessions": 82.0,
+        "neutral_margin": -24.0,
+        "neutral_possessions": 84.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 85.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710193",
+        "home_margin": -13.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 79.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710194",
+        "home_margin": -5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710195",
+        "home_margin": 23.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 23.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 74.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710196",
+        "home_margin": -10.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 73.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710197",
+        "home_margin": 16.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 77.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710198",
+        "home_margin": 7.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "overseas/710199",
+        "home_margin": -11.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 76.0,
+        "competition": "overseas",
+        "range": "diagnosis"
+      }
+    ]
+  }
+}
