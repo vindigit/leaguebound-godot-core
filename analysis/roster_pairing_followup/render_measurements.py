@@ -42,6 +42,16 @@ for phase,data in summaries.items():
             vals=[entry['marginal_venue_contrast'][v][metric] for v in ['baseline','candidate','paired_change']]
             text=[formatted(x) for x in vals]
             lines.append('| '+metric+' | '+' | '.join(text)+' |')
+        lines += ['', 'Actual rounded-roster strength distributions (diagnostic units):', '',
+                  '| Strength measure / source | Home mean ± SD | Away mean ± SD | Gap SD | Home stronger / away stronger / equal | Gap 5th / 50th / 95th percentiles |',
+                  '| --- | ---: | ---: | ---: | --- | --- |']
+        for metric in ['mean_attribute','mean_raw_overall','starter_raw_overall']:
+            for version in ['baseline','candidate']:
+                s=entry['cells'][version+'_home']['strength'][metric]
+                q=s['gap_quantiles']
+                lines.append(f'| {metric} / {version} | {s["home_mean"]:.6f} ± {s["home_sd"]:.6f} | {s["away_mean"]:.6f} ± {s["away_sd"]:.6f} | {s["gap_sd"]:.6f} | {s["home_stronger"]} / {s["away_stronger"]} / {s["equal"]} | {q[1]:+.6f} / {q[3]:+.6f} / {q[5]:+.6f} |')
+        lines += ['', 'Full marginal/gap quantiles, event and discordant-quartet counts,',
+                  'neutral-arm metrics and intervals are retained in the phase summary JSON.', '']
         lines += ['', 'All canonical failures, including neutral-arm reports retained for audit:', '']
         for name,cell in entry['cells'].items():
             failures=[f'{m["metric"]}={m["estimate"]:.9f}' for m in cell['all_canonical_failures']]
