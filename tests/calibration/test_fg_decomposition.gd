@@ -638,47 +638,25 @@ func test_the_compensation_channels_are_pinned_on_a_fixed_fixture() -> void:
 	var decomposition: PppDecomposition = _decompose(
 		CalibrationTargets.Competition.COLLEGE, DISTRIBUTION_GAMES)
 	var totals: PppDecomposition.Totals = decomposition.totals
-	# v17 stopped foul administration and the measured competition pace update
-	# change these same 24 fixtures. Only pins outside their existing tolerance
-	# are refreshed: extension 0.1122, ORB share 0.2356, possessions 138.17.
-	# The archived before/timing/final measurements are reproduced by
-	# tools/audit_fixed_fixture_channels.gd. No tolerance or balance target moves.
-
+	# Catalog v4 changes only which existing rosters meet in these same 24
+	# seeded fixtures. Matched old/new audits and the original failing test are
+	# archived in analysis/roster_pairing_followup/fixed_fixture. Refresh only
+	# extension, ORB and assist pins which exceeded their existing tolerances.
+	# Turnover and possession pins, all tolerances and all locked targets remain.
+	# No engine, probability or pace parameter changed; broader population
+	# effects are measured separately and are not inferred from this snapshot.
 	assert_float(totals.turnover_rate()).override_failure_message(
 		"turnover rate moved to %.4f on a fixed fixture" % totals.turnover_rate()
 	).is_equal_approx(0.1534, CHANNEL_TOLERANCE)
 	assert_float(totals.extension_rate()).override_failure_message(
 		"offensive-rebound extension rate moved to %.4f on a fixed fixture"
-		% totals.extension_rate()).is_equal_approx(0.1122, CHANNEL_TOLERANCE)
+		% totals.extension_rate()).is_equal_approx(0.1192, CHANNEL_TOLERANCE)
 	assert_float(totals.offensive_rebound_rate()).override_failure_message(
 		"offensive-rebound share moved to %.4f on a fixed fixture"
-		% totals.offensive_rebound_rate()).is_equal_approx(0.2356, CHANNEL_TOLERANCE)
-	# **Four of the five pins move under `simulation-v14-restart-contract` and
-	# §5.32's pace re-derivation, and they are re-pinned rather than absorbed into
-	# a wider tolerance — which is what this test is for.**
-	#
-	# Assisted share: 0.6387 -> 0.6571 (v13) -> 0.6642 (v14) -> **0.6449** (pace).
-	# Turnover rate 0.1510 -> 0.1465, offensive-rebound share 0.2445 -> 0.2376,
-	# possessions per game 144.58 -> 148.33 -> 144.17. Only the offensive-rebound
-	# *extension* rate is unmoved.
-	#
-	# The cause is one thing, and it is not compensation. Every one of these
-	# channels is a function of the action mix, and the action mix reads the game
-	# clock through §10.3's score-and-clock factor
-	# (`GameManagement.remaining_ms`) and the shot clock. The clock contracts
-	# changed what a possession begins on and the pace re-derivation made a
-	# possession about 4% longer, so the mix shifts. **No turnover, rebound or
-	# assist parameter was touched** — the only production values §5.32 writes are
-	# the five `pace_multiplier` numbers.
-	#
-	# The population measurement is the check that this is a fixture-scale shift
-	# rather than a channel being paid off: on the matched 200-game cell across
-	# all five competitions, turnover rate, offensive-rebound percentage and
-	# assist percentage every one stay **inside their §14.1 bands** and move by
-	# about one interval half-width or less (`PROJECT_STATUS.md` §5.32).
+		% totals.offensive_rebound_rate()).is_equal_approx(0.2429, CHANNEL_TOLERANCE)
 	assert_float(totals.assisted_share()).override_failure_message(
 		"assisted share moved to %.4f on a fixed fixture" % totals.assisted_share()
-	).is_equal_approx(0.6449, CHANNEL_TOLERANCE)
+	).is_equal_approx(0.6328, CHANNEL_TOLERANCE)
 	assert_float(totals.possessions_per_game()).override_failure_message(
 		"possessions per game moved to %.2f on a fixed fixture"
 		% totals.possessions_per_game()).is_equal_approx(138.17, 2.0)

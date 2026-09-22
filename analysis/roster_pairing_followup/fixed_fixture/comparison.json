@@ -1,0 +1,55 @@
+{
+  "scope": "Exact original 24-game fixed-fixture observations; not population causal estimates or target changes",
+  "rows": [
+    {
+      "metric": "turnover_rate",
+      "original_pin": 0.1534,
+      "unchanged_tolerance": 0.004,
+      "before": 0.155307599517491,
+      "after": 0.154951100244499,
+      "matched_difference": -0.00035649927299200024,
+      "pin_difference": 0.001551100244499004,
+      "outside_existing_tolerance": false
+    },
+    {
+      "metric": "extension_rate",
+      "original_pin": 0.1122,
+      "unchanged_tolerance": 0.004,
+      "before": 0.112183353437877,
+      "after": 0.11919315403423,
+      "matched_difference": 0.007009800596353005,
+      "pin_difference": 0.006993154034230009,
+      "outside_existing_tolerance": true
+    },
+    {
+      "metric": "offensive_rebound_rate",
+      "original_pin": 0.2356,
+      "unchanged_tolerance": 0.004,
+      "before": 0.235558048233315,
+      "after": 0.242912729294052,
+      "matched_difference": 0.0073546810607370006,
+      "pin_difference": 0.007312729294051995,
+      "outside_existing_tolerance": true
+    },
+    {
+      "metric": "assisted_share",
+      "original_pin": 0.6449,
+      "unchanged_tolerance": 0.004,
+      "before": 0.645816409423233,
+      "after": 0.632838283828383,
+      "matched_difference": -0.01297812559485001,
+      "pin_difference": -0.012061716171616998,
+      "outside_existing_tolerance": true
+    },
+    {
+      "metric": "possessions_both_teams_per_game",
+      "original_pin": 138.17,
+      "unchanged_tolerance": 2,
+      "before": 138.166666666667,
+      "after": 136.333333333333,
+      "matched_difference": -1.8333333333339965,
+      "pin_difference": -1.8366666666669857,
+      "outside_existing_tolerance": false
+    }
+  ]
+}
