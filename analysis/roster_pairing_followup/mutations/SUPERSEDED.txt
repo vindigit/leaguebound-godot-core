@@ -1,0 +1,1 @@
+Superseded: initial 8/8 baseline passed, restore-adjacent mutation interrupted before completion. Critic required actual reversed-orientation union coverage (231 roster/25 ladder cells per468 fixtures), plus final-byte rerun. No mutation acceptance claimed.

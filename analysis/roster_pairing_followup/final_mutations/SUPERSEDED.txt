@@ -1,0 +1,1 @@
+SUPERSEDED: baseline8/8 and8 assertion kills completed, but final original-byte restoration check failed because ReadAllText/WriteAllText removed catalog UTF-8 BOM. Reconstructed results.json documents forensic log/hash analysis only, not successful harness completion. Fixed runner uses ReadAllBytes/WriteAllBytes; complete clean rerun is verified_mutations.

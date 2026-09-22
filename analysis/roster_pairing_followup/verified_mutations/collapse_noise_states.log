@@ -1,0 +1,51 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;178;34;34m[1m FAILED[0m[38;2;100;149;237m 46ms[0m
+  [38;2;0;206;209m[1m[4mReport:[0m
+  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ [38;2;30;144;255m117[0m
+ but was
+ [38;2;30;144;255m13[0m[0m[38;2;173;216;230m	at 'test_full_cartesian_cycle_and_aligned_marginals' in res://tests/calibration/test_population_pairing.gd:49[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ [38;2;30;144;255m117[0m
+ but was
+ [38;2;30;144;255m13[0m[0m[38;2;173;216;230m	at 'test_full_cartesian_cycle_and_aligned_marginals' in res://tests/calibration/test_population_pairing.gd:50[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ [38;2;30;144;255m13[0m
+ but was
+ [38;2;30;144;255m117[0m[0m[38;2;173;216;230m	at 'test_full_cartesian_cycle_and_aligned_marginals' in res://tests/calibration/test_population_pairing.gd:51[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ [38;2;30;144;255m231[0m
+ but was
+ [38;2;30;144;255m153[0m[0m[38;2;173;216;230m	at 'test_full_cartesian_cycle_and_aligned_marginals' in res://tests/calibration/test_population_pairing.gd:52[0m  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ [38;2;30;144;255m25[0m
+ but was
+ [38;2;30;144;255m153[0m[0m[38;2;173;216;230m	at 'test_full_cartesian_cycle_and_aligned_marginals' in res://tests/calibration/test_population_pairing.gd:53[0m[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 269ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (1/1)[0m
+[38;2;233;150;122mExecuted test cases : (2/2)[0m
+[38;2;233;150;122mTotal execution time: 269ms[0m
+[38;2;255;255;255m [0m[38;2;100;149;237mOpen XML Report at: file://C:/Users/valexander/AppData/Local/Temp/leaguebound-pairing-d69406281f004e319b018cb20b25ba6c/reports/report_6/results.xml[0m
+[38;2;100;149;237mOpen HTML Report at: file://C:/Users/valexander/AppData/Local/Temp/leaguebound-pairing-d69406281f004e319b018cb20b25ba6c/reports/report_6/index.html[0m
+[38;2;178;34;34mExit code: 100[0m
+Run dispose test resources

@@ -1,0 +1,12 @@
+{
+  "catalog_sha256": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+  "approved_utc": "2026-09-22T17:47:25.7750352Z",
+  "head": "bf275ccc89e16fe75830fd34a37529faf8df610a",
+  "mutants_killed": 8,
+  "mapping_frozen_at": "8b8fd437ca700beef14886b61f95f7ce9eb77c93",
+  "critic": "timing_builder: structural/mutation ACCEPT; timing_critic: construction/methodology/provenance ACCEPT",
+  "scope": "Allows frozen candidate and two untouched game-outcome ranges; no population or full-gate acceptance claimed.",
+  "baseline_cases": 8,
+  "approved": true,
+  "runner_sha256": "B50AC6884FB0E3C99C28F864E098BA2DCB825DE7C62F09F329A26BD965A6FAED"
+}
