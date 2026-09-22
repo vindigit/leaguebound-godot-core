@@ -1,0 +1,6 @@
+# Evidence hashes refer to exact archived bytes, including line endings and BOMs.
+# Keep scripts and prose under the repository's normal text policy.
+*.json -text
+*.txt -text
+*.log -text
+*.xml -text

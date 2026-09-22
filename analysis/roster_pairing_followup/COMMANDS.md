@@ -6,6 +6,13 @@ Copy only the new `run_roster_pairing_followup.gd` instrumentation into the
 baseline and verify identical runner bytes on both trees. Import each tree
 before running scripts. Keep their report directories separate.
 
+Evidence JSON, text logs and XML in this directory use a scoped Git `-text`
+rule so published bytes retain their original line endings and UTF-8 markers.
+The archive correction restores CRLF bytes that Git had normalized in earlier
+commits; `archive_byte_preservation.json` verifies staged bytes and unchanged
+content after line-ending normalization. It changes no observations or hashes
+inside provenance records. Scripts and Markdown retain the normal text policy.
+
 The checked-in `run_cells.py` records exact command arguments, elapsed time,
 exit code, input-file hashes and raw/report hashes per cell. Its local Windows
 Godot and baseline paths are explicit at the top; adjust those installation
