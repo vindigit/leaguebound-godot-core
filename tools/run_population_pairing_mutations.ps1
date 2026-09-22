@@ -21,7 +21,8 @@ $mutants = @(
     @{ id='collapse_noise_states'; file=$catalog; old='const ROSTER_VARIATION_PERIOD: int = 117'; new='const ROSTER_VARIATION_PERIOD: int = 13' },
     @{ id='swap_explicit_away_offset'; file=$catalog; old='roster_variations[1], balance, away_offset)'; new='roster_variations[1], balance, home_offset)' },
     @{ id='contest_consumer_legacy'; file='calibration/runners/run_contest_sweep.gd'; old='CompetitionCatalog.population_roster_variations(variation)'; new='PackedInt32Array([variation * 2, variation * 2 + 1])' },
-    @{ id='homecourt_consumer_legacy'; file='calibration/runners/run_home_court_diagnostics.gd'; old='CompetitionCatalog.population_roster_variations(variation)'; new='PackedInt32Array([variation * 2, variation * 2 + 1])' }
+    @{ id='homecourt_consumer_legacy'; file='calibration/runners/run_home_court_diagnostics.gd'; old='CompetitionCatalog.population_roster_variations(variation)'; new='PackedInt32Array([variation * 2, variation * 2 + 1])' },
+    @{ id='mirror_int64_narrowing'; file='calibration/runners/run_home_court_diagnostics.gd'; old='var first_variation: int = variation * 2'; new='var first_variation: int = PackedInt32Array([variation * 2])[0]' }
 )
 function Invoke-Focused([string]$name) {
     $log = Join-Path $output ($name + '.log')
@@ -35,7 +36,7 @@ function Invoke-Focused([string]$name) {
 }
 $records = @()
 $baseline = Invoke-Focused 'baseline'
-if ($baseline.exit_code -ne 0 -or $baseline.summary -notmatch '8 test cases \| 0 errors \| 0 failures') { throw 'baseline is not green' }
+if ($baseline.exit_code -ne 0 -or $baseline.summary -notmatch '9 test cases \| 0 errors \| 0 failures') { throw 'baseline is not green' }
 $records += $baseline
 foreach ($mutant in $mutants) {
     $path = Join-Path $isolated $mutant.file

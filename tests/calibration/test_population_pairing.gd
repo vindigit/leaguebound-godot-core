@@ -3,6 +3,11 @@ extends GdUnitTestSuite
 
 var _strength_cache: Dictionary = {}
 
+## Exercise the real consumer; suppress only its automatic simulation launch.
+class FixtureRunner extends "res://calibration/runners/run_home_court_diagnostics.gd":
+	func _run() -> void:
+		pass
+
 ## Construction contracts, not game outcomes or independent-sample claims.
 ## A local 468-fixture block has 25/169 ladder-pair cells (13 ladder cells in the base orientation). The complete
 ## joint population requires 54,756 fixtures; uncertainty belongs to quartets.
@@ -171,6 +176,58 @@ func test_custom_population_consumers_share_the_schedule() -> void:
 		assert_bool(executable.contains("variation * 2 + 1")).is_false()
 		assert_int(executable.count("roster_variations[0]")).is_equal(entry[1])
 		assert_int(executable.count("roster_variations[1]")).is_equal(entry[1])
+
+
+func test_actual_venue_consumer_preserves_int64_mirror_indices() -> void:
+	var runner := FixtureRunner.new()
+	# These upper witnesses remain safe through team_for's largest multiplication:
+	# 2 * (2^56 + 1) * 37 < INT64_MAX. No expected path packs/casts to int32.
+	var variations: Array[int] = [1073741823, 1073741824, 1073741825,
+		2147483648, 1099511627776, 72057594037927936, 72057594037927937]
+	for competition in range(5):
+		for variation in variations:
+			for mode: String in ["mirror", "population"]:
+				var first_variation: int = variation * 2
+				var second_variation: int = first_variation
+				if mode == "population":
+					var pair: PackedInt32Array = CompetitionCatalog.population_roster_variations(variation)
+					first_variation = pair[0]
+					second_variation = pair[1]
+				var first: TeamMatchProfile = CompetitionCatalog.team_for(competition, &"home", first_variation)
+				var second: TeamMatchProfile = CompetitionCatalog.team_for(competition, &"away", second_variation)
+				for environment: float in [0.0, 0.5]:
+					for reversed: bool in [false, true]:
+						var input: MatchInput = runner._venue_input(competition, variation, mode, environment, reversed)
+						var home_expected: String = _complete_team_signature(second if reversed else first)
+						var away_expected: String = _complete_team_signature(first if reversed else second)
+						if _complete_team_signature(input.home) != home_expected or _complete_team_signature(input.away) != away_expected:
+							runner.free()
+							assert_bool(false).override_failure_message("actual venue consumer roster mismatch competition=%d variation=%d mode=%s reversed=%s environment=%s" % [competition, variation, mode, reversed, environment]).is_true()
+							return
+						assert_str(String(input.initial_possession_team_id)).is_equal("home" if variation % 2 == 0 else "away")
+						assert_str(String(input.home.team_id)).is_equal("away" if reversed else "home")
+						assert_str(String(input.away.team_id)).is_equal("home" if reversed else "away")
+						assert_str(String(input.match_id)).is_equal("home_court_%s_%d" % [CalibrationTargets.competition_id(competition), variation])
+						assert_str(String(input.game_id)).is_equal("home_court_game_%d" % variation)
+						assert_float(input.home_environment).is_equal(environment)
+						assert_str(String(input.rule_profile.version)).is_equal(String(CompetitionCatalog.rules_for(competition).version))
+						assert_str(String(input.balance_profile.version)).is_equal(String(CompetitionCatalog.balance_profile().version))
+						assert_str(String(input.ratings_profile.version)).is_equal(String(CompetitionCatalog.ratings_profile().version))
+	runner.free()
+
+
+func _complete_team_signature(team: TeamMatchProfile) -> String:
+	var identities: Array = []
+	for player in team.players:
+		identities.append([player.player_id, player.badges.size(), player.injury_limitations.size(),
+			player.qualitative_durability_band, player.is_available()])
+	var plan: TeamGamePlan = team.game_plan
+	return JSON.stringify([team.team_id, team.chemistry, _signature(team), identities,
+		team.rotation_plan.starters, team.rotation_plan.substitution_order,
+		team.rotation_plan.closing_lineup, team.rotation_plan.planned_minute_share,
+		[plan.coverage_family, plan.tempo_instruction, plan.shot_profile_instruction,
+			plan.ball_movement_instruction, plan.help_instruction, plan.crash_instruction,
+			plan.gamble_instruction, plan.strictness, plan.trust]])
 
 
 func _gap(input: MatchInput) -> float:
