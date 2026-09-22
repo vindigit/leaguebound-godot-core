@@ -1,6 +1,6 @@
 # Roster pairing construction evidence
 
-Behavior source is frozen commit `8b8fd437ca700beef14886b61f95f7ce9eb77c93`.
+The original population-construction source is frozen commit `8b8fd437ca700beef14886b61f95f7ce9eb77c93`.
 Godot is `4.7.1.stable.official.a13da4feb`. This evidence concerns fixture
 construction only; it does not certify game outcomes or §27.1.
 
@@ -57,6 +57,30 @@ outcomes, restored source hashes, and retained isolated copy. Mutation changes
 never touch the shared checkout. Logs with assertion failures are expected
 mutation evidence, not green runs.
 
-Two earlier attempts remain explicitly superseded: the first lacked actual reverse-orientation union assertions; the second completed all assertion kills but failed exact restoration because the harness removed a UTF-8 BOM. The corrected runner restores original bytes. Only verified_mutations is eligible for final harness acceptance.
+Two earlier attempts remain explicitly superseded: the first lacked actual reverse-orientation union assertions; the second completed all assertion kills but failed exact restoration because the harness removed a UTF-8 BOM. The corrected runner restores original bytes. That historical eight-case run was accepted at its recorded source state; the final nine-case source is covered by verified_mutations_v2 below.
 
 The corrected verified_mutations run completed successfully: baseline 8/8, zero errors/failures/skips/flaky/orphans; all eight actual-source mutants exited 100 with assertion failures and zero errors. The runner verified exact restored-byte SHA256 equality for the catalog, all three custom consumers, and the final test source. Its recorded completion head is bf275ccc89e16fe75830fd34a37529faf8df610a; immutable behavior and tested-source hashes are recorded separately in the evidence.
+
+## Final consumer-boundary coverage
+
+Subsequent review found that the migrated home-court consumer narrowed a mirror
+index to 32 bits. The final consumer preserves the original int64 scalar index;
+the population mapping is unchanged. The ninth test executes 280 actual consumer
+inputs across all five competitions, both modes, orientations and environment
+arms, with seven boundary/large-index witnesses. The preserved faulty consumer
+fails precisely at variation 1,073,741,824.
+
+The final mutation invocation uses
+`-OutputDirectory analysis/roster_pairing_followup/verified_mutations_v2`.
+At source head `7e4a73128f7c64b786679d40dee064cb2b40994e`, its baseline passes
+9/9 with zero errors, failures, skips, flaky cases or orphans. All nine actual
+source mutants are assertion-killed with exit 100 and zero errors. Earlier
+mutants can stop before all nine cases execute; the new narrowing mutant runs
+all nine and fails only the boundary case. All five source hashes match both
+the shared checkout and the restored isolated copy byte-for-byte.
+
+Independent final-source acceptance and its exact inventory are archived in
+`mirror_boundary/INDEPENDENT_V2_REVIEW.md` and
+`mirror_boundary/independent_v2_review.json`. The earlier eight-case artifacts
+remain historical evidence, not the final-source test claim. Complete-gate,
+population, replay and publication acceptance are separate.

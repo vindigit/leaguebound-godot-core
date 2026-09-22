@@ -1,0 +1,65 @@
+{
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "source_sha256": {
+    "calibration/runners/run_contest_sweep.gd": "437D49E9752A34113CADF2CD1D1C185CEACB2EB8E73ACD203E8FB694F322199C",
+    "tests/calibration/test_population_pairing.gd": "D78B07CC1F569E008AA140424EA741FF24637638B796E9432122A52D138B1AF8",
+    "calibration/targets/competition_catalog.gd": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+    "calibration/runners/run_fg_counterfactual.gd": "9064D263A580B335DF83711C6D02BA82C0DD04D4F6D83EEBB49E38F9E0EE45AB",
+    "calibration/runners/run_home_court_diagnostics.gd": "030DC30CB6717538E93268146068DDAA76505E3D2EC7BE2C768891DA5163C235"
+  },
+  "baseline_and_mutants": [
+    {
+      "exit_code": 0,
+      "summary": "9 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "baseline"
+    },
+    {
+      "exit_code": 100,
+      "summary": "3 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "restore_adjacent_population"
+    },
+    {
+      "exit_code": 100,
+      "summary": "2 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "opener_correlated_orientation"
+    },
+    {
+      "exit_code": 100,
+      "summary": "2 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "noncoprime_marginal"
+    },
+    {
+      "exit_code": 100,
+      "summary": "2 test cases | 0 errors | 118 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "missing_cartesian_round"
+    },
+    {
+      "exit_code": 100,
+      "summary": "2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "collapse_noise_states"
+    },
+    {
+      "exit_code": 100,
+      "summary": "5 test cases | 0 errors | 70 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "swap_explicit_away_offset"
+    },
+    {
+      "exit_code": 100,
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "contest_consumer_legacy"
+    },
+    {
+      "exit_code": 100,
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "homecourt_consumer_legacy"
+    },
+    {
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "mirror_int64_narrowing"
+    }
+  ],
+  "source_commit": "7e4a73128f7c64b786679d40dee064cb2b40994e",
+  "killed": 9,
+  "isolated_copy": "C:\\Users\\valexander\\AppData\\Local\\Temp\\leaguebound-pairing-97e443eedd6e4c40a5d4cbf73c23541a"
+}

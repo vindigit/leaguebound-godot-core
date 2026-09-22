@@ -1,0 +1,97 @@
+{
+  "verdict": "FINAL STRUCTURAL AND MUTATION V2 ACCEPT",
+  "review_head": "7b5f0a9a4300eeaa6f285531c0ad084bfc308f0c",
+  "source_commit": "7e4a73128f7c64b786679d40dee064cb2b40994e",
+  "baseline_cases": 9,
+  "mutants_killed": 9,
+  "logs": [
+    {
+      "id": "baseline",
+      "summary": "9 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 0,
+      "sha256": "E05CC319B61A318013AE42735F0BB95611C51E90F5F5CF33C1DC9AD9AEB6B9E8"
+    },
+    {
+      "id": "restore_adjacent_population",
+      "summary": "3 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "992D569EE2BC837B14E6E232B5F8DE517AB02101DD07F19A5660D6E8E0EB9017"
+    },
+    {
+      "id": "opener_correlated_orientation",
+      "summary": "2 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "E688A6E452F2BFE8444879561D2CC5A8D36A6E3137ED1BC366D90F796043A9BE"
+    },
+    {
+      "id": "noncoprime_marginal",
+      "summary": "2 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "477DEC0DBB605F4E4C514B03B63A6A7899AC0334B68BBB2CD8E48F5224F8ABBC"
+    },
+    {
+      "id": "missing_cartesian_round",
+      "summary": "2 test cases | 0 errors | 118 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "2112D5CA8803FC4661F4CF040832A14D5928044BA1FB2FFF138F06D00B13A3B2"
+    },
+    {
+      "id": "collapse_noise_states",
+      "summary": "2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "5CD0A7BB81BD41731B72233243D743C851F5263730C072754AEBAB2DCAF93883"
+    },
+    {
+      "id": "swap_explicit_away_offset",
+      "summary": "5 test cases | 0 errors | 70 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "745791B12156CE23A8E3E548038C052A8993B3985288A42ABF9C0CF9348B2877"
+    },
+    {
+      "id": "contest_consumer_legacy",
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "BF3AA264F5468BC2629826418CCD2F487F2CA19191FFE47B60DF74AD6D7C522E"
+    },
+    {
+      "id": "homecourt_consumer_legacy",
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "6E6CCE0B1AFE81E7F3C94BC64A9884F1620DCD2B81F6A9B7958C5D4D931E2F93"
+    },
+    {
+      "id": "mirror_int64_narrowing",
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "sha256": "03E383A6998775C53FAE3FF17D2AC058F0E56DFF2303CF10E11F8B217F08B691"
+    }
+  ],
+  "hashes": [
+    {
+      "path": "calibration/runners/run_contest_sweep.gd",
+      "sha256": "437D49E9752A34113CADF2CD1D1C185CEACB2EB8E73ACD203E8FB694F322199C",
+      "shared_and_restored_equal": true
+    },
+    {
+      "path": "tests/calibration/test_population_pairing.gd",
+      "sha256": "D78B07CC1F569E008AA140424EA741FF24637638B796E9432122A52D138B1AF8",
+      "shared_and_restored_equal": true
+    },
+    {
+      "path": "calibration/targets/competition_catalog.gd",
+      "sha256": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+      "shared_and_restored_equal": true
+    },
+    {
+      "path": "calibration/runners/run_fg_counterfactual.gd",
+      "sha256": "9064D263A580B335DF83711C6D02BA82C0DD04D4F6D83EEBB49E38F9E0EE45AB",
+      "shared_and_restored_equal": true
+    },
+    {
+      "path": "calibration/runners/run_home_court_diagnostics.gd",
+      "sha256": "030DC30CB6717538E93268146068DDAA76505E3D2EC7BE2C768891DA5163C235",
+      "shared_and_restored_equal": true
+    }
+  ],
+  "scope": "Focused construction and actual runner int64 regression only; fresh693case fullgate and measurement/publication evidence require separate acceptance"
+}
