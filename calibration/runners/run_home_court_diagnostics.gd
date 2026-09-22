@@ -596,11 +596,15 @@ func _venue_input(
 	reversed: bool,
 ) -> MatchInput:
 	var balance: SimulationBalanceProfile = CompetitionCatalog.balance_profile()
+	# Preserve the established mirror diagnostic exactly. Population mode alone
+	# shares the catalog's venue/opener-balanced full-roster pairing.
+	var roster_variations: PackedInt32Array = (
+		PackedInt32Array([variation * 2, variation * 2]) if mode == MODE_MIRROR
+		else CompetitionCatalog.population_roster_variations(variation))
 	var first: TeamMatchProfile = CompetitionCatalog.team_for(
-		competition, &"home", variation * 2, balance, 0.0)
+		competition, &"home", roster_variations[0], balance, 0.0)
 	var second: TeamMatchProfile = CompetitionCatalog.team_for(
-		competition, &"away",
-		variation * 2 if mode == MODE_MIRROR else variation * 2 + 1, balance, 0.0)
+		competition, &"away", roster_variations[1], balance, 0.0)
 	var venue_side: TeamMatchProfile = second if reversed else first
 	var visiting_side: TeamMatchProfile = first if reversed else second
 	var opener: StringName = first.team_id if variation % 2 == 0 else second.team_id

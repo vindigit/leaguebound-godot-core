@@ -162,10 +162,11 @@ func _simulate(
 		# tunable is moved. Same rosters, same rules, same opening inbound.
 		var balance := SimulationBalanceProfile.new()
 		_apply(balance, tunable, value)
+		var roster_variations: PackedInt32Array = CompetitionCatalog.population_roster_variations(variation)
 		var home: TeamMatchProfile = CompetitionCatalog.team_for(
-			competition, &"home", variation * 2, balance, 0.0)
+			competition, &"home", roster_variations[0], balance, 0.0)
 		var away: TeamMatchProfile = CompetitionCatalog.team_for(
-			competition, &"away", variation * 2 + 1, balance, 0.0)
+			competition, &"away", roster_variations[1], balance, 0.0)
 		var input := MatchInput.new(
 			StringName("sweep_%s_%d" % [
 				CalibrationTargets.competition_id(competition), variation]),

@@ -159,16 +159,11 @@ func _run_competition(competition: int, games: int, shard: int) -> MatchMetricAc
 	var base: int = shard * games
 	for index in range(games):
 		var variation: int = base + index
-		# Home and away are drawn from the same population, and the opening
-		# inbound is counterbalanced on variation parity, so the measured home
-		# win rate is the environment effect and nothing else.
-		#
-		# The second clause was missing and the sentence was false without it.
-		# `CompetitionCatalog` handed the opening possession to the home team in
-		# every fixture, so this §14.2 band was judged on the environment *plus*
-		# the inbound. `run_opening_possession.gd` measures what that was worth;
-		# `CompetitionCatalog.OPENING_COUNTERBALANCED` records why the fix
-		# belongs to the fixture and not to the engine.
+		# The catalog crosses each roster with venue and opening assignment in
+		# aligned quartets. This is a finite population diagnostic, not an
+		# equal-team or controlled estimate of venue effect: roster matchups,
+		# game outcomes and incomplete blocks still affect the raw home-win rate.
+		# Controlled venue effects belong to run_home_court_diagnostics instead.
 		#
 		# This used to add a level offset of its own, alternating on a five-game
 		# cycle and applied to the away roster only. It was meant to keep some

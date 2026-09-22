@@ -17,9 +17,13 @@ extends RefCounted
 ## for why that was a fixture artifact rather than a rule, and what it was
 ## sitting inside.
 ##
+## v4 replaces the adjacent-variation population pairing with full-roster
+## crossover blocks. Roster construction itself is unchanged; see
+## population_roster_variations for the exact finite-population guarantees.
+##
 ## Note this constant is descriptive: nothing currently reads it, so it does not
 ## invalidate a cached report on its own.
-const VERSION: StringName = &"competition-catalog-v3"
+const VERSION: StringName = &"competition-catalog-v4-roster-pairing"
 
 ## Who receives the opening inbound, per fixture.
 ##
@@ -78,6 +82,12 @@ const TEAM_LEVEL_TILT: float = 2.1
 ## The ladder the tilt walks. Thirteen steps keeps the population from
 ## collapsing onto a handful of distinct team strengths.
 const TEAM_LEVEL_STEPS: int = 13
+
+## team_for's ladder repeats every 13 variations and its player noise every 9.
+## Their least common multiple is the complete roster-state period, including
+## integer rating rounding. This names existing construction, not a new spread.
+const ROSTER_VARIATION_PERIOD: int = 117
+const POPULATION_CROSSOVER_GAMES: int = 4
 
 ## Alias so runners can spell the competition enum through one type.
 const Profile := CalibrationTargets.Competition
@@ -185,9 +195,9 @@ static func reference_match() -> MatchInput:
 	return match_for(Profile.TOP_DOMESTIC_PRO, 0, 0.5)
 
 
-## An evenly matched game at one competition. `variation` shifts both rosters
-## together so a large sample covers a population rather than replaying one
-## fixture; `home_environment` is the Â§19.4 strength.
+## A population game at one competition. The roster schedule balances venue and
+## opening exposure in aligned four-game blocks; it does not make every game
+## equally matched. `home_environment` is the Â§19.4 strength.
 static func match_for(
 	competition: int,
 	variation: int = 0,
@@ -197,10 +207,11 @@ static func match_for(
 	opening: int = OPENING_COUNTERBALANCED,
 ) -> MatchInput:
 	var balance: SimulationBalanceProfile = balance_profile()
+	var roster_variations: PackedInt32Array = population_roster_variations(variation)
 	var home: TeamMatchProfile = team_for(
-		competition, &"home", variation * 2, balance, home_offset)
+		competition, &"home", roster_variations[0], balance, home_offset)
 	var away: TeamMatchProfile = team_for(
-		competition, &"away", variation * 2 + 1, balance, away_offset)
+		competition, &"away", roster_variations[1], balance, away_offset)
 	return MatchInput.new(
 		StringName("calib_%s_%d" % [CalibrationTargets.competition_id(competition), variation]),
 		StringName("calib_game_%d" % variation),
@@ -211,6 +222,34 @@ static func match_for(
 		opening_team_id(opening, variation, home, away),
 		ratings_profile(),
 		home_environment)
+
+
+## Select existing full-roster states without assigning strength to a venue.
+## For base pair k, A=k mod 117 and B=(2*A+floor(k/117)) mod 117. Each aligned
+## 117-pair block uses every existing roster state once on either side; 2 is
+## coprime to 117. The full 13689-pair cycle covers every ordered pair. A single
+## 117-pair slice is not an independent random population or the full joint
+## distribution: it covers 117 roster pairs and 13 of 169 ladder pairs.
+##
+## Each pair occupies four fixtures in order AB, BA, BA, AB. With the existing
+## alternating opener, each actual roster plays home/away and opens/does not
+## open once in every combination. Thus an aligned quartet has no systematic
+## venue-strength or opener-strength assignment, even after rating rounding.
+## Exact roster marginals require 468-game alignment; the full joint cycle is
+## 54756 games. Partial blocks need not balance. Group measurements by quartet
+## when estimating uncertainty. Explicit level offsets remain venue-attached
+## interventions; explicit opener policies intentionally override counterbalance.
+## No random source or engine state is consumed.
+static func population_roster_variations(variation: int) -> PackedInt32Array:
+	assert(variation >= 0, "population variation must be non-negative")
+	var pair_index: int = variation / POPULATION_CROSSOVER_GAMES
+	var first: int = pair_index % ROSTER_VARIATION_PERIOD
+	var round_index: int = pair_index / ROSTER_VARIATION_PERIOD
+	var second: int = (2 * first + round_index) % ROSTER_VARIATION_PERIOD
+	var phase: int = variation % POPULATION_CROSSOVER_GAMES
+	if phase == 1 or phase == 2:
+		return PackedInt32Array([second, first])
+	return PackedInt32Array([first, second])
 
 
 ## Resolves an opening-inbound policy against one fixture.

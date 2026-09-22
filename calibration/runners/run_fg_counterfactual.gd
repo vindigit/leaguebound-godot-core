@@ -249,12 +249,13 @@ func _mean_roster_overall(cell: Cell, games: int, base: int) -> float:
 	var counted: int = 0
 	for index in range(games):
 		var variation: int = base + index
+		var roster_variations: PackedInt32Array = CompetitionCatalog.population_roster_variations(variation)
 		var teams: Array[TeamMatchProfile] = [
 			_transform(CompetitionCatalog.team_for(
-				cell.roster_competition, &"home", variation * 2, balance, cell.level_offset),
+				cell.roster_competition, &"home", roster_variations[0], balance, cell.level_offset),
 				cell, balance),
 			_transform(CompetitionCatalog.team_for(
-				cell.roster_competition, &"away", variation * 2 + 1, balance, cell.level_offset),
+				cell.roster_competition, &"away", roster_variations[1], balance, cell.level_offset),
 				cell, balance),
 		]
 		for team in teams:
@@ -412,11 +413,12 @@ func _simulate(
 	for index in range(games):
 		var variation: int = base + index
 		var balance: SimulationBalanceProfile = CompetitionCatalog.balance_profile()
+		var roster_variations: PackedInt32Array = CompetitionCatalog.population_roster_variations(variation)
 		var home: TeamMatchProfile = _transform(CompetitionCatalog.team_for(
-			cell.roster_competition, &"home", variation * 2, balance, cell.level_offset),
+			cell.roster_competition, &"home", roster_variations[0], balance, cell.level_offset),
 			cell, balance)
 		var away: TeamMatchProfile = _transform(CompetitionCatalog.team_for(
-			cell.roster_competition, &"away", variation * 2 + 1, balance, cell.level_offset),
+			cell.roster_competition, &"away", roster_variations[1], balance, cell.level_offset),
 			cell, balance)
 		# The match id must **not** carry the cell name.
 		#
