@@ -11,6 +11,13 @@ lines=['# Matched roster-pairing measurements','',
        'claim or §27.1 certification. Canonical targets/verdicts are unchanged.',
        'Population home-win verdicts are not controlled even-team venue judgments.','']
 summaries={p:json.loads((OUT/f'{p}_summary.json').read_text()) for p in PHASES}
+def formatted(value):
+    half=value['half_width_95_normal_quartet_cluster']
+    note=' ± %.6f'%half if half is not None else ' (interval not estimable)'
+    count_info=value.get('paired_event_counts',value.get('event_counts',{}))
+    if count_info.get('sparse_approximation_warning'):
+        note+='; sparse approximation'
+    return '%.6f'%value['estimate']+note
 for phase,data in summaries.items():
     lines += [f'## {phase}','']
     for comp in COMPS:
@@ -20,19 +27,20 @@ for phase,data in summaries.items():
                   '| --- | ---: | ---: | ---: | --- |']
         for metric,change in entry['paired_changes']['home'].items():
             if metric=='final_margin_sd':
-                lo,hi=change['paired_percentile_95_quartet_bootstrap']
-                lines.append(f'| Final margin SD | {change["before"]:.6f} | {change["after"]:.6f} | {change["delta"]:+.6f} [{lo:+.6f}, {hi:+.6f}] | diagnostic |')
+                interval=change['paired_percentile_95_quartet_bootstrap']
+                text='not estimable' if interval is None else f'[{interval[0]:+.6f}, {interval[1]:+.6f}]'
+                lines.append(f'| Final margin SD | {change["before"]:.6f} | {change["after"]:.6f} | {change["delta"]:+.6f} {text} | diagnostic |')
             else:
                 before=entry['cells']['baseline_home']['metrics'][metric]
                 after=entry['cells']['candidate_home']['metrics'][metric]
                 verdict=f'{before.get("canonical_verdict","diagnostic")} → {after.get("canonical_verdict","diagnostic")}'
-                lines.append(f'| {metric} | {change["before"]:.6f} | {change["after"]:.6f} | {change["estimate"]:+.6f} ± {change["half_width_95_normal_quartet_cluster"]:.6f} | {verdict} |')
+                lines.append(f'| {metric} | {change["before"]:.6f} | {change["after"]:.6f} | {formatted(change)} | {verdict} |')
         lines += ['', 'Two-arm venue diagnostics (home minus neutral; no controlled §17.4 verdict):','',
                   '| Metric | Before ± half-width | After ± half-width | Difference ± half-width |',
                   '| --- | ---: | ---: | ---: |']
         for metric in ['home_win_difference','home_minus_neutral_final_margin']:
             vals=[entry['marginal_venue_contrast'][v][metric] for v in ['baseline','candidate','paired_change']]
-            text=['%.6f ± %.6f'%(x['estimate'],x['half_width_95_normal_quartet_cluster']) for x in vals]
+            text=[formatted(x) for x in vals]
             lines.append('| '+metric+' | '+' | '.join(text)+' |')
         lines += ['', 'All canonical failures, including neutral-arm reports retained for audit:', '']
         for name,cell in entry['cells'].items():
@@ -52,8 +60,12 @@ for comp in COMPS:
             ia=a[metric]['paired_percentile_95_quartet_bootstrap'];ib=b[metric]['paired_percentile_95_quartet_bootstrap']
         else:
             ia=a[metric]['interval'];ib=b[metric]['interval']
-        same=(ia[0]>0 and ib[0]>0) or (ia[1]<0 and ib[1]<0)
+        sparse=any(x[metric].get('paired_event_counts',{}).get('sparse_approximation_warning',False) for x in [a,b])
+        same=ia is not None and ib is not None and not sparse and ((ia[0]>0 and ib[0]>0) or (ia[1]<0 and ib[1]<0))
         verdict='directional signal in both ranges' if same else 'no replicated interval exclusion; unresolved'
-        lines.append(f'| {comp} | {metric} | [{ia[0]:+.6f}, {ia[1]:+.6f}] | [{ib[0]:+.6f}, {ib[1]:+.6f}] | {verdict} |')
+        if sparse:
+            verdict='sparse discordance; normal approximation unreliable'
+        show=lambda interval:'not estimable' if interval is None else f'[{interval[0]:+.6f}, {interval[1]:+.6f}]'
+        lines.append(f'| {comp} | {metric} | {show(ia)} | {show(ib)} | {verdict} |')
 (OUT/'MEASUREMENTS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 print(OUT/'MEASUREMENTS.md')

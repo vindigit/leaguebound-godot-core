@@ -24,5 +24,10 @@
   "uncertainty": "117 aligned four-game clusters per cell; paired ratio-of-sums influence intervals and paired block bootstrap for final-margin SD; exploratory fixed-schedule uncertainty, not full-population certification",
   "instrumentation_smoke": "4 college games at variations40000000..40000003, separate discarded instrumentation-only cell",
   "constraints": "No downstream tuning. All source-engine, rules, ratings, probability, target and tolerance bytes remain unchanged. Holdouts open only after candidate freeze.",
-  "clarification": "Independent review corrected base-orientation versus reversed-union support counts before candidate outcomes. No ranges, sample sizes, mapping, canonical metrics, judgments or parameters changed. Paired diagnostics additionally expose the already recorded turnover, rebound and assist channels."
+  "clarification": "Independent review corrected base-orientation versus reversed-union support counts before candidate outcomes. No ranges, sample sizes, mapping, canonical metrics, judgments or parameters changed. Paired diagnostics additionally expose the already recorded turnover, rebound and assist channels.",
+  "rare_event_refinement": {
+    "rule": "Event/complement-bearing and paired-disagreement quartet counts reported. Fewer than10 relevant quartets flags sparse approximation, never a target or tolerance. Zero empirical interval variation is unavailable rather than falsely precise. Sparse/unavailable intervals cannot support replicated-signal wording.",
+    "recorded_utc": "2026-09-22T17:55:09.6646142Z",
+    "before_candidate_outcomes": true
+  }
 }

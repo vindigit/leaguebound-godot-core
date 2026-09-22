@@ -24,6 +24,8 @@ TERMS = {
  'regulation_possessions': ('regulation_possessions','team_games'),
  'overtime_possessions': ('overtime_possessions','team_games'),
 }
+EVENTS = {'home_win_rate':'home_wins','overtime_rate':'overtime_games',
+          'close_game_rate':'close_games','blowout_rate':'blowout_games'}
 
 def load(phase, version, arm, comp):
     label = f'{phase}_{version}_{arm}_{comp}'
@@ -71,8 +73,32 @@ def ratio(rows, terms):
 
 def estimate(value, influence):
     half = float(1.96*np.std(influence, ddof=1)/math.sqrt(len(influence)))
+    if half == 0:
+        return {'estimate':float(value), 'half_width_95_normal_quartet_cluster':None,
+                'interval':None, 'interval_status':'not estimable from observed cluster variation'}
     return {'estimate': float(value), 'half_width_95_normal_quartet_cluster': half,
-            'interval': [float(value-half),float(value+half)]}
+            'interval': [float(value-half),float(value+half)],
+            'interval_status':'exploratory normal approximation; no guaranteed coverage'}
+
+def event_counts(rows, field):
+    counts=np.array([r[field] for r in rows]).reshape(-1,4).sum(axis=1)
+    bearing=int((counts>0).sum()); complement=int((counts<4).sum())
+    return {'events':int(counts.sum()),'games':len(rows),
+            'event_bearing_quartets':bearing,'event_free_quartets':int((counts==0).sum()),
+            'complement_bearing_quartets':complement,
+            'sparse_approximation_warning':bearing<10 or complement<10,
+            'warning_rule':'Fewer than 10 event-bearing or complement-bearing quartets; heuristic only, not coverage assurance.'}
+
+def paired_event_counts(before,after,field):
+    differences=np.array([b[field]-a[field] for a,b in zip(before,after)]).reshape(-1,4).sum(axis=1)
+    return difference_counts(differences)
+
+def difference_counts(differences):
+    positive=int((differences>0).sum());negative=int((differences<0).sum())
+    return {'positive_difference_quartets':positive,'negative_difference_quartets':negative,
+            'equal_count_quartets':int((differences==0).sum()),
+            'sparse_approximation_warning':positive+negative<10,
+            'warning_rule':'Fewer than 10 quartets with differing event counts; heuristic only, not coverage assurance.'}
 
 def strength(rows):
     result = {}
@@ -91,6 +117,10 @@ def strength(rows):
             'gap_values': sorted(set(np.round(gap,9).tolist()))}
     return result
 
+def percentile_interval(samples):
+    bounds = np.quantile(samples, [.025, .975])
+    return None if bounds[0] == bounds[1] else bounds.tolist()
+
 def margin_bootstrap(before, after):
     a = np.array([r['margin'] for r in before], dtype=float).reshape(-1,4)
     b = np.array([r['margin'] for r in after], dtype=float).reshape(-1,4)
@@ -99,11 +129,13 @@ def margin_bootstrap(before, after):
     indices = rng.integers(0,len(a),size=(10000,len(a)))
     sa = a[indices].reshape(10000,-1).std(axis=1,ddof=1)
     sb = b[indices].reshape(10000,-1).std(axis=1,ddof=1)
+    delta_interval = percentile_interval(sb-sa)
     return {'before': float(a.std(ddof=1)), 'after': float(b.std(ddof=1)),
         'delta': float(b.std(ddof=1)-a.std(ddof=1)),
-        'paired_percentile_95_quartet_bootstrap': np.quantile(sb-sa,[.025,.975]).tolist(),
-        'before_interval': np.quantile(sa,[.025,.975]).tolist(),
-        'after_interval': np.quantile(sb,[.025,.975]).tolist(),
+        'paired_percentile_95_quartet_bootstrap': delta_interval,
+        'interval_status':'not estimable from observed bootstrap variation' if delta_interval is None else 'exploratory paired quartet bootstrap',
+        'before_interval': percentile_interval(sa),
+        'after_interval': percentile_interval(sb),
         'replicates': 10000, 'seed': 22092026}
 
 def analyze(phase):
@@ -121,6 +153,8 @@ def analyze(phase):
             for metric,terms in TERMS.items():
                 value,inf = ratio(rows,terms)
                 metrics[metric] = estimate(value,inf)
+                if metric in EVENTS:
+                    metrics[metric]['event_counts']=event_counts(rows,EVENTS[metric])
                 if metric in canonical:
                     assert abs(value-canonical[metric]['estimate']) < 1e-9, (name,metric)
                     metrics[metric]['canonical_verdict'] = canonical[metric]['verdict']
@@ -140,6 +174,8 @@ def analyze(phase):
             for metric,terms in TERMS.items():
                 av,ai=ratio(a,terms); bv,bi=ratio(b,terms)
                 changes[metric] = {'before':av,'after':bv,**estimate(bv-av,bi-ai)}
+                if metric in EVENTS:
+                    changes[metric]['paired_event_counts']=paired_event_counts(a,b,EVENTS[metric])
             changes['final_margin_sd'] = margin_bootstrap(a,b)
             entry['paired_changes'][arm] = changes
         venue_values = {}
@@ -152,11 +188,17 @@ def analyze(phase):
                 'home_win_difference':estimate(hv-nv,hi-ni),
                 'home_minus_neutral_final_margin':estimate(margin_difference.mean(),margin_difference-margin_difference.mean()),
                 'scope':'Two-arm population diagnostic; not the controlled three-arm §17.4 cap verdict.'}
+            entry['marginal_venue_contrast'][version]['home_win_difference']['paired_event_counts']=paired_event_counts(n,h,'home_wins')
             venue_values[version]=(hv-nv,hi-ni,margin_difference)
         av,ai,am=venue_values['baseline'];bv,bi,bm=venue_values['candidate']
         entry['marginal_venue_contrast']['paired_change'] = {
             'home_win_difference':estimate(bv-av,bi-ai),
             'home_minus_neutral_final_margin':estimate((bm-am).mean(),bm-am-(bm-am).mean())}
+        bh,bn=cells['baseline','home'][0],cells['baseline','neutral'][0]
+        ch,cn=cells['candidate','home'][0],cells['candidate','neutral'][0]
+        differences=np.array([x['home_wins']-y['home_wins']-z['home_wins']+w['home_wins']
+                              for x,y,z,w in zip(ch,cn,bh,bn)]).reshape(-1,4).sum(axis=1)
+        entry['marginal_venue_contrast']['paired_change']['home_win_difference']['paired_event_counts']=difference_counts(differences)
         result['competitions'][comp] = entry
     return result
 
