@@ -1,0 +1,64 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+roster diagnosis_candidate_home_overseas overseas 20/468
+roster diagnosis_candidate_home_overseas overseas 40/468
+roster diagnosis_candidate_home_overseas overseas 60/468
+roster diagnosis_candidate_home_overseas overseas 80/468
+roster diagnosis_candidate_home_overseas overseas 100/468
+roster diagnosis_candidate_home_overseas overseas 120/468
+roster diagnosis_candidate_home_overseas overseas 140/468
+roster diagnosis_candidate_home_overseas overseas 160/468
+roster diagnosis_candidate_home_overseas overseas 180/468
+roster diagnosis_candidate_home_overseas overseas 200/468
+roster diagnosis_candidate_home_overseas overseas 220/468
+roster diagnosis_candidate_home_overseas overseas 240/468
+roster diagnosis_candidate_home_overseas overseas 260/468
+roster diagnosis_candidate_home_overseas overseas 280/468
+roster diagnosis_candidate_home_overseas overseas 300/468
+roster diagnosis_candidate_home_overseas overseas 320/468
+roster diagnosis_candidate_home_overseas overseas 340/468
+roster diagnosis_candidate_home_overseas overseas 360/468
+roster diagnosis_candidate_home_overseas overseas 380/468
+roster diagnosis_candidate_home_overseas overseas 400/468
+roster diagnosis_candidate_home_overseas overseas 420/468
+roster diagnosis_candidate_home_overseas overseas 440/468
+roster diagnosis_candidate_home_overseas overseas 460/468
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  overseas             75.7   83.8  1.107   43.8   35.7   35.0   77.6   23.3   14.9   25.2   54.6   17.0   5.3   3.6
+
+  home win rate / overtime / close / blowout, by competition:
+  overseas             49.4%    2.8%   25.9%   18.2%
+
+=== Competition basketball calibration ===
+  commit=c233805a9c80c96bff40a5ebff0c60fb08857b7e godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=overseas/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 50000 of 50001, seeds 23400001..23400468 inclusive n=468 complete games per competition elapsed=1300267ms rate=0.4/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 468.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  overseas.possessions_per_game                             75.6603 ±0.2111  target[70.0000, 82.0000]  PASS
+  overseas.possession_estimate_per_game                     79.9655  INFORMATIONAL
+  overseas.points_per_game                                  83.7521 ±0.7212  INFORMATIONAL
+  overseas.points_per_possession                             1.1070 ±0.0090  target[1.0000, 1.1300]  PASS
+  overseas.field_goal_percentage                             0.4383 ±0.0038  target[0.4300, 0.5100]  PASS
+  overseas.three_point_percentage                            0.3574 ±0.0062  target[0.3200, 0.3900]  PASS
+  overseas.three_point_attempt_rate                          0.3499 ±0.0036  target[0.3000, 0.4600]  PASS
+  overseas.free_throw_percentage                             0.7764 ±0.0066  target[0.6900, 0.8200]  PASS
+  overseas.free_throw_attempt_rate                           0.2335 ±0.0032  target[0.2000, 0.3900]  PASS
+  overseas.turnovers_per_100_possessions                    14.9213  target[13.0000, 19.0000]  PASS
+  overseas.offensive_rebound_percentage                      0.2516 ±0.0045  target[0.2300, 0.3400]  PASS
+  overseas.assist_percentage                                 0.5458 ±0.0057  target[0.5000, 0.7200]  PASS
+  overseas.home_win_rate                                     0.4936 ±0.0451  target[0.5300, 0.5600]  FAIL
+  overseas.overtime_rate                                     0.0278 ±0.0153  target[0.0400, 0.0800]  FAIL
+  overseas.close_game_rate                                   0.2585 ±0.0396  target[0.2200, 0.3400]  PASS
+  overseas.blowout_rate                                      0.1816 ±0.0349  target[0.0800, 0.1800]  FAIL
+  overseas.starter_mean_minutes                             24.1831 ±0.1199  INFORMATIONAL
+  overseas.team_leading_scorer_mean                         17.3985 ±0.2313  INFORMATIONAL
+  overseas.team_leading_scorer_p99                          28.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_diagnosis_candidate_home_overseas.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL overseas.home_win_rate: estimate 0.4936 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL overseas.overtime_rate: estimate 0.0278 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  FAIL overseas.blowout_rate: estimate 0.1816 outside BALANCE_SPEC.md §14.2 target [0.0800, 0.1800]
+  20 metric(s), 15 judged, 4 failure(s): FAIL
