@@ -1,0 +1,8 @@
+{
+  "isolated_copy": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-mirror-before-7e622731a0a84160aa54a972644ec9d5",
+  "scope": "Current9-case test against preserved pre-fix actual runner bytes; no game simulations",
+  "command": "Godot --headless --path <isolated> -s addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode -a tests/calibration/test_population_pairing.gd",
+  "test_sha256": "D78B07CC1F569E008AA140424EA741FF24637638B796E9432122A52D138B1AF8",
+  "consumer_sha256": "E0E1A5E8BD9245679E25B9AE78DA4EEFBFE56B841300816203BCFE6CF75221DA",
+  "source_head": "0d05a764466f035293fc0d9a484df429d3b73ab6"
+}

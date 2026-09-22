@@ -119,12 +119,29 @@ def replay(plan, destination, protocol, freeze, timeout):
             if name in replacements:
                 args[index] = '--' + name + '=' + replacements[name]
     before = source_hashes(tree)
+    amendment_path = OUT / 'consumer_width_amendment.json'
+    amendment = read_json(amendment_path) if version == 'candidate' else None
+    amendment_hash = digest(amendment_path) if amendment is not None else None
+    if amendment is not None:
+        consumer = 'calibration/runners/run_home_court_diagnostics.gd'
+        require(amendment['approved'] is True and amendment['version'] == 'candidate'
+                and amendment['path'] == consumer, 'Unapproved or overbroad freeze amendment')
+        require(amendment['old_sha256'] == freeze['files'][consumer]['candidate'].lower(),
+                'Consumer amendment does not match original freeze')
+        require(digest(OUT / 'candidate_freeze.json') == amendment['original_freeze_sha256']
+                and digest(OUT / 'mirror_boundary/provenance.json') == amendment['probe_provenance_sha256'],
+                'Consumer amendment provenance changed')
+        require(before.get(consumer) == amendment['new_sha256'], 'Amended consumer hash differs')
+        for path, expected in amendment['unchanged_primary_and_other_runtime_hashes'].items():
+            require(digest(tree / path) == expected, f'Other runtime drift after amendment: {path}')
     for path, expected in original['source_hashes'].items():
         require(before.get(path) == expected.lower(), f'Original source hash differs: {version}/{path}')
     for path, expected in freeze['files'].items():
         if path.endswith('.gd') and path.startswith(('src/', 'calibration/')):
             # The original cell records the reviewed catalog comment amendment.
             wanted = original['source_hashes'].get(path, expected[version])
+            if amendment is not None and path == amendment['path']:
+                wanted = amendment['new_sha256']
             require(before.get(path) == wanted.lower(), f'Frozen runtime source differs: {version}/{path}')
     raw_name, report_name = paths(plan['label'], comp)
     generated = [tree / 'reports' / name for name in (raw_name, report_name)]
@@ -137,6 +154,7 @@ def replay(plan, destination, protocol, freeze, timeout):
                    godot_sha256=digest(Path(args[0])),
                    original_process_sha256=digest(record_path), original_raw_sha256=digest(raw_path),
                    original_record=str(record_path), original_raw=str(raw_path),
+                   consumer_width_amendment_sha256=amendment_hash,
                    script_sha256=digest(Path(__file__)), expected_rows_sha256=digest(cell_dir / 'expected_rows.json'))
     write_new(cell_dir / 'command.json', command)
     started = time.time()
@@ -184,6 +202,8 @@ def replay(plan, destination, protocol, freeze, timeout):
         outcome['completed'] = True
         require(not outcome['diffs'], 'Exact raw row replay mismatch')
         require(source_hashes(tree) == before, 'Runtime source changed during replay')
+        if amendment is not None:
+            require(digest(amendment_path) == amendment_hash, 'Consumer amendment changed during replay')
         require(digest(Path(args[0])) == command['godot_sha256'], 'Godot executable changed during replay')
         require(digest(raw_path) == command['original_raw_sha256']
                 and digest(record_path) == command['original_process_sha256'], 'Original archive changed during replay')
