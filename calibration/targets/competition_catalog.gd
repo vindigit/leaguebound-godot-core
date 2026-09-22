@@ -228,8 +228,10 @@ static func match_for(
 ## For base pair k, A=k mod 117 and B=(2*A+floor(k/117)) mod 117. Each aligned
 ## 117-pair block uses every existing roster state once on either side; 2 is
 ## coprime to 117. The full 13689-pair cycle covers every ordered pair. A single
-## 117-pair slice is not an independent random population or the full joint
-## distribution: it covers 117 roster pairs and 13 of 169 ladder pairs.
+## 117-base-pair slice is not an independent random population or the full joint
+## distribution: its base orientation covers 117 roster pairs and 13 of 169
+## ladder pairs. Including reversed fixtures gives 231 roster and 25 ladder
+## cells in the actual 468-game slice.
 ##
 ## Each pair occupies four fixtures in order AB, BA, BA, AB. With the existing
 ## alternating opener, each actual roster plays home/away and opens/does not

@@ -14,6 +14,9 @@ TERMS = {
  'free_throw_percentage': ('free_throws_made','free_throws_attempted'),
  'three_point_attempt_rate': ('three_pointers_attempted','field_goals_attempted'),
  'free_throw_attempt_rate': ('free_throws_attempted','field_goals_attempted'),
+ 'turnovers_per_100_possessions': ('turnovers','engine_possessions',100.0),
+ 'offensive_rebound_percentage': ('offensive_rebounds','offensive_rebound_chances'),
+ 'assist_percentage': ('assists','field_goals_made'),
  'home_win_rate': ('home_wins','decided_games'),
  'overtime_rate': ('overtime_games','games'),
  'close_game_rate': ('close_games','games'),
@@ -58,12 +61,13 @@ def load(phase, version, arm, comp):
     return rows, report
 
 def ratio(rows, terms):
-    num,den = terms
+    num,den,*scales = terms
+    scale = scales[0] if scales else 1.0
     n = np.array([r[num] for r in rows], dtype=float).reshape(-1,4).sum(axis=1)
     d = np.array([r[den] for r in rows], dtype=float).reshape(-1,4).sum(axis=1)
     estimate = n.sum()/d.sum()
     influence = (n-estimate*d)/d.mean()
-    return float(estimate), influence
+    return float(estimate*scale), influence*scale
 
 def estimate(value, influence):
     half = float(1.96*np.std(influence, ddof=1)/math.sqrt(len(influence)))
@@ -130,6 +134,8 @@ def analyze(phase):
                 'all_canonical_failures':[m for m in report['metrics'] if m['verdict']=='fail']}
         for arm in ['home','neutral']:
             a,b = cells['baseline',arm][0],cells['candidate',arm][0]
+            for side in ['home_strength','away_strength']:
+                assert sorted(json.dumps(r[side]['attribute_vectors']) for r in a) == sorted(json.dumps(r[side]['attribute_vectors']) for r in b), 'Roster marginals changed'
             changes = {}
             for metric,terms in TERMS.items():
                 av,ai=ratio(a,terms); bv,bi=ratio(b,terms)
