@@ -9069,14 +9069,16 @@ The aggregator found one real defect on first contact with live data: the execut
 
 ### 6.2 Pull-request evidence
 
-Status: **Baseline verified; published-head checks are tracked separately.**
+Status: **Roster follow-up baseline verified; new published-head checks are tracked separately.**
 
-PR #1 remains a draft from `stage4-calibration` into `main`, unmerged. Its
-starting head `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` has a verified successful
-[Pull request gate run](https://github.com/vindigit/leaguebound-godot-core/actions/runs/34923304626).
-This replaces the stale claim that no commit after `00567d4` had passed CI.
+PR #1 remains a draft from `stage4-calibration` into `main`, unmerged. The
+roster follow-up starts at `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose
+[Pull request gate run](https://github.com/vindigit/leaguebound-godot-core/actions/runs/35642190312)
+passed 684 cases. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87`,
+whose [gate run](https://github.com/vindigit/leaguebound-godot-core/actions/runs/34923304626)
+also passed. These ancestor runs do not validate the new roster correction.
 
-§5.37 records this follow-up's local execution evidence. The authoritative
+§5.38 records the roster follow-up's local execution evidence. The authoritative
 published-head CI status is the [PR #1 checks page](https://github.com/vindigit/leaguebound-godot-core/pull/1/checks);
 the PR description records the exact new head and its run after publication.
 A passing ancestor is not a passing new head: the verification must compare the
