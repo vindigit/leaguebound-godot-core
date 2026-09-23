@@ -1,0 +1,9 @@
+{
+  "recorded_utc": "2026-09-23T21:59:12.078360+00:00",
+  "gate_start_head": "7e4a73128f7c64b786679d40dee064cb2b40994e",
+  "status": "INTERRUPTED - no completion result or exit code",
+  "reason": "Execution session ended during model usage-limit interruption; in-flight process did not survive. This is an incomplete run, never a passing gate.",
+  "log_sha256": "68f172f9cbb490308fb1b0e9e83c3562b490a0e5a3fd63166f01f78f3263f5af",
+  "last_recorded_line": "  \u001b[38;2;250;235;215mres://tests/simulation/test_game_management.gd\u001b[0m\u001b[38;2;128;128;128m > \u001b[0m\u001b[38;2;250;235;215mtest_timeouts_trigger_only_under_valid_conditions\u001b[0m\u001b[38;2;34;139;34m STARTED\u001b[0m\u001b[38;2;128;128;128m\u001b[0m",
+  "fresh_gate": "full_gate_v3.txt, full eight-step restart"
+}
