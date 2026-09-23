@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-09-23T23:56:07.340573+00:00",
+  "gate_godot_pid": 39996,
+  "previous_affinity_hex": "F0",
+  "new_affinity_hex": "08",
+  "priority": "High, unchanged",
+  "measurement_worker_affinity_hex": "F0, unchanged",
+  "processors_left_unreserved_for_other_apps": 3,
+  "reason": "Isolate the single-threaded full-gate test process from the five measurement workers so both progress without CPU competition",
+  "effect_on_protocol": "None; no source, seed, fixture, measured cell or test assertion changed",
+  "recorded_after_change": true
+}
