@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Snapshot date | September 22, 2026 |
+| Snapshot date | September 23, 2026 |
 | Repository | `vindigit/leaguebound-godot-core` |
 | Runtime | Godot 4.7.1-stable; typed GDScript |
 | Default branch baseline | `main` at `c38bd2257d27ebce86beb61439fcac524acca0ef` |
@@ -88,7 +88,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. **Pull request #1 was verified open, draft and unmerged at the requested remote head `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` before this follow-up. Its baseline CI was green. Current follow-up verification is recorded in §5.37; old-head checks do not establish a new-head pass.** The Stage 4 implementation adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Current roster-pairing work is §5.38; its new complete gate and published-head CI remain pending. The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
@@ -9000,6 +9000,17 @@ rosters and opening assignment. All twenty diagnostic cells are complete
 Both untouched validation ranges, bounded prefix replay and the fresh complete
 gate remain pending. No downstream tuning, replicated improvement or new
 band-closure claim follows from the diagnostic range alone.
+
+An execution interruption on 2026-09-22 stopped the first attempt at the new
+gate during GdUnit without a completion result. The retained v2 log is not a
+pass or a completed failure; a full v3 run restarted from import on 2026-09-23.
+The interruption also stopped five validation cells midgame. Five completed
+baseline cells were verified and kept, their five peers' partial logs were
+archived, and only the 35 missing declared cells restarted with identical
+labels, ranges and seeds. `restart_manifest.json` records this recovery after
+restart launch. Interrupted prefixes are extra attempted simulations, not
+completed experiment observations. The independent restart review accepts
+archive integrity, not the still-pending outcomes or gate.
 
 The earlier item 24 inference that mirror games proved *no* overtime
 contribution is withdrawn. A shortfall persisting without the artifact does

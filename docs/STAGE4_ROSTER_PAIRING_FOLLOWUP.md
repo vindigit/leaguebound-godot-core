@@ -181,6 +181,15 @@ All twenty diagnostic cells are complete (9,360 games), and independent review
 accepts their evidence integrity; see `DIAGNOSIS_REVIEW.md` and the committed
 diagnostic summary. Both untouched validation ranges, bounded prefix replay,
 the fresh complete gate, and publication/exact-head CI checks remain pending.
+An execution interruption on September 22 stopped the attempted new v2 gate
+during GdUnit without a completion result, and stopped five validation cells
+midgame. The v2 log and five partial cell logs are preserved. Five completed
+baseline cells were verified and retained; only the 35 missing declared cells
+restarted with their original labels, variations and seeds. The restart manifest
+was recorded after the restart began, and independent review checked its hashes
+and source scope. Interrupted prefixes are extra attempted simulations, excluded
+from completed-cell totals. A full v3 gate restarted from import. Neither the
+interrupted v2 run nor the partial games are counted as passing evidence.
 The diagnostic comparison alone establishes neither replicated improvement nor
 equivalence. In particular, nonsignificant home-effect contrasts do not exclude
 roster-population interactions, and mirrored overtime results do not exclude
