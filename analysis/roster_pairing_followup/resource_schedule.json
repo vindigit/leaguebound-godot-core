@@ -1,0 +1,24 @@
+{
+  "recorded_utc": "2026-09-23T22:27:14.040814+00:00",
+  "scope": "Only detached LeagueBound resume/gate launcher processes and their Godot/bash descendants; no simulation/configuration/seed/fixture changes",
+  "reason": "Host higher-priority process was saturating available CPU; reserve logical processors 6 and 7 for LeagueBound jobs at matching AboveNormal priority while other six logical processors remain available",
+  "processor_count": 8,
+  "previous_priority": "Normal",
+  "new_priority": "AboveNormal",
+  "previous_affinity_hex": "FF",
+  "new_affinity_hex": "C0",
+  "launcher_pids": [
+    21196,
+    20312
+  ],
+  "game_pids_at_adjustment": [
+    40384,
+    20460,
+    36648,
+    28092,
+    41280
+  ],
+  "gate_pid_at_adjustment": 43568,
+  "changed_in_flight": true,
+  "note": "Recorded after the reversible scheduling adjustment; it is not a protocol or outcome amendment. Future child-process inheritance is verified separately and may require reapplication without touching outputs."
+}
