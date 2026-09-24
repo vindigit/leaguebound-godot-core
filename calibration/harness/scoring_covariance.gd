@@ -21,10 +21,11 @@ extends RefCounted
 ##
 ## 1. **Game-level covariance.** `Cov(A, B)` between the two teams' final
 ##    points, their points per possession, and their period-by-period scoring,
-##    raw and after the pregame strength, the realized pace and the home
-##    environment are regressed out. The raw term contains everything two teams
-##    share; the residual term is what is left once the shared *inputs* are
-##    removed, and only the second can be attributed to in-game behaviour.
+##    raw and after pregame strength, realized pace and home environment are
+##    regressed out. The residual is a conditional association. Realized pace is
+##    an outcome of rules and game decisions, not a fixed pregame input; adjusting
+##    for it can remove or introduce association. Neither covariance identifies
+##    a unique in-game causal contribution.
 ## 2. **Increment autocovariance.** The margin as a path rather than an endpoint.
 ##    Each possession contributes a signed increment; the lag-k autocovariance of
 ##    those increments, centred inside the game so between-game effects cannot

@@ -15,16 +15,16 @@ extends RefCounted
 ##    factor: the sixth term is defined as the residual of the identity and is
 ##    reported as such.
 ##
-## 2. A pregame-strength regression. The margin is regressed on the
-##    `TeamStrengthIndex` gap, which is fixed before tip-off. The R-squared is
-##    the share of margin variance that legitimately belongs to one team being
-##    better than the other; the rest is what the engine invented during the
-##    game.
+## 2. A descriptive pregame-strength regression. The margin is regressed on the
+##    `TeamStrengthIndex` gap, which is fixed before tip-off. Its R-squared is
+##    the variance fit by this one linear index in this fixture sample. Other
+##    roster properties, nonlinear effects and within-game paths remain in the
+##    residual. Neither part is a uniquely identified causal contribution.
 ##
 ## The two partitions answer different questions on purpose. The first says
-## which basketball channel carried the margin; the second says how much of it
-## was earned pregame. A defect that inflates blowouts shows up as an excessive
-## residual in the second and names its channel in the first.
+## which basketball channel carried the realized margin; the second describes
+## one linear association with a pregame index. A large residual can motivate
+## further tests, but cannot by itself prove a defect or name its cause.
 
 ## The exact identity, in order. `points_from_field = 2 * eFG * FGA` is an
 ## algebraic identity rather than an approximation, which is what lets the whole
@@ -243,9 +243,8 @@ func variance_share(component: int) -> float:
 	return _covariance(column(component), margins()) / total
 
 
-## Share of margin variance explained by the pregame strength gap, as the
-## R-squared of the least-squares line. This is the legitimate part: two teams
-## of different quality are supposed to produce different margins.
+## R-squared of a one-variable least-squares fit on the pregame strength gap.
+## This is a sample association, not the unique legitimate roster contribution.
 func strength_explained_share() -> float:
 	var gaps: PackedFloat64Array = expected_gaps()
 	var gap_variance: float = _variance(gaps)
@@ -363,13 +362,11 @@ func within_game_possession_variance() -> float:
 ## The margin standard deviation the engine would produce if every possession in
 ## a game were an independent draw from the marginal distribution above.
 ##
-## Comparing this with the realized margin standard deviation is the test the
-## Stage 4 brief asks for under "possession outcomes being too independent or too
-## correlated" and "game-level hot/cold states that persist too strongly". A
-## ratio near one means the margin is exactly the accumulation of independent
-## possessions. A ratio well above one means something inside a game is making
-## possessions agree with each other, and that something is what inflates the
-## tails.
+## Comparing this with realized margin SD is a reference diagnostic for the
+## Stage 4 independence question. A ratio near one does not prove independent
+## possessions: roster heterogeneity, score-dependent decisions and positive
+## and negative covariance can offset. A high ratio also does not identify a
+## unique source of excess width. Use matched mechanisms and event traces.
 func independent_margin_standard_deviation() -> float:
 	if rows.is_empty():
 		return 0.0
