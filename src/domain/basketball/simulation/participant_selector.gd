@@ -18,6 +18,14 @@ extends RefCounted
 var _capability: CapabilityCalculator
 var _balance: SimulationBalanceProfile
 
+## The part of a player's opportunity index that cannot change during a match:
+## his tactical role's mean initiator opportunity, his two tendency sliders, and
+## the confidence term built from his context-free creation and ball-security
+## capabilities. Only the fatigue term below is live, and it is applied on every
+## call. Memoized per player id; the selector is constructed per match from one
+## immutable `MatchInput`, so the memo cannot outlive its facts.
+var _static_opportunity: Dictionary = {}
+
 ## The on-ball families whose role opportunity defines an initiator's claim to
 ## the ball. Off-ball families deliberately do not count: a Shooter's high
 ## relocation opportunity should not make him the primary ball handler.
@@ -39,6 +47,29 @@ func _init(p_capability: CapabilityCalculator, p_balance: SimulationBalanceProfi
 func opportunity_index(context: PossessionContext, player_id: StringName) -> float:
 	var player: PlayerMatchProfile = context.offense_profile(player_id)
 	var runtime: PlayerMatchRuntime = context.offense_runtime(player_id)
+
+	# Role emphasis and tendency preference are immutable for the match, so they
+	# are resolved once. The capability terms below stay live: they carry acute
+	# fatigue, and hoisting them would have changed the number this returns.
+	var role_and_preference: float = _role_and_preference(player)
+
+	var creation: float = _capability.capability_of(
+		CapabilityKey.Value.HANDLE_CREATION, player, runtime)
+	var security: float = _capability.capability_of(
+		CapabilityKey.Value.BALL_SECURITY, player, runtime)
+	var confidence: float = lerpf(
+		_balance.capability_confidence_min,
+		_balance.capability_confidence_max,
+		clampf(creation * 0.6 + security * 0.4, 0.0, 1.0))
+	return role_and_preference * confidence * fatigue_availability(runtime)
+
+
+## The tactical role's mean initiator opportunity times the tendency preference
+## term. Both are functions of immutable match input only.
+func _role_and_preference(player: PlayerMatchProfile) -> float:
+	if _static_opportunity.has(player.player_id):
+		var cached: float = _static_opportunity[player.player_id]
+		return cached
 	var role_share: float = 0.0
 	for family in INITIATOR_FAMILIES:
 		role_share += _balance.role_opportunity(player.tactical_role.role, family)
@@ -52,15 +83,9 @@ func opportunity_index(context: PossessionContext, player_id: StringName) -> flo
 	var preference: float = pow(
 		sqrt(score_first * create_own), _balance.player_preference_share)
 
-	var creation: float = _capability.capability_of(
-		CapabilityKey.Value.HANDLE_CREATION, player, runtime)
-	var security: float = _capability.capability_of(
-		CapabilityKey.Value.BALL_SECURITY, player, runtime)
-	var confidence: float = lerpf(
-		_balance.capability_confidence_min,
-		_balance.capability_confidence_max,
-		clampf(creation * 0.6 + security * 0.4, 0.0, 1.0))
-	return role_share * preference * confidence * fatigue_availability(runtime)
+	var value: float = role_share * preference
+	_static_opportunity[player.player_id] = value
+	return value
 
 
 ## §12.2 fatigue availability. Bounded below at 0.55 "when still medically

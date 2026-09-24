@@ -28,6 +28,8 @@ const ADVANCE: StringName = &"advance"
 const TRANSITION_ENTERED: StringName = &"transition_entered"
 const HALF_COURT_ENTERED: StringName = &"half_court_entered"
 const SHOT_CLOCK_RESET: StringName = &"shot_clock_reset"
+const TIMEOUT: StringName = &"timeout"
+const GARBAGE_TIME: StringName = &"garbage_time"
 const ACTION_SELECTED: StringName = &"action_selected"
 
 # --- action resolution ------------------------------------------------------

@@ -1,0 +1,96 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_identities_close_on_every_axis[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_identities_close_on_every_axis[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 20s 10ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_made_field_goals_are_exactly_the_two_and_three_pointers[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_made_field_goals_are_exactly_the_two_and_three_pointers[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18s 676ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ledger_and_the_box_score_agree_about_field_goals[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ledger_and_the_box_score_agree_about_field_goals[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27s 840ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6s 802ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1min 23s 362ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_zone_and_contest_shares_each_sum_to_one[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_zone_and_contest_shares_each_sum_to_one[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26s 462ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shooter_capability_moves_make_probability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shooter_capability_moves_make_probability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36s 148ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defender_capability_moves_contest_pressure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defender_capability_moves_contest_pressure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 40s 597ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rating_normalization_round_trips_through_the_baseline_curve[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rating_normalization_round_trips_through_the_baseline_curve[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_roster_ladder_preserves_the_intended_rating_gap_between_levels[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_roster_ladder_preserves_the_intended_rating_gap_between_levels[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_probe_cannot_change_the_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_probe_cannot_change_the_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 8s 436ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_is_detached_by_default[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_is_detached_by_default[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 20ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_probe_whose_owner_was_freed_is_ignored[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_probe_whose_owner_was_freed_is_ignored[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 8s 435ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_terms_sum_to_the_probability_they_describe[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_terms_sum_to_the_probability_they_describe[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22s 392ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_interval_is_a_ratio_estimator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_interval_is_a_ratio_estimator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 13ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_published_field_goal_interval_goes_through_the_ratio_estimator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_published_field_goal_interval_goes_through_the_ratio_estimator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ratio_estimator_refuses_an_unusable_series[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ratio_estimator_refuses_an_unusable_series[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 67ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_has_no_compensation_channel[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_has_no_compensation_channel[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_cannot_name_a_competition[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_cannot_name_a_competition[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_make_resolution_cannot_see_the_scoreboard[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_make_resolution_cannot_see_the_scoreboard[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_shoots_against_one_shared_shot_profile[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_shoots_against_one_shared_shot_profile[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 41ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_compensation_channels_are_pinned_on_a_fixed_fixture[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_compensation_channels_are_pinned_on_a_fixed_fixture[0m[38;2;178;34;34m[1m FAILED[0m[38;2;100;149;237m 1min 27s 929ms[0m
+  [38;2;0;206;209m[1m[4mReport:[0m
+  [38;2;128;128;128moffensive-rebound extension rate moved to 0.1192 on a fixed fixture[0m[38;2;173;216;230m	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:650[0m  [38;2;128;128;128moffensive-rebound share moved to 0.2429 on a fixed fixture[0m[38;2;173;216;230m	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:653[0m  [38;2;128;128;128massisted share moved to 0.6328 on a fixed fixture[0m[38;2;173;216;230m	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:679[0m[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 22 test cases | 0 errors | 3 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6min 27s 724ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 22 test cases | 0 errors | 3 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (1/1)[0m
+[38;2;233;150;122mExecuted test cases : (22/22)[0m
+[38;2;233;150;122mTotal execution time: 6min 27s 724ms[0m
+[38;2;255;255;255m [0m[38;2;100;149;237mOpen XML Report at: file://C:/Users/valexander/leaguebound-godot-core/reports/report_122/results.xml[0m
+[38;2;100;149;237mOpen HTML Report at: file://C:/Users/valexander/leaguebound-godot-core/reports/report_122/index.html[0m
+[38;2;178;34;34mExit code: 100[0m
+Run dispose test resources

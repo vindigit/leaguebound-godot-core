@@ -1,0 +1,60 @@
+{
+  "source_commit": "bf275ccc89e16fe75830fd34a37529faf8df610a",
+  "baseline_and_mutants": [
+    {
+      "summary": "8 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 0,
+      "id": "baseline"
+    },
+    {
+      "summary": "3 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "restore_adjacent_population"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "opener_correlated_orientation"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "noncoprime_marginal"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 118 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "missing_cartesian_round"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "collapse_noise_states"
+    },
+    {
+      "summary": "5 test cases | 0 errors | 70 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "swap_explicit_away_offset"
+    },
+    {
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "contest_consumer_legacy"
+    },
+    {
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "homecourt_consumer_legacy"
+    }
+  ],
+  "killed": 8,
+  "isolated_copy": "C:\\Users\\valexander\\AppData\\Local\\Temp\\leaguebound-pairing-d69406281f004e319b018cb20b25ba6c",
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "source_sha256": {
+    "calibration/runners/run_fg_counterfactual.gd": "9064D263A580B335DF83711C6D02BA82C0DD04D4F6D83EEBB49E38F9E0EE45AB",
+    "tests/calibration/test_population_pairing.gd": "1BEFD6786B00E9036CF08B33B710CB85D61A7E9D4E604E245A59869CB70757AA",
+    "calibration/runners/run_contest_sweep.gd": "437D49E9752A34113CADF2CD1D1C185CEACB2EB8E73ACD203E8FB694F322199C",
+    "calibration/targets/competition_catalog.gd": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+    "calibration/runners/run_home_court_diagnostics.gd": "E0E1A5E8BD9245679E25B9AE78DA4EEFBFE56B841300816203BCFE6CF75221DA"
+  }
+}

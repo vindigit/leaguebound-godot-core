@@ -1,0 +1,69 @@
+{
+  "killed": 8,
+  "source_sha256": {
+    "calibration/targets/competition_catalog.gd": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+    "tests/calibration/test_population_pairing.gd": "32CDAFBC70F5E46F1E7C531C5726B6057F3E57D0FE65956E9AB7146A7A854678",
+    "calibration/runners/run_home_court_diagnostics.gd": "E0E1A5E8BD9245679E25B9AE78DA4EEFBFE56B841300816203BCFE6CF75221DA",
+    "calibration/runners/run_contest_sweep.gd": "437D49E9752A34113CADF2CD1D1C185CEACB2EB8E73ACD203E8FB694F322199C",
+    "calibration/runners/run_fg_counterfactual.gd": "9064D263A580B335DF83711C6D02BA82C0DD04D4F6D83EEBB49E38F9E0EE45AB"
+  },
+  "runner_correction": "Subsequent runner preserves original bytes in finally; these existing complete logs were independently reconstructed after BOM-only equality audit.",
+  "source_commit": "a2c28f4ccb12f9803dad03f967f5011e20713e50",
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "restoration_encoding_correction": [
+    {
+      "before_sha256": "C2402B4E7F984B443A6D968D17C1607FECE1C64FB523A5A52024FD338176851E",
+      "file": "calibration/targets/competition_catalog.gd",
+      "restored_sha256": "2C09AE26CB1ECC180F0485AFB99568B6556EAC172AEDB6E779AE9D2A9E28C312",
+      "reason": "ReadAllText/WriteAllText lost UTF-8 BOM; decoded text identical, restored exact shared bytes after verification"
+    }
+  ],
+  "baseline_and_mutants": [
+    {
+      "summary": "8 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 0,
+      "id": "baseline"
+    },
+    {
+      "summary": "3 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "restore_adjacent_population"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "opener_correlated_orientation"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "noncoprime_marginal"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 118 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "missing_cartesian_round"
+    },
+    {
+      "summary": "2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "collapse_noise_states"
+    },
+    {
+      "summary": "5 test cases | 0 errors | 70 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "swap_explicit_away_offset"
+    },
+    {
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "contest_consumer_legacy"
+    },
+    {
+      "summary": "8 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "exit_code": 100,
+      "id": "homecourt_consumer_legacy"
+    }
+  ],
+  "isolated_copy": "C:\\Users\\valexander\\AppData\\Local\\Temp\\leaguebound-pairing-81b3057347d348179f913cd24c168b6d"
+}

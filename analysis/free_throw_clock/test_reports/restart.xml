@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-09-14" name="report_1" tests="35" failures="0" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="test_restart_contract" package="tests/simulation" timestamp="2026-09-15T02:36:36" hostname="localhost" tests="35" failures="0" errors="0" skipped="0" flaky="0" time="18.947">
+		<testcase name="test_every_whistle_restart_emits_its_throw_in_at_the_starting_clock" classname="test_restart_contract" time="0.039">
+		</testcase>
+		<testcase name="test_the_inbound_event_records_the_restart_cause_it_was_opened_under" classname="test_restart_contract" time="0.050">
+		</testcase>
+		<testcase name="test_a_made_field_goal_in_open_play_still_charges_its_throw_in" classname="test_restart_contract" time="0.008">
+		</testcase>
+		<testcase name="test_a_running_clock_restart_still_runs_the_ordinary_opening" classname="test_restart_contract" time="0.009">
+		</testcase>
+		<testcase name="test_a_made_free_throw_and_a_made_field_goal_do_not_restart_alike" classname="test_restart_contract" time="0.018">
+		</testcase>
+		<testcase name="test_the_policy_separates_the_two_made_basket_causes" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_every_launch_profile_declares_the_owner_ruled_timing_matrix" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_the_period_category_ordering_the_ruling_table_relies_on" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_every_zero_window_leaves_the_clock_running_at_every_remaining_time" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_a_non_final_regulation_period_does_not_borrow_the_final_period_window" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_overtime_reads_the_overtime_window_and_not_a_regulation_one" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_a_constructed_profile_routes_each_period_category_to_its_own_window" classname="test_restart_contract" time="0.005">
+		</testcase>
+		<testcase name="test_the_middle_school_and_high_school_ruling_is_no_made_field_goal_stoppage" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_other_dead_ball_causes_still_stop_the_clock_where_a_made_field_goal_does_not" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_a_made_free_throw_stays_distinct_from_a_made_field_goal_everywhere" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_a_stopped_made_field_goal_restart_charges_nothing_then_runs_on_the_touch" classname="test_restart_contract" time="0.008">
+		</testcase>
+		<testcase name="test_the_window_boundary_changes_a_simulated_possession" classname="test_restart_contract" time="0.014">
+		</testcase>
+		<testcase name="test_a_profile_with_no_window_never_stops_the_clock_for_a_made_basket" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_a_profile_that_declares_no_rule_at_all_gets_no_stoppage" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_a_negative_window_is_rejected" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_a_contradictory_regulation_shape_is_rejected" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_a_window_longer_than_its_own_period_is_rejected" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_a_single_regulation_period_competition_cannot_scope_a_non_final_window" classname="test_restart_contract" time="0.003">
+		</testcase>
+		<testcase name="test_every_throw_in_carries_the_cause_the_preceding_ledger_implies" classname="test_restart_contract" time="3.921">
+		</testcase>
+		<testcase name="test_the_possession_record_and_the_inbound_event_never_disagree" classname="test_restart_contract" time="0.949">
+		</testcase>
+		<testcase name="test_one_end_reason_produces_both_restart_causes_in_a_single_game" classname="test_restart_contract" time="0.733">
+		</testcase>
+		<testcase name="test_made_free_throw_throw_ins_are_never_charged_and_field_goal_ones_usually_are" classname="test_restart_contract" time="0.678">
+		</testcase>
+		<testcase name="test_a_timeout_restart_is_never_charged_even_after_a_made_basket" classname="test_restart_contract" time="5.664">
+		</testcase>
+		<testcase name="test_every_period_opens_on_a_period_start_restart_at_the_full_clock" classname="test_restart_contract" time="3.942">
+		</testcase>
+		<testcase name="test_an_overtime_period_opens_on_a_stopped_clock_like_any_other" classname="test_restart_contract" time="0.150">
+		</testcase>
+		<testcase name="test_identical_seed_and_input_reproduce_the_same_restarts" classname="test_restart_contract" time="1.365">
+		</testcase>
+		<testcase name="test_stepped_and_full_runs_agree_on_every_restart" classname="test_restart_contract" time="1.236">
+		</testcase>
+		<testcase name="test_every_launch_profile_declares_a_credible_made_basket_window" classname="test_restart_contract" time="0.004">
+		</testcase>
+		<testcase name="test_every_turnover_cause_maps_to_a_restart_that_matches_its_steal_credit" classname="test_restart_contract" time="0.003">
+		</testcase>
+	</testsuite>
+</testsuites>

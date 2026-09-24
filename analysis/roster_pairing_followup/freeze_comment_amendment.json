@@ -1,0 +1,8 @@
+{
+  "utc": "2026-09-22T17:31:55.534204+00:00",
+  "reason": "Clarify base-orientation and actual reversed-union support; no executable mapping change",
+  "catalog_sha256": "2c09ae26cb1ecc180f0485afb99568b6556eac172aedb6e779ae9d2a9e28c312",
+  "executable_noncomment_sha256": "211eadc684852c734b0c7ebd0d2a7e8ff0df7423a86c58c7b43029001f58e869",
+  "source_tree": "c7bfee6dc84e6510b264ecfe375962a722b613fe",
+  "baseline_source_tree": "c7bfee6dc84e6510b264ecfe375962a722b613fe"
+}

@@ -19,14 +19,38 @@ const SCHEMA_VERSION: int = 1
 
 var _entries: Array[AttributePointEntry]
 var _balance: float
+## Running total of AP-equivalent *granted* in each career year, excluding the
+## §9.2 at-cap conversion.
+##
+## This is the §9.5 seasonal total, and it lives here because the ledger is the
+## only object that sees every entry. §9.7.2 binds every executor to the §9.5
+## seasonal bands and upper guardrails, so the guardrail has to be checkable on
+## every season of every career; a check that cost a full ledger scan would be
+## one nobody could afford to run in production, and an unaffordable rule is an
+## unenforced one.
+##
+## The at-cap conversion is excluded because §9.2 makes it a refund of progress
+## the player already earned and could not spend, not new seasonal availability.
+var _granted_by_year: Dictionary[int, float]
+## Running total of AP-equivalent consumed to raise ratings.
+##
+## Maintained here rather than recomputed by callers because there must be one
+## answer to "how much AP did this career spend". The §9.1 cost of every point
+## is recorded on the entry at the moment the cost table charged it, so this is
+## the cost curve's own arithmetic accumulated, not a second calculation of it
+## that could drift.
+var _attribute_spend: float
 
 
 func _init(p_entries: Array[AttributePointEntry] = []) -> void:
 	_entries = []
 	_balance = 0.0
+	_granted_by_year = {}
+	_attribute_spend = 0.0
 	for entry in p_entries:
 		_entries.append(entry)
 		_balance += entry.amount
+		_index_entry(entry)
 
 
 ## Available general AP. Fractional balances are legal because game development
@@ -102,6 +126,64 @@ func spend(
 func _append(entry: AttributePointEntry) -> void:
 	_entries.append(entry)
 	_balance += entry.amount
+	_index_entry(entry)
+
+
+## Keep the derived totals current as entries arrive.
+##
+## Every derived quantity the ledger publishes is accumulated here, from the
+## entries themselves, so a ledger rebuilt from stored entries reports exactly
+## what the live one did. §9.5 seasonal availability counts grants only — a
+## spend moves opportunity into a rating and a decline debit removes standing,
+## and neither is availability the season delivered — while attribute spending
+## counts the §9.1 cost the cost table actually charged.
+func _index_entry(entry: AttributePointEntry) -> void:
+	if entry.is_attribute_spend():
+		_attribute_spend += -entry.amount
+		return
+	if not entry.is_grant():
+		return
+	if entry.source == AttributePointSource.Value.AT_CAP_CONVERSION:
+		return
+	var year: int = entry.career_year
+	if _granted_by_year.has(year):
+		_granted_by_year[year] += entry.amount
+	else:
+		_granted_by_year[year] = entry.amount
+
+
+## AP-equivalent consumed to raise ratings across the whole career.
+##
+## This is the figure "AP spent" must mean. It is the sum of the §9.1 costs the
+## cost table charged, recorded on each entry as it was charged, so it rises
+## faster than the rating count as a career climbs into the expensive bands —
+## which is the entire point of a destination-priced curve and exactly what a
+## rating-point count cannot express.
+##
+## Constant time, so a report can carry it on every career.
+func total_attribute_spend() -> float:
+	return _attribute_spend
+
+
+## AP-equivalent removed from the wallet without buying a rating.
+##
+## §10.3 natural decline and any unrealized-opportunity debit. Kept separate
+## from attribute spending because they answer different questions, and reported
+## because the career-level identity does not close without them:
+##
+##     granted - attribute spend - other debits = balance
+func total_debits_without_purchase() -> float:
+	return total_spent() - _attribute_spend
+
+
+## AP-equivalent granted in one career year against the §9.5 seasonal band.
+##
+## Constant time, so §9.7.2's requirement that every executor be bound by the
+## §9.5 guardrail can actually be enforced on every season rather than sampled.
+func granted_in_year(career_year: int) -> float:
+	if not _granted_by_year.has(career_year):
+		return 0.0
+	return _granted_by_year[career_year]
 
 
 ## Total granted from one source in one career year. This is the anti-duplication

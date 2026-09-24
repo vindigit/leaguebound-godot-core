@@ -9,6 +9,13 @@ extends SceneTree
 ## Regeneration is deliberately a separate, explicit action. A harness that
 ## rewrote the file as a side effect of running the suite would turn every
 ## golden test green forever, which is worse than having no golden test at all.
+##
+## `--dump=<scenario>` prints one scenario's whole serialized ledger and writes
+## nothing. A changed golden hash says a scenario moved and says nothing about
+## where; diffing two dumps says which event first differed, which is what a
+## reviewer needs to accept or reject the change.
+##   godot --headless --path . --script res://tools/golden_ledger_harness.gd -- \
+##       --dump=regulation
 
 const OUTPUT_PATH: String = "res://tests/golden/match_golden_hashes.json"
 
@@ -18,6 +25,26 @@ func _init() -> void:
 
 
 func _run() -> void:
+	var options: Dictionary = CalibrationCli.parse(OS.get_cmdline_user_args())
+	var dump: String = CalibrationCli.string_option(options, &"dump", "")
+	if not dump.is_empty():
+		_dump(StringName(dump))
+		return
+	_regenerate()
+
+
+## One scenario's complete ledger, one event per line, for a first-divergence
+## diff against the same scenario from an unmodified tree.
+func _dump(scenario: StringName) -> void:
+	if not GoldenScenarios.names().has(scenario):
+		printerr("unknown golden scenario '%s'" % scenario)
+		quit(2)
+		return
+	print(MatchLedgerSerializer.serialize_output(GoldenScenarios.simulate(scenario)))
+	quit(0)
+
+
+func _regenerate() -> void:
 	var failures: PackedStringArray = []
 	var records: Dictionary = {}
 	var ordered: Array[String] = []

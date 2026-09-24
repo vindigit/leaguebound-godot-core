@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-09-22" name="report_122" tests="22" failures="3" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="test_fg_decomposition" package="tests/calibration" timestamp="2026-09-22T17:23:50" hostname="localhost" tests="22" failures="3" errors="0" skipped="0" flaky="0" time="387.724">
+		<testcase name="test_the_field_goal_identities_close_on_every_axis" classname="test_fg_decomposition" time="20.010">
+		</testcase>
+		<testcase name="test_made_field_goals_are_exactly_the_two_and_three_pointers" classname="test_fg_decomposition" time="18.676">
+		</testcase>
+		<testcase name="test_the_ledger_and_the_box_score_agree_about_field_goals" classname="test_fg_decomposition" time="27.840">
+		</testcase>
+		<testcase name="test_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it" classname="test_fg_decomposition" time="6.802">
+		</testcase>
+		<testcase name="test_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses" classname="test_fg_decomposition" time="83.362">
+		</testcase>
+		<testcase name="test_the_zone_and_contest_shares_each_sum_to_one" classname="test_fg_decomposition" time="26.462">
+		</testcase>
+		<testcase name="test_shooter_capability_moves_make_probability" classname="test_fg_decomposition" time="36.148">
+		</testcase>
+		<testcase name="test_defender_capability_moves_contest_pressure" classname="test_fg_decomposition" time="40.597">
+		</testcase>
+		<testcase name="test_rating_normalization_round_trips_through_the_baseline_curve" classname="test_fg_decomposition" time="0.014">
+		</testcase>
+		<testcase name="test_the_roster_ladder_preserves_the_intended_rating_gap_between_levels" classname="test_fg_decomposition" time="0.031">
+		</testcase>
+		<testcase name="test_the_shot_probe_cannot_change_the_ledger" classname="test_fg_decomposition" time="8.436">
+		</testcase>
+		<testcase name="test_the_probe_is_detached_by_default" classname="test_fg_decomposition" time="0.020">
+		</testcase>
+		<testcase name="test_a_probe_whose_owner_was_freed_is_ignored" classname="test_fg_decomposition" time="8.435">
+		</testcase>
+		<testcase name="test_the_probe_terms_sum_to_the_probability_they_describe" classname="test_fg_decomposition" time="22.392">
+		</testcase>
+		<testcase name="test_the_field_goal_interval_is_a_ratio_estimator" classname="test_fg_decomposition" time="0.013">
+		</testcase>
+		<testcase name="test_the_published_field_goal_interval_goes_through_the_ratio_estimator" classname="test_fg_decomposition" time="0.014">
+		</testcase>
+		<testcase name="test_the_ratio_estimator_refuses_an_unusable_series" classname="test_fg_decomposition" time="0.067">
+		</testcase>
+		<testcase name="test_shot_resolution_has_no_compensation_channel" classname="test_fg_decomposition" time="0.017">
+		</testcase>
+		<testcase name="test_shot_resolution_cannot_name_a_competition" classname="test_fg_decomposition" time="0.015">
+		</testcase>
+		<testcase name="test_make_resolution_cannot_see_the_scoreboard" classname="test_fg_decomposition" time="0.016">
+		</testcase>
+		<testcase name="test_every_competition_shoots_against_one_shared_shot_profile" classname="test_fg_decomposition" time="0.041">
+		</testcase>
+		<testcase name="test_the_compensation_channels_are_pinned_on_a_fixed_fixture" classname="test_fg_decomposition" time="87.929">
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:650" type="FAILURE">
+<![CDATA[
+offensive-rebound extension rate moved to 0.1192 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:650
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:653" type="FAILURE">
+<![CDATA[
+offensive-rebound share moved to 0.2429 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:653
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:679" type="FAILURE">
+<![CDATA[
+assisted share moved to 0.6328 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:679
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+</testsuites>

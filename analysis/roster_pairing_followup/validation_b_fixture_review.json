@@ -1,0 +1,297 @@
+{
+  "verdict": "VALIDATION B FIXTURE CONSTRUCTION ACCEPT",
+  "cells": [
+    {
+      "cell": "validation_b_baseline_home_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_baseline_neutral_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_candidate_home_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_candidate_neutral_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_baseline_home_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_baseline_neutral_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_candidate_home_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_candidate_neutral_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_baseline_home_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_baseline_neutral_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_candidate_home_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_candidate_neutral_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_baseline_home_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_baseline_neutral_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_candidate_home_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_candidate_neutral_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_baseline_home_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_baseline_neutral_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_b_candidate_home_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_b_candidate_neutral_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        32760332,
+        32760333,
+        32760334,
+        32760335
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    }
+  ],
+  "source_drift_since_gate": false,
+  "scope": "No outcome fields analyzed; Validation B construction only"
+}

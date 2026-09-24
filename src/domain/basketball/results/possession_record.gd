@@ -26,6 +26,19 @@ var next_possession_team_id: StringName
 ## Whether the ball changed hands live — a steal or a defensive rebound — which
 ## is what makes the next possession a transition opportunity (§16).
 var live_transfer: bool = false
+## How the next team possession restarts (`RestartCause`,
+## `PROJECT_STATUS.md` §5.31).
+##
+## This is the one fact `end_reason` provably cannot supply. `MADE_SCORE` is
+## returned for a made field goal and for a made final free throw alike, and
+## those two restart under different clock rules, so §5.30 had to carry the
+## conflation as an acknowledged conservatism. The engine now states the cause
+## at each terminal site instead of anyone inferring it here.
+##
+## **Ownership.** Written once by `PossessionEngine._terminate`; read by
+## `MatchSession`, which turns it into the session's restart fact, and by the
+## calibration runners that audit restarts from committed records.
+var restart_cause: int = RestartCause.Value.PERIOD_START
 
 
 func _init(
@@ -61,10 +74,14 @@ func end_reason_id() -> StringName:
 	return PossessionEndReason.id_of(end_reason)
 
 
+func restart_cause_id() -> StringName:
+	return RestartCause.id_of(restart_cause)
+
+
 func signature() -> String:
-	return "%d:%s:%d:%d:%d:%d:%s:%d:%d:%d:%s:%d" % [
+	return "%d:%s:%d:%d:%d:%d:%s:%d:%d:%d:%s:%d:%s" % [
 		possession_id, offense_team_id, start_period, start_clock_ms,
 		end_period, end_clock_ms, end_reason_id(), points_scored,
 		action_count, offensive_rebounds, next_possession_team_id,
-		1 if live_transfer else 0,
+		1 if live_transfer else 0, restart_cause_id(),
 	]

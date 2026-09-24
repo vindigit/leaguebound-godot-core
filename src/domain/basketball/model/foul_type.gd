@@ -16,15 +16,22 @@ enum Value {
 	OFFENSIVE,
 	LOOSE_BALL,
 	INTENTIONAL,
+	## §13.1 deliberate late-game strategy, the leading side: a defence up
+	## exactly three fouls before the tying three can be attempted. Distinct
+	## from `INTENTIONAL`, which is the trailing side stopping the clock; the
+	## two are never eligible at the same moment, but the ledger keeps them
+	## separate rather than let one label carry two different decisions.
+	LEADING_PROTECT,
 }
 
-const COUNT: int = 5
+const COUNT: int = 6
 const IDS: PackedStringArray = [
 	"shooting",
 	"non_shooting_defensive",
 	"offensive",
 	"loose_ball",
 	"intentional",
+	"leading_protect",
 ]
 
 

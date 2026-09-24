@@ -1,0 +1,701 @@
+{
+  "schema": "leaguebound.calibration.report/1",
+  "context": {
+    "report_id": "competition_calibration",
+    "title": "Competition basketball calibration",
+    "commit_sha": "10febefab74763defa472832d8c522c03ca830d2",
+    "commit_note": "",
+    "godot_version": "4.7.1-stable (official)",
+    "build_mode": "editor-debug (asserts active)",
+    "rules_profile": {
+      "id": "overseas",
+      "version": "competition-v2-stopped-clock-pace"
+    },
+    "balance_profile": {
+      "id": "simulation_baseline",
+      "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+    },
+    "ratings_profile_version": "ratings-v1",
+    "targets_version": "calibration-targets-v1",
+    "rng": {
+      "algorithm": "godot-pcg32-v1",
+      "stream_key_version": "sha256-stream-key-v1"
+    },
+    "seeds": "shard 5850000 of 5850001, seeds 23400001..23400004 inclusive",
+    "seed_range": {
+      "start": 23400001,
+      "end": 23400004
+    },
+    "shard": {
+      "index": 5850000,
+      "count": 5850001
+    },
+    "competition": "overseas",
+    "certification": {
+      "required_sample": 100000,
+      "source": "BALANCE_SPEC.md §27.1"
+    },
+    "sample_count": 4,
+    "sample_unit": "complete games per competition",
+    "elapsed_ms": 17974,
+    "throughput_per_second": 0.222543674196061,
+    "notes": [
+      "§27.1 certification sample is 100000 complete games per competition; this run used 4.",
+      "Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id."
+    ]
+  },
+  "summary": {
+    "passed": false,
+    "metric_count": 20,
+    "judged_metric_count": 15,
+    "failure_count": 7
+  },
+  "metrics": [
+    {
+      "metric": "sample.meets_certification_size",
+      "definition": "Whether this run reached the §27.1 sample size for a certifying competition report.",
+      "denominator": "boolean invariant",
+      "estimate": 0.0,
+      "sample_count": 4,
+      "verdict": "fail",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §27.1"
+      }
+    },
+    {
+      "metric": "overseas.possessions_per_game",
+      "definition": "Engine possessions from terminal possession records, per team per game.",
+      "denominator": "team-games",
+      "estimate": 76.5,
+      "sample_count": 8,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 1.57146723823093,
+        "low": 74.9285327617691,
+        "high": 78.0714672382309
+      },
+      "target": {
+        "minimum": 70.0,
+        "maximum": 82.0,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "mean",
+        "numerator": 0.0,
+        "denominator": 0.0,
+        "count": 8,
+        "sum": 612.0,
+        "sum_of_squares": 46854.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.possession_estimate_per_game",
+      "definition": "Classic estimate FGA + w*FTA - ORB + TOV, per team per game. Reported beside engine possessions and never substituted for them.",
+      "denominator": "team-games",
+      "estimate": 80.92,
+      "sample_count": 8,
+      "verdict": "informational",
+      "aggregation": {
+        "kind": "ratio",
+        "numerator": 647.36,
+        "denominator": 8.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.points_per_game",
+      "definition": "Points per team per game.",
+      "denominator": "team-games",
+      "estimate": 78.875,
+      "sample_count": 8,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 8.15244647068734,
+        "low": 70.7225535293127,
+        "high": 87.0274464706873
+      },
+      "aggregation": {
+        "kind": "mean",
+        "numerator": 0.0,
+        "denominator": 0.0,
+        "count": 8,
+        "sum": 631.0,
+        "sum_of_squares": 50739.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.points_per_possession",
+      "definition": "Total points divided by total engine possessions.",
+      "denominator": "engine possessions",
+      "estimate": 1.03104575163399,
+      "sample_count": 612,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.112641075352459,
+        "low": 0.918404676281528,
+        "high": 1.14368682698645
+      },
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.13,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "ratio",
+        "numerator": 631.0,
+        "denominator": 612.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.field_goal_percentage",
+      "definition": "Field goals made divided by field goals attempted.",
+      "denominator": "field-goal attempts",
+      "estimate": 0.426987060998152,
+      "sample_count": 541,
+      "verdict": "fail",
+      "interval_95": {
+        "half_width": 0.044833858402382,
+        "low": 0.38215320259577,
+        "high": 0.471820919400534
+      },
+      "target": {
+        "minimum": 0.43,
+        "maximum": 0.51,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 231.0,
+        "denominator": 541.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.three_point_percentage",
+      "definition": "Three-pointers made divided by three-pointers attempted.",
+      "denominator": "three-point attempts",
+      "estimate": 0.314285714285714,
+      "sample_count": 175,
+      "verdict": "fail",
+      "interval_95": {
+        "half_width": 0.0681542729146297,
+        "low": 0.246131441371085,
+        "high": 0.382439987200344
+      },
+      "target": {
+        "minimum": 0.32,
+        "maximum": 0.39,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 55.0,
+        "denominator": 175.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.three_point_attempt_rate",
+      "definition": "Three-point attempts divided by all field-goal attempts.",
+      "denominator": "field-goal attempts",
+      "estimate": 0.323475046210721,
+      "sample_count": 541,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0393000605237919,
+        "low": 0.284174985686929,
+        "high": 0.362775106734513
+      },
+      "target": {
+        "minimum": 0.3,
+        "maximum": 0.46,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 175.0,
+        "denominator": 541.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.free_throw_percentage",
+      "definition": "Free throws made divided by free throws attempted.",
+      "denominator": "free-throw attempts",
+      "estimate": 0.791666666666667,
+      "sample_count": 144,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0659009132051721,
+        "low": 0.725765753461495,
+        "high": 0.857567579871839
+      },
+      "target": {
+        "minimum": 0.69,
+        "maximum": 0.82,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 114.0,
+        "denominator": 144.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.free_throw_attempt_rate",
+      "definition": "Free-throw attempts divided by field-goal attempts.",
+      "denominator": "field-goal attempts",
+      "estimate": 0.266173752310536,
+      "sample_count": 541,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0371467129386876,
+        "low": 0.229027039371848,
+        "high": 0.303320465249224
+      },
+      "target": {
+        "minimum": 0.2,
+        "maximum": 0.39,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 144.0,
+        "denominator": 541.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.turnovers_per_100_possessions",
+      "definition": "Turnovers times 100 divided by engine possessions.",
+      "denominator": "engine possessions",
+      "estimate": 19.1176470588235,
+      "sample_count": 612,
+      "verdict": "fail",
+      "target": {
+        "minimum": 13.0,
+        "maximum": 19.0,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "ratio",
+        "numerator": 117.0,
+        "denominator": 612.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 100.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.offensive_rebound_percentage",
+      "definition": "ORB / (ORB + opponent DREB). Possession count is never the denominator.",
+      "denominator": "offensive-rebound chances",
+      "estimate": 0.250847457627119,
+      "sample_count": 295,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0492535753342947,
+        "low": 0.201593882292824,
+        "high": 0.300101032961413
+      },
+      "target": {
+        "minimum": 0.23,
+        "maximum": 0.34,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 74.0,
+        "denominator": 295.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.assist_percentage",
+      "definition": "Assists divided by the team's own made field goals.",
+      "denominator": "made field goals",
+      "estimate": 0.575757575757576,
+      "sample_count": 231,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.063222407721644,
+        "low": 0.512535168035932,
+        "high": 0.63897998347922
+      },
+      "target": {
+        "minimum": 0.5,
+        "maximum": 0.72,
+        "source": "BALANCE_SPEC.md §14.1"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 133.0,
+        "denominator": 231.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.home_win_rate",
+      "definition": "Home wins divided by games with a decided result.",
+      "denominator": "decided games",
+      "estimate": 0.75,
+      "sample_count": 4,
+      "verdict": "fail",
+      "interval_95": {
+        "half_width": 0.326885449803861,
+        "low": 0.423114550196139,
+        "high": 1.07688544980386
+      },
+      "target": {
+        "minimum": 0.53,
+        "maximum": 0.56,
+        "source": "BALANCE_SPEC.md §14.2"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 3.0,
+        "denominator": 4.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.overtime_rate",
+      "definition": "Games reaching at least one overtime period, divided by games played.",
+      "denominator": "complete games",
+      "estimate": 0.0,
+      "sample_count": 4,
+      "verdict": "fail",
+      "interval_95": {
+        "half_width": 0.244945420198461,
+        "low": -0.244945420198461,
+        "high": 0.244945420198461
+      },
+      "target": {
+        "minimum": 0.04,
+        "maximum": 0.08,
+        "source": "BALANCE_SPEC.md §14.2"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 0.0,
+        "denominator": 4.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.close_game_rate",
+      "definition": "Games decided by five points or fewer, divided by games played.",
+      "denominator": "complete games",
+      "estimate": 0.25,
+      "sample_count": 4,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.326885449803861,
+        "low": -0.0768854498038615,
+        "high": 0.576885449803861
+      },
+      "target": {
+        "minimum": 0.22,
+        "maximum": 0.34,
+        "source": "BALANCE_SPEC.md §14.2"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 1.0,
+        "denominator": 4.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.blowout_rate",
+      "definition": "Games decided by twenty points or more, divided by games played.",
+      "denominator": "complete games",
+      "estimate": 0.25,
+      "sample_count": 4,
+      "verdict": "fail",
+      "interval_95": {
+        "half_width": 0.326885449803861,
+        "low": -0.0768854498038615,
+        "high": 0.576885449803861
+      },
+      "target": {
+        "minimum": 0.08,
+        "maximum": 0.18,
+        "source": "BALANCE_SPEC.md §14.2"
+      },
+      "aggregation": {
+        "kind": "proportion",
+        "numerator": 1.0,
+        "denominator": 4.0,
+        "count": 0,
+        "sum": 0.0,
+        "sum_of_squares": 0.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.starter_mean_minutes",
+      "definition": "Mean minutes played by Starters. §14.2 states its minute bands for top domestic professional basketball only, so this is reported without a verdict at other competitions.",
+      "denominator": "starter appearances",
+      "estimate": 23.9975,
+      "sample_count": 40,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.08657034197124,
+        "low": 22.9109296580288,
+        "high": 25.0840703419712
+      },
+      "aggregation": {
+        "kind": "mean",
+        "numerator": 0.0,
+        "denominator": 0.0,
+        "count": 40,
+        "sum": 959.9,
+        "sum_of_squares": 23514.6511111111,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.team_leading_scorer_mean",
+      "definition": "Mean points scored by each team-game's leading scorer.",
+      "denominator": "team-games",
+      "estimate": 16.625,
+      "sample_count": 8,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.43155499918494,
+        "low": 15.1934450008151,
+        "high": 18.0565549991849
+      },
+      "aggregation": {
+        "kind": "mean",
+        "numerator": 0.0,
+        "denominator": 0.0,
+        "count": 8,
+        "sum": 133.0,
+        "sum_of_squares": 2241.0,
+        "scale": 1.0,
+        "buckets": [],
+        "percentile_share": 0.5
+      }
+    },
+    {
+      "metric": "overseas.team_leading_scorer_p99",
+      "definition": "99th percentile of the leading scorer's points, for tail plausibility. Not poolable across shards; reported per shard only.",
+      "denominator": "team-games",
+      "estimate": 19.0,
+      "sample_count": 8,
+      "verdict": "informational"
+    }
+  ],
+  "sections": {
+    "rotation_roles.overseas": [
+      {
+        "rotation_role": "star",
+        "appearances": 8,
+        "mean_minutes": 26.7395833333333,
+        "starts": 8,
+        "mean_usage_events": 11.25
+      },
+      {
+        "rotation_role": "starter",
+        "appearances": 32,
+        "mean_minutes": 23.3119791666667,
+        "starts": 32,
+        "mean_usage_events": 9.25
+      },
+      {
+        "rotation_role": "sixth_player",
+        "appearances": 8,
+        "mean_minutes": 21.3520833333333,
+        "starts": 0,
+        "mean_usage_events": 9.0
+      },
+      {
+        "rotation_role": "rotation",
+        "appearances": 16,
+        "mean_minutes": 17.2020833333333,
+        "starts": 0,
+        "mean_usage_events": 7.5
+      },
+      {
+        "rotation_role": "bench",
+        "appearances": 8,
+        "mean_minutes": 14.3645833333333,
+        "starts": 0,
+        "mean_usage_events": 6.75
+      },
+      {
+        "rotation_role": "reserve",
+        "appearances": 8,
+        "mean_minutes": 9.575,
+        "starts": 0,
+        "mean_usage_events": 3.25
+      }
+    ],
+    "tactical_roles.overseas": [
+      {
+        "tactical_role": "primary_creator",
+        "field_goal_attempts": 80,
+        "three_point_attempt_share": 0.425,
+        "paint_attempt_share": 0.375
+      },
+      {
+        "tactical_role": "secondary_creator",
+        "field_goal_attempts": 64,
+        "three_point_attempt_share": 0.296875,
+        "paint_attempt_share": 0.46875
+      },
+      {
+        "tactical_role": "shooter",
+        "field_goal_attempts": 74,
+        "three_point_attempt_share": 0.432432432432432,
+        "paint_attempt_share": 0.378378378378378
+      },
+      {
+        "tactical_role": "slasher",
+        "field_goal_attempts": 65,
+        "three_point_attempt_share": 0.323076923076923,
+        "paint_attempt_share": 0.507692307692308
+      },
+      {
+        "tactical_role": "connector",
+        "field_goal_attempts": 46,
+        "three_point_attempt_share": 0.41304347826087,
+        "paint_attempt_share": 0.41304347826087
+      },
+      {
+        "tactical_role": "post_option",
+        "field_goal_attempts": 42,
+        "three_point_attempt_share": 0.19047619047619,
+        "paint_attempt_share": 0.523809523809524
+      },
+      {
+        "tactical_role": "roll_pop_big",
+        "field_goal_attempts": 57,
+        "three_point_attempt_share": 0.263157894736842,
+        "paint_attempt_share": 0.421052631578947
+      },
+      {
+        "tactical_role": "perimeter_stopper",
+        "field_goal_attempts": 48,
+        "three_point_attempt_share": 0.291666666666667,
+        "paint_attempt_share": 0.354166666666667
+      },
+      {
+        "tactical_role": "interior_anchor",
+        "field_goal_attempts": 47,
+        "three_point_attempt_share": 0.170212765957447,
+        "paint_attempt_share": 0.553191489361702
+      },
+      {
+        "tactical_role": "rebounder",
+        "field_goal_attempts": 18,
+        "three_point_attempt_share": 0.277777777777778,
+        "paint_attempt_share": 0.555555555555556
+      }
+    ],
+    "competition_table": [
+      {
+        "competition": "overseas",
+        "games": 4,
+        "engine_possessions_per_game": 76.5,
+        "possession_estimate_per_game": 80.92,
+        "points_per_game": 78.875,
+        "points_per_possession": 1.03104575163399,
+        "field_goal_percentage": 0.426987060998152,
+        "three_point_percentage": 0.314285714285714,
+        "three_point_attempt_rate": 0.323475046210721,
+        "free_throw_percentage": 0.791666666666667,
+        "free_throw_attempt_rate": 0.266173752310536,
+        "turnovers_per_100_possessions": 19.1176470588235,
+        "offensive_rebound_percentage": 0.250847457627119,
+        "assist_percentage": 0.575757575757576,
+        "steals_per_game": 5.375,
+        "blocks_per_game": 3.75,
+        "fouls_per_game": 19.875,
+        "home_win_rate": 0.75,
+        "overtime_rate": 0.0,
+        "close_game_rate": 0.25,
+        "blowout_rate": 0.25
+      }
+    ]
+  }
+}

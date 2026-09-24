@@ -81,14 +81,24 @@ func resolve(
 	):
 		switched = random_source.next_float() < CoverageFamily.switch_share(coverage)
 
-	var beneficiary_id: StringName = candidate.actor_id
-	if ActionFamily.is_off_ball(candidate.action_family) and not candidate.target_id.is_empty():
-		beneficiary_id = candidate.actor_id
 	var creator_id: StringName = candidate.actor_id
+	var beneficiary_id: StringName = candidate.actor_id
 	if candidate.action_family == ActionFamily.Value.SCREEN and not candidate.target_id.is_empty():
 		# A screen is set *for* someone: the screener creates, the handler
 		# benefits. §11.4 requires that contribution to be visible even though
 		# it never becomes a box-score statistic.
+		beneficiary_id = candidate.target_id
+	elif (
+		ActionFamily.transfers_ball(candidate.action_family)
+		and not candidate.target_id.is_empty()
+	):
+		# §11.1 gives `creatorId` and `beneficiaryId` separate fields precisely
+		# so a pass can create for somebody else. The passer was recorded as his
+		# own beneficiary here, which meant the openness a completed pass
+		# produced was credited to the man who no longer had the ball: the §10.3
+		# advantage continuation lifted the *passer's* next candidates, and the
+		# receiver — the player the delivery actually freed — carried none of it
+		# into his own decision. A pass could therefore never create a shot.
 		beneficiary_id = candidate.target_id
 
 	return AdvantageResult.new(
@@ -126,9 +136,19 @@ func _attack_capability(
 				+ screener_force * 0.40
 			)
 		ActionFamily.Value.PASS_SWING, ActionFamily.Value.HANDOFF:
+			# §11.3: "Vision increases recognition and creation; Passing
+			# increases execution." This roll *is* the creation — whether the
+			# delivery found a team-mate the defence had left — so Read Quality
+			# leads it and Pass Accuracy supports it. Execution is charged
+			# separately, against the same two capabilities in the opposite
+			# proportion, by `TurnoverResolver.resolve_pass` and by the catch
+			# quality the delivery carries. That is what keeps the two
+			# attributes distinct: high Vision with poor Passing sees the open
+			# man and turns it over, high Passing with poor Vision delivers the
+			# obvious pass safely and creates less.
 			return (
-				_capability.capability_of(CapabilityKey.Value.PASS_ACCURACY, actor, runtime) * 0.50
-				+ _capability.capability_of(CapabilityKey.Value.PASS_READ_QUALITY, actor, runtime) * 0.50
+				_capability.capability_of(CapabilityKey.Value.PASS_ACCURACY, actor, runtime) * 0.40
+				+ _capability.capability_of(CapabilityKey.Value.PASS_READ_QUALITY, actor, runtime) * 0.60
 			)
 		ActionFamily.Value.POST_ACTION:
 			return (

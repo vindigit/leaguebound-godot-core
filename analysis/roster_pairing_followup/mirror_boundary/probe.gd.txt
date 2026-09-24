@@ -1,0 +1,17 @@
+extends SceneTree
+class FixtureRunner extends "res://calibration/runners/run_home_court_diagnostics.gd":
+	func _run() -> void:
+		pass
+func _init() -> void:
+	var runner := FixtureRunner.new()
+	for variation: int in [1073741823, 1073741824, 1073741825, 2147483648]:
+		var packed := PackedInt32Array([variation * 2])
+		var input: MatchInput = runner._venue_input(0, variation, "mirror", 0.5, false)
+		var expected: TeamMatchProfile = CompetitionCatalog.team_for(0, &"home", variation * 2)
+		var same: bool = true
+		for i in range(10):
+			if input.home.players[i].attributes.canonical_values() != expected.players[i].attributes.canonical_values():
+				same = false
+		print(JSON.stringify({"variation": variation, "int64": variation * 2, "packed32": packed[0], "same_roster": same, "opener": String(input.initial_possession_team_id), "first_rating": input.home.players[0].attributes.canonical_values()[0], "expected_first_rating": expected.players[0].attributes.canonical_values()[0]}))
+	runner.free()
+	quit(0)

@@ -97,7 +97,32 @@ The match engine consumes structurally valid match inputs. It never creates or c
 
 ## Headless verification
 
-From the repository root:
+### Toolchain setup
+
+`tools/install_godot.sh` installs the pinned Godot 4.7.1-stable build on Linux and verifies the download against the SHA-512 digest the Godot project publishes for that release. A digest mismatch discards the archive and installs nothing. The script is idempotent and prints the installed binary's path.
+
+**The project must be imported before any script is run.** Godot resolves `class_name` identifiers from `.godot/global_script_class_cache.cfg`, and only the importer writes that file. On a fresh clone it does not exist, so `godot --script` treats every global class as an undeclared identifier and each typed script fails to parse under the warnings-as-errors settings in `project.godot`. The resulting wall of parse errors is a missing cache, not a broken engine build:
+
+```bash
+godot --headless --path . --import
+```
+
+`tools/run_checks.sh` does all of this — resolve or install the pinned binary, import, then run the Stage 4 pull-request fast gate in the same order and with the same command arguments as `.github/workflows/headless-tests.yml`. It is the single entry point for running that gate locally or in a managed session:
+
+```bash
+tools/run_checks.sh                    # import, parse, acceptance, smoke, builder, attribute_sensitivity, calibration_smoke, gdunit
+tools/run_checks.sh acceptance gdunit  # a subset; the import always runs first
+```
+
+It does not run `nightly-calibration.yml` or `deep-verification.yml`. Those own the `BALANCE_SPEC.md` §27.1 certifying sample sizes on their own sharding and schedule, and no run at PR-gate time reaches them.
+
+Set `GODOT_BIN` to use an already-installed binary instead of the one `tools/install_godot.sh` manages.
+
+In Claude Code on the web, `.claude/hooks/session-start.sh` runs both steps at session start and exports `GODOT_BIN`, so a session begins with a verified engine and a populated class cache.
+
+### Individual checks
+
+From the repository root, after importing:
 
 ```powershell
 Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tests/run_all.gd
@@ -134,6 +159,42 @@ The Builder calibration harness sweeps 810 completed builds from fixed seeds and
 ```powershell
 Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://tools/builder_calibration_harness.gd
 ```
+
+## Calibration
+
+`calibration/` holds the committed calibration harness. Every runner writes a machine-readable report to `reports/` and prints a human summary, and every report carries the same provenance block: commit SHA, Godot version and build mode, rules and balance profile with versions, RNG algorithm and stream-key version, seed range, sample count, elapsed time and throughput. Every judged metric names its exact definition, its denominator, its interval where one applies, and the document section that owns its target.
+
+Acceptance targets live in one place, `calibration/targets/calibration_targets.gd`. A runner cannot invent a band; it asks for one by name and gets the owning section with it.
+
+```powershell
+# All twenty attributes: monotonic direction, meaningful 50->80 effect, and the
+# rule that an IQ rating cannot replace a primary skill.
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://calibration/runners/run_attribute_sensitivity.gd -- --resolutions=100000
+
+# Team and player basketball statistics against BALANCE_SPEC §14, per competition.
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://calibration/runners/run_competition_calibration.gd -- --games=200
+
+# The BALANCE_SPEC §8.4 locked career peak curve, projected-peak honesty, and
+# user/NPC development parity.
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://calibration/runners/run_career_progression.gd -- --careers=2000
+
+# Where the engine spends its time, measured before any optimization.
+Godot_v4.7.1-stable_win64_console.exe --headless --path . --script res://calibration/runners/run_performance_profile.gd -- --games=20
+```
+
+Sample size is always a command-line argument, and every report states the size it reached against the `BALANCE_SPEC.md` §27.1 certification requirement. A short run is reported as measured-but-not-certified; it can never be mistaken for a certification.
+
+`BALANCE_SPEC.md` §32.1 records what the Stage 4 calibration actually established and what it did not. Read it before quoting any calibrated number as settled.
+
+### Layered CI
+
+| Workflow | When | What it covers |
+| --- | --- | --- |
+| `headless-tests.yml` | Every push and pull request | Unit tests, structural invariants, reconciliation, golden fixtures, Builder smoke portfolio, attribute sensitivity at full sample, and a small deterministic calibration smoke with broad control limits. |
+| `nightly-calibration.yml` | Nightly and on demand | Sharded competition suites, sensitivity, Builder tournament, and the performance profile. |
+| `deep-verification.yml` | Weekly and before release | The §27.1 minimum samples: sharded million-career progression and 100,000-game competition certification. |
+
+The pull-request calibration smoke is a structural check, not a release certification. It exists to catch an event family that stopped firing; its control limits are the §14.1 bands deliberately widened, and it says so in its own output.
 
 ## Explicitly out of scope
 

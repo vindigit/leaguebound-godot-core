@@ -1,0 +1,29 @@
+{
+  "complete_gate_exit": 0,
+  "source_commit": "54fdffd1805251f9b2ee1828d4c2caf98ab871f9",
+  "eight_steps": [
+    "Import project",
+    "Parse-check every script",
+    "Project-owned headless acceptance runner",
+    "Fixed-seed simulation smoke diagnostics",
+    "Builder smoke portfolio",
+    "Attribute sensitivity suite",
+    "Calibration smoke (PR-gate sample",
+    "GdUnit4 suites"
+  ],
+  "parse_scripts": 263,
+  "parse_failures": 0,
+  "suites": 54,
+  "declared_cases": 684,
+  "executed_cases": 684,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "all_suite_declared_counts_equal_executed": true,
+  "attribute_sensitivity": "80/80",
+  "calibration_smoke": "15/15",
+  "source_unchanged_since_gate_start": true,
+  "locked_contracts_and_targets_unchanged": true,
+  "src_tree": "c7bfee6dc84e6510b264ecfe375962a722b613fe",
+  "tests_tree": "f123dee209f42e67704a33c410a84b14e7e8a83a"
+}

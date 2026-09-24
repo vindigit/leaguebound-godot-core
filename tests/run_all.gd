@@ -22,6 +22,7 @@ func _run() -> void:
 	_test_development_values_are_ordered()
 	_test_detail_promotion_invariance()
 	_test_growth_determinism()
+	_test_report_aggregation()
 	if _failures.is_empty():
 		print("LeagueBound headless acceptance: PASS")
 		quit(0)
@@ -294,6 +295,14 @@ func _test_growth_determinism() -> void:
 		first.body_state.projected_range.contains_body(first.body_state.realized_body),
 		"the realized adult body left its stored projected range"
 	)
+
+
+## Deterministic shard aggregation: a certification report is only ever built
+## from a complete, consistent, seed-disjoint shard set, and its estimates are
+## recomputed from pooled raw counts rather than averaged from shard estimates.
+func _test_report_aggregation() -> void:
+	for failure in ReportAggregationSuite.run():
+		_failures.append("report aggregation: %s" % failure)
 
 
 func _acceptance_player(

@@ -1,0 +1,62 @@
+{
+  "verified_utc": "2026-09-24T19:56:34.312Z",
+  "starting_head": "74b2c55028bbb1a4cc43440ffec52f015c9ba7b2",
+  "verified_head": "c102e185ad37078190cbd1b206b6a23e00e38da8",
+  "source_files_checked": 291,
+  "production_manifest_sha256": "52ed8e8246b2c576101332f2e1dcd24bd64bdc54a4508c681179b4826e130838",
+  "summary_recomputed_identical": true,
+  "artifacts": {
+    "analysis/margin_growth_followup/raw/range_a_college.ndjson": {
+      "bytes": 4065980,
+      "sha256": "50e241c5a9ced2318bfeac197a45494f4e25b90af85de0d2d4852249913bd71c"
+    },
+    "analysis/margin_growth_followup/raw/range_a_top_domestic_pro.ndjson": {
+      "bytes": 4860397,
+      "sha256": "117df00676f8998f918319665cbe8499d4b81ca6140409b73fc29e60d89f80d9"
+    },
+    "analysis/margin_growth_followup/raw/range_b_college.ndjson": {
+      "bytes": 4064367,
+      "sha256": "b888044dca46129ea7284fe08f96809e29501049c4945d687ec523ea58ebf36c"
+    },
+    "analysis/margin_growth_followup/raw/range_b_top_domestic_pro.ndjson": {
+      "bytes": 4849607,
+      "sha256": "2bbb24615026e64232b6a14581c9c92b64d9ca5d34c898806cb83bc9d0c33cc0"
+    },
+    "analysis/margin_growth_followup/summary.json": {
+      "bytes": 1212587,
+      "sha256": "612a07bda4187d7b337849c2b38b37d18ea331dbfa1321b4a8b87c1ca2e35fe0"
+    },
+    "analysis/margin_growth_followup/PROTOCOL.md": {
+      "bytes": 3011,
+      "sha256": "255a01ef0e2d44e59d1cd35f85f41b609be8f334fc7545bd9c0241affe1182e4"
+    },
+    "analysis/margin_growth_followup/RUN_PROVENANCE.json": {
+      "bytes": 38145,
+      "sha256": "1d318f000cb19b14d6f98aa6da422bee28e3e8c9866c6e41ee748e4aa95d8c2f"
+    },
+    "analysis/margin_growth_followup/excluded_probe_top_domestic_pro.ndjson": {
+      "bytes": 485251,
+      "sha256": "4f7f9966eea08d1f7f4f76612087756d9996fa93faa3d7588086bc6b7117a5ed"
+    },
+    "analysis/margin_growth_followup/competition_calibration_current_40_each.json": {
+      "bytes": 94295,
+      "sha256": "0cc9332b8cdba181d398a03c0b7b0de3602f93cf1ce883caa5fe26d324d2a7a0"
+    },
+    "analysis/margin_growth_followup/focused_builder_tests.log": {
+      "bytes": 7113,
+      "sha256": "e6eec1212356cf1a4d5399aa2fed483c217781b1471ad2e2e681c7be6dd197a9"
+    },
+    "analysis/margin_growth_followup/mutations/results.json": {
+      "bytes": 3700,
+      "sha256": "658d61f099cfb9c9925b31b531edf5333eca86a3b0bf0922149027c5b4349bca"
+    },
+    "analysis/margin_growth_followup/full_gate.log": {
+      "bytes": 418381,
+      "sha256": "90b090c2f2242a290de06695ca520864241532831fab4615d12bec8016ddf75f"
+    },
+    "analysis/margin_growth_followup/full_gate_exit.txt": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  }
+}

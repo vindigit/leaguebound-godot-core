@@ -31,22 +31,42 @@ const STREAM_LABEL: StringName = &"player_system:cap_generation"
 ## `random_source` must already be derived for this player's career-generation
 ## stream; the function derives one further child so cap draws cannot be
 ## disturbed by unrelated draws on the same parent (`GODOT_TDD.md` §5.2).
+##
+## `selection_pool` applies §8.1's "competition-appropriate selection pressure":
+## the ceiling is the highest of that many draws from the profile's own
+## distribution, so a selected population is the top of a wider pool rather than
+## a different distribution. A pool of one is no selection and consumes exactly
+## one normal draw, which is what every ordinary generation path uses.
+##
+## This is deliberately *not* a bonus added to a ceiling. §8.2 states that
+## "Selection creates later-phase distributions" and that "the engine must not
+## silently increase a player's cap merely because he reached a higher league" —
+## an order statistic over the same distribution honours both, because every
+## ceiling it can produce was already reachable without it.
 static func generate(
 	prospect: int,
 	emphasis: Array[int],
 	random_source: RandomSource,
 	profile: ProgressionProfile,
+	selection_pool: int = 1,
 ) -> AttributeCaps:
 	assert(ProspectProfile.is_valid(prospect), "unknown prospect profile")
 	assert(emphasis.size() == AttributeKey.COUNT,
 		"one emphasis value per canonical attribute is required")
+	assert(selection_pool >= 1, "a selection pool is at least the one player drawn")
 
 	var stream: RandomSource = random_source.derive(STREAM_LABEL)
 
 	# One correlated player ceiling anchors every attribute.
 	var centre: float = float(profile.ceiling_center[prospect])
+	var best: float = 0.0
+	for candidate in range(selection_pool):
+		var draw: float = (
+			centre + RandomDraw.standard_normal(stream) * profile.ceiling_deviation[prospect])
+		if candidate == 0 or draw > best:
+			best = draw
 	var ceiling: float = clampf(
-		centre + RandomDraw.standard_normal(stream) * profile.ceiling_deviation[prospect],
+		best,
 		float(profile.ceiling_minimum[prospect]),
 		float(profile.ceiling_maximum[prospect])
 	)
@@ -168,8 +188,115 @@ const FAMILY_SECONDARY: Array[Array] = [
 ]
 
 
+## Canonical attributes no starting family emphasizes, declared rather than
+## inferred.
+##
+## The three families between them claim seventeen of the twenty canonical
+## attributes. The remaining three are unclaimed on purpose, and naming them
+## here is what keeps "unclaimed" distinguishable from "forgotten":
+##
+## - `free_throw` is a closed skill taken from a stationary line against no
+##   defender. Every family shoots them and none is characteristically better at
+##   them, so a family emphasis would make it a positional perk rather than a
+##   skill the player buys.
+## - `defensive_iq` is the reading half of defence, which §12.4 keeps equally
+##   available to every build. What a family shapes is the *physical* half —
+##   `interior_defense`, `blocking`, `perimeter_defense`, `stealing` — and those
+##   are emphasized. Emphasizing the reading half too would make defensive
+##   intelligence a Big trait.
+## - `stamina` is conditioning, which body maturation and the §9.5 season model
+##   already move on their own. A family emphasis on top of those would
+##   double-count the same thing.
+##
+## An attribute that is neither emphasized by a family nor listed here is an
+## undeclared gap in the catalog, and `family_catalog_failures` reports it.
+## Closing such a gap is a balance decision: it means either emphasizing the
+## attribute in an existing family or declaring it neutral, never inventing a
+## family to hold it.
+const FAMILY_NEUTRAL_ATTRIBUTES: Array[int] = [
+	AttributeKey.Key.FREE_THROW,
+	AttributeKey.Key.DEFENSIVE_IQ,
+	AttributeKey.Key.STAMINA,
+]
+
+
+## Structural failures in the family catalog, as human-readable messages.
+##
+## The catalog is a set of constants, so this can only fail when somebody edits
+## it — which is exactly when a silent failure costs the most. A family that
+## declared an attribute twice would have one tier quietly overwrite the other; a
+## family that declared an out-of-range key would corrupt whatever attribute
+## happened to sit at that index; an attribute that fell out of every family
+## without being declared neutral would lose its emphasis with nothing saying so.
+##
+## `emphasis_from_family` asserts on this, so a malformed catalog stops the run
+## instead of producing a family that emphasizes the wrong thing.
+static func family_catalog_failures(
+	primary_catalog: Array[Array] = FAMILY_PRIMARY,
+	secondary_catalog: Array[Array] = FAMILY_SECONDARY,
+	neutral_catalog: Array[int] = FAMILY_NEUTRAL_ATTRIBUTES,
+) -> PackedStringArray:
+	var failures := PackedStringArray()
+	if primary_catalog.size() != PositionFamily.COUNT:
+		failures.append("FAMILY_PRIMARY declares %d families, expected %d" % [
+			primary_catalog.size(), PositionFamily.COUNT])
+	if secondary_catalog.size() != PositionFamily.COUNT:
+		failures.append("FAMILY_SECONDARY declares %d families, expected %d" % [
+			secondary_catalog.size(), PositionFamily.COUNT])
+	if not failures.is_empty():
+		return failures
+
+	var emphasized: Dictionary = {}
+	for family in range(PositionFamily.COUNT):
+		var seen: Dictionary = {}
+		var primary: Array = primary_catalog[family]
+		var secondary: Array = secondary_catalog[family]
+		if primary.is_empty():
+			failures.append("family %s declares no primary attributes"
+				% PositionFamily.id_of(family))
+		for attribute: int in primary:
+			_record_declaration(family, attribute, "primary", seen, emphasized, failures)
+		for attribute: int in secondary:
+			_record_declaration(family, attribute, "secondary", seen, emphasized, failures)
+
+	for attribute in AttributeKey.all():
+		var is_emphasized: bool = emphasized.has(attribute)
+		var is_neutral: bool = neutral_catalog.has(attribute)
+		if is_emphasized and is_neutral:
+			failures.append(
+				"%s is declared family-neutral but is emphasized by a family"
+				% AttributeKey.name_of(attribute))
+		elif not is_emphasized and not is_neutral:
+			failures.append(
+				"%s is emphasized by no family and is not declared family-neutral"
+				% AttributeKey.name_of(attribute))
+	return failures
+
+
+static func _record_declaration(
+	family: int,
+	attribute: int,
+	tier: String,
+	seen: Dictionary,
+	emphasized: Dictionary,
+	failures: PackedStringArray,
+) -> void:
+	if attribute < 0 or attribute >= AttributeKey.COUNT:
+		failures.append("family %s declares unknown attribute key %d as %s" % [
+			PositionFamily.id_of(family), attribute, tier])
+		return
+	if seen.has(attribute):
+		failures.append("family %s declares %s more than once" % [
+			PositionFamily.id_of(family), AttributeKey.name_of(attribute)])
+		return
+	seen[attribute] = true
+	emphasized[attribute] = true
+
+
 static func emphasis_from_family(family: int, incompatible: Array[int]) -> Array[int]:
 	assert(PositionFamily.is_valid(family), "unknown position family")
+	assert(family_catalog_failures().is_empty(),
+		"malformed family catalog: %s" % ", ".join(family_catalog_failures()))
 	var emphasis: Array[int] = []
 	for _attribute in range(AttributeKey.COUNT):
 		emphasis.append(AttributeEmphasis.Value.NEUTRAL)

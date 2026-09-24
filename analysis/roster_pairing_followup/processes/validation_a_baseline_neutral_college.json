@@ -1,0 +1,33 @@
+{
+  "cell": [
+    "validation_a",
+    "baseline",
+    "college",
+    "neutral"
+  ],
+  "args": [
+    "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-roster-baseline-11c4eae",
+    "--script",
+    "res://calibration/runners/run_roster_pairing_followup.gd",
+    "--",
+    "--games=468",
+    "--competition=college",
+    "--shard=60000",
+    "--shards=60001",
+    "--environment=0.0",
+    "--label=validation_a_baseline_neutral_college"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 1390.03067111969,
+  "started_unix": 1790103756.1622918,
+  "source_hashes": {
+    "calibration/targets/competition_catalog.gd": "7289331d4cd9eb028940072c98e3503f9f9a45431e55a93795a9c7bea555b0be",
+    "calibration/runners/run_roster_pairing_followup.gd": "b50ac6884fb0e3c99c28f864e098ba2dcb825de7c62f09f329a26bd965a6faed",
+    "src/domain/basketball/config/competition_rule_profile.gd": "6907c519b9fc9a31db5f37df93f38917938488b196e89034b46a7e6d3707bc3d"
+  },
+  "raw_sha256": "32c18ec7a8dbdc899c738fea79652f38f354b5230c8e8170185f6ac16459c0eb",
+  "report_sha256": "5c7895ffaaf37a043181f4fb2731bc94b6708bd87ebe6faa99e5cc78f8237e1d"
+}

@@ -51,3 +51,16 @@ func quality_share() -> float:
 
 func is_material() -> bool:
 	return level >= AdvantageLevel.Value.CLEAR
+
+
+## The same advantage one level later, after the defence has had a beat to
+## recover. A spot-up jumper is not taken in the instant the pass arrives: the
+## closeout is on its way while the shooter gathers, which is exactly the
+## difference between a catch-and-shoot and a cut finished in stride. Everything
+## else about the advantage — who created it, whether the defence rotated, the
+## risk it carries — is unchanged, because the closeout does not undo those.
+func after_closeout() -> AdvantageResult:
+	return AdvantageResult.new(
+		maxi(level - 1, AdvantageLevel.Value.NONE),
+		creator_id, beneficiary_id, defense_rotated, switch_occurred,
+		turnover_risk, foul_pressure)

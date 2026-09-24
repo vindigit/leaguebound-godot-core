@@ -21,8 +21,35 @@ extends RefCounted
 ## Identity layers are absent by construction. `BALANCE_SPEC.md` §12.4:
 ## "Identity layers reach opportunity, never capability."
 
+## Sentinel for an unfilled cache slot. Capabilities are on the unit interval,
+## so a negative value cannot collide with a real one.
+const _UNCACHED: float = -1.0
+
 var _ratings: RatingsProfile
 var _balance: SimulationBalanceProfile
+
+## Per-player memo of the parts of a capability that cannot change during a
+## match, keyed by player id.
+##
+## Two things are memoized and no others:
+##
+## - the §5.2 weighted mean, which is a pure function of the twenty stored
+##   ratings, and those are immutable match input (§6.1: the engine consumes the
+##   realized body and ratings; growth resolves outside match sessions);
+## - the availability factor, a function of pregame condition and the injury
+##   limitations supplied at match start.
+##
+## **Fatigue, matchup, injury *events*, and per-action context are deliberately
+## not cached.** They are recomputed on every call below, because caching a
+## context-dependent value as if it were permanent is precisely the defect the
+## Stage 4 brief forbids. The two rows that take a live context argument —
+## Shot Selection and Help Recognition, the only rows with a non-zero
+## `contextual_share` — bypass the memo entirely.
+##
+## The memo lives on the calculator, and a calculator is constructed per match
+## from one immutable `MatchInput`, so it cannot outlive the facts it caches.
+var _base_by_player: Dictionary = {}
+var _availability_by_player: Dictionary = {}
 
 
 func _init(p_ratings: RatingsProfile, p_balance: SimulationBalanceProfile) -> void:
@@ -47,8 +74,12 @@ func capability_of(
 	runtime: PlayerMatchRuntime,
 	context: float = 0.0,
 ) -> float:
-	var base: float = base_capability(capability, player.attributes, context)
 	var weights: CapabilityWeightSet = _ratings.capability_weights(capability)
+	var base: float = (
+		base_capability(capability, player.attributes, context)
+		if weights.contextual_share > 0.0
+		else _memoized_base(capability, player)
+	)
 	var penalty: float = (
 		_balance.fatigue_capability_penalty(runtime.acute_fatigue) * weights.fatigue_sensitivity)
 	return clampf(base * availability_factor(player) - penalty, 0.0, 1.0)
@@ -58,10 +89,35 @@ func capability_of(
 ## factor. §17.3 keeps injuries an availability and execution effect; nothing
 ## here rewrites a stored rating.
 func availability_factor(player: PlayerMatchProfile) -> float:
+	if _availability_by_player.has(player.player_id):
+		var cached: float = _availability_by_player[player.player_id]
+		return cached
 	var worst: float = 0.0
 	for limitation in player.injury_limitations:
 		worst = maxf(worst, limitation.severity)
-	return clampf(player.condition * (1.0 - worst * _balance.injury_capability_share), 0.0, 1.0)
+	var value: float = clampf(
+		player.condition * (1.0 - worst * _balance.injury_capability_share), 0.0, 1.0)
+	_availability_by_player[player.player_id] = value
+	return value
+
+
+## The context-free §5.2 mean for one player and capability, computed once.
+func _memoized_base(capability: int, player: PlayerMatchProfile) -> float:
+	var row: PackedFloat64Array
+	if _base_by_player.has(player.player_id):
+		row = _base_by_player[player.player_id]
+	else:
+		row = PackedFloat64Array()
+		row.resize(CapabilityKey.COUNT)
+		row.fill(_UNCACHED)
+		_base_by_player[player.player_id] = row
+	var cached: float = row[capability]
+	if cached >= 0.0:
+		return cached
+	var value: float = base_capability(capability, player.attributes, 0.0)
+	row[capability] = value
+	_base_by_player[player.player_id] = row
+	return value
 
 
 ## A capability differential in §5.1 `RatingDifferential` units, which is what

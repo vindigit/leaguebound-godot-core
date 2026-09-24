@@ -1,0 +1,55 @@
+{
+  "verdict": "PASS bounded change scope",
+  "baseline": "11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4",
+  "review_head": "d2578572bf194abbb8f6ef3cf89367feb2cec841",
+  "production_src_tree": "c7bfee6dc84e6510b264ecfe375962a722b613fe",
+  "protected_paths_unchanged": [
+    "src",
+    ".github",
+    "BALANCE_SPEC.md",
+    "SIMULATION_SPEC.md",
+    "project.godot",
+    "tests/golden",
+    "tests/fixtures/golden_scenarios.gd",
+    "tests/simulation/test_golden_ledgers.gd"
+  ],
+  "protected_git_blob_sha256": {
+    "BALANCE_SPEC.md": "2446ed964081fbf4086a91a5cd6d7accbbae663f1e3390c82614cfca4e519de4",
+    "SIMULATION_SPEC.md": "4b1599704e8d9b7b560ef489182791d10cec2056d388d61c325f30e669beaaf9",
+    "project.godot": "64c044d2397ed6392f17e5b7c49181c6f1811d20009db2a96fb4c33cbdcc29e5"
+  },
+  "calibration_changes": [
+    "M\tcalibration/runners/run_competition_calibration.gd",
+    "M\tcalibration/runners/run_contest_sweep.gd",
+    "M\tcalibration/runners/run_fg_counterfactual.gd",
+    "M\tcalibration/runners/run_home_court_diagnostics.gd",
+    "A\tcalibration/runners/run_roster_pairing_followup.gd",
+    "A\tcalibration/runners/run_roster_pairing_followup.gd.uid",
+    "M\tcalibration/targets/competition_catalog.gd"
+  ],
+  "test_changes": [
+    "M\ttests/calibration/test_fg_decomposition.gd",
+    "A\ttests/calibration/test_population_pairing.gd",
+    "A\ttests/calibration/test_population_pairing.gd.uid"
+  ],
+  "unchanged_catalog_function_code": [
+    "team_for",
+    "balance_profile"
+  ],
+  "standard_runner_code_unchanged": true,
+  "existing_test_code_changes_only": [
+    {
+      "before": "0.1122",
+      "after": "0.1192"
+    },
+    {
+      "before": "0.2356",
+      "after": "0.2429"
+    },
+    {
+      "before": "0.6449",
+      "after": "0.6328"
+    }
+  ],
+  "scope": "Source bytes/code scope only. Execution, matched outcomes, replay and publication require separate evidence."
+}

@@ -1,0 +1,4242 @@
+{
+  "schema": "leaguebound.calibration.report/1",
+  "context": {
+    "report_id": "home_court_diagnostics",
+    "title": "Home-court advantage diagnostic",
+    "commit_sha": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+    "commit_note": "",
+    "godot_version": "4.7.1-stable (official)",
+    "build_mode": "editor-debug (asserts active)",
+    "rules_profile": {
+      "id": "high_school",
+      "version": "competition-v2-stopped-clock-pace"
+    },
+    "balance_profile": {
+      "id": "simulation_baseline",
+      "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+    },
+    "ratings_profile_version": "ratings-v1",
+    "targets_version": "calibration-targets-v1",
+    "rng": {
+      "algorithm": "godot-pcg32-v1",
+      "stream_key_version": "sha256-stream-key-v1"
+    },
+    "seeds": "shard 0 of 1, seeds 710001..710200 inclusive",
+    "seed_range": {
+      "start": 710001,
+      "end": 710200
+    },
+    "shard": {
+      "index": 0,
+      "count": 1
+    },
+    "competition": "high_school",
+    "certification": {
+      "required_sample": 100000,
+      "source": "BALANCE_SPEC.md §27.1"
+    },
+    "sample_count": 200,
+    "sample_unit": "complete games per arm per competition",
+    "elapsed_ms": 1508400,
+    "throughput_per_second": 0.13259082471493,
+    "notes": [
+      "BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.",
+      "Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.",
+      "Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.",
+      "Fixture mode: mirror; home environment 0.500; neutral environment 0.000.",
+      "Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.",
+      "OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.",
+      "`home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.",
+      "Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for."
+    ]
+  },
+  "summary": {
+    "passed": true,
+    "metric_count": 196,
+    "judged_metric_count": 8,
+    "failure_count": 0
+  },
+  "metrics": [
+    {
+      "metric": "high_school.home.win_rate",
+      "definition": "Share of decided games won by the team playing at its own venue, between two identical rosters at the production home environment. INFORMATIONAL population diagnostic: §14.2 is judged by `venue.attributable_home_win_rate`, the paired venue-side estimator.",
+      "denominator": "decided games",
+      "estimate": 0.56,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0687944572022824,
+        "low": 0.491205542797718,
+        "high": 0.628794457202283
+      }
+    },
+    {
+      "metric": "high_school.neutral.win_rate",
+      "definition": "Share of decided games won by the nominal home team with the §19.4 environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.5,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0692951917640755,
+        "low": 0.430704808235925,
+        "high": 0.569295191764076
+      }
+    },
+    {
+      "metric": "high_school.neutral.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin with the environment at zero.",
+      "denominator": "complete games",
+      "estimate": -0.36,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.6531049400793,
+        "low": -2.0131049400793,
+        "high": 1.2931049400793
+      }
+    },
+    {
+      "metric": "high_school.home.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 1.365,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.61136357070182,
+        "low": -0.246363570701821,
+        "high": 2.97636357070182
+      }
+    },
+    {
+      "metric": "high_school.home.median_margin",
+      "definition": "Median venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 2.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.win_rate",
+      "definition": "Share of decided games won by the venue side after home and away are swapped. It must reproduce the home arm, not the neutral arm.",
+      "denominator": "decided games",
+      "estimate": 0.555,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0688746799342138,
+        "low": 0.486125320065786,
+        "high": 0.623874679934214
+      }
+    },
+    {
+      "metric": "high_school.reversed.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin after the venue is swapped.",
+      "denominator": "complete games",
+      "estimate": 1.335,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.73977287901403,
+        "low": -0.404772879014029,
+        "high": 3.07477287901403
+      }
+    },
+    {
+      "metric": "high_school.home.points_per_100_contribution",
+      "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+      "denominator": "points per 100 possessions",
+      "estimate": 2.44298176451011,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.combined_cap_respected",
+      "definition": "The measured environment contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "high_school.home.environment_margin_gain",
+      "definition": "Mean per-game venue-minus-neutral final margin for the same roster at the same seed. The §19.4 environment with everything else cancelled.",
+      "denominator": "matched pairs",
+      "estimate": 1.725,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.987255428654122,
+        "low": 0.737744571345878,
+        "high": 2.71225542865412
+      }
+    },
+    {
+      "metric": "high_school.reversed.environment_margin_gain",
+      "definition": "The same quantity measured from the other bench after the venue is swapped. It must agree with the home arm in sign and size.",
+      "denominator": "matched pairs",
+      "estimate": 0.975,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.02283749329424,
+        "low": -0.047837493294239,
+        "high": 1.99783749329424
+      }
+    },
+    {
+      "metric": "high_school.home.environment_win_gain",
+      "definition": "Mean per-game change in the venue side's win/draw value from playing at home rather than neutral. Add 0.50 to read it as a home win rate.",
+      "denominator": "matched pairs",
+      "estimate": 0.06,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0566769138434166,
+        "low": 0.00332308615658343,
+        "high": 0.116676913843417
+      }
+    },
+    {
+      "metric": "high_school.reversed.environment_win_gain",
+      "definition": "The same quantity after the venue is swapped.",
+      "denominator": "matched pairs",
+      "estimate": 0.055,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0592700641345407,
+        "low": -0.0042700641345407,
+        "high": 0.114270064134541
+      }
+    },
+    {
+      "metric": "high_school.home.home_arm_points_per_100",
+      "definition": "Paired venue-minus-neutral margin per 100 venue possessions, from the home arm alone. One of two estimates of the same quantity and the noisier of the pair. Published for comparison; §17.4 is NOT judged on this figure.",
+      "denominator": "points per 100 possessions",
+      "estimate": 2.60259505129753,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.48952237274309,
+        "low": 1.11307267855443,
+        "high": 4.09211742404062
+      }
+    },
+    {
+      "metric": "high_school.venue_reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals. Cross-checks `venue.reversal_agrees`, which computes the same verdict from the estimator; the two must agree.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "high_school.home.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 0.971710923355462,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 0.953418027828191,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0182928955272705,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 66.28,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 66.12,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.159999999999997,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.386728589420655,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.389652966576043,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00292437715538857,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.416115942028986,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.426905406997291,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0107894649683051,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.324589360137289,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.310928553647,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0136608064902883,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.321079974811083,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.321205821205821,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.000125846394738061,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.664746543778802,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.663240131578947,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00150641219985448,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.204974811083123,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.194466656005118,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0105081550780059,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 16.0606517803259,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 16.7498487598306,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.689196979504718,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.261943539630836,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.250274423710209,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0116691159206275,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.491756564217382,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.486969012928381,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0047875512890016,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.773615113672751,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.760820775889708,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0127943377830424,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.51,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 16.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.595000000000001,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.395,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.265,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.13,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.38,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 2.555,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.175,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 0.975,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.115,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.14,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 30.79,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 30.545,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.244999999999997,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.005,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.355,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.065,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.home.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 11.626592936737,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 0.959037955655769,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 0.965174877773599,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00613692211783057,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 66.525,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 66.475,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0500000000000114,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.388959090191123,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.39060764715215,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00164855696102673,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.418765888606425,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.425111163117248,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00634527451082306,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.324600798403194,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.317980295566502,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00662050283669113,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.316537671773811,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.32206885610027,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00553118432645827,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.651153379198705,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.660554038236442,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00940065903773668,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.195150845048176,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.203315881326353,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00816503627817688,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 16.8357760240511,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 16.7130500188041,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.122726005247046,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.262312925170068,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.252091619805239,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0102213053648287,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.493807106598985,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.488627132412673,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00517997418631211,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.780487804878049,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.75423197492163,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0262558299564187,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.96,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 15.545,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.415000000000001,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.25,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.355,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.365,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 2.49,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.125,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.025,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.045,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.02,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 31.075,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 30.57,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.504999999999999,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.025,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.345,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.07,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.neutral.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 11.9277725830924,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 0.967739509700707,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 0.946309228805286,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0214302808954204,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 66.49,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 66.585,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0949999999999989,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.389219655473525,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.385634313648191,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00358534182533493,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.424655936552368,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.419684308263695,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00497162828867215,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.313696246582153,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.313498893533317,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.000197353048835669,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.319361752798285,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.320665457699283,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00130370490099718,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.668274582560297,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.658006814310051,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0102677682502457,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.213939826942923,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.185129701174801,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.028810125768122,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 16.3182433448639,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 16.8055868438838,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.487343499019872,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.246126422597011,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.259829752736117,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0137033301391059,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.492555578217418,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.490901656103046,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00165392211437149,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.758241758241758,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.776268994503718,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0180272362619599,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.305,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 16.41,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -1.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.36,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.37,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00999999999999979,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.42,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 2.35,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0699999999999998,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.025,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.145,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.12,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 31.13,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 31.44,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.310000000000002,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.03,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.32,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.reversed.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 12.5531142905639,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.raw_home_win_rate",
+      "definition": "Share of decided games won by the venue side at the production environment, with nothing subtracted.",
+      "denominator": "decided games",
+      "estimate": 0.56,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.neutral_home_win_rate",
+      "definition": "The same share on the identical fixtures with the environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.5,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.attributable_home_win_rate",
+      "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+      "denominator": "matched pairs",
+      "estimate": 0.5575,
+      "sample_count": 200,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0334451256861266,
+        "low": 0.524054874313873,
+        "high": 0.590945125686127
+      },
+      "target": {
+        "minimum": 0.53,
+        "maximum": 0.56,
+        "source": "BALANCE_SPEC.md §14.2"
+      }
+    },
+    {
+      "metric": "high_school.venue.canonical_form_agrees",
+      "definition": "The paired-fixture estimator and the directly-computed canonical form 0.5 x [P(home arm) + P(reversed arm)] return the same value.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "owner ruling, §14.2 home-win estimator"
+      }
+    },
+    {
+      "metric": "high_school.venue.paired_win_rate_change",
+      "definition": "The venue-attributable change in win rate on its own, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 0.0575,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0334451256861266,
+        "low": 0.0240548743138734,
+        "high": 0.0909451256861265
+      }
+    },
+    {
+      "metric": "high_school.venue.raw_margin_difference",
+      "definition": "Mean venue-minus-visitor final margin at the production environment, unadjusted.",
+      "denominator": "complete games",
+      "estimate": 1.365,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.paired_margin_difference",
+      "definition": "The venue's effect on final margin with the roster, the matchup and the seed cancelled, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 1.35,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.609876946151628,
+        "low": 0.740123053848372,
+        "high": 1.95987694615163
+      }
+    },
+    {
+      "metric": "high_school.venue.points_per_100",
+      "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+      "denominator": "points per 100 possessions",
+      "estimate": 2.03216337590005,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.918051550944522,
+        "low": 1.11411182495553,
+        "high": 2.95021492684457
+      }
+    },
+    {
+      "metric": "high_school.venue.points_per_100_standard_error",
+      "definition": "Standard error of the paired venue contribution.",
+      "denominator": "matched pairs",
+      "estimate": 0.468393648441083,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.cap_respected",
+      "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "high_school.venue.reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "high_school.venue.matched_pairs",
+      "definition": "Independent matched fixtures behind every paired figure above. This is the sample size.",
+      "denominator": "matched pairs",
+      "estimate": 200.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.complete_games",
+      "definition": "Complete games simulated behind those pairs, which is three per pair — one in each arm. Three simulations of one fixture are one piece of independent evidence, and this figure is NOT the sample size.",
+      "denominator": "complete games",
+      "estimate": 600.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "high_school.venue.sample_well_formed",
+      "definition": "Every fixture offered carries all three arms, nothing was observed twice, and no shard overlapped another.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "high_school.venue.sample_complete",
+      "definition": "The estimator holds every matched pair the run asked for.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "high_school.venue.certification_sample_reached",
+      "definition": "Share of §27.1's certifying sample this run reached, against 100000 complete games per competition. Zero point something is not certification. Source: BALANCE_SPEC.md §27.1",
+      "denominator": "complete games",
+      "estimate": 0.006,
+      "sample_count": 200,
+      "verdict": "informational"
+    }
+  ],
+  "sections": {
+    "matched_arms": [
+      {
+        "arm": "home",
+        "competition": "high_school",
+        "games": 200,
+        "venue_win_rate": 0.56,
+        "mean_margin": 1.365,
+        "median_margin": 2.0,
+        "margin_standard_deviation": 11.626592936737,
+        "overtime_rate": 0.005,
+        "close_game_rate": 0.355,
+        "blowout_rate": 0.065,
+        "points_per_100_gap": 1.82928955272705,
+        "venue_points_per_possession": 0.971710923355462,
+        "visitor_points_per_possession": 0.953418027828191,
+        "venue_possessions_per_game": 66.28,
+        "visitor_possessions_per_game": 66.12,
+        "venue_field_goal_percentage": 0.386728589420655,
+        "visitor_field_goal_percentage": 0.389652966576043,
+        "venue_two_point_percentage": 0.416115942028986,
+        "visitor_two_point_percentage": 0.426905406997291,
+        "venue_three_point_percentage": 0.324589360137289,
+        "visitor_three_point_percentage": 0.310928553647,
+        "venue_three_point_attempt_rate": 0.321079974811083,
+        "visitor_three_point_attempt_rate": 0.321205821205821,
+        "venue_free_throw_percentage": 0.664746543778802,
+        "visitor_free_throw_percentage": 0.663240131578947,
+        "venue_free_throw_attempt_rate": 0.204974811083123,
+        "visitor_free_throw_attempt_rate": 0.194466656005118,
+        "venue_turnovers_per_100": 16.0606517803259,
+        "visitor_turnovers_per_100": 16.7498487598306,
+        "venue_offensive_rebound_percentage": 0.261943539630836,
+        "visitor_offensive_rebound_percentage": 0.250274423710209,
+        "venue_assist_percentage": 0.491756564217382,
+        "visitor_assist_percentage": 0.486969012928381,
+        "venue_conditional_assist_rate": 0.773615113672751,
+        "visitor_conditional_assist_rate": 0.760820775889708,
+        "venue_fouls_per_game": 15.51,
+        "visitor_fouls_per_game": 16.105,
+        "venue_steals_per_game": 5.395,
+        "visitor_steals_per_game": 5.265,
+        "venue_blocks_per_game": 2.38,
+        "visitor_blocks_per_game": 2.555,
+        "venue_timeouts_per_game": 0.975,
+        "visitor_timeouts_per_game": 1.115,
+        "venue_substitutions_per_game": 30.79,
+        "visitor_substitutions_per_game": 30.545,
+        "venue_action_mix": {
+          "pass_swing": 0.34349865073751,
+          "drive": 0.0639000235793445,
+          "pull_up": 0.126987869737221,
+          "post_action": 0.0151955775629438,
+          "pick_action": 0.0520579527889125,
+          "handoff": 0.0625638607246718,
+          "off_ball_cut": 0.10466609028269,
+          "relocation": 0.0946317692368152,
+          "screen": 0.0943435772485525,
+          "reset": 0.0221121852812492,
+          "transition_attack": 0.0105583064790799,
+          "putback": 0.00948413634100972
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.347029161441797,
+          "drive": 0.0656866145513727,
+          "pull_up": 0.125076705530802,
+          "post_action": 0.0162215522531416,
+          "pick_action": 0.049705183959873,
+          "handoff": 0.0630719564579387,
+          "off_ball_cut": 0.106907499799899,
+          "relocation": 0.0966356287185507,
+          "screen": 0.0890050959152637,
+          "reset": 0.0211040260398602,
+          "transition_attack": 0.0105920332968704,
+          "putback": 0.00896454203463088
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.114845717884131,
+          "close_non_rim": 0.303132871536524,
+          "midrange": 0.260941435768262,
+          "standard_three": 0.27125314861461,
+          "deep_three": 0.0498268261964736
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.1149848072925,
+          "close_non_rim": 0.307052614744922,
+          "midrange": 0.256756756756757,
+          "standard_three": 0.274428274428274,
+          "deep_three": 0.0467775467775468
+        }
+      },
+      {
+        "arm": "neutral",
+        "competition": "high_school",
+        "games": 200,
+        "venue_win_rate": 0.5,
+        "mean_margin": -0.36,
+        "median_margin": 0.0,
+        "margin_standard_deviation": 11.9277725830924,
+        "overtime_rate": 0.025,
+        "close_game_rate": 0.345,
+        "blowout_rate": 0.07,
+        "points_per_100_gap": -0.613692211783057,
+        "venue_points_per_possession": 0.959037955655769,
+        "visitor_points_per_possession": 0.965174877773599,
+        "venue_possessions_per_game": 66.525,
+        "visitor_possessions_per_game": 66.475,
+        "venue_field_goal_percentage": 0.388959090191123,
+        "visitor_field_goal_percentage": 0.39060764715215,
+        "venue_two_point_percentage": 0.418765888606425,
+        "visitor_two_point_percentage": 0.425111163117248,
+        "venue_three_point_percentage": 0.324600798403194,
+        "visitor_three_point_percentage": 0.317980295566502,
+        "venue_three_point_attempt_rate": 0.316537671773811,
+        "visitor_three_point_attempt_rate": 0.32206885610027,
+        "venue_free_throw_percentage": 0.651153379198705,
+        "visitor_free_throw_percentage": 0.660554038236442,
+        "venue_free_throw_attempt_rate": 0.195150845048176,
+        "visitor_free_throw_attempt_rate": 0.203315881326353,
+        "venue_turnovers_per_100": 16.8357760240511,
+        "visitor_turnovers_per_100": 16.7130500188041,
+        "venue_offensive_rebound_percentage": 0.262312925170068,
+        "visitor_offensive_rebound_percentage": 0.252091619805239,
+        "venue_assist_percentage": 0.493807106598985,
+        "visitor_assist_percentage": 0.488627132412673,
+        "venue_conditional_assist_rate": 0.780487804878049,
+        "visitor_conditional_assist_rate": 0.75423197492163,
+        "venue_fouls_per_game": 15.96,
+        "visitor_fouls_per_game": 15.545,
+        "venue_steals_per_game": 5.25,
+        "visitor_steals_per_game": 5.355,
+        "venue_blocks_per_game": 2.365,
+        "visitor_blocks_per_game": 2.49,
+        "venue_timeouts_per_game": 1.025,
+        "visitor_timeouts_per_game": 1.045,
+        "venue_substitutions_per_game": 31.075,
+        "visitor_substitutions_per_game": 30.57,
+        "venue_action_mix": {
+          "pass_swing": 0.344478083453995,
+          "drive": 0.0638673160458076,
+          "pull_up": 0.126365670659471,
+          "post_action": 0.0151902066605239,
+          "pick_action": 0.0516519678820587,
+          "handoff": 0.0624457022508885,
+          "off_ball_cut": 0.105620639726208,
+          "relocation": 0.0932210082927471,
+          "screen": 0.0952481242595761,
+          "reset": 0.0219823614584704,
+          "transition_attack": 0.0105304725549559,
+          "putback": 0.00939844675529814
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.345191005866893,
+          "drive": 0.0659428177015583,
+          "pull_up": 0.125832913005389,
+          "post_action": 0.01653879848151,
+          "pick_action": 0.0501207889776739,
+          "handoff": 0.0618811224083464,
+          "off_ball_cut": 0.107143805251002,
+          "relocation": 0.0965515410549789,
+          "screen": 0.0894103905067828,
+          "reset": 0.0211048873078659,
+          "transition_attack": 0.0111497517852876,
+          "putback": 0.00913217765271178
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.115621544779656,
+          "close_non_rim": 0.300663402306113,
+          "midrange": 0.26717738114042,
+          "standard_three": 0.267572263465487,
+          "deep_three": 0.0489654083083241
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.116769792162462,
+          "close_non_rim": 0.30755195938442,
+          "midrange": 0.253609392352848,
+          "standard_three": 0.27637632873235,
+          "deep_three": 0.04569252736792
+        }
+      },
+      {
+        "arm": "reversed",
+        "competition": "high_school",
+        "games": 200,
+        "venue_win_rate": 0.555,
+        "mean_margin": 1.335,
+        "median_margin": 3.0,
+        "margin_standard_deviation": 12.5531142905639,
+        "overtime_rate": 0.03,
+        "close_game_rate": 0.32,
+        "blowout_rate": 0.105,
+        "points_per_100_gap": 2.14302808954204,
+        "venue_points_per_possession": 0.967739509700707,
+        "visitor_points_per_possession": 0.946309228805286,
+        "venue_possessions_per_game": 66.49,
+        "visitor_possessions_per_game": 66.585,
+        "venue_field_goal_percentage": 0.389219655473525,
+        "visitor_field_goal_percentage": 0.385634313648191,
+        "venue_two_point_percentage": 0.424655936552368,
+        "visitor_two_point_percentage": 0.419684308263695,
+        "venue_three_point_percentage": 0.313696246582153,
+        "visitor_three_point_percentage": 0.313498893533317,
+        "venue_three_point_attempt_rate": 0.319361752798285,
+        "visitor_three_point_attempt_rate": 0.320665457699283,
+        "venue_free_throw_percentage": 0.668274582560297,
+        "visitor_free_throw_percentage": 0.658006814310051,
+        "venue_free_throw_attempt_rate": 0.213939826942923,
+        "visitor_free_throw_attempt_rate": 0.185129701174801,
+        "venue_turnovers_per_100": 16.3182433448639,
+        "visitor_turnovers_per_100": 16.8055868438838,
+        "venue_offensive_rebound_percentage": 0.246126422597011,
+        "visitor_offensive_rebound_percentage": 0.259829752736117,
+        "venue_assist_percentage": 0.492555578217418,
+        "visitor_assist_percentage": 0.490901656103046,
+        "venue_conditional_assist_rate": 0.758241758241758,
+        "visitor_conditional_assist_rate": 0.776268994503718,
+        "venue_fouls_per_game": 15.305,
+        "visitor_fouls_per_game": 16.41,
+        "venue_steals_per_game": 5.36,
+        "visitor_steals_per_game": 5.37,
+        "venue_blocks_per_game": 2.42,
+        "visitor_blocks_per_game": 2.35,
+        "venue_timeouts_per_game": 1.025,
+        "visitor_timeouts_per_game": 1.145,
+        "venue_substitutions_per_game": 31.13,
+        "visitor_substitutions_per_game": 31.44,
+        "venue_action_mix": {
+          "pass_swing": 0.347203129956646,
+          "drive": 0.0646875330443058,
+          "pull_up": 0.125092524056255,
+          "post_action": 0.01625779845617,
+          "pick_action": 0.0501480384900074,
+          "handoff": 0.0606164745691023,
+          "off_ball_cut": 0.107962355926827,
+          "relocation": 0.0965158083958972,
+          "screen": 0.0896425927884107,
+          "reset": 0.0214655810510733,
+          "transition_attack": 0.0113672411969969,
+          "putback": 0.00904092206830919
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.343822536400084,
+          "drive": 0.0638320320742773,
+          "pull_up": 0.128138847858198,
+          "post_action": 0.0150611943447985,
+          "pick_action": 0.0522525849335303,
+          "handoff": 0.0635682633466976,
+          "off_ball_cut": 0.105270099177042,
+          "relocation": 0.0931894914538932,
+          "screen": 0.0938489132728424,
+          "reset": 0.0217345431525638,
+          "transition_attack": 0.0101023422663009,
+          "putback": 0.0091791517197721
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.117408906882591,
+          "close_non_rim": 0.30459633246011,
+          "midrange": 0.258633007859014,
+          "standard_three": 0.274589187901881,
+          "deep_three": 0.0447725648964039
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.113774343609556,
+          "close_non_rim": 0.300638650161634,
+          "midrange": 0.264921548529528,
+          "standard_three": 0.268469604983048,
+          "deep_three": 0.0521958527162343
+        }
+      }
+    ],
+    "venue_effect_estimator": [
+      {
+        "pairs": 200,
+        "unique_games": 600,
+        "incomplete_fixtures": 0,
+        "duplicate_attempts": 0,
+        "overlapping_keys": 0,
+        "well_formed": true,
+        "raw_home_win_rate": 0.56,
+        "neutral_home_win_rate": 0.5,
+        "venue_attributable_win_rate": 0.5575,
+        "venue_attributable_win_rate_half_width": 0.0334451256861266,
+        "raw_margin_difference": 1.365,
+        "paired_margin_difference": 1.35,
+        "paired_margin_half_width": 0.609876946151628,
+        "points_per_100": 2.03216337590005,
+        "points_per_100_half_width": 0.918051550944522,
+        "points_per_100_standard_error": 0.468393648441083,
+        "home_arm_points_per_100": 2.59665320253895,
+        "possession_base": 66.4316666666667,
+        "cap_respected": true,
+        "venue_reversal_agrees": true,
+        "competition": "high_school"
+      }
+    ],
+    "venue_paired_fixtures": [
+      {
+        "fixture": "high_school/710000",
+        "home_margin": -4.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710001",
+        "home_margin": 10.0,
+        "home_possessions": 61.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710002",
+        "home_margin": 44.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 44.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -42.0,
+        "reversed_possessions": 72.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710003",
+        "home_margin": 5.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710004",
+        "home_margin": 5.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710005",
+        "home_margin": 2.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710006",
+        "home_margin": -19.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710007",
+        "home_margin": -7.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710008",
+        "home_margin": 1.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710009",
+        "home_margin": 14.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -20.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710010",
+        "home_margin": 20.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -34.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710011",
+        "home_margin": -15.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 71.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710012",
+        "home_margin": 26.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 30.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -31.0,
+        "reversed_possessions": 62.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710013",
+        "home_margin": 19.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710014",
+        "home_margin": -4.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710015",
+        "home_margin": 4.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 89.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710016",
+        "home_margin": 19.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710017",
+        "home_margin": 11.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710018",
+        "home_margin": -5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710019",
+        "home_margin": -6.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 71.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710020",
+        "home_margin": 14.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -15.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710021",
+        "home_margin": -3.0,
+        "home_possessions": 60.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 59.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710022",
+        "home_margin": -10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710023",
+        "home_margin": 13.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710024",
+        "home_margin": 4.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710025",
+        "home_margin": -22.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -31.0,
+        "neutral_possessions": 62.0,
+        "reversed_margin": 31.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710026",
+        "home_margin": -1.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710027",
+        "home_margin": 7.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710028",
+        "home_margin": 6.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710029",
+        "home_margin": 6.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710030",
+        "home_margin": 7.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710031",
+        "home_margin": -6.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710032",
+        "home_margin": 16.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710033",
+        "home_margin": -25.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710034",
+        "home_margin": 9.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710035",
+        "home_margin": -2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710036",
+        "home_margin": -6.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710037",
+        "home_margin": -10.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710038",
+        "home_margin": 3.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710039",
+        "home_margin": -10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710040",
+        "home_margin": 23.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 23.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710041",
+        "home_margin": -7.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710042",
+        "home_margin": -3.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710043",
+        "home_margin": 2.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710044",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710045",
+        "home_margin": 5.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710046",
+        "home_margin": -30.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710047",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710048",
+        "home_margin": -13.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 27.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710049",
+        "home_margin": -9.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710050",
+        "home_margin": -7.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710051",
+        "home_margin": -18.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 21.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710052",
+        "home_margin": 19.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710053",
+        "home_margin": -10.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710054",
+        "home_margin": 1.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710055",
+        "home_margin": -2.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710056",
+        "home_margin": -13.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -19.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710057",
+        "home_margin": -7.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710058",
+        "home_margin": 2.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710059",
+        "home_margin": 10.0,
+        "home_possessions": 60.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 60.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 60.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710060",
+        "home_margin": 8.0,
+        "home_possessions": 61.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 60.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710061",
+        "home_margin": -4.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710062",
+        "home_margin": 8.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710063",
+        "home_margin": 11.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -15.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710064",
+        "home_margin": -7.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 71.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710065",
+        "home_margin": -25.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -31.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 32.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710066",
+        "home_margin": -5.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710067",
+        "home_margin": -9.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710068",
+        "home_margin": 18.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710069",
+        "home_margin": -14.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710070",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710071",
+        "home_margin": 10.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710072",
+        "home_margin": -12.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 16.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710073",
+        "home_margin": 8.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710074",
+        "home_margin": 19.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -23.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710075",
+        "home_margin": -10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710076",
+        "home_margin": 11.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710077",
+        "home_margin": -15.0,
+        "home_possessions": 61.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 60.0,
+        "reversed_margin": 25.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710078",
+        "home_margin": 5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710079",
+        "home_margin": -25.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -25.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710080",
+        "home_margin": 9.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710081",
+        "home_margin": 18.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710082",
+        "home_margin": -4.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710083",
+        "home_margin": -10.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710084",
+        "home_margin": 3.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710085",
+        "home_margin": 16.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -20.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710086",
+        "home_margin": -3.0,
+        "home_possessions": 62.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 62.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710087",
+        "home_margin": 8.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710088",
+        "home_margin": 15.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710089",
+        "home_margin": 7.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 77.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710090",
+        "home_margin": -1.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710091",
+        "home_margin": 9.0,
+        "home_possessions": 60.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710092",
+        "home_margin": 2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710093",
+        "home_margin": 16.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710094",
+        "home_margin": -2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710095",
+        "home_margin": -5.0,
+        "home_possessions": 59.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 72.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710096",
+        "home_margin": -8.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710097",
+        "home_margin": 15.0,
+        "home_possessions": 61.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -15.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710098",
+        "home_margin": 21.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710099",
+        "home_margin": 17.0,
+        "home_possessions": 61.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710100",
+        "home_margin": 6.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -17.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710101",
+        "home_margin": -8.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710102",
+        "home_margin": -11.0,
+        "home_possessions": 74.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710103",
+        "home_margin": 5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710104",
+        "home_margin": 5.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710105",
+        "home_margin": 6.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 79.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710106",
+        "home_margin": 20.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710107",
+        "home_margin": 16.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710108",
+        "home_margin": 4.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710109",
+        "home_margin": -7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710110",
+        "home_margin": -11.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710111",
+        "home_margin": -1.0,
+        "home_possessions": 61.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710112",
+        "home_margin": 6.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710113",
+        "home_margin": -8.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710114",
+        "home_margin": -1.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710115",
+        "home_margin": -1.0,
+        "home_possessions": 62.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 62.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710116",
+        "home_margin": 5.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710117",
+        "home_margin": 7.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710118",
+        "home_margin": 29.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 29.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -29.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710119",
+        "home_margin": -12.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710120",
+        "home_margin": 6.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710121",
+        "home_margin": 9.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710122",
+        "home_margin": -9.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710123",
+        "home_margin": -4.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710124",
+        "home_margin": -36.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -33.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 32.0,
+        "reversed_possessions": 62.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710125",
+        "home_margin": 3.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710126",
+        "home_margin": 1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710127",
+        "home_margin": -6.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710128",
+        "home_margin": -6.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710129",
+        "home_margin": -5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710130",
+        "home_margin": -10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710131",
+        "home_margin": -16.0,
+        "home_possessions": 62.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710132",
+        "home_margin": 2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710133",
+        "home_margin": 8.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710134",
+        "home_margin": 9.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710135",
+        "home_margin": 1.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710136",
+        "home_margin": -8.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710137",
+        "home_margin": -13.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710138",
+        "home_margin": 14.0,
+        "home_possessions": 62.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710139",
+        "home_margin": 5.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710140",
+        "home_margin": -7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710141",
+        "home_margin": 5.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710142",
+        "home_margin": 2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710143",
+        "home_margin": -2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710144",
+        "home_margin": 13.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710145",
+        "home_margin": 12.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710146",
+        "home_margin": 5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710147",
+        "home_margin": 8.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710148",
+        "home_margin": 8.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710149",
+        "home_margin": -16.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710150",
+        "home_margin": -2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 71.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710151",
+        "home_margin": 3.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710152",
+        "home_margin": 20.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710153",
+        "home_margin": 9.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710154",
+        "home_margin": 13.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710155",
+        "home_margin": -9.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -25.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 25.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710156",
+        "home_margin": -13.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -33.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 33.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710157",
+        "home_margin": 14.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710158",
+        "home_margin": 2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710159",
+        "home_margin": -16.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 25.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710160",
+        "home_margin": -1.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710161",
+        "home_margin": -9.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710162",
+        "home_margin": 1.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710163",
+        "home_margin": 3.0,
+        "home_possessions": 60.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 57.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710164",
+        "home_margin": -7.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710165",
+        "home_margin": -1.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 62.0,
+        "reversed_margin": 23.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710166",
+        "home_margin": 9.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710167",
+        "home_margin": 17.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710168",
+        "home_margin": -10.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 61.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710169",
+        "home_margin": 20.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710170",
+        "home_margin": 5.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 59.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710171",
+        "home_margin": 3.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710172",
+        "home_margin": -5.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 64.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710173",
+        "home_margin": 19.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 62.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710174",
+        "home_margin": -1.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710175",
+        "home_margin": 8.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710176",
+        "home_margin": -2.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 77.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710177",
+        "home_margin": -3.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 62.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710178",
+        "home_margin": 26.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 26.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -17.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710179",
+        "home_margin": -2.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710180",
+        "home_margin": 9.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710181",
+        "home_margin": 10.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 69.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710182",
+        "home_margin": -10.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710183",
+        "home_margin": 3.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 66.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710184",
+        "home_margin": -1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 76.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710185",
+        "home_margin": 4.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 70.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710186",
+        "home_margin": 2.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 16.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710187",
+        "home_margin": -13.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 71.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710188",
+        "home_margin": 6.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710189",
+        "home_margin": 3.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710190",
+        "home_margin": 1.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": -17.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710191",
+        "home_margin": -21.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -21.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710192",
+        "home_margin": 1.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710193",
+        "home_margin": -1.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": -23.0,
+        "reversed_possessions": 72.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710194",
+        "home_margin": 1.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 65.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710195",
+        "home_margin": -13.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -23.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 23.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710196",
+        "home_margin": 12.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710197",
+        "home_margin": 5.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 67.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710198",
+        "home_margin": -18.0,
+        "home_possessions": 60.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 60.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 63.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "high_school/710199",
+        "home_margin": 11.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 68.0,
+        "competition": "high_school",
+        "range": "diagnosis"
+      }
+    ]
+  }
+}
