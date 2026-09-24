@@ -90,8 +90,8 @@ def audit(phase):
         for line in log.splitlines():
             if 'FAIL' not in line:
                 continue
-            detail = re.fullmatch(r'\s+FAIL ([a-z_]+\.[a-z_]+): estimate (-?[0-9.]+) outside (.+) target \[(-?[0-9.]+), (-?[0-9.]+)\]', line)
-            table = re.fullmatch(r'\s+([a-z_]+\.[a-z_]+)\s+.*\s+FAIL', line)
+            detail = re.fullmatch(r'\s+FAIL ([a-z0-9_]+\.[a-z0-9_]+): estimate (-?[0-9.]+) outside (.+) target \[(-?[0-9.]+), (-?[0-9.]+)\]', line)
+            table = re.fullmatch(r'\s+([a-z0-9_]+\.[a-z0-9_]+)\s+.*\s+FAIL', line)
             summary = re.fullmatch(r'\s+(\d+) metric\(s\), (\d+) judged, (\d+) failure\(s\): FAIL', line)
             if detail:
                 name = detail[1]
