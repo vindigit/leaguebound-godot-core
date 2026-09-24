@@ -1,0 +1,63 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+roster validation_a_baseline_neutral_development development 20/468
+roster validation_a_baseline_neutral_development development 40/468
+roster validation_a_baseline_neutral_development development 60/468
+roster validation_a_baseline_neutral_development development 80/468
+roster validation_a_baseline_neutral_development development 100/468
+roster validation_a_baseline_neutral_development development 120/468
+roster validation_a_baseline_neutral_development development 140/468
+roster validation_a_baseline_neutral_development development 160/468
+roster validation_a_baseline_neutral_development development 180/468
+roster validation_a_baseline_neutral_development development 200/468
+roster validation_a_baseline_neutral_development development 220/468
+roster validation_a_baseline_neutral_development development 240/468
+roster validation_a_baseline_neutral_development development 260/468
+roster validation_a_baseline_neutral_development development 280/468
+roster validation_a_baseline_neutral_development development 300/468
+roster validation_a_baseline_neutral_development development 320/468
+roster validation_a_baseline_neutral_development development 340/468
+roster validation_a_baseline_neutral_development development 360/468
+roster validation_a_baseline_neutral_development development 380/468
+roster validation_a_baseline_neutral_development development 400/468
+roster validation_a_baseline_neutral_development development 420/468
+roster validation_a_baseline_neutral_development development 440/468
+roster validation_a_baseline_neutral_development development 460/468
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  development          94.5  102.6  1.086   43.1   34.8   34.9   75.9   22.3   15.5   25.3   54.1   21.4   6.9   4.3
+
+  home win rate / overtime / close / blowout, by competition:
+  development          55.3%    1.5%   24.4%   18.6%
+
+=== Competition basketball calibration ===
+  commit=unknown godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=domestic_development/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 60000 of 60001, seeds 28080001..28080468 inclusive n=468 complete games per competition elapsed=4662781ms rate=0.1/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 468.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  development.possessions_per_game                          94.4530 ±0.2062  target[88.0000, 101.0000]  PASS
+  development.possession_estimate_per_game                 100.3242  INFORMATIONAL
+  development.points_per_game                              102.6100 ±0.7569  INFORMATIONAL
+  development.points_per_possession                          1.0864 ±0.0078  target[1.0000, 1.1200]  PASS
+  development.field_goal_percentage                          0.4309 ±0.0034  target[0.4300, 0.5000]  PASS
+  development.three_point_percentage                         0.3483 ±0.0055  target[0.3100, 0.3800]  PASS
+  development.three_point_attempt_rate                       0.3491 ±0.0032  target[0.3200, 0.4700]  PASS
+  development.free_throw_percentage                          0.7589 ±0.0062  target[0.6800, 0.8000]  PASS
+  development.free_throw_attempt_rate                        0.2228 ±0.0028  target[0.1800, 0.3600]  PASS
+  development.turnovers_per_100_possessions                 15.5450  target[14.0000, 20.0000]  PASS
+  development.offensive_rebound_percentage                   0.2533 ±0.0040  target[0.2300, 0.3300]  PASS
+  development.assist_percentage                              0.5414 ±0.0052  target[0.4800, 0.6900]  PASS
+  development.home_win_rate                                  0.5534 ±0.0449  target[0.5300, 0.5600]  PASS
+  development.overtime_rate                                  0.0150 ±0.0116  target[0.0400, 0.0800]  FAIL
+  development.close_game_rate                                0.2436 ±0.0388  target[0.2200, 0.3400]  PASS
+  development.blowout_rate                                   0.1859 ±0.0352  target[0.0800, 0.1800]  FAIL
+  development.starter_mean_minutes                          29.5589 ±0.1401  INFORMATIONAL
+  development.team_leading_scorer_mean                      20.9135 ±0.2703  INFORMATIONAL
+  development.team_leading_scorer_p99                       32.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_a_baseline_neutral_development.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL development.overtime_rate: estimate 0.0150 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  FAIL development.blowout_rate: estimate 0.1859 outside BALANCE_SPEC.md §14.2 target [0.0800, 0.1800]
+  20 metric(s), 15 judged, 3 failure(s): FAIL
