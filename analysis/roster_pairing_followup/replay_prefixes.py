@@ -182,8 +182,8 @@ def replay(plan, destination, protocol, freeze, timeout):
         require(code in (0, 1), f'Replay process exit {code}')
         text = (cell_dir / 'process.log').read_text(encoding='utf-8', errors='replace')
         require('Godot Engine v4.7.1.stable.official.a13da4feb' in text, 'Unexpected Godot version')
-        require(not any(marker in text for marker in ('SCRIPT ERROR:', 'Parse Error:', 'ERROR:')),
-                'Replay contains engine/script errors')
+        require(re.search(r'\b(?:SCRIPT ERROR|Parse Error|ERROR|FATAL|Exception|Traceback|WARNING)\b', text, re.I) is None,
+                'Replay contains engine/script errors or warnings')
         replay_raw = read_json(generated[0])
         read_json(generated[1])  # Both output documents must be complete JSON.
         require(len(replay_raw['rows']) == 4, 'Replay did not complete four games')
