@@ -23,7 +23,8 @@ Catalog v4 changes which existing rosters meet. It preserves `team_for`, its
 and rotation roles, and explicit rating offsets. For quartet index `k=v/4`,
 select `A=k mod 117` and `B=(2A+floor(k/117)) mod 117`. The four fixtures use
 AB, BA, BA, AB, while the existing opener remains home, away, home, away.
-Each actual roster therefore appears once in each venue/opener combination.
+Each actual roster has equal assignment weight in every venue/opener
+combination; diagonal quartets pair the roster with itself.
 This equality survives rounding and any deterministic, context-free projection
 of the roster alone.
 
