@@ -32,16 +32,17 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Current follow-up (§5.38, 2026-09-22):** calibration roster pairing now crosses
+**Current follow-up (§5.38, 2026-09-24):** calibration roster pairing now crosses
 each existing roster over venue and opening possession. Nine construction
 mutants are rejected, and an earlier complete eight-step local gate passed
 692/692 cases after three disclosed fixture-snapshot updates. Subsequent review
 found and corrected a large-index narrowing regression in one diagnostic
 consumer; its nine tests and nine mutants are independently accepted. The fresh
 complete eight-step gate has passed 693/693 cases with independent review;
-Validation A is complete and independently reviewed; Validation B remains in
-progress. All twenty diagnostic cells are complete; no replicated outcome-band
-closure is claimed.
+both untouched validation ranges are complete and independently reviewed.
+All twenty diagnostic cells are complete. No paired outcome change has a
+repeated same-direction interval exclusion across the untouched ranges; no
+downstream outcome-band closure is claimed.
 Engine, ratings, clock behavior, probability parameters, targets and tolerances
 are unchanged from `11c4eae`. **Stage 4 and Gate 0 remain incomplete.**
 
@@ -9005,16 +9006,20 @@ ranges 28,080,000–28,080,467 and 32,760,000–32,760,467. Seeds are `variation
 Versions share variation/seed keys; each version's home/neutral arms share
 rosters and opening assignment. All twenty diagnostic cells are complete
 (9,360 games), and independent review accepts their evidence integrity.
-Validation A's twenty cells are complete (9,360 games), and independent
-archive, arithmetic, fixture and claims reviews accept its bounded evidence.
-All five candidate home-arm possession and points-per-possession bands pass;
-other failures remain, including six home-arm verdict transitions (college and
-development population home-win PASS→FAIL, overseas home-win FAIL→PASS,
-development close-game FAIL→PASS, and top-domestic close-game and three-point
-attempt PASS→FAIL). These are one-range results; Validation B, bounded prefix
-replay and published-head CI remain pending. No downstream tuning, replicated
-improvement or new
-band-closure claim follows from the diagnostic range alone.
+Both untouched ranges have twenty complete cells each (9,360 games per range).
+Independent archive, arithmetic and fixture reviews accept the complete A/B
+evidence; `analysis/roster_pairing_followup/MEASUREMENTS.md` retains every
+per-cell target verdict and failure. All five candidate home-arm possession and
+points-per-possession bands pass on both ranges. Candidate top-domestic
+close-game share newly fails in both, but its paired change interval excludes
+zero only in B. A's six home-arm verdict transitions and B's four differ,
+including opposite population home-win flips; all five candidate home-arm
+overtime verdicts fail in both ranges. None of ninety home-arm paired outcome
+and margin-width changes, or ten two-arm venue contrasts, has a repeated
+same-direction interval exclusion across A and B. That is unresolved outcome
+evidence at these fixed samples, not equivalence, proof of sampling noise or a
+controlled §17.4 home-court verdict. Bounded prefix replay and published-head
+CI remain pending. No downstream tuning or new band-closure claim follows.
 
 An execution interruption on 2026-09-22 stopped the first attempt at the new
 gate during GdUnit without a completion result. The retained v2 log is not a
@@ -9024,8 +9029,9 @@ baseline cells were verified and kept, their five peers' partial logs were
 archived, and only the 35 missing declared cells restarted with identical
 labels, ranges and seeds. `restart_manifest.json` records this recovery after
 restart launch. Interrupted prefixes are extra attempted simulations, not
-completed experiment observations. The independent restart review accepts
-archive integrity, not the still-pending outcomes. The complete v3 gate and
+completed experiment observations. The independent restart review covers
+archive integrity separately from the later accepted A/B outcome reviews.
+The complete v3 gate and
 independent verification are archived in `analysis/roster_pairing_followup/`.
 
 The earlier item 24 inference that mirror games proved *no* overtime
@@ -9037,8 +9043,8 @@ equivalence. No §27.1 certification is claimed.
 
 Detailed construction, methods and evidence are in
 [`docs/STAGE4_ROSTER_PAIRING_FOLLOWUP.md`](docs/STAGE4_ROSTER_PAIRING_FOLLOWUP.md)
-and `analysis/roster_pairing_followup/`. Publication and exact-head CI remain
-pending while measurements finish.
+and `analysis/roster_pairing_followup/`. Bounded prefix replay, publication and
+exact-head CI remain pending after completed measurements.
 
 ## 6. Certification and workflow blockers
 
@@ -9202,7 +9208,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 
 22. **FT-clock portion approved and implemented in §5.36; desperation-window decision remains open.** The original decision brief follows for provenance: `docs/STAGE4_OVERTIME_OWNER_DECISION.md` is the package. Two surfaces are identified with their semantics, why each is the correct surface, expected primary and collateral effects, a before/after plan and a risk rating; **neither has been changed and neither may be without a ruling.** (a) **Does the game clock stop for free throws?** §9.4's "free throws use separate event time" is genuinely ambiguous about the game clock and the engine charges it — 1.34 to 1.55 seconds per one-possession endgame possession, where every ruleset modelled here stops the clock. This is the same class of question the made-field-goal matrix needed a ruling for in item 20, and it should be ruled on **for its own fidelity, not because it might move overtime** — §5.34's arithmetic says it would not be enough anyway. It requires a five-competition pace re-derivation with top domestic already 0.33 from its possessions ceiling. (b) **Does `desperation_opening_clock_ms` stay at 5,000?** Possessions opening between roughly five and thirteen seconds still die in the advance and half-court states before action selection — 23% to 44% of them inside the final ten seconds. §9.4 authorises the mechanism and leaves the threshold a bounded tunable with a 0–15,000 ms safe range, so this is a calibration choice rather than a defect. It is worth at most a third of college's gap and **must be decided together with the §5.23 college field-goal package**, which it would push further below its floor.
 23. **Retain the overtime owner-decision question with scoped evidence (§5.34, §5.35).** The 2026-09-01 ruling kept the §14.2 band while authorizing end-of-regulation work. Historical observed overtime rates were 0.0310 and 0.0223 before most of that work, and 0.0281 and 0.0223 afterward; the band remained missed. This does not prove that the repertoire had no effect or that the ruling's causal premise was disproved. §5.34 observed different tie-survival behavior: top domestic retained about a third less tie mass while its late windows contained about a fifth more possessions. Those cross-competition observations do not isolate the cause. **The earlier claim that the competitions were shown to have different exclusive causes is withdrawn.** The target is not established as unsupported and remains unchanged; §5.35 added accessible college/top-domestic evidence supporting retention of 4–8%. No target amendment or new causal conclusion is authorized by the present fixture experiment.
-24. **Construction correction implemented; second untouched range in progress (§5.38).** Calibration matchups now counterbalance the existing full rosters over venue and opening assignment, with unchanged roster definitions and production engine. The old adjacent-pair ladder asymmetry is proven and restoration mutants are rejected. All twenty diagnostic cells and Validation A's twenty cells are complete (9,360 games each) and independently accepted within their stated limits; the fresh eight-step local gate passes 693/693 with independent review. Validation B, prefix replay and publication checks remain pending. The earlier claim that mirror games excluded every overtime contribution is withdrawn; it was stronger than the evidence.
+24. **Construction corrected; both untouched ranges measured (§5.38).** Calibration matchups counterbalance the existing full rosters over venue and opening assignment, with unchanged roster definitions and production engine. The old adjacent-pair asymmetry is proven and restoration mutants rejected. All sixty diagnostic and validation cells are complete (28,080 games), with independent fixture and statistical reviews; the fresh eight-step local gate passes 693/693. All five possession and PPP bands pass both untouched ranges, while other failures remain, including a new top-domestic close-game verdict failure in both. No paired outcome metric has a repeated same-direction interval exclusion across the two ranges; absence of a detected direction is not equivalence or proof of no effect. Prefix replay and publication checks remain pending. The earlier claim that mirror games excluded every overtime contribution is withdrawn; it was stronger than the evidence.
 
 25. **Completed as the bounded timing/pace follow-up (§5.37).** Non-bonus administration is stopped, the intentional-miss lower bound follows the actual live-rebound/putback sequence, and 7000ms is retained as coaching policy rather than a timing necessity. All five pace values pass both untouched ranges, with a complete green eight-step local gate after two disclosed test corrections. Original failed samples and remaining scoring/game-shape/home-court failures are retained, including overseas legacy-cap FAIL alongside paired-cap PASS. Exact published-head CI is tracked in §6.2. No target amendment or §27.1 certification is claimed; broader Stage 4 blockers remain open.
 

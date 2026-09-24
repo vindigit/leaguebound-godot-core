@@ -184,14 +184,21 @@ guard applies it only to the candidate's exact consumer path and hash transition
 
 All twenty diagnostic cells are complete (9,360 games), and independent review
 accepts their evidence integrity; see `DIAGNOSIS_REVIEW.md` and the committed
-diagnostic summary. Validation A's twenty cells are also complete and accepted
-for archive integrity, independent arithmetic, fixture construction and
-bounded claims; see `VALIDATION_A_REVIEW.md`, `VALIDATION_A_FIXTURE_REVIEW.md`
-and `VALIDATION_A_CLAIMS_REVIEW.md`. All five candidate home-arm possession and
-points-per-possession bands pass on A, while its other canonical failures and
-six home-arm verdict transitions are retained in the raw report and summary.
-Validation B, bounded prefix replay, and publication/exact-head CI checks
-remain pending. One untouched range does not establish replication.
+diagnostic summary. Both untouched validation ranges have twenty complete cells
+each (9,360 games per range). Independent archive, arithmetic and fixture
+reviews accept their bounded evidence; see `VALIDATION_A_REVIEW.md`,
+`VALIDATION_B_REVIEW.md`, `VALIDATION_A_FIXTURE_REVIEW.md` and
+`VALIDATION_B_FIXTURE_REVIEW.md`. The complete per-cell measurements, including
+all canonical failures, are in `MEASUREMENTS.md`. All five candidate home-arm
+possession and points-per-possession bands pass on both ranges. Other failures
+remain: top-domestic close-game share newly fails in both, while its paired
+change interval excludes zero only in B; population home-win verdict changes
+reverse between ranges, and all candidate home-arm overtime bands fail.
+Across ninety home-arm paired outcome/margin-width changes and ten two-arm
+venue contrasts, none has a repeated same-direction interval exclusion. That
+does not establish equivalence, proof of sampling noise, or an absent roster
+contribution to overtime. Bounded exact-row replay and publication/exact-head
+CI checks remain pending.
 An execution interruption on September 22 stopped the attempted new v2 gate
 during GdUnit without a completion result, and stopped five validation cells
 midgame. The v2 log and five partial cell logs are preserved. Five completed
@@ -201,8 +208,9 @@ was recorded after the restart began, and independent review checked its hashes
 and source scope. Interrupted prefixes are extra attempted simulations, excluded
 from completed-cell totals. A full v3 gate restarted from import. Neither the
 interrupted v2 run nor the partial games are counted as passing evidence.
-The diagnostic comparison alone establishes neither replicated improvement nor
-equivalence. In particular, nonsignificant home-effect contrasts do not exclude
+Neither the diagnostic nor the two untouched-range comparisons establish a
+replicated outcome direction or equivalence. In particular, nonsignificant
+home-effect contrasts do not exclude
 roster-population interactions, and mirrored overtime results do not exclude
 every roster contribution. No §27.1 certification is claimed; this task does not
 authorize downstream tuning or completion of Stage 4.
