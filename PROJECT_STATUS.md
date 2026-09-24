@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Snapshot date | September 23, 2026 |
+| Snapshot date | September 24, 2026 |
 | Repository | `vindigit/leaguebound-godot-core` |
 | Runtime | Godot 4.7.1-stable; typed GDScript |
 | Default branch baseline | `main` at `c38bd2257d27ebce86beb61439fcac524acca0ef` |
@@ -32,7 +32,20 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Current follow-up (§5.38, 2026-09-24):** calibration roster pairing now crosses
+**Current follow-up (§5.39, 2026-09-24):** the top-domestic close-game
+shortfall remains after roster pairing. Two prior 468-game ranges fail at
+19.44% and 17.31%; a fresh, small five-competition run at the starting head
+and two new 40-game matched-arm ranges are documented separately. Signed
+period and channel accounting, identical-roster and reversed-roster arms,
+home/neutral contrasts, ten deterministic focused cases and sixteen killed
+mutants reveal no proven deterministic margin defect. Production behavior and
+locked bands remain unchanged. An owner-decision package is prepared for
+draft PR #1; §5.39 records adverse results and uncertainty. The new complete
+local eight-step gate passed 703/703 GdUnit cases; published-head CI is
+checked after the fast-forward push.
+**Stage 4, Gate 0 and §27.1 certification remain incomplete.**
+
+**Previous follow-up (§5.38):** calibration roster pairing now crosses
 each existing roster over venue and opening possession. Nine construction
 mutants are rejected, and an earlier complete eight-step local gate passed
 692/692 cases after three disclosed fixture-snapshot updates. Subsequent review
@@ -49,10 +62,12 @@ downstream outcome-band closure is claimed.
 Engine, ratings, clock behavior, probability parameters, targets and tolerances
 are unchanged from `11c4eae`. **Stage 4 and Gate 0 remain incomplete.**
 
-The following chronology summarizes earlier milestones. The timing/pace
-derivation remains in §5.37; the current roster-pairing follow-up is §5.38.
+The following chronology summarizes earlier milestones at their historical
+source states. The timing/pace derivation is §5.37, roster pairing is §5.38,
+and the current margin audit is §5.39. Earlier categorical interpretations
+about margin independence and reachability are superseded by §5.39.
 
-**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 diagnoses the §14.2 score-margin failure to its mechanism, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then tests §5.10's own premise, which was that the two teams' scoring is uncorrelated, and finds it true of the engine and false of basketball: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **§14.2's close-game share now passes at all five competition levels and all three dispersion targets pass at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after. §5.30 then corrects the opening-state clock and gives `TacticalLocation` its first production reader, and §5.31 replaces the boolean it shipped with an explicit restart contract — a typed `RestartCause` named at every terminal path, one `RestartClockPolicy`, and the made-basket clock rule moved onto the competition rule profile where §4 puts it — closing the ambiguity §5.30 recorded, a second timeout defect the audit found, and a competition rule that was being decided inside `PossessionEngine`. Together those corrections stopped charging a throw-in the rules do not charge, which moved §14.1 possessions per game up at **all five** competition levels and out of band at three; §5.32 re-derives the pace environment against the corrected clock, by measurement rather than by offset, and **all five levels pass on the judged cell and on two untouched validation ranges**. §5.33 then takes the made-field-goal clock-stoppage ruling §5.31 recorded as missing — a made field goal does not stop the clock merely because it went in, and each competition's late-game windows differ by whether the period is an ordinary regulation period, the final one, or an overtime — and implements it as a typed three-window rule the profiles declare and one policy reads. **Pace was re-measured under that final matrix and deliberately left unchanged**: it moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced §5.32, every level is in band on both trees, and three of the four game-shape verdict transitions do not reproduce on untouched seed ranges. §5.33 also classifies §5.32's new §17.4 blocker: the 2.5 cap is a statistical ceiling on measured outcome movement rather than a deterministic cap on an internal modifier, and **the same 200-pair cell reads 1.8821 and passes on the unchanged `e32bad5` tree once the sample is tripled**, so it is closed as a sampling artifact with no home-advantage value touched. No target or tolerance moved, no shooting or other probability was retuned, and no overtime claim is made anywhere in that work.
+**Stage 4 is not complete.** All five §8.4 career-peak bands now measure inside their locked targets, and two mandatory reports remain unimplemented. The two projected-peak failures are corrected and pass with interior margin on independent validation ranges (§5.7); the §8.4 rare-generational band is corrected and passes on two further untouched ranges (§5.8); and §5.9 closes that milestone by recording the §9.5 owner ruling, enforcing its 20% bound structurally, repairing a parse gate that could not fail, and correcting an AP figure that counted rating points. §5.10 investigated the §14.2 score-margin failure, corrects two real defects — a calibration fixture that manufactured its own mismatches and a missing §18.2 rotation pressure — and moves points per possession inside its band. §5.11 then measured scoring covariance and added three authorized mechanisms that were absent at that source state: three mechanisms the specification already authorised — score-and-clock game management, end-of-regulation possession strategy, and coaching timeouts — were structurally absent, and implementing them moves the final margin's variance by a sixth through coaching alone, with no probability touched. **At that source state §14.2's close-game share passed at all five competition levels and all three dispersion targets passed at high school**, against three of fifteen before. §5.12 then implements the asymmetric garbage-time rotation threshold the owner authorised on 2026-08-20 — a coach protecting a safe lead rests his starters before a coach facing the same deficit concedes — as a possession-based safety measure with a `GARBAGE_TIME` ledger event and no probability anywhere. **Blowout share falls at all five levels and now passes at three; high school passes every one of its fifteen judged metrics.** §14.1 is unmoved to the fourth decimal and no golden hash changed. §5.13 is the resulting owner-decision package: the remaining §14.2 incompatibility is classified per target, an amendment is proposed with competition-specific bands, and three costed options are set out. **No target was changed and no proposal is enacted.** No Stage 4 result is certified, and §6.4 explains why none can be produced without CI hardware. The full gate inventory is §5.6. §5.25 then builds the four systems §5.13's Option 1 named as missing — two-for-one clock management, a leading-by-three foul, timeout-to-advance, and a designed final possession — plus three requested alongside them, under a 2026-09-01 owner ruling scoped to college and top domestic. Every decision is structurally proven never to touch a shot, free-throw, or contact probability, and reachable in real games. **The 200-game-per-point measurement this environment can run does not confidently show either competition's overtime rate moving into the §14.2 band, and does not regress anything it touched** — college's field-goal percentage, both competitions' already-measured blowout and close-game figures, and the §5.19 home-court result are each confirmed unmoved on the same ranges before and after. §5.30 then corrects the opening-state clock and gives `TacticalLocation` its first production reader, and §5.31 replaces the boolean it shipped with an explicit restart contract — a typed `RestartCause` named at every terminal path, one `RestartClockPolicy`, and the made-basket clock rule moved onto the competition rule profile where §4 puts it — closing the ambiguity §5.30 recorded, a second timeout defect the audit found, and a competition rule that was being decided inside `PossessionEngine`. Together those corrections stopped charging a throw-in the rules do not charge, which moved §14.1 possessions per game up at **all five** competition levels and out of band at three; §5.32 re-derives the pace environment against the corrected clock, by measurement rather than by offset, and **all five levels pass on the judged cell and on two untouched validation ranges**. §5.33 then takes the made-field-goal clock-stoppage ruling §5.31 recorded as missing — a made field goal does not stop the clock merely because it went in, and each competition's late-game windows differ by whether the period is an ordinary regulation period, the final one, or an overtime — and implements it as a typed three-window rule the profiles declare and one policy reads. **Pace was re-measured under that final matrix and deliberately left unchanged**: it moves possessions by −0.12 to +0.79 per team against the +2.77 to +3.70 that forced §5.32, every level is in band on both trees, and three of the four game-shape verdict transitions do not reproduce on untouched seed ranges. §5.33 also classifies §5.32's new §17.4 blocker: the 2.5 cap is a statistical ceiling on measured outcome movement rather than a deterministic cap on an internal modifier, and **the same 200-pair cell reads 1.8821 and passes on the unchanged `e32bad5` tree once the sample is tripled**, so it is closed as a sampling artifact with no home-advantage value touched. No target or tolerance moved, no shooting or other probability was retuned, and no overtime claim is made anywhere in that work.
 
 No Personal Hub, career calendar, recruiting, contracts, world simulation, content runtime, narrative system, monetization, or other product-surface expansion is authorized by this status. The immediate priority remains making the player and basketball foundation trustworthy.
 
@@ -94,7 +109,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Current roster-pairing work is §5.38; its new complete local gate passes 693/693, while published-head CI remains pending. The Stage 4 implementation adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Roster-pairing work is recorded in §5.38, including its 693/693 local gate. The current margin investigation is §5.39; its publication and exact-head CI are reported after completion. The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
@@ -118,7 +133,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The explicit restart contract of `simulation-v14-restart-contract` (§5.31): `RestartCause` and `RestartClockMode` as domain types, `RestartClockPolicy` as the single cause-to-clock-mode policy, `CompetitionRuleProfile.made_field_goal_clock_rule` as the competition rule, `PossessionRecord.restart_cause` and the restart cause on every `INBOUND` event. It removes the §5.30 ambiguity between a made field goal and a made free throw, corrects an unrecorded timeout defect, and relocates a competition clock rule out of `PossessionEngine` without changing what it did. Six golden hashes regenerated with the first behavioural divergence located in each.
 - The owner-ruled made-field-goal timing matrix of `simulation-v15-made-field-goal-clock-matrix` (§5.33): `MadeFieldGoalClockRule` carries one window per period category and validates its own shape, `PeriodCategory` derives regulation-final-versus-overtime from `regulation_periods` without storing anything, and all five launch profiles declare their own matrix. A made field goal no longer stops the clock merely because it went in; each competition's late-game windows are data, the boundary is inclusive and written in one place, and `RestartClockPolicy` still has exactly one production call site and no threshold of its own. Two of six golden hashes regenerated, no fixture reseeded.
 
-Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. Commits pushed after `00567d4` have not been through the gate at the time of this snapshot; the PR's current head must be green before the draft is lifted.
+Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. A prior PR head at `11c4eae` passed CI; later heads require their own exact-head check. The current §5.39 publication must be green before the draft can be lifted, and this task keeps it draft.
 
 ## 4. Implemented Godot foundations
 
@@ -253,7 +268,7 @@ The figures below are now taken from the **pooled** three-shard progression run 
 | Rare-generational peak band | ~~**Fail:** pooled median 90 against target 92–95~~ **Corrected (§5.8):** median 93 on the development range and on two untouched validation ranges |
 | Projected-peak coverage | ~~**Fail:** 29.2% pooled~~ **Corrected (§5.7):** 0.7473 and 0.7370 on two untouched validation ranges against 70–85% |
 | Projected-peak signed error | ~~**Fail:** pooled median +10.0~~ **Corrected (§5.7):** −1.0 and 0.0 on two untouched validation ranges against ±2 |
-| Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. **College and high-school field-goal percentage re-examined (§5.22): high school does not reproduce — 0.3888 ±0.0018 pooled over two untouched 1,000-game ranges with the interval reaching its 0.390 floor — and college reproduces at 0.4124 against 0.420 with no production defect behind it.** Measured, not certified |
+| Competition §14.1 bands | ~~Substantially converged, not certified~~ **Top-domestic points per possession corrected (§5.20):** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18, from 1.1847. Zero §14.1 verdict changes at any of the five levels. **College and high-school field-goal percentage re-examined (§5.22): at that earlier source state high school was marginal at 0.3888 ±0.0018 and college failed at 0.4124. Later v4 roster-pairing ranges find high school failing at 0.383200/0.383339 (§5.39); production and FGA-denominator explanations are not exhausted.** Measured, not certified |
 | Assist percentage | ~~**Fail:** 48.15% top domestic at 400 games against 52–72%~~ **Corrected (§5.15):** 58.9% and 58.2% top domestic on two untouched 100-game validation ranges, and inside the band at all five competition levels on both. Measured, not certified. |
 | §14.2 game-shape targets | **Now assessable, and four of five fail** — see §5.5 |
 | §14.1 possessions per game | ~~**Fail at three of five levels** after the clock corrections (§5.30, §5.31)~~ **Corrected (§5.32):** the pace environment is re-derived against the corrected clock at all five levels and passes on the judged cell and on two untouched validation ranges — fifteen readings, every one within 0.45 possessions of the pace that competition was calibrated to. Measured, not certified. **Re-checked under the final owner timing matrix (§5.33) and left unchanged:** the matrix moves possessions by −0.12 to +0.79 per team (0.0% to 0.8%) against the 3.9%–4.7% that required §5.32's re-derivation, every reading is in band on both trees, and there is no possessions verdict transition at any level |
@@ -989,9 +1004,9 @@ The malformed-fixture case runs the committed gate in its own Godot process agai
 
 ### 5.10 Score-margin dispersion: diagnosed, corrected in part, and bounded
 
-Status: **Two real defects corrected and validated on two untouched ranges. The remaining gap is proven unreachable at §14.1's rates and is recorded as an owner question rather than closed with a mechanism that would have to be hidden to survive review.**
+Status: **Two historical defects were corrected and validated on two untouched ranges. The remaining §14.2 gap is measured and unresolved; no proof establishes that the locked bands are unreachable at §14.1's rates. The owner question remains open.**
 
-§5.5 read the four §14.2 failures as one defect — "the game-to-game score margin is over-dispersed" — and guessed that points per possession shared its cause. The first half was right. The second was wrong, and testing it before acting on it was the point: the corrections that move points per possession do almost nothing to the margin, and the reason is arithmetic rather than tuning.
+§5.5 hypothesized that several §14.2 failures shared a margin-dispersion mechanism and that points per possession shared its cause. Subsequent corrections moved points per possession without closing margin shape. The failures remain distinct measured outcomes; one common defect has not been established.
 
 #### The instrument
 
@@ -1049,7 +1064,7 @@ Two facts fall out of that table and they need different answers. **Sixty-six pe
 
 **One — the calibration fixture manufactured its own mismatches, asymmetrically.** `CompetitionCatalog.team_for` already applied a deterministic ±3.0 rating-point team tilt. On top of it, `run_competition_calibration.gd` added a second offset on a five-game cycle and applied it to the **away** roster only. The two spreads stacked to a between-team difference of 3.39 rating points of standard deviation, put the pregame gap at 8.42, and gave the strength term 28.8% of the margin variance. Nothing in §14 asks for that population. The away-only application averaged to zero over the cycle, so it never showed up as bias and never would have.
 
-**Two — the margin is an almost exactly independent accumulation of possessions.** The pooled within-team-game variance of one possession's points is **1.59**. A random walk of ~100 such possessions per side has a margin standard deviation of `√(2 · 100 · 1.59) = 17.9`. Measured mirror figure: 17.60 before, 18.42 after, with a directly reported over-dispersion ratio of **1.03**. There is no runaway correlation to remove, no persistent hot-team state, no snowball, and no leakage: the engine does exactly what independent possessions do, and that is the whole of its dispersion.
+**Two — the historical independent-possession benchmark resembles the observed margin width, but does not identify independence.** The pooled within-team-game variance of one possession's points was **1.59**. A reference random walk of ~100 possessions per side has margin SD `√(2 · 100 · 1.59) = 17.9`; the mirror figures were 17.60 before and 18.42 after, giving a ratio near **1.03**. Roster heterogeneity, changing game state and cross-team/within-team covariance can offset one another in that ratio. It cannot exclude persistent states, RNG coupling, leakage, or other sources of dispersion.
 
 **Three — the per-possession scoring quantum sets that dispersion, and §14.1 pins the quantum.** The possession-outcome distribution measured before the correction is 0 points 49.5%, 1 point 1.6%, 2 points 29.0%, 3 points 19.1%, 4 or more 0.8%, and after it 50.5% / 1.6% / 28.1% / 18.6% / 0.9%. Nineteen per cent of possessions arriving in three-point units is what makes `E[X²]` large, and it follows directly from §14.1's three-point attempt rate and percentage at the engine's shot volume. A three-point possession costs three units of mean and nine of `E[X²]`; a two costs two and four. That ratio is the whole mechanism.
 
@@ -1081,7 +1096,7 @@ Nothing inside §14.1 moves it materially. Free throws are the variance-cheapest
 | Integer rounding or threshold effects near tied scores | Classification tested at both sides of both §14.2 boundaries on synthetic rows |
 | Pace variance amplifying strength differences | Possession-differential component standard deviation 1.9 points; possessions per team-game 99.7–101.1 against a 96–103 band |
 | Home-court advantage too large or duplicated | Home shot bonus 0.006 at an environment of 0.5; measured home win rate 0.52 |
-| Shared RNG streams coupling independent events, or separate streams destroying legitimate correlation | The over-dispersion ratio is the direct test of both, and it measures what independence predicts |
+| Shared RNG streams coupling events, or separate streams suppressing correlation | The historical SD ratio is a reference comparison only; derived-stream and event-level tests are needed to examine either possibility |
 | Asymmetric state leakage between consecutive games | A game's ledger hash is unchanged by simulating other games between two runs of it |
 | Points per possession sharing the margin's cause | Measured: correcting it moves `σ²` by about 1% |
 
@@ -9051,6 +9066,113 @@ Detailed construction, methods and evidence are in
 and `analysis/roster_pairing_followup/`. Publication and exact-head CI remain
 pending after completed measurements, local gate and bounded replay.
 
+### 5.39 Top-domestic signed margin-growth follow-up (September 24, 2026)
+
+This follow-up started at exact local and remote head
+`74b2c55028bbb1a4cc43440ffec52f015c9ba7b2`, with a clean worktree and
+PR #1 verified open, draft and unmerged at that head. It diagnoses the
+top-domestic close-game failure after roster pairing. **No deterministic
+structural margin defect has been proven and no production simulation,
+ratings, rule, roster, probability, clock, target or tolerance behavior has
+been changed.** The owner-decision package is
+[`docs/STAGE4_TOP_DOMESTIC_MARGIN_OWNER_DECISION.md`](docs/STAGE4_TOP_DOMESTIC_MARGIN_OWNER_DECISION.md).
+
+The two earlier untouched roster-pairing candidate ranges were independently
+recounted, not newly simulated: top-domestic close share is 91/468 (19.44%)
+and 81/468 (17.31%), below the 22–34% band in both; college is 115/468
+(24.57%) and 138/468 (29.49%). Top final-margin SD is 16.99/16.35 against
+college 13.13/13.49. Total-possession ratios top/college are 1.458/1.456,
+so longer exposure is a substantial descriptive part of that comparison,
+not an identified causal correction. All five competition pace and PPP bands
+pass on those prior ranges, while many other locked verdicts still fail.
+Independent recount checked all 4,680 candidate raw rows, every declared
+seed/quartet key, 140 canonical game-stat/game-shape estimates and verdicts,
+and six top rotation means. Those are previous-run observations, not a new
+exact-head certification sample.
+
+A fresh canonical all-five runner on the starting head also measured 40 games
+per competition (seeds 1–40), producing 98 metrics, 74 judged rows and nine
+failures including the one §27.1 sample-size failure. Every pace and PPP row
+passes. Top-domestic close is 10/40 (25%) and blowout 7/40 (17.5%), both
+passing in this small cell, while overtime is 1/40 (2.5%) and fails. The
+eight non-size failures are named in the owner package. Exit 1 is the
+runner's expected response to locked-band failures; the preserved report is
+`analysis/margin_growth_followup/competition_calibration_current_40_each.json`.
+This short cell neither supersedes the prior larger range failures nor
+supports certification.
+
+Two newly untouched quartet-aligned ranges, 43,290,000–43,290,039 and
+47,970,000–47,970,039, were recorded before retained outcomes and produced
+960 new complete games across college/top domestic, ordinary AB, identical
+AA, reversed BA and neutral/home environments. The excluded four-variation
+instrument probe is not counted. Within each competition, all arms share
+variation+1 seeds, opener, match/game ID and derived random-stream names;
+cross-competition streams differ by competition-specific match ID. The
+observer reconstructs signed margins by native period, normalized elapsed
+quarter, last 120 seconds and overtime. All 960 raw rows pass exact score,
+period, possession, shot-probe, charged-clock and component-identity checks.
+Required pooled witnesses for shooting, blocks, turnovers, rebounds, fouls,
+free throws and late play are present. Range B has no top-domestic OT in its
+240 arm games, an adverse sparse-coverage fact. Ten quartets per range make
+the new rate and width comparisons exploratory, not verdict adjudications.
+
+New ordinary home top-domestic close share is 5/40 and 6/40; college is 7/40
+and 9/40. Top cumulative signed-margin SD across equal regulation quarters is
+10.61, 14.39, 12.36, 13.45 in A and 10.35, 15.92, 19.44, 19.83 in B. The
+top final-120-second mean absolute-margin change is +0.15 and −0.57, with
+pre-window-leader-aligned signed increments −0.17 and −0.97. Late widening is
+not replicated. Neutral ordinary-minus-identical top final-margin SD is
+−1.14 with paired-quartet bootstrap interval [−3.95,+2.18] in A and +5.84
+[+0.89,+11.01] in B; reversal contrasts also change sign. Thus neither
+equalizing the full opponent roster nor swapping its roster assignment yields a
+replicated dispersion correction. AA changes composition as well as strength,
+and the short partial schedule has varying strength-gap SD. These contrasts
+do not identify a unique roster share.
+
+An exact six-term score identity attributes realized signed margin to field
+efficiency, possession imbalance, offensive rebounds, turnovers, remaining
+shot volume and made free throws. A conditional seven-term version splits
+field points into observed shot expectation and make-roll innovation after
+the observed block decision. Covariance shares sum to one but are accounting
+allocations, not causal percentages. Top make-roll innovation shares in the
+new home arms are 0.50/0.37 versus college 0.76/0.67; the top conditional
+variance budget is 235/233 against college 153/155 point-squared with about
+200 versus 136–137 combined possessions. This does not prove excess
+top-specific shooting variance. Turnover, rebound and free-throw channels
+are documented by period in the owner package and machine-readable summary;
+the possession-imbalance term does not measure balanced pace.
+
+The historical claim that a strength-gap R² measures the "legitimate"
+fraction of margin variance, or that its residual is entirely invented in
+game, is withdrawn. A one-index linear fit misses nonlinear and compositional
+roster effects. The historical observed/independent SD ratio near one does
+not prove possession independence or exclude RNG coupling or persistent
+states; covariance and heterogeneity can offset. Conditioning covariance on
+realized pace does not isolate a causal in-game remainder. Prior claims that
+close, blowout and overtime failures are necessarily one defect or proven
+unreachable at §14.1 are superseded. The projector also counts missed
+shooting-foul attempts in FGA; this cannot alter score margins but leaves
+prior categorical college/high-school FG% cause claims incomplete pending a
+separate denominator audit. The observer keeps current ledger/box-score
+semantics and does not silently alter canonical measurements.
+
+Deterministic known-answer fixtures, six unchanged live golden output
+signatures and ten focused tests pass. Sixteen actual instrument-source
+mutations fail named assertions with zero parse/runtime errors; the mutant
+that hides ORBs inside the residual preserves the total identity and still
+fails component answers. Isolated source bytes were restored exactly after
+the mutation run. Raw rows, source fingerprints, protocol, summaries, test
+and mutation logs are under `analysis/margin_growth_followup/`. The complete
+eight-step local gate exited 0: 57/57 GdUnit suites and 703/703 cases passed,
+with zero errors, failures, flaky cases, skips or orphans. Golden-ledger hashes,
+scenario coverage, home-environment invariants and the existing score-margin
+suite passed. The parser's deliberate broken-script negative test rejected
+the fixture and recovered after its removal. The evidence manifest verified
+291 source fingerprints and a byte-identical recomputation of the 960-row
+summary. Publication and exact-head CI are checked after committing and
+pushing; the fresh 40-per-competition canonical report still has nine locked
+verdict failures including sample size. **No §27.1 certification is claimed.**
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -9062,10 +9184,10 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **Career progression** | **Structurally complete and measured green.** All five §8.4 career-peak bands measure inside their locked targets, executor parity is exact at 0.0000, and the §9.5 guardrail is enforced by construction (§5.8, §5.9). **Certification pending only** — §27.1 asks for 1,000,000 careers, which §6.4 explains no developer machine produces. Not an implementation defect |
 | **Projected Peak** | **Structurally complete and measured green.** Coverage 0.7473 and 0.7370 against 70–85%, signed error −1.0 and 0.0 against ±2, both on untouched validation ranges, with 0 pathological subgroups (§5.7). **Certification pending only.** Not an implementation defect |
 | **Top-domestic points per possession** | **Corrected (§5.20).** 1.1694 ±0.0037 pooled over two untouched 1,000-game ranges against 1.08–1.18. No longer a blocker |
-| **High-school field-goal percentage** | **Not a repeatable failure (§5.22).** Two untouched 1,000-game validation ranges pool to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band, and one of four fresh ranges passes outright. Recorded as a **measured marginal/unresolved row**, not as a failure. Not an implementation defect |
-| **College field-goal percentage** | **Confirmed as a repeatable measurement, cause now identified to the property (§5.22, §5.23).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Every production hypothesis is ruled out by counterfactual measurement — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **§5.24 repairs the `_family_weights` defect those figures were measured through and re-measures on the same seeds: the level finding survives (67.01 against 67.48) and so does the three-point gap, which widens to 66.01 against 70.74; the `short_range`, `mid_range` and `dunking` rows are withdrawn, and with them the assumption that a uniform shooting lift matches production.** **A fixture shape defect plus a linear-roster-against-non-linear-band specification conflict, not an implementation defect.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
+| **High-school field-goal percentage** | **Earlier finding superseded by §5.39.** The §5.22 source state had two untouched 1,000-game ranges pooling to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band. Under v4 roster pairing, later A/B estimates are 0.383200/0.383339 and both fail. FGA denominator accounting remains unaudited; no implementation cause is ruled out. |
+| **College field-goal percentage** | **Confirmed as a repeatable measurement; cause remains partly open (§5.22–§5.24, §5.39).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Earlier counterfactuals narrowed roster-versus-rule-profile effects but did not exhaust production or denominator explanations — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **§5.24 repairs the `_family_weights` defect those figures were measured through and re-measures on the same seeds: the level finding survives (67.01 against 67.48) and so does the three-point gap, which widens to 66.01 against 70.74; the `short_range`, `mid_range` and `dunking` rows are withdrawn, and with them the assumption that a uniform shooting lift matches production.** **A fixture-shape contribution was identified; a separate FGA convention/denominator issue remains unaudited, so implementation explanations are not exhausted.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
 
-What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, now carried as an owner decision between the calibration fixture's shooting shape, its roster ladder, and §14.1's band ladder rather than as an engine defect (§5.22, §5.23)**, ~~the `CareerSimulator._family_weights` defect §5.23 found in the calibration harness~~ (**repaired in §5.24**; what remains of it is the re-derivation of Option A's per-zone shooting offsets, which is blocked behind roster generation), the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
+What remains genuinely open is listed in §6.4 and §9: **the college field-goal row, carried as an owner decision with a measured fixture-shape contribution and an unaudited FGA denominator/production question (§5.22–§5.24, §5.39)**, ~~the `CareerSimulator._family_weights` defect §5.23 found in the calibration harness~~ (**repaired in §5.24**; what remains of it is the re-derivation of Option A's per-zone shooting offsets, which is blocked behind roster generation), the §14.2 overtime, close-game and blowout rows, **the Development §14.2 home-win row, which §5.21 classifies as a measured contest/home-environment interaction blocker at 0.5280 ±0.0206 pooled over two untouched ranges**, Builder dominance, OVR truthfulness, postseason scheduling, the perimeter contest gap recorded in §5.20 §10, and the §27.1 certification sample itself.
 
 ### 6.1 Sharded-report aggregation
 
@@ -9190,7 +9312,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 3. ~~Synchronize the implementation-status portions of `SIMULATION_SPEC.md` with completed Godot work without changing its contracts.~~ **Done.** Nine §30.2 items that described completed Godot work as outstanding are marked complete; `TacticalLocation` is correctly left outstanding, because the type exists but no resolver reads it.
 4. ~~Rebuild the projected-peak interval so its width is conditioned on the individual career rather than scaled globally.~~ **Done** (§5.7). The interval is now conditioned on the prospect profile, with the player's own caps supplying a second axis through conversion saturation. All three §6.3 measures pass with interior margin on two untouched validation ranges and on the production judged path. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it can be called certified.
 5. ~~Resolve the rare-generational 92–95 peak miss.~~ **Done** (§5.8), and **closed** (§5.9). The band reads 93 on the development range and on two untouched validation ranges. The §9.5 tension §5.8 left open is settled by the owner ruling of 2026-08, which permits a bounded 20% exception for the rare-generational path only; enforcing it as a per-season bound made compliance structural and moved the opportunity multiplier from 1.70 to 1.85. Remaining dependency: the deep-verification workflow must run the sharded million-career report before any of it is certified.
-6. **Diagnose the over-dispersed score margin before touching assist percentage or points per possession.** The top-domestic re-measurement (§5.5) shows 34.5% of games ending as blowouts against a target of 8–18%, only 19.3% close against 22–34%, and 1.8% reaching overtime against 4–8%. Those three are one defect, not three, and points per possession sitting at 1.2084 above its 1.08–1.18 band is very likely the same defect seen from another angle. Fixing the margin distribution first may move the points-per-possession miss on its own; tuning points per possession first would mask it. Assist percentage at 0.4815 is confirmed independent of the free-throw correction and needs its own creation-versus-attribution diagnosis. **The other four competitions must be re-measured before any of their recorded figures is used** — they all predate `00567d4`.
+6. **Continue score-margin diagnosis without changing locked targets (§5.39).** The historical §5.5 top-domestic figures motivated the margin work, but subsequent pace, possession, management and roster-pairing corrections changed the source state. Both later 468-game roster-pairing ranges still fail top-domestic close share at 19.44% and 17.31%; college passes at 24.57% and 29.49%. All five competition pace and PPP bands pass those later ranges, and every competition has been remeasured there. The new signed-margin audit found no deterministic defect, so production behavior remains unchanged and an owner decision remains open. Assist creation/attribution has its own later evidence in §5.15.
 6a. **Take the §5.23 college field-goal owner decision**, or record a deliberate deferral to §27.1. The package is complete and the evidence is delivered; what is missing is the owner's choice of which contract moves. Nothing downstream is blocked by the deferral.
 6b. ~~**Repair `CareerSimulator._family_weights`**~~ **Done (§5.24).** The emphasis vector now resolves by canonical index, every family emphasizes exactly what it declares, and the family catalog validates itself. Proved calibration-only by call graph; caps, OVR, Projected Peak, archetypes, `MatchInput` and saved career state are untouched, the six golden ledgers are byte-identical, and the ruleset did not move. Every judged §8.4/§9.5 contract is byte-identical on a paired pre/post run of seeds 700,001–702,000 and passes on two untouched replacement ranges, **1,350,001–1,352,000** and **1,360,001–1,362,000**; ranges 700,001–702,000 and 900,001–902,000 are retired as validation ranges as anticipated. What remains is downstream: **the §5.23 Option A per-zone offsets must be re-derived against the corrected shooting shape**, and that is blocked behind roster generation, not behind this repair.
 7. Implement and run the Builder dominance tournament and the OVR truthfulness report. ~~Body maturation report 15~~ **is implemented** (§5.4) and awaits only its sample.
@@ -9198,8 +9320,8 @@ Work should proceed in this order unless new evidence changes a dependency:
 9. Measure release-build and mobile-relevant performance before approving a native-extension ADR.
 10. Merge Stage 4 only when its reports and CI evidence support every claim made at merge time.
 11. After simulation readiness, resume the remaining Godot Foundation Gate work: SQLite, three slots, minimal application flow, transition harness, and Android/iOS proof.
-12. Leave the **full five-level game-stakes calibration deferred** until real schedules and postseason matchups exist (§5.14). The contract, its tests, its mutation battery, and a two-level matched diagnostic are done; what is missing is a population in which a tier means something, and calibrating against fixtures that assign a tier arbitrarily would certify a band for a league that does not exist. The measurement most likely to make the stakes/overtime question answerable at all is a fuller end-of-regulation repertoire, which §5.13 already identifies as the reason the §14.2 overtime band is unreachable.
-13. **Re-put the §5.13 overtime question to the owner — and it is now answerable without a §27.1 run (§5.28).** §5.26 reported that 200 games per point cannot settle a 4% rate. 10,000 games per competition on a frozen ruleset, plus 5,000 more on a second disjoint range, settle it: college sits at 0.0310 pooled over 15,000 games (6.4 SE below the 4% floor) and top domestic at 0.0223 (14.6 SE below), with the interval excluding the band on both ranges. **The shortfall is a mechanism gap and it is established**, measured on the corrected repertoire with all four §5.26 shape invariants passing. Building the repertoire did not close it. The choice the owner faces is therefore no longer "fund a run that could answer it or amend the band" — the run has been done at a tenth of §27.1 scale and answered it. What is open is whether to spend the next increment on the zero-concentration mechanism §5.28 localizes and sizes, or to amend §14.2. A §27.1 run funded today would narrow every interval by about 3.2x and move none of the four decisive misses inside its band.
+12. Leave the **full five-level game-stakes calibration deferred** until real schedules and postseason matchups exist (§5.14). The contract, its tests, its mutation battery, and a two-level matched diagnostic are done; what is missing is a population in which a tier means something, and calibrating against fixtures that assign a tier arbitrarily would certify a band for a league that does not exist. The fuller end-of-regulation repertoire was implemented and measured later (§5.25–§5.29); overtime remains below band on the recorded ranges. A unique cause and mathematical unreachability have not been established (§5.39).
+13. **Re-put the §5.13 overtime question to the owner — and it is now answerable without a §27.1 run (§5.28).** §5.26 reported that 200 games per point cannot settle a 4% rate. 10,000 games per competition on a frozen ruleset, plus 5,000 more on a second disjoint range, settle it: college sits at 0.0310 pooled over 15,000 games (6.4 SE below the 4% floor) and top domestic at 0.0223 (14.6 SE below), with the interval excluding the band on both ranges. **The shortfall is established as a repeated measured rate; its complete mechanism is not**, measured on the corrected repertoire with all four §5.26 shape invariants passing. Building the repertoire did not close it. The choice the owner faces is therefore no longer "fund a run that could answer it or amend the band" — the run has been done at a tenth of §27.1 scale and answered it. What is open is whether to spend the next increment on the zero-concentration mechanism §5.28 localizes and sizes, or to amend §14.2. A §27.1 run would improve precision; its verdicts cannot be asserted in advance. No §27.1 certification is claimed.
 14. ~~**Audit the remaining `EndgameStrategy` decisions the §5.26 correction did not touch.**~~ **Done (§5.27).** Both were read per activation rather than per count, by replaying each game's ledger through a second reducer and re-evaluating the production gates on the reconstructed state (reconstruction verified at 1.000000 tag agreement over 66,623 final-period selections). **Quick-two had a defect**: its window was drawn against the unscaled `endgame_possession_ms` while the tie-seeking window it must stay outside of is that constant scaled by the stakes tier, so the two were complementary at regular-season stakes and the whole of quick-two sat inside the tie-seeking window at both tiers above it, where the two rules disagree by construction and the three wins anyway. Corrected by `simulation-v11-quick-two-stakes-window`; regular season is unchanged to the millisecond. **Two-for-one was validated and left unchanged**: a matched A/B on identical seeds and rosters shows the multiplier shifts direct-shot selection by +3.19pp pooled (95% CI +0.47 to +5.91) but moves neither possession length nor the rate of regaining the ball beyond noise. No defect demonstrated, so nothing changed.
 
 15. ~~**Tag the offensive-rebound putback with the endgame decision in force, and regenerate the golden ledgers deliberately.**~~ **Done (§5.29).** The putback now reads `EndgameStrategy.active_tag`; one known `offensive_rebound` golden hash moves for that field alone while seed, score, event count and played result remain unchanged.
