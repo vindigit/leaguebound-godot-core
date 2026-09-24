@@ -39,4 +39,3 @@ for c in audit['competitions']:
 source_diff=subprocess.check_output(['git','diff','--name-only','a15bdd00debf2e75925c9376ff316650b46b516b','--','src','calibration','tests','tools','project.godot','BALANCE_SPEC.md','SIMULATION_SPEC.md'],text=True,cwd=r)
 assert not source_diff.strip(),source_diff
 print(json.dumps({'verdict':'VALIDATION B FIXTURE CONSTRUCTION ACCEPT','cells':rowsout,'source_drift_since_gate':False,'scope':'No outcome fields analyzed; Validation B construction only'},indent=2))
-
