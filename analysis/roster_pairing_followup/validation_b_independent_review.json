@@ -1,0 +1,151 @@
+{
+  "phase": "validation_b",
+  "verdict": "ACCEPT evidence integrity only",
+  "checks": {
+    "canonical": 300,
+    "cell_intervals": 340,
+    "paired_intervals": 170,
+    "bootstrap_comparisons": 10,
+    "venue_intervals": 30
+  },
+  "summary_sha256": "683faff2ba06556316359b4b42f833d4a3790e9ebc8c94d26ddea534cca29b41",
+  "archive_cells_verified": 20,
+  "competitions": {
+    "high_school": {
+      "canonical_failures": {
+        "baseline_home": [
+          "sample.meets_certification_size",
+          "high_school.field_goal_percentage",
+          "high_school.home_win_rate",
+          "high_school.overtime_rate"
+        ],
+        "baseline_neutral": [
+          "sample.meets_certification_size",
+          "high_school.field_goal_percentage",
+          "high_school.home_win_rate",
+          "high_school.overtime_rate"
+        ],
+        "candidate_home": [
+          "sample.meets_certification_size",
+          "high_school.field_goal_percentage",
+          "high_school.home_win_rate",
+          "high_school.overtime_rate"
+        ],
+        "candidate_neutral": [
+          "sample.meets_certification_size",
+          "high_school.field_goal_percentage",
+          "high_school.home_win_rate",
+          "high_school.overtime_rate"
+        ]
+      }
+    },
+    "college": {
+      "canonical_failures": {
+        "baseline_home": [
+          "sample.meets_certification_size",
+          "college.field_goal_percentage",
+          "college.home_win_rate",
+          "college.overtime_rate"
+        ],
+        "baseline_neutral": [
+          "sample.meets_certification_size",
+          "college.field_goal_percentage",
+          "college.home_win_rate",
+          "college.overtime_rate"
+        ],
+        "candidate_home": [
+          "sample.meets_certification_size",
+          "college.field_goal_percentage",
+          "college.overtime_rate"
+        ],
+        "candidate_neutral": [
+          "sample.meets_certification_size",
+          "college.field_goal_percentage",
+          "college.home_win_rate",
+          "college.overtime_rate"
+        ]
+      }
+    },
+    "development": {
+      "canonical_failures": {
+        "baseline_home": [
+          "sample.meets_certification_size",
+          "development.home_win_rate",
+          "development.overtime_rate",
+          "development.blowout_rate"
+        ],
+        "baseline_neutral": [
+          "sample.meets_certification_size",
+          "development.home_win_rate",
+          "development.overtime_rate",
+          "development.blowout_rate"
+        ],
+        "candidate_home": [
+          "sample.meets_certification_size",
+          "development.overtime_rate",
+          "development.blowout_rate"
+        ],
+        "candidate_neutral": [
+          "sample.meets_certification_size",
+          "development.home_win_rate",
+          "development.overtime_rate",
+          "development.blowout_rate"
+        ]
+      }
+    },
+    "overseas": {
+      "canonical_failures": {
+        "baseline_home": [
+          "sample.meets_certification_size",
+          "overseas.overtime_rate"
+        ],
+        "baseline_neutral": [
+          "sample.meets_certification_size",
+          "overseas.home_win_rate",
+          "overseas.overtime_rate"
+        ],
+        "candidate_home": [
+          "sample.meets_certification_size",
+          "overseas.home_win_rate",
+          "overseas.overtime_rate"
+        ],
+        "candidate_neutral": [
+          "sample.meets_certification_size",
+          "overseas.home_win_rate",
+          "overseas.overtime_rate"
+        ]
+      }
+    },
+    "top_domestic_pro": {
+      "canonical_failures": {
+        "baseline_home": [
+          "sample.meets_certification_size",
+          "top_domestic_pro.home_win_rate",
+          "top_domestic_pro.overtime_rate",
+          "top_domestic_pro.blowout_rate"
+        ],
+        "baseline_neutral": [
+          "sample.meets_certification_size",
+          "top_domestic_pro.home_win_rate",
+          "top_domestic_pro.overtime_rate",
+          "top_domestic_pro.blowout_rate"
+        ],
+        "candidate_home": [
+          "sample.meets_certification_size",
+          "top_domestic_pro.home_win_rate",
+          "top_domestic_pro.overtime_rate",
+          "top_domestic_pro.close_game_rate",
+          "top_domestic_pro.blowout_rate"
+        ],
+        "candidate_neutral": [
+          "sample.meets_certification_size",
+          "top_domestic_pro.home_win_rate",
+          "top_domestic_pro.overtime_rate",
+          "top_domestic_pro.close_game_rate",
+          "top_domestic_pro.blowout_rate"
+        ]
+      }
+    }
+  },
+  "scope": "Independent arithmetic, no analyzer import; all ten bootstraps recomputed. Fixed-schedule uncertainty, no replication or certification claim."
+}
