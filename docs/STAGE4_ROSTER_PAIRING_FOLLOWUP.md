@@ -197,8 +197,11 @@ reverse between ranges, and all candidate home-arm overtime bands fail.
 Across ninety home-arm paired outcome/margin-width changes and ten two-arm
 venue contrasts, none has a repeated same-direction interval exclusion. That
 does not establish equivalence, proof of sampling noise, or an absent roster
-contribution to overtime. Bounded exact-row replay and publication/exact-head
-CI checks remain pending.
+contribution to overtime. A bounded twenty-cell, eighty-game replay matches
+every archived four-game raw-row prefix exactly; independent hash, source,
+metadata and runtime-log review accepts it. That proves instrumented raw-row
+reproduction, not event-ledger byte identity or eighty additional calibration
+observations. Publication/exact-head CI checks remain pending.
 An execution interruption on September 22 stopped the attempted new v2 gate
 during GdUnit without a completion result, and stopped five validation cells
 midgame. The v2 log and five partial cell logs are preserved. Five completed
