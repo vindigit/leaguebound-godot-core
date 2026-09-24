@@ -1,6 +1,12 @@
 $ErrorActionPreference = 'Stop'
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 Set-Location -LiteralPath $repo
+function Invoke-GitChecked {
+    param([string[]]$Arguments)
+    $output = @(& git @Arguments)
+    if ($LASTEXITCODE -ne 0) { throw "Git command failed ($LASTEXITCODE): git $($Arguments -join ' ')" }
+    return $output
+}
 $start = 'a15bdd00debf2e75925c9376ff316650b46b516b'
 $logPath = Join-Path $PSScriptRoot 'full_gate_v3.txt'
 $xmlPath = Join-Path $PSScriptRoot 'full_gate_v3_results.xml'
@@ -30,21 +36,26 @@ foreach ($suite in $xml.testsuites.testsuite) {
 }
 $sourceSuites = @(Get-ChildItem tests -Recurse -Filter 'test_*.gd')
 if ($sourceSuites.Count -ne $rows.Count) { throw 'Missing source suite' }
+$sourcePaths = @($sourceSuites | ForEach-Object { [IO.Path]::GetRelativePath($repo, $_.FullName).Replace('\','/') } | Sort-Object)
+$xmlPaths = @($rows | ForEach-Object { $_.path.Replace('\','/') } | Sort-Object)
+if (@($xmlPaths | Sort-Object -Unique).Count -ne $xmlPaths.Count) { throw 'Duplicate XML suite path' }
+if (@(Compare-Object $sourcePaths $xmlPaths).Count -ne 0) { throw 'XML suite paths differ from source suite paths' }
 $total = ($rows | Measure-Object actual -Sum).Sum
 if ($total -ne [int]$xml.testsuites.tests -or $total -ne 693 -or $rows.Count -ne 55) { throw 'Unexpected full suite totals' }
 $markers = @('Import project (builds .godot/global_script_class_cache.cfg)','Parse-check every script under warnings-as-errors','Project-owned headless acceptance runner','Fixed-seed simulation smoke diagnostics','Builder smoke portfolio (BALANCE_SPEC ┬º7.3.2 bands)','Attribute sensitivity suite (PR-gate sample: 100000 resolutions)','Calibration smoke (PR-gate sample: 6 games)','GdUnit4 suites')
 foreach ($marker in $markers) { if ([regex]::Matches($log, '(?m)^=== ' + [regex]::Escape($marker) + '\r?$').Count -ne 1) { throw "Missing/duplicate gate marker: $marker" } }
 foreach ($required in @('Parse check: 266 script(s) checked, 0 failure(s)','LeagueBound headless acceptance: PASS','Invariants: PASS','Builder calibration: PASS','Builds evaluated: 810','80 metric(s), 80 judged, 0 failures: PASS','15 metric(s), 15 judged, 0 failures: PASS','Overall Summary: 693 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |','Executed test suites: (55/55)','Executed test cases : (693/693)','Exit code: 0','Run tests ends with 0','=== All requested checks passed')) { if (-not $log.Contains($required)) { throw "Missing completion proof: $required" } }
-$changed = @(& git diff --name-only $start --)
-$untracked = @(& git ls-files --others --exclude-standard)
-$unexpected = @($changed + $untracked | Sort-Object -Unique | Where-Object { $_ -notlike 'analysis/*' -and $_ -notlike 'docs/*' -and $_ -ne 'PROJECT_STATUS.md' -and $_ -notlike '*.uid' })
+$changed = @(Invoke-GitChecked -Arguments @('diff','--name-only',$start,'--'))
+$untracked = @(Invoke-GitChecked -Arguments @('ls-files','--others','--exclude-standard'))
+$unexpected = @($changed + $untracked | Sort-Object -Unique | Where-Object { $_ -notlike 'analysis/*' -and $_ -notlike 'docs/*' -and $_ -ne 'PROJECT_STATUS.md' })
 if ($unexpected.Count) { throw ('Unexpected changes since gate start: ' + ($unexpected -join ', ')) }
 $goldenPath = 'tests/golden/match_golden_hashes.json'
 $golden = Get-Content $goldenPath -Raw | ConvertFrom-Json
 $scenarioNames = @($golden.scenarios.psobject.Properties.Name)
 if ($scenarioNames.Count -ne 6) { throw 'Golden scenario count differs' }
-if (@(& git diff --name-only 11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4 -- $goldenPath tests/fixtures/golden_scenarios.gd tests/simulation/test_golden_ledgers.gd).Count) { throw 'Golden changes require separate review' }
-$audit = [ordered]@{verdict='LOCAL GATE ACCEPT';gate_start=$start;review_head=(& git rev-parse HEAD);exit_code=0;steps=$markers;parse_scripts=266;suite_count=$rows.Count;test_count=$total;per_suite=$rows;golden_scenarios=$scenarioNames;goldens_unchanged_since_starting_head=$true;builder_builds=810;sensitivity_judged=80;smoke_judged=15;changed_since_gate_start=$changed;untracked_at_review=$untracked;unexpected_runtime_changes=$unexpected;log_sha256=(Get-FileHash $logPath).Hash;xml_sha256=(Get-FileHash $xmlPath).Hash;original_xml_path=$originalXmlPath;xml_matches_original=((Get-FileHash $xmlPath).Hash -eq (Get-FileHash -LiteralPath $originalXmlPath).Hash);scope='Local eight-step gate only; population, prefix replay, publication and exact-head CI remain separate';diagnostics='Expected detector parse self-test, assert_error cases, remote port 0 debugger messages and Builder shutdown resource warnings remain in stdout; zero XML test errors is not error-free stdout. Git Bash-to-PowerShell redirection rendered the section symbol in the Builder marker as ┬º in this raw log; the verifier requires that exact observed marker.'}
+if (@(Invoke-GitChecked -Arguments @('diff','--name-only','11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4','--',$goldenPath,'tests/fixtures/golden_scenarios.gd','tests/simulation/test_golden_ledgers.gd')).Count) { throw 'Golden changes require separate review' }
+$reviewHead = @(Invoke-GitChecked -Arguments @('rev-parse','HEAD'))[0]
+$audit = [ordered]@{verdict='LOCAL GATE ACCEPT';gate_start=$start;review_head=$reviewHead;exit_code=0;steps=$markers;parse_scripts=266;suite_count=$rows.Count;test_count=$total;per_suite=$rows;golden_scenarios=$scenarioNames;goldens_unchanged_since_starting_head=$true;builder_builds=810;sensitivity_judged=80;smoke_judged=15;changed_since_gate_start=$changed;untracked_at_review=$untracked;unexpected_runtime_changes=$unexpected;log_sha256=(Get-FileHash $logPath).Hash;xml_sha256=(Get-FileHash $xmlPath).Hash;original_xml_path=$originalXmlPath;xml_matches_original=((Get-FileHash $xmlPath).Hash -eq (Get-FileHash -LiteralPath $originalXmlPath).Hash);scope='Local eight-step gate only; population, prefix replay, publication and exact-head CI remain separate';diagnostics='Expected detector parse self-test, assert_error cases, remote port 0 debugger messages and Builder shutdown resource warnings remain in stdout; zero XML test errors is not error-free stdout. Git Bash-to-PowerShell redirection rendered the section symbol in the Builder marker as ┬º in this raw log; the verifier requires that exact observed marker.'}
 if (-not $audit.xml_matches_original) { throw 'Archived XML differs from original report' }
 $audit | ConvertTo-Json -Depth 7 | Set-Content (Join-Path $PSScriptRoot 'full_gate_v3_independent_verification.json')
 Write-Output "LOCAL GATE ACCEPT: $total tests, $($rows.Count) suites; all eight steps verified."

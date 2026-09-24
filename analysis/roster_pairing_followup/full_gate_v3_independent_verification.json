@@ -1,0 +1,460 @@
+{
+  "verdict": "LOCAL GATE ACCEPT",
+  "gate_start": "a15bdd00debf2e75925c9376ff316650b46b516b",
+  "review_head": "9c0320126acc391100529cffd7b89318fb949703",
+  "exit_code": 0,
+  "steps": [
+    "Import project (builds .godot/global_script_class_cache.cfg)",
+    "Parse-check every script under warnings-as-errors",
+    "Project-owned headless acceptance runner",
+    "Fixed-seed simulation smoke diagnostics",
+    "Builder smoke portfolio (BALANCE_SPEC ┬º7.3.2 bands)",
+    "Attribute sensitivity suite (PR-gate sample: 100000 resolutions)",
+    "Calibration smoke (PR-gate sample: 6 games)",
+    "GdUnit4 suites"
+  ],
+  "parse_scripts": 266,
+  "suite_count": 55,
+  "test_count": 693.0,
+  "per_suite": [
+    {
+      "path": "tests/calibration/test_fg_decomposition.gd",
+      "declared": 22,
+      "actual": 22,
+      "source_functions": 22
+    },
+    {
+      "path": "tests/calibration/test_home_win_verdict_ownership.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/calibration/test_margin_decomposition.gd",
+      "declared": 8,
+      "actual": 8,
+      "source_functions": 8
+    },
+    {
+      "path": "tests/calibration/test_opening_possession.gd",
+      "declared": 12,
+      "actual": 12,
+      "source_functions": 12
+    },
+    {
+      "path": "tests/calibration/test_population_pairing.gd",
+      "declared": 9,
+      "actual": 9,
+      "source_functions": 9
+    },
+    {
+      "path": "tests/calibration/test_ppp_decomposition.gd",
+      "declared": 11,
+      "actual": 11,
+      "source_functions": 11
+    },
+    {
+      "path": "tests/calibration/test_roster_provenance.gd",
+      "declared": 7,
+      "actual": 7,
+      "source_functions": 7
+    },
+    {
+      "path": "tests/calibration/test_scoring_covariance.gd",
+      "declared": 10,
+      "actual": 10,
+      "source_functions": 10
+    },
+    {
+      "path": "tests/calibration/test_venue_effect_estimator.gd",
+      "declared": 31,
+      "actual": 31,
+      "source_functions": 31
+    },
+    {
+      "path": "tests/simulation/test_assist_attribution.gd",
+      "declared": 22,
+      "actual": 22,
+      "source_functions": 22
+    },
+    {
+      "path": "tests/simulation/test_attribute_contracts.gd",
+      "declared": 23,
+      "actual": 23,
+      "source_functions": 23
+    },
+    {
+      "path": "tests/simulation/test_endgame_corrections.gd",
+      "declared": 19,
+      "actual": 19,
+      "source_functions": 19
+    },
+    {
+      "path": "tests/simulation/test_endgame_strategy.gd",
+      "declared": 35,
+      "actual": 35,
+      "source_functions": 35
+    },
+    {
+      "path": "tests/simulation/test_event_stat_reconciliation.gd",
+      "declared": 8,
+      "actual": 8,
+      "source_functions": 8
+    },
+    {
+      "path": "tests/simulation/test_fatigue.gd",
+      "declared": 5,
+      "actual": 5,
+      "source_functions": 5
+    },
+    {
+      "path": "tests/simulation/test_fouls_and_free_throws.gd",
+      "declared": 10,
+      "actual": 10,
+      "source_functions": 10
+    },
+    {
+      "path": "tests/simulation/test_free_throw_stopped_clock.gd",
+      "declared": 4,
+      "actual": 4,
+      "source_functions": 4
+    },
+    {
+      "path": "tests/simulation/test_full_game_determinism.gd",
+      "declared": 2,
+      "actual": 2,
+      "source_functions": 2
+    },
+    {
+      "path": "tests/simulation/test_game_management.gd",
+      "declared": 16,
+      "actual": 16,
+      "source_functions": 16
+    },
+    {
+      "path": "tests/simulation/test_game_stakes.gd",
+      "declared": 22,
+      "actual": 22,
+      "source_functions": 22
+    },
+    {
+      "path": "tests/simulation/test_garbage_time.gd",
+      "declared": 22,
+      "actual": 22,
+      "source_functions": 22
+    },
+    {
+      "path": "tests/simulation/test_golden_ledgers.gd",
+      "declared": 7,
+      "actual": 7,
+      "source_functions": 7
+    },
+    {
+      "path": "tests/simulation/test_home_environment.gd",
+      "declared": 22,
+      "actual": 22,
+      "source_functions": 22
+    },
+    {
+      "path": "tests/simulation/test_identity_and_usage.gd",
+      "declared": 8,
+      "actual": 8,
+      "source_functions": 8
+    },
+    {
+      "path": "tests/simulation/test_lineups_and_rotations.gd",
+      "declared": 7,
+      "actual": 7,
+      "source_functions": 7
+    },
+    {
+      "path": "tests/simulation/test_match_invariants.gd",
+      "declared": 8,
+      "actual": 8,
+      "source_functions": 8
+    },
+    {
+      "path": "tests/simulation/test_opening_clock_contract.gd",
+      "declared": 17,
+      "actual": 17,
+      "source_functions": 17
+    },
+    {
+      "path": "tests/simulation/test_overtime_trigger.gd",
+      "declared": 13,
+      "actual": 13,
+      "source_functions": 13
+    },
+    {
+      "path": "tests/simulation/test_passing_and_defense.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/simulation/test_play_sim_skip_parity.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/simulation/test_possession_contract.gd",
+      "declared": 8,
+      "actual": 8,
+      "source_functions": 8
+    },
+    {
+      "path": "tests/simulation/test_possession_determinism.gd",
+      "declared": 1,
+      "actual": 1,
+      "source_functions": 1
+    },
+    {
+      "path": "tests/simulation/test_possession_state_machine.gd",
+      "declared": 1,
+      "actual": 1,
+      "source_functions": 1
+    },
+    {
+      "path": "tests/simulation/test_rebounding.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/simulation/test_restart_contract.gd",
+      "declared": 35,
+      "actual": 35,
+      "source_functions": 35
+    },
+    {
+      "path": "tests/simulation/test_score_margin.gd",
+      "declared": 19,
+      "actual": 19,
+      "source_functions": 19
+    },
+    {
+      "path": "tests/simulation/test_stopped_clock_followup.gd",
+      "declared": 7,
+      "actual": 7,
+      "source_functions": 7
+    },
+    {
+      "path": "tests/unit/basketball/test_ap_accounting.gd",
+      "declared": 13,
+      "actual": 13,
+      "source_functions": 13
+    },
+    {
+      "path": "tests/unit/basketball/test_body_maturation.gd",
+      "declared": 11,
+      "actual": 11,
+      "source_functions": 11
+    },
+    {
+      "path": "tests/unit/basketball/test_builder.gd",
+      "declared": 19,
+      "actual": 19,
+      "source_functions": 19
+    },
+    {
+      "path": "tests/unit/basketball/test_cap_selection_pressure.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/unit/basketball/test_development_contract.gd",
+      "declared": 15,
+      "actual": 15,
+      "source_functions": 15
+    },
+    {
+      "path": "tests/unit/basketball/test_development_projection.gd",
+      "declared": 10,
+      "actual": 10,
+      "source_functions": 10
+    },
+    {
+      "path": "tests/unit/basketball/test_family_weight_contract.gd",
+      "declared": 30,
+      "actual": 30,
+      "source_functions": 30
+    },
+    {
+      "path": "tests/unit/basketball/test_generational_progression.gd",
+      "declared": 29,
+      "actual": 29,
+      "source_functions": 29
+    },
+    {
+      "path": "tests/unit/basketball/test_guardrail_exception.gd",
+      "declared": 17,
+      "actual": 17,
+      "source_functions": 17
+    },
+    {
+      "path": "tests/unit/basketball/test_layered_identity.gd",
+      "declared": 11,
+      "actual": 11,
+      "source_functions": 11
+    },
+    {
+      "path": "tests/unit/basketball/test_overall_calculator.gd",
+      "declared": 6,
+      "actual": 6,
+      "source_functions": 6
+    },
+    {
+      "path": "tests/unit/basketball/test_overall_exclusion.gd",
+      "declared": 4,
+      "actual": 4,
+      "source_functions": 4
+    },
+    {
+      "path": "tests/unit/basketball/test_player_attributes.gd",
+      "declared": 2,
+      "actual": 2,
+      "source_functions": 2
+    },
+    {
+      "path": "tests/unit/basketball/test_player_model.gd",
+      "declared": 15,
+      "actual": 15,
+      "source_functions": 15
+    },
+    {
+      "path": "tests/unit/basketball/test_projected_peak_model.gd",
+      "declared": 11,
+      "actual": 11,
+      "source_functions": 11
+    },
+    {
+      "path": "tests/unit/basketball/test_simulation_balance.gd",
+      "declared": 10,
+      "actual": 10,
+      "source_functions": 10
+    },
+    {
+      "path": "tests/unit/shared/test_seeded_random_source.gd",
+      "declared": 2,
+      "actual": 2,
+      "source_functions": 2
+    },
+    {
+      "path": "tests/unit/tools/test_parse_gate.gd",
+      "declared": 7,
+      "actual": 7,
+      "source_functions": 7
+    }
+  ],
+  "golden_scenarios": [
+    "foul_free_throw",
+    "late_game",
+    "offensive_rebound",
+    "overtime",
+    "regulation",
+    "substitution_foul_out"
+  ],
+  "goldens_unchanged_since_starting_head": true,
+  "builder_builds": 810,
+  "sensitivity_judged": 80,
+  "smoke_judged": 15,
+  "changed_since_gate_start": [
+    "PROJECT_STATUS.md",
+    "analysis/roster_pairing_followup/.gitattributes",
+    "analysis/roster_pairing_followup/CLAIMS_REVIEW_INDEPENDENT.md",
+    "analysis/roster_pairing_followup/RESTART_INDEPENDENT_REVIEW.md",
+    "analysis/roster_pairing_followup/change_scope_review.json",
+    "analysis/roster_pairing_followup/full_gate_superseded.txt",
+    "analysis/roster_pairing_followup/full_gate_v2.txt",
+    "analysis/roster_pairing_followup/full_gate_v2_interrupted.json",
+    "analysis/roster_pairing_followup/interrupted_20260922/validation_a_baseline_home_overseas.txt",
+    "analysis/roster_pairing_followup/interrupted_20260922/validation_a_baseline_home_top_domestic_pro.txt",
+    "analysis/roster_pairing_followup/interrupted_20260922/validation_a_baseline_neutral_development.txt",
+    "analysis/roster_pairing_followup/interrupted_20260922/validation_a_baseline_neutral_overseas.txt",
+    "analysis/roster_pairing_followup/interrupted_20260922/validation_a_baseline_neutral_top_domestic_pro.txt",
+    "analysis/roster_pairing_followup/maintain_worker_priority.ps1",
+    "analysis/roster_pairing_followup/priority_watcher_provenance.json",
+    "analysis/roster_pairing_followup/priority_watcher_stderr.txt",
+    "analysis/roster_pairing_followup/priority_watcher_v2_interrupted.json",
+    "analysis/roster_pairing_followup/priority_watcher_v2_stderr.txt",
+    "analysis/roster_pairing_followup/resource_schedule.json",
+    "analysis/roster_pairing_followup/resource_schedule_expansion.json",
+    "analysis/roster_pairing_followup/resource_schedule_gate_dedicated.json",
+    "analysis/roster_pairing_followup/resource_schedule_priority.json",
+    "analysis/roster_pairing_followup/restart_manifest.json",
+    "analysis/roster_pairing_followup/resume_cells.py",
+    "analysis/roster_pairing_followup/run_full_gate_v3.ps1",
+    "analysis/roster_pairing_followup/verify_change_scope.py",
+    "analysis/roster_pairing_followup/verify_full_gate_v3.ps1",
+    "docs/STAGE4_ROSTER_PAIRING_FOLLOWUP.md"
+  ],
+  "untracked_at_review": [
+    "analysis/roster_pairing_followup/full_gate_v3.txt",
+    "analysis/roster_pairing_followup/full_gate_v3_independent_verification.json",
+    "analysis/roster_pairing_followup/full_gate_v3_result.json",
+    "analysis/roster_pairing_followup/full_gate_v3_results.xml",
+    "analysis/roster_pairing_followup/gate_v3_launcher_stderr.txt",
+    "analysis/roster_pairing_followup/gate_v3_launcher_stdout.txt",
+    "analysis/roster_pairing_followup/priority_watcher_stdout.txt",
+    "analysis/roster_pairing_followup/priority_watcher_v2_stdout.txt",
+    "analysis/roster_pairing_followup/priority_watcher_v3_stderr.txt",
+    "analysis/roster_pairing_followup/priority_watcher_v3_stdout.txt",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_home_college.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_home_development.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_home_high_school.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_home_overseas.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_home_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_neutral_college.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_neutral_development.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_neutral_high_school.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_neutral_overseas.json",
+    "analysis/roster_pairing_followup/processes/validation_a_baseline_neutral_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/processes/validation_a_candidate_home_college.json",
+    "analysis/roster_pairing_followup/processes/validation_a_candidate_home_development.json",
+    "analysis/roster_pairing_followup/processes/validation_a_candidate_home_high_school.json",
+    "analysis/roster_pairing_followup/processes/validation_a_candidate_neutral_college.json",
+    "analysis/roster_pairing_followup/processes/validation_a_candidate_neutral_high_school.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_home_college.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_home_development.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_home_high_school.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_home_overseas.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_home_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_neutral_college.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_neutral_development.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_neutral_high_school.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_neutral_overseas.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_baseline_neutral_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_college.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_development.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_high_school.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_neutral_college.json",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_neutral_high_school.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_home_college_college.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_home_development_development.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_home_high_school_high_school.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_home_overseas_overseas.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_home_top_domestic_pro_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_neutral_college_college.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_neutral_development_development.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_neutral_high_school_high_school.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_neutral_overseas_overseas.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_baseline_neutral_top_domestic_pro_top_domestic_pro.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_college_college.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_development_development.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_high_school_high_school.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_neutral_college_college.json",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_neutral_high_school_high_school.json",
+    "analysis/roster_pairing_followup/resource_priority_events.jsonl",
+    "analysis/roster_pairing_followup/resume_stderr.txt",
+    "analysis/roster_pairing_followup/resume_stdout.txt"
+  ],
+  "unexpected_runtime_changes": [],
+  "log_sha256": "3EE8209765E69E15B2258EB8B828617E023278BB4E32E68FD6082E9D9042EFA7",
+  "xml_sha256": "738A8AE75BC3C15C35113B2A735E2FB78AFD303BA6747370404A44235D8806D5",
+  "original_xml_path": "C:/Users/valexander/leaguebound-godot-core/reports/report_126/results.xml",
+  "xml_matches_original": true,
+  "scope": "Local eight-step gate only; population, prefix replay, publication and exact-head CI remain separate",
+  "diagnostics": "Expected detector parse self-test, assert_error cases, remote port 0 debugger messages and Builder shutdown resource warnings remain in stdout; zero XML test errors is not error-free stdout. Git Bash-to-PowerShell redirection rendered the section symbol in the Builder marker as ┬º in this raw log; the verifier requires that exact observed marker."
+}
