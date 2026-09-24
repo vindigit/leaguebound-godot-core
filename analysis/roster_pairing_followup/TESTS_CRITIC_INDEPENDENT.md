@@ -40,6 +40,20 @@ source, checks all eight step markers and completion records, fails closed on
 Git-command errors, and rejects runtime/test edits after gate start. Six
 committed golden scenarios and the golden tests are unchanged from `11c4eae`.
 
-These tests support construction and local regression claims. They do not
-establish holdout population metrics, an exact-prefix replay, exact published
-head CI, or §27.1 certification. Those remain separate acceptance conditions.
+These tests support construction and local regression claims. By themselves
+they do not establish holdout population metrics, an exact-prefix replay,
+exact published-head CI, or §27.1 certification. Those require separate
+acceptance evidence.
+
+## Post-replay addendum
+
+The completed `final_20260924` replay adds **local acceptance of 80 selected
+diagnosis-prefix raw rows**: four games in each of the 20 original diagnostic
+cells. The independent replay verifier compared every complete canonical row
+exactly to its archived counterpart, plus seeds, variations, source and Godot
+hashes, command inputs, report and log hashes, and runtime diagnostics. This
+is neither event-ledger byte identity nor an additional independent calibration
+sample. There have been no `src/`, `tests/`, or `calibration/` changes since the
+v3 gate start, so the local 693-case gate and mutation conclusions still apply.
+Exact published-head CI and publication review remain pending; no §27.1
+certification is claimed.
