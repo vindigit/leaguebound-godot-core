@@ -165,9 +165,13 @@ at variation 1,073,741,824. The consumer now preserves the original int64 scalar
 indices. A new actual-consumer test fails against the old source and passes
 all 280 corrected inputs, covering five competitions, both construction modes,
 both orientations and environment arms, and safe indices through `2^56+1`.
-The expanded nine-mutant run is complete and accepted. The fresh complete gate
-is still in progress; the earlier 692-test gate is not presented as verification
-of this later source correction.
+The expanded nine-mutant run is complete and accepted. The fresh complete
+eight-step gate at source state `a15bdd00debf2e75925c9376ff316650b46b516b`
+passes 693/693 cases in 55/55 suites, with 266 scripts parsed and unchanged
+six-golden acceptance. Independent review reconciles exact XML suite paths and
+test functions against source and matches archived XML bytes to the original.
+The earlier 692-test gate is historical and does not verify the later consumer
+correction.
 
 This narrowly scoped correction does not change primary game observations:
 the measurement runner never loads this consumer, its population indices stay
@@ -180,7 +184,7 @@ guard applies it only to the candidate's exact consumer path and hash transition
 All twenty diagnostic cells are complete (9,360 games), and independent review
 accepts their evidence integrity; see `DIAGNOSIS_REVIEW.md` and the committed
 diagnostic summary. Both untouched validation ranges, bounded prefix replay,
-the fresh complete gate, and publication/exact-head CI checks remain pending.
+and publication/exact-head CI checks remain pending.
 An execution interruption on September 22 stopped the attempted new v2 gate
 during GdUnit without a completion result, and stopped five validation cells
 midgame. The v2 log and five partial cell logs are preserved. Five completed

@@ -38,7 +38,8 @@ mutants are rejected, and an earlier complete eight-step local gate passed
 692/692 cases after three disclosed fixture-snapshot updates. Subsequent review
 found and corrected a large-index narrowing regression in one diagnostic
 consumer; its nine tests and nine mutants are independently accepted. The fresh
-complete gate and both untouched validation ranges remain in progress. All
+complete eight-step gate has passed 693/693 cases with independent review;
+both untouched validation ranges remain in progress. All
 twenty diagnostic cells are complete; no replicated outcome-band closure is claimed.
 Engine, ratings, clock behavior, probability parameters, targets and tolerances
 are unchanged from `11c4eae`. **Stage 4 and Gate 0 remain incomplete.**
@@ -88,7 +89,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Current roster-pairing work is §5.38; its new complete gate and published-head CI remain pending. The Stage 4 implementation adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Current roster-pairing work is §5.38; its new complete local gate passes 693/693, while published-head CI remains pending. The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
@@ -8986,7 +8987,13 @@ warnings remain in stdout. This run precedes a later-discovered int32 narrowing
 regression in the migrated home-court mirror consumer. The corrected consumer
 retains int64 indices; its new actual-runtime test passes 280 constructed inputs
 and fails the old consumer at the first affected boundary. Expanded mutation
-verification is complete; a fresh complete gate is still in progress. The primary experiment
+verification is complete. A fresh complete eight-step gate at source state
+`a15bdd00debf2e75925c9376ff316650b46b516b` passed 693/693 tests in 55/55
+suites after 266-script parse, unchanged six-golden acceptance, simulation smoke,
+810 Builder builds, 80 sensitivity judgments and 15 structural-smoke judgments.
+Independent review reconciled exact suite paths and test names against source
+and archived byte-identical original XML. This is a local gate, not the later
+published-head CI check. The primary experiment
 does not load that consumer; an explicit hash-bound amendment records the
 correction and 397 unchanged runtime/contract files. No primary observations or
 frozen population parameters change.
@@ -8997,8 +9004,8 @@ ranges 28,080,000–28,080,467 and 32,760,000–32,760,467. Seeds are `variation
 Versions share variation/seed keys; each version's home/neutral arms share
 rosters and opening assignment. All twenty diagnostic cells are complete
 (9,360 games), and independent review accepts their evidence integrity.
-Both untouched validation ranges, bounded prefix replay and the fresh complete
-gate remain pending. No downstream tuning, replicated improvement or new
+Both untouched validation ranges and bounded prefix replay remain pending.
+No downstream tuning, replicated improvement or new
 band-closure claim follows from the diagnostic range alone.
 
 An execution interruption on 2026-09-22 stopped the first attempt at the new
@@ -9010,7 +9017,8 @@ archived, and only the 35 missing declared cells restarted with identical
 labels, ranges and seeds. `restart_manifest.json` records this recovery after
 restart launch. Interrupted prefixes are extra attempted simulations, not
 completed experiment observations. The independent restart review accepts
-archive integrity, not the still-pending outcomes or gate.
+archive integrity, not the still-pending outcomes. The complete v3 gate and
+independent verification are archived in `analysis/roster_pairing_followup/`.
 
 The earlier item 24 inference that mirror games proved *no* overtime
 contribution is withdrawn. A shortfall persisting without the artifact does
@@ -9186,7 +9194,7 @@ Work should proceed in this order unless new evidence changes a dependency:
 
 22. **FT-clock portion approved and implemented in §5.36; desperation-window decision remains open.** The original decision brief follows for provenance: `docs/STAGE4_OVERTIME_OWNER_DECISION.md` is the package. Two surfaces are identified with their semantics, why each is the correct surface, expected primary and collateral effects, a before/after plan and a risk rating; **neither has been changed and neither may be without a ruling.** (a) **Does the game clock stop for free throws?** §9.4's "free throws use separate event time" is genuinely ambiguous about the game clock and the engine charges it — 1.34 to 1.55 seconds per one-possession endgame possession, where every ruleset modelled here stops the clock. This is the same class of question the made-field-goal matrix needed a ruling for in item 20, and it should be ruled on **for its own fidelity, not because it might move overtime** — §5.34's arithmetic says it would not be enough anyway. It requires a five-competition pace re-derivation with top domestic already 0.33 from its possessions ceiling. (b) **Does `desperation_opening_clock_ms` stay at 5,000?** Possessions opening between roughly five and thirteen seconds still die in the advance and half-court states before action selection — 23% to 44% of them inside the final ten seconds. §9.4 authorises the mechanism and leaves the threshold a bounded tunable with a 0–15,000 ms safe range, so this is a calibration choice rather than a defect. It is worth at most a third of college's gap and **must be decided together with the §5.23 college field-goal package**, which it would push further below its floor.
 23. **Retain the overtime owner-decision question with scoped evidence (§5.34, §5.35).** The 2026-09-01 ruling kept the §14.2 band while authorizing end-of-regulation work. Historical observed overtime rates were 0.0310 and 0.0223 before most of that work, and 0.0281 and 0.0223 afterward; the band remained missed. This does not prove that the repertoire had no effect or that the ruling's causal premise was disproved. §5.34 observed different tie-survival behavior: top domestic retained about a third less tie mass while its late windows contained about a fifth more possessions. Those cross-competition observations do not isolate the cause. **The earlier claim that the competitions were shown to have different exclusive causes is withdrawn.** The target is not established as unsupported and remains unchanged; §5.35 added accessible college/top-domestic evidence supporting retention of 4–8%. No target amendment or new causal conclusion is authorized by the present fixture experiment.
-24. **Construction correction implemented; outcome validation in progress (§5.38).** Calibration matchups now counterbalance the existing full rosters over venue and opening assignment, with unchanged roster definitions and production engine. The old adjacent-pair ladder asymmetry is proven and restoration mutants are rejected. All twenty diagnostic cells are complete (9,360 games) and independently accepted for evidence integrity; both untouched ranges, prefix replay, fresh complete gate and publication checks remain pending. The earlier claim that mirror games excluded every overtime contribution is withdrawn; it was stronger than the evidence.
+24. **Construction correction implemented; outcome validation in progress (§5.38).** Calibration matchups now counterbalance the existing full rosters over venue and opening assignment, with unchanged roster definitions and production engine. The old adjacent-pair ladder asymmetry is proven and restoration mutants are rejected. All twenty diagnostic cells are complete (9,360 games) and independently accepted for evidence integrity; the fresh eight-step local gate passes 693/693 with independent review. Both untouched ranges, prefix replay and publication checks remain pending. The earlier claim that mirror games excluded every overtime contribution is withdrawn; it was stronger than the evidence.
 
 25. **Completed as the bounded timing/pace follow-up (§5.37).** Non-bonus administration is stopped, the intentional-miss lower bound follows the actual live-rebound/putback sequence, and 7000ms is retained as coaching policy rather than a timing necessity. All five pace values pass both untouched ranges, with a complete green eight-step local gate after two disclosed test corrections. Original failed samples and remaining scoring/game-shape/home-court failures are retained, including overseas legacy-cap FAIL alongside paired-cap PASS. Exact published-head CI is tracked in §6.2. No target amendment or §27.1 certification is claimed; broader Stage 4 blockers remain open.
 
