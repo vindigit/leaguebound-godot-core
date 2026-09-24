@@ -184,8 +184,14 @@ guard applies it only to the candidate's exact consumer path and hash transition
 
 All twenty diagnostic cells are complete (9,360 games), and independent review
 accepts their evidence integrity; see `DIAGNOSIS_REVIEW.md` and the committed
-diagnostic summary. Both untouched validation ranges, bounded prefix replay,
-and publication/exact-head CI checks remain pending.
+diagnostic summary. Validation A's twenty cells are also complete and accepted
+for archive integrity, independent arithmetic, fixture construction and
+bounded claims; see `VALIDATION_A_REVIEW.md`, `VALIDATION_A_FIXTURE_REVIEW.md`
+and `VALIDATION_A_CLAIMS_REVIEW.md`. All five candidate home-arm possession and
+points-per-possession bands pass on A, while its other canonical failures and
+six home-arm verdict transitions are retained in the raw report and summary.
+Validation B, bounded prefix replay, and publication/exact-head CI checks
+remain pending. One untouched range does not establish replication.
 An execution interruption on September 22 stopped the attempted new v2 gate
 during GdUnit without a completion result, and stopped five validation cells
 midgame. The v2 log and five partial cell logs are preserved. Five completed
