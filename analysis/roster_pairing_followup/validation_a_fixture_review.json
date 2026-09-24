@@ -1,0 +1,297 @@
+{
+  "verdict": "VALIDATION A FIXTURE CONSTRUCTION ACCEPT",
+  "cells": [
+    {
+      "cell": "validation_a_baseline_home_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_baseline_neutral_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_candidate_home_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_candidate_neutral_high_school",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_baseline_home_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_baseline_neutral_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_candidate_home_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_candidate_neutral_college",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_baseline_home_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_baseline_neutral_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_candidate_home_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_candidate_neutral_development",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_baseline_home_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_baseline_neutral_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_candidate_home_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_candidate_neutral_overseas",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_baseline_home_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_baseline_neutral_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [],
+      "ordered_cells": 117,
+      "ladder_cells": 13
+    },
+    {
+      "cell": "validation_a_candidate_home_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    },
+    {
+      "cell": "validation_a_candidate_neutral_top_domestic_pro",
+      "rows": 468,
+      "all_rating_vectors_match": true,
+      "home_states": 117,
+      "away_states": 117,
+      "appearances_each_side": 4,
+      "opener_home": 234,
+      "diagonal_variations": [
+        28080084,
+        28080085,
+        28080086,
+        28080087
+      ],
+      "ordered_cells": 231,
+      "ladder_cells": 25
+    }
+  ],
+  "source_drift_since_gate": false,
+  "scope": "No outcome fields analyzed; no Validation B read"
+}
