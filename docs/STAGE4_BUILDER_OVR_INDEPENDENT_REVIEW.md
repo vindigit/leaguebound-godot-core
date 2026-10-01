@@ -112,6 +112,19 @@ The Wilson-center mutation fails the known-answer endpoint assertion with
 `ERR_ASSERTION`, 13 executed cases and zero runtime errors. Earlier 7/11 and
 9/12 records are versioned evidence, not counts to add to the final ten.
 
+Final publication packaging preserves all 32 original raw transcripts as
+ignored `archived_transcripts/*.log` files, mapped by
+`analysis/stage4_blocker_review/transcript_archival.json`. The critic matched
+every archive SHA-256 to its original tracked Git bytes. The updated driver
+(`80ec222a3c34e28158e7f555d0f519e6461f559c7b59ed48a65e34ec3c7668ef`)
+writes ignored `.log` files and records auditor, test, driver and transcript
+hashes in `mutations_v3/results.json`. All three current source fingerprints
+and twelve current transcript fingerprints reconcile. Clean suites remain
+13/13; each of the ten mutants executes thirteen cases with twelve passes
+and one intended assertion failure, without runtime or message-only failures.
+The mutant definitions, auditor and tests are unchanged; this correction
+changes transcript storage and proof provenance only.
+
 The archived corrected validation summaries independently yield 18 distinct
 failed metric IDs when combined with the nine canonical small-run failures.
 The one-range top-domestic three-point attempt rate failure is retained:

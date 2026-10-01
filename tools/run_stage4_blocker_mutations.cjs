@@ -25,9 +25,10 @@ const mutants = [
 function run(id) {
   const r = cp.spawnSync(process.execPath, ['--test', '--test-reporter=tap', testFile], {cwd: isolated, encoding: 'utf8', windowsHide: true, timeout: 30000});
   if (r.error) throw r.error;
-  const log = (r.stdout || '') + (r.stderr || ''); fs.writeFileSync(path.join(output, id + '.txt'), log);
+  const log = (r.stdout || '') + (r.stderr || ''); fs.writeFileSync(path.join(output, id + '.log'), log);
   if (/SyntaxError|MODULE_NOT_FOUND/.test(log) || !/# tests 13\b/.test(log)) throw new Error(id + ' invalid execution');
-  return {id, exit_code: r.status, log};
+  return {id, exit_code: r.status, log, log_sha256: hash(log),
+    log_path: path.relative(root, path.join(output, id + '.log')).replaceAll('\\', '/')};
 }
 const before = run('before'); if (before.exit_code !== 0 || !/# fail 0\b/.test(before.log)) throw new Error('baseline not green');
 const results = [];
@@ -39,11 +40,16 @@ for (const [id, needle, replacement, intended] of mutants) {
     if (/The input did not match the regular expression/.test(r.log)) throw new Error(id + ' message-only failure rejected');
     if (r.exit_code !== 1 || !r.log.split('\n').some(line => line.startsWith('not ok ') && line.includes(intended))
       || !/ERR_ASSERTION/.test(r.log)) throw new Error(id + ' not an intended assertion kill');
-    results.push({id, intended_test: intended, needle, replacement, exit_code: r.exit_code, killed: true});
+    results.push({id, intended_test: intended, needle, replacement, exit_code: r.exit_code, killed: true,
+      log_path: r.log_path, log_sha256: r.log_sha256});
   } finally {fs.writeFileSync(path.join(isolated, relative), original);}
 }
 const after = run('after'); if (after.exit_code !== 0 || hash(fs.readFileSync(path.join(isolated, relative))) !== hash(original)
   || hash(fs.readFileSync(path.join(root, relative))) !== hash(original)) throw new Error('restoration/baseline failed');
 fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify({source_sha256: hash(original),
-  clean_before: before.exit_code, clean_after: after.exit_code, killed: results.length, results}, null, 2) + '\n');
+  test_source_sha256: hash(fs.readFileSync(path.join(root, testFile))),
+  driver_sha256: hash(fs.readFileSync(__filename)), node_version: process.version,
+  clean_before: before.exit_code, clean_after: after.exit_code,
+  clean_before_log_sha256: before.log_sha256, clean_after_log_sha256: after.log_sha256,
+  killed: results.length, results}, null, 2) + '\n');
 process.stdout.write(JSON.stringify({killed: results.length, output}) + '\n');

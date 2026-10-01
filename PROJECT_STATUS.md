@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Snapshot date | September 30, 2026 |
+| Snapshot date | October 1, 2026 |
 | Repository | `vindigit/leaguebound-godot-core` |
 | Runtime | Godot 4.7.1-stable; typed GDScript |
 | Default branch baseline | `main` at `c38bd2257d27ebce86beb61439fcac524acca0ef` |

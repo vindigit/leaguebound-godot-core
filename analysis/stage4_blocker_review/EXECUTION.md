@@ -64,6 +64,12 @@ nine-mutant/12-test intermediate version. The seven-mutant/11-test record in
 `mutations/` is an initial attempt superseded by the semantic duplicate
 mutations. These versions are not added together as independent mutations;
 regex-message-only failures are explicitly rejected by the final driver.
+Raw mutation transcripts are retained in ignored `.log` files; compact source,
+test, driver and log hashes remain in the final JSON proof. The 32 original
+transcripts were moved byte-identically to ignored `archived_transcripts/`
+paths recorded in `transcript_archival.json` after whitespace checks exposed
+raw assertion-diff spacing. A fresh ten-mutant replay verifies the unchanged
+intended assertions and clean 13-case suites after this packaging correction.
 
 The canonical summary's `sample_count=200` means total games, despite its
 historical `sample_unit` wording “per competition.” This audit obtains the

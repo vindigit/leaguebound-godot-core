@@ -74,4 +74,3 @@ test_tendency_facts_and_teammate_control_corruptions_rejected (__main__.TestBuil
 Ran 10 tests in 2.431s
 
 OK
-
