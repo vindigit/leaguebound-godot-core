@@ -289,6 +289,8 @@ function naturalHistogram(payloads) {
     check(!seen.has(c.career_seed), 'duplicate natural career seed'); seen.add(c.career_seed);
     check(oracle(c.starting_values).display === c.starting_current, 'natural start formula mismatch');
     check(oracle(c.exact_caps).display === c.maximum_potential, 'natural exact-cap formula mismatch');
+    check(oracle(c.peak_values).display === c.peak_current, 'natural peak vector formula mismatch');
+    check(oracle(c.final_values).display === c.final_current, 'natural final vector formula mismatch');
     c.college_values.forEach((v, i) => check(oracle(v).display === c.college_current[i], 'college snapshot formula mismatch'));
   }
   const out = {natural_careers: careers.length, ordinary_generated_start99: careers.filter(c => c.starting_current === 99).length,

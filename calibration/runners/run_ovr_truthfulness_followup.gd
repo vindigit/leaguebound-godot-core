@@ -297,7 +297,8 @@ func _histograms() -> void:
 			"starting_values": career.starting_values, "exact_caps": career.starting_caps.values(),
 			"maximum_potential": career.maximum_potential, "college_values": career.college_values_by_class,
 			"college_current": Array(career.college_overall_by_class), "college_ages": Array(career.college_age_by_class),
-			"peak_current": career.peak_overall, "peak_age": career.peak_age, "final_current": career.final_overall,
+			"peak_current": career.peak_overall, "peak_age": career.peak_age, "peak_values": career.peak_values,
+			"final_current": career.final_overall, "final_values": career.final_state.attributes.canonical_values(),
 			"final_age": career.final_state.age, "all_season_current": Array(career.overall_by_season),
 			"all_season_ages": Array(career.age_by_season)})
 		if (index + 1) % 100 == 0: print("OVR natural histogram %s %d/%d" % [_range, index + 1, careers])

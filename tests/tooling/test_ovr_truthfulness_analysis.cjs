@@ -126,6 +126,7 @@ function histograms() {
     career_seed:9860001+k*100000+i, starting_values:Array(20).fill(48), starting_current:48, exact_caps:Array(20).fill(80),
     maximum_potential:80, college_values:[0,1,2].map(() => Array(20).fill(60)), college_current:[60,60,60],
     family:'wing', prospect:'balanced', path:'rotation', peak_current:70, final_current:60,
+    peak_values:Array(20).fill(70),final_values:Array(20).fill(60),
     all_season_current:[50,52,54,56,60,60,60], all_season_ages:[15,16,17,18,19,20,21]
   }))}));
 }
@@ -147,6 +148,13 @@ cases.missing_histogram_competition_is_rejected = () => {
 cases.coherently_shifted_natural_histogram_seeds_are_rejected = () => {
   const payloads = histograms(); payloads[1].natural_rows.forEach(r => r.career_seed++);
   assert.throws(() => A.naturalHistogram(payloads), /shifted natural histogram seed/);
+};
+cases.natural_peak_and_final_vectors_are_independently_checked = () => {
+  const payloads = histograms(); payloads[0].natural_rows[0].peak_values=Array(20).fill(71);
+  assert.throws(()=>A.naturalHistogram(payloads),/natural peak vector formula mismatch/);
+  payloads[0].natural_rows[0].peak_values=Array(20).fill(70);
+  payloads[0].natural_rows[0].final_values=Array(20).fill(61);
+  assert.throws(()=>A.naturalHistogram(payloads),/natural final vector formula mismatch/);
 };
 cases.touch_denominator_corruption_is_rejected = () => {
   const row = fakeRows()[0]; row.touches++;

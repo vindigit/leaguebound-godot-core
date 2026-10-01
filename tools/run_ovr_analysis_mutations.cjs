@@ -55,6 +55,8 @@ const mutants = [
     to:"check(true, 'natural college career seed shifted');",test:'natural_college_career_ranges_are_enforced'},
   {id:'fixture_histogram_oracle_guard_removed',from:"check(oracle(r.values).display === r.current_ovr, 'fixture histogram OVR disagrees with oracle');",
     to:"check(true, 'fixture histogram OVR disagrees with oracle');",test:'coherent_both_histogram_formula_corruption_is_rejected',reason:'Missing expected exception'},
+  {id:'natural_peak_oracle_guard_removed',from:"check(oracle(c.peak_values).display === c.peak_current, 'natural peak vector formula mismatch');",
+    to:"check(true, 'natural peak vector formula mismatch');",test:'natural_peak_and_final_vectors_are_independently_checked',reason:'Missing expected exception'},
 ];
 const file = path.join(isolated, sourceRel), original = fs.readFileSync(file);
 for (const m of mutants) {
