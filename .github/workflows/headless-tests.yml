@@ -104,6 +104,17 @@ jobs:
           /home/runner/godot-linux/godot --headless --path . --script
           res://calibration/runners/run_calibration_smoke.gd -- --games=6 --label=pr
 
+      # The new report instruments have independent raw-archive and statistical
+      # tests in addition to their GdUnit suites. These standard-library checks
+      # do not run basketball experiments or nightly/deep certification jobs.
+      - name: Validate Stage 4 report analysis instruments
+        run: |
+          node --version
+          python3 --version
+          node --test tests/tooling/test_stage4_blocker_audit.cjs
+          node tests/tooling/test_ovr_truthfulness_analysis.cjs
+          python3 analysis/builder_dominance_followup/test_analysis.py
+
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
