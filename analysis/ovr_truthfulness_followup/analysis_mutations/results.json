@@ -1,0 +1,164 @@
+{
+  "source_commit": "05163e375ccce5d33030a48496424be3581163ef",
+  "source_sha256": {
+    "analysis/ovr_truthfulness_followup/analyze.cjs": "5b41d2cfdf3ac578d421569dd98a1a0fdbabffa949a26b8e662f77ac8c797424",
+    "tests/tooling/test_ovr_truthfulness_analysis.cjs": "9dc13e93eb2a307a32e5c96dc635136c6000a868c83a7f663d10651d47187b8b",
+    "tools/run_ovr_analysis_mutations.cjs": "b834ea1639d7f03da1f41d24d6900202b4670f0780ea66b3c75ddc813f6aad38"
+  },
+  "focused_test_count": 31,
+  "node_version": "v24.13.1",
+  "results": [
+    {
+      "id": "before",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "fg_denominator_games",
+      "exit_code": 1,
+      "intended_assertion": "ratio_of_pooled_attempts_and_zero_denominator",
+      "log_sha256": "7c1f293b7106466127b5df20e640349fdba590f0e2c2869154d5a16d959c58aa"
+    },
+    {
+      "id": "after_fg_denominator_games",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "zero_denominator_not_missing",
+      "exit_code": 1,
+      "intended_assertion": "ratio_of_pooled_attempts_and_zero_denominator",
+      "log_sha256": "5133f7ef00529e6719ec24e9bb53b365ab87d173df471aec7aaad95334fbbc9e"
+    },
+    {
+      "id": "after_zero_denominator_not_missing",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "touch_check_bypassed",
+      "exit_code": 1,
+      "intended_assertion": "touch_denominator_corruption_is_rejected",
+      "log_sha256": "575ccaa6cbc97d7cdd2c745cb7219ae26df3e6ebeefbe6ef13a55386f6b6cd12"
+    },
+    {
+      "id": "after_touch_check_bypassed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "paired_baseline_not_resampled",
+      "exit_code": 1,
+      "intended_assertion": "bootstrap_retains_paired_clusters_and_is_deterministic",
+      "log_sha256": "1058aea0c64fc551f17d527c49c5d3b6206352df39731918ca4db6ffeb7fa86e"
+    },
+    {
+      "id": "after_paired_baseline_not_resampled",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "multiplicity_adjustment_removed",
+      "exit_code": 1,
+      "intended_assertion": "multiplicity_interval_is_wider_than_pointwise",
+      "log_sha256": "bdb9fea048bcfd54509cdf76ad7ff72dbaef405d9b6228e4f16db299a2c9ede0"
+    },
+    {
+      "id": "after_multiplicity_adjustment_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "frozen_within_seed_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "coherently_shifted_confirmation_archive_is_rejected",
+      "log_sha256": "51934a07c122e14b016dbd6f2284e19c3b3f952a6f561ec19d62436ca9d8c743"
+    },
+    {
+      "id": "after_frozen_within_seed_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "held_fixed_hash_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "missing_both_control_hashes_is_rejected",
+      "log_sha256": "8cd5a72a3f09a8e2c10eb6d378ca9e291a4ce4b7a83726eb6f0e9a0ebd80fdcf"
+    },
+    {
+      "id": "after_held_fixed_hash_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "catalog_opener_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "coherently_flipped_catalog_openers_are_rejected",
+      "log_sha256": "bef3d5e30daad3b6584a87195131ba9643bccecf7d33a8ae91234e9f63001d3b"
+    },
+    {
+      "id": "after_catalog_opener_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "college_career_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "natural_college_career_ranges_are_enforced",
+      "log_sha256": "cb10b3b9168ab16cdbac9d475f0061398c98e0d7cc47926a139c1c762f2fa941"
+    },
+    {
+      "id": "after_college_career_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "fixture_histogram_oracle_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "coherent_both_histogram_formula_corruption_is_rejected",
+      "log_sha256": "97823e749a92d67e731c04dbe874403ea6e6f81fe807bfdda1c618ba780f8729"
+    },
+    {
+      "id": "after_fixture_histogram_oracle_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "natural_peak_oracle_guard_removed",
+      "exit_code": 1,
+      "intended_assertion": "natural_peak_and_final_vectors_are_independently_checked",
+      "log_sha256": "c5fead5bb568ac880b42d4ea0398267ed74559470761e6f1371989587c24fe0f"
+    },
+    {
+      "id": "after_natural_peak_oracle_guard_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    },
+    {
+      "id": "builder_unavailable_counter_erasure_removed",
+      "exit_code": 1,
+      "intended_assertion": "shared_builder_missing_counters_are_unavailable_and_real_layout_is_mapped",
+      "log_sha256": "2875ff8d8edd2ca3efec7614cced22975697501b3e3e4d8afebff04459979a26"
+    },
+    {
+      "id": "after_builder_unavailable_counter_erasure_removed",
+      "exit_code": 0,
+      "intended_assertion": null,
+      "log_sha256": "c13fd6273f72b52d390fe280e14b44ededa65912e83d0e960b38bf2eafc53b9f"
+    }
+  ],
+  "isolated_copy": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-ovr-analysis-SFZTgx",
+  "killed": 12
+}

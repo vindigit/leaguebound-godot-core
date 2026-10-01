@@ -10,8 +10,12 @@
     "protocol_sha256",
     "shared_builder pair counts and contextual correlations"
   ],
+  "before_aggregate_path": "reports/ovr_aggregate_before_reporting_fix.json",
   "before_aggregate_sha256": "89f1710a3fa7f115f3743f604770b8219921b983789e521c805778cfae725ed3",
+  "after_aggregate_path": "analysis/ovr_truthfulness_followup/aggregate.json",
   "after_aggregate_sha256": "e33c45a0559e6c7c0e3df1b17e70ca7b7282b792370f1461fd21822c09797b68",
+  "analysis_source_path": "analysis/ovr_truthfulness_followup/analyze.cjs",
   "analysis_sha256": "5b41d2cfdf3ac578d421569dd98a1a0fdbabffa949a26b8e662f77ac8c797424",
-  "mutations_sha256": "54253b074186e377fb8e5e1d034b8d2f53107f6a012c9f1b18544cc4cc9334ab"
+  "mutations_results_path": "analysis/ovr_truthfulness_followup/analysis_mutations/results.json",
+  "mutations_results_sha256": "54253b074186e377fb8e5e1d034b8d2f53107f6a012c9f1b18544cc4cc9334ab"
 }
