@@ -1,7 +1,8 @@
 'use strict';
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue} = require('../../tools/stage4_blocker_audit.cjs');
+const {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue,
+  wilsonEndpoints, reproduceOvertimeIntervals} = require('../../tools/stage4_blocker_audit.cjs');
 const clone = x => JSON.parse(JSON.stringify(x));
 function report() {
   const metrics = [
@@ -95,4 +96,19 @@ test('venue uses symmetrized triples and rejects duplicates', () => {
   assert.equal(auditVenue(x).paired_points_per100.estimate, 5);
   x.sections.venue_paired_fixtures[1].fixture = r.fixture;
   assert.throws(() => auditVenue(x), /unique venue fixture/);
+});
+
+test('probability reproducer preserves actual and correct Wilson endpoints', () => {
+  const zero = wilsonEndpoints(0, 40), one = wilsonEndpoints(1, 40);
+  assert.ok(Math.abs(zero[0]) < 1e-14 && Math.abs(zero[1] - 0.08762160245846368) < 1e-14);
+  assert.ok(Math.abs(one[0] - 0.004426831453704344) < 1e-14 &&
+    Math.abs(one[1] - 0.12881369088183614) < 1e-14);
+  const interval = {low: -0.0438108012292318, high: 0.0438108012292318};
+  const metric = {metric: 'development.overtime_rate', estimate: 0,
+    aggregation: {kind: 'proportion', numerator: 0, denominator: 40}, interval_95: interval};
+  const witness = reproduceOvertimeIntervals({metrics: [metric]})[0];
+  assert.deepEqual(witness.published, interval);
+  assert.deepEqual(witness.Wilson_endpoints, zero);
+  assert.equal(witness.proven_reporting_defect, true);
+  assert.throws(() => wilsonEndpoints(0, 0), /valid Wilson counts/);
 });

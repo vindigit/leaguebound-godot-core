@@ -7,7 +7,7 @@ const crypto = require('node:crypto');
 const root = path.resolve(__dirname, '..'), isolated = fs.mkdtempSync(path.join(os.tmpdir(), 'leaguebound-blocker-audit-'));
 const relative = 'tools/stage4_blocker_audit.cjs', testFile = 'tests/tooling/test_stage4_blocker_audit.cjs';
 for (const f of [relative, testFile]) {fs.mkdirSync(path.dirname(path.join(isolated, f)), {recursive: true}); fs.copyFileSync(path.join(root, f), path.join(isolated, f));}
-const output = path.resolve(root, process.argv[2] || 'analysis/stage4_blocker_review/mutations_v2'); fs.mkdirSync(output, {recursive: true});
+const output = path.resolve(root, process.argv[2] || 'analysis/stage4_blocker_review/mutations_v3'); fs.mkdirSync(output, {recursive: true});
 const original = fs.readFileSync(path.join(isolated, relative));
 const hash = b => crypto.createHash('sha256').update(b).digest('hex');
 const mutants = [
@@ -19,13 +19,14 @@ const mutants = [
   ['opener_guard', "assert.equal(r.opening_home, r.variation % 2 === 0, 'balanced opener');", '', 'broken opener and roster pairings are rejected'],
   ['ratio_scale', 'return (a.scale ?? 1) * a.numerator / a.denominator;', 'return a.numerator / a.denominator;', 'raw totals use weighted denominator, never a mean of rates'],
   ['venue_sign', 'marginSum += 0.5 * (r.home_margin + r.reversed_margin);', 'marginSum += 0.5 * (r.home_margin - r.reversed_margin);', 'venue uses symmetrized triples and rejects duplicates'],
-  ['venue_duplicate', "assert.ok(!seen.has(r.fixture), 'unique venue fixture');", '', 'venue uses symmetrized triples and rejects duplicates']
+  ['venue_duplicate', "assert.ok(!seen.has(r.fixture), 'unique venue fixture');", '', 'venue uses symmetrized triples and rejects duplicates'],
+  ['Wilson_center', 'const center = (p + z2 / (2 * trials)) / divisor;', 'const center = p;', 'probability reproducer preserves actual and correct Wilson endpoints']
 ];
 function run(id) {
   const r = cp.spawnSync(process.execPath, ['--test', '--test-reporter=tap', testFile], {cwd: isolated, encoding: 'utf8', windowsHide: true, timeout: 30000});
   if (r.error) throw r.error;
   const log = (r.stdout || '') + (r.stderr || ''); fs.writeFileSync(path.join(output, id + '.txt'), log);
-  if (/SyntaxError|MODULE_NOT_FOUND/.test(log) || !/# tests 12\b/.test(log)) throw new Error(id + ' invalid execution');
+  if (/SyntaxError|MODULE_NOT_FOUND/.test(log) || !/# tests 13\b/.test(log)) throw new Error(id + ' invalid execution');
   return {id, exit_code: r.status, log};
 }
 const before = run('before'); if (before.exit_code !== 0 || !/# fail 0\b/.test(before.log)) throw new Error('baseline not green');

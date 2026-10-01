@@ -43,6 +43,29 @@ function aggregationEstimate(a) {
   if (a.kind === 'constant') return a.sum;
   throw new Error('Unsupported aggregation kind: ' + a.kind);
 }
+// Diagnostic endpoints, not a replacement for canonical verdicts or their
+// historical serialization. z is the repository's CalibrationStatistics.Z_95.
+function wilsonEndpoints(successes, trials) {
+  assert.ok(Number.isInteger(trials) && trials > 0 && Number.isInteger(successes) &&
+    successes >= 0 && successes <= trials, 'valid Wilson counts');
+  const p = successes / trials, z = 1.959964, z2 = z * z, divisor = 1 + z2 / trials;
+  const center = (p + z2 / (2 * trials)) / divisor;
+  const width = z * Math.sqrt((p * (1 - p) + z2 / (4 * trials)) / trials) / divisor;
+  return [Math.max(0, center - width), Math.min(1, center + width)];
+}
+function reproduceOvertimeIntervals(report) {
+  return report.metrics.filter(m => m.metric.endsWith('.overtime_rate')).map(m => {
+    assert.equal(m.aggregation.kind, 'proportion', 'overtime proportion aggregation');
+    const {numerator, denominator} = m.aggregation, endpoints = wilsonEndpoints(numerator, denominator),
+      width = (endpoints[1] - endpoints[0]) / 2;
+    approx(m.interval_95.low, m.estimate - width, 'published interval recentered on estimate');
+    approx(m.interval_95.high, m.estimate + width, 'published interval recentered on estimate');
+    return {metric: m.metric, numerator, denominator, published: m.interval_95,
+      Wilson_endpoints: endpoints, category: 'Infrastructure/reporting problem',
+      proven_reporting_defect: true, gameplay_defect_inferred: false,
+      note: 'Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed.'};
+  });
+}
 function auditReport(report, reference = null, competitions = COMPS) {
   assert.equal(report.schema, 'leaguebound.calibration.report/1', 'report schema');
   assert.ok(Array.isArray(report.metrics) && report.metrics.length > 0, 'metrics present');
@@ -174,7 +197,9 @@ function main() {
   const root = path.resolve(__dirname, '..'), out = path.join(root, 'analysis/stage4_blocker_review');
   const current = path.resolve(root, process.argv[2] || 'analysis/stage4_blocker_review/competition_current_40_each.json');
   const old = path.join(root, 'analysis/margin_growth_followup/competition_calibration_current_40_each.json');
-  const sourceFiles = [current, old], reference = read(old), fresh = auditReport(read(current), reference);
+  const sourceFiles = [current, old, 'calibration/harness/metric_aggregation.gd',
+    'calibration/harness/calibration_metric.gd', 'calibration/harness/calibration_statistics.gd'].map(f => path.resolve(root, f)),
+    reference = read(old), currentReport = read(current), fresh = auditReport(currentReport, reference);
   const corrected = {}, registry = new Map();
   const retain = (metric, evidence) => {
     if (!registry.has(metric)) registry.set(metric, {metric, ...classify(metric), evidence: []});
@@ -207,6 +232,7 @@ function main() {
       canonical_paired_points_per100: cell.paired_points_per100.estimate});
   }
   const result = {schema: 'leaguebound.stage4.blocker-recount/1', current: fresh, corrected, venue,
+    reporting_interval_problem: reproduceOvertimeIntervals(currentReport),
     failed_verdict_registry: [...registry.values()].sort((a, b) => a.metric.localeCompare(b.metric)),
     source_sha256: Object.fromEntries(sourceFiles.map(f => [path.relative(root, f).split(path.sep).join('/'), hash(f)])),
     limitation: 'No certification. Exact raw and canonical recount, not fresh simulation of the archived validation games. Population home-win is not the controlled §17.4 verdict. Additional missing reports/owner blockers are documented separately.'};
@@ -215,5 +241,5 @@ function main() {
     reused_venue_games: 3000, failure_union: registry.size,
     output: 'analysis/stage4_blocker_review/blocker_recount.json'}) + '\n');
 }
-module.exports = {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue};
+module.exports = {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue, wilsonEndpoints, reproduceOvertimeIntervals};
 if (require.main === module) main();
