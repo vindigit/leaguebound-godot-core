@@ -446,19 +446,23 @@ function builderComparables(rows) {
       won:r.team_win ? 1:0, raw_ovr:oracle(r.build.ratings).raw, current_ovr:r.build.current_overall}));
     check(rr.every(r => JSON.stringify(r.build.ratings) === JSON.stringify(f.build.ratings)), 'shared Builder source ratings changed');
     const raw = totals(normalized), defense = rr.reduce((s,r) => s+r.defended_attempts, 0);
+    const unavailableCounts = COUNTS.filter(key => normalized.some(r => !Object.hasOwn(r, key)));
+    for (const key of unavailableCounts) delete raw[key];
     const defendedMakes = rr.reduce((s,r) => s+r.defended_makes, 0), defendedThrees = rr.reduce((s,r) => s+r.defended_three_makes, 0);
     const m = metrics(raw);
+    if (unavailableCounts.includes('opponent_fga_on_court') || unavailableCounts.includes('opponent_fgm_on_court'))
+      delete m.opponent_field_goal_fraction_on_court;
     m.allowed_effective_field_goal_fraction = divide(defendedMakes+0.5*defendedThrees, defense);
     return {range:f.range, cell:f.cell, quartet:f.quartet, roster:f.subject_roster, build_id:f.build_id,
       context:f.context, current_ovr:f.build.current_overall, raw_ovr:oracle(f.build.ratings).raw,
       values:f.build.ratings, caps:f.build.caps, body:f.build.body, tendencies:f.build.tendencies,
-      raw, observables:m, defender_attempts:defense, defender_makes:defendedMakes};
+      raw, observables:m, unavailable_counts:unavailableCounts, defender_attempts:defense, defender_makes:defendedMakes};
   });
   const outcomes = ['points_per32','field_goal_fraction','assists_per100_touches','turnovers_per100_touches',
     'rebounds_per32','steals_blocks_per32','allowed_effective_field_goal_fraction','team_margin'];
   const pairs = [], inversions = [];
   const detail = p => ({build_id:p.build_id, current_ovr:p.current_ovr, raw_ovr:p.raw_ovr, values:p.values,
-    caps:p.caps, body:p.body, tendencies:p.tendencies, raw:p.raw, defender_attempts:p.defender_attempts,
+    caps:p.caps, body:p.body, tendencies:p.tendencies, raw:p.raw, unavailable_counts:p.unavailable_counts, defender_attempts:p.defender_attempts,
     defender_makes:p.defender_makes, observables:p.observables});
   for (const pp of group(players, p => [p.range,p.cell,p.quartet,p.roster].join('/')).values()) {
     for (let i=0;i<pp.length;i++) for (let j=i+1;j<pp.length;j++) {
@@ -482,6 +486,7 @@ function builderComparables(rows) {
     source_player_quartet_observations:pp.length, descriptive_correlations:Object.fromEntries(outcomes.map(o=>[o,
       correlation(pp.map(p=>[p.raw_ovr,p.observables[o]]))]))};
   return {games:rows.length, primary_equal_resource_games:primary.length, omitted_unequal_profile_and_other_family_games:rows.length-primary.length,
+    unavailable_counters:[...new Set(players.flatMap(p=>p.unavailable_counts))],
     source_player_context_observations:players.length, same_displayed_ovr_pair_count:pairs.length,
     same_displayed_ovr_examples:pairs.slice(0,24), differing_ovr_inversion_count:inversions.length,
     differing_ovr_inversion_examples:inversions.slice(0,24), by_context:byContext,

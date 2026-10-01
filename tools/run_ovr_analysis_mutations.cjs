@@ -57,6 +57,10 @@ const mutants = [
     to:"check(true, 'fixture histogram OVR disagrees with oracle');",test:'coherent_both_histogram_formula_corruption_is_rejected',reason:'Missing expected exception'},
   {id:'natural_peak_oracle_guard_removed',from:"check(oracle(c.peak_values).display === c.peak_current, 'natural peak vector formula mismatch');",
     to:"check(true, 'natural peak vector formula mismatch');",test:'natural_peak_and_final_vectors_are_independently_checked',reason:'Missing expected exception'},
+  {id:'builder_unavailable_counter_erasure_removed',from:'for (const key of unavailableCounts) delete raw[key];',
+    to:'// Removed unknown-counter erasure: fabricated zeros survive.',
+    test:'shared_builder_missing_counters_are_unavailable_and_real_layout_is_mapped',
+    reason:'Unavailable on-court opponent attempts must be omitted rather than observed zero'},
 ];
 const file = path.join(isolated, sourceRel), original = fs.readFileSync(file);
 for (const m of mutants) {

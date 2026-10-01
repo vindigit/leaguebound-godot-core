@@ -228,6 +228,25 @@ cases.shared_builder_same_ovr_pairs_are_actually_read = () => {
   assert.notDeepEqual(example.a.values,example.b.values);
   assert.equal(example.a.raw.games,4); assert.equal(example.a.observables.allowed_effective_field_goal_fraction,0.45);
 };
+cases.shared_builder_missing_counters_are_unavailable_and_real_layout_is_mapped = () => {
+  const rows=builderRows();
+  for(const r of rows.filter(r=>r.primary)) {
+    for(const key of ['opponent_fga_on_court','opponent_fgm_on_court','on_court_defensive_misses',
+      'team_score','opponent_score','won','raw_ovr','current_ovr']) delete r[key];
+    r.team_points=70; r.opponent_points=63; r.team_win=0; r.team_margin=7;
+  }
+  const report=A.builderComparables(rows), example=report.same_displayed_ovr_examples[0].a;
+  assert.ok(!Object.hasOwn(example.raw,'opponent_fga_on_court'),
+    'Unavailable on-court opponent attempts must be omitted rather than observed zero');
+  assert.ok(!Object.hasOwn(example.raw,'opponent_fgm_on_court'));
+  assert.ok(!Object.hasOwn(example.raw,'on_court_defensive_misses'));
+  assert.ok(!Object.hasOwn(example.observables,'opponent_field_goal_fraction_on_court'));
+  assert.ok(report.unavailable_counters.includes('opponent_fga_on_court'));
+  assert.equal(example.raw.team_score,280); assert.equal(example.raw.opponent_score,252); assert.equal(example.raw.won,0);
+  assert.equal(example.observables.team_margin,7);
+  assert.equal(example.raw.current_ovr_sum,example.current_ovr*4);
+  assert.ok(Math.abs(example.raw.raw_ovr_sum-A.oracle(example.values).raw*4)<1e-12);
+};
 cases.shared_builder_unequal_starting_budget_is_rejected = () => {
   const rows=builderRows(); rows[0].build.ap_granted=155;
   assert.throws(()=>A.builderComparables(rows),/unequal-resource/);
