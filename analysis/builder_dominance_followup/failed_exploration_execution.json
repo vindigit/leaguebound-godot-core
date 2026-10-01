@@ -1,0 +1,18 @@
+{
+  "kind": "rejected exploratory instrument execution",
+  "execution_head": "51a115e",
+  "range": "exploration",
+  "primary_games_before_failure": 144,
+  "expected_complete_games": 176,
+  "accepted_as_measurement": false,
+  "confirmation_started": false,
+  "failure": "SCRIPT ERROR: Trying to assign an array of type Array to a variable of type Array[int].",
+  "location": "calibration/runners/run_builder_dominance_followup.gd:53",
+  "cause": "The primary-cell ternary returned an untyped [0] when the first secondary profile arm began.",
+  "correction": "BuilderDominanceFixtures.experiment_cells returns a typed Array[int] for both primary and secondary arms; focused coverage explicitly exercises both.",
+  "diagnostic_preservation": "This is the retained error excerpt and execution disposition. The full redirected log and incomplete raw archive were overwritten by the clean same-protocol rerun; they are not presented as archived measurements.",
+  "source_before_correction": {
+    "calibration/harness/builder_dominance_fixtures.gd": "9bc87e63e6807fde4f702b5b0bc98b9a352465d5e7feda0f01ccbb9a721c1267",
+    "calibration/runners/run_builder_dominance_followup.gd": "c8a1f7b6ecb9132d18d24f78364b0f0da359fc0b44c4536614374b7e2b26a25a"
+  }
+}
