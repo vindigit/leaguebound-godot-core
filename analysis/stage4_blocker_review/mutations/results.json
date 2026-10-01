@@ -1,0 +1,50 @@
+{
+  "source_sha256": "48e624d47f6f62f3c33335e04c04b0a697e45aa362af6fa237db46d36d119e8c",
+  "clean_before": 0,
+  "clean_after": 0,
+  "killed": 7,
+  "results": [
+    {
+      "id": "denominator_guard",
+      "intended_test": "invalid denominator is rejected",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "duplicate_metric",
+      "intended_test": "duplicate metrics are rejected",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "verdict_guard",
+      "intended_test": "changed verdict is rejected for its target",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "target_guard",
+      "intended_test": "changed target is rejected against the reference",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "duplicate_seed",
+      "intended_test": "duplicate seeds are rejected",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "opener_guard",
+      "intended_test": "broken opener and roster pairings are rejected",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "ratio_scale",
+      "intended_test": "raw totals use weighted denominator, never a mean of rates",
+      "exit_code": 1,
+      "killed": true
+    }
+  ]
+}
