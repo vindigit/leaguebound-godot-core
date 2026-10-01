@@ -132,8 +132,8 @@ function histograms() {
 cases.histogram_all_ranges_and_five_populations_are_checked = () => {
   assert.equal(A.naturalHistogram(histograms()).natural_careers, 2000);
 };
-cases.second_histogram_payload_formula_corruption_is_rejected = () => {
-  const payloads = histograms(); payloads[1].fixture_rows[0].current_ovr++;
+cases.coherent_both_histogram_formula_corruption_is_rejected = () => {
+  const payloads = histograms(); payloads.forEach(p=>p.fixture_rows[0].current_ovr++);
   assert.throws(() => A.naturalHistogram(payloads), /fixture histogram OVR disagrees/);
 };
 cases.enlarged_duplicate_fixture_histogram_is_rejected = () => {

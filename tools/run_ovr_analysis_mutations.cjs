@@ -10,22 +10,25 @@ if (!output.startsWith(root + path.sep)) throw new Error('Output must remain und
 fs.mkdirSync(output, {recursive: true});
 const isolated = fs.mkdtempSync(path.join(os.tmpdir(), 'leaguebound-ovr-analysis-'));
 const sourceRel = 'analysis/ovr_truthfulness_followup/analyze.cjs', testRel = 'tests/tooling/test_ovr_truthfulness_analysis.cjs';
-for (const file of [sourceRel, testRel]) {
+const proofFiles = [sourceRel, testRel, 'tools/run_ovr_analysis_mutations.cjs'];
+for (const file of proofFiles) {
   fs.mkdirSync(path.dirname(path.join(isolated, file)), {recursive: true});
   fs.copyFileSync(path.join(root, file), path.join(isolated, file));
 }
 const hash = f => crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
-const hashes = Object.fromEntries([sourceRel, testRel].map(f => [f, hash(path.join(root, f))]));
+const hashes = Object.fromEntries(proofFiles.map(f => [f, hash(path.join(root, f))]));
 const testCount = (fs.readFileSync(path.join(root,testRel),'utf8').match(/cases\.\w+\s*=\s*\(\)\s*=>/g)||[]).length;
 const metadata = {source_commit: cp.execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], {encoding: 'utf8', windowsHide: true}).trim(),
   source_sha256: hashes, focused_test_count:testCount, node_version: process.version, results: [], isolated_copy: isolated};
 function save() { fs.writeFileSync(path.join(output, 'results.json'), JSON.stringify(metadata, null, 2) + '\n'); }
-function run(id, name) {
+function run(id, name, requiredReason) {
   const r = cp.spawnSync(process.execPath, [path.join(isolated, testRel)], {cwd: isolated, encoding: 'utf8', windowsHide: true, timeout: 120000});
   if (r.error) throw r.error;
   const log = (r.stdout || '') + (r.stderr || ''); fs.writeFileSync(path.join(output, id + '.log'), log);
   if (!(new RegExp('\\d+/'+testCount+' passed, \\d+ failed')).test(log)) throw new Error(id + ': missing exact case count');
   if (name && !log.includes('FAILED ' + name + ' AssertionError:')) throw new Error(id + ': intended named assertion missing');
+  if (requiredReason && !log.includes('FAILED '+name+' AssertionError: '+requiredReason)) throw new Error(id+': intended semantic rejection witness missing');
+  if (log.includes('The input did not match the regular expression')) throw new Error(id+': message-only mutation mismatch is not a kill');
   if (/FAILED \S+ (?!AssertionError:)\w+:/.test(log)) throw new Error(id + ': runtime exception is not a mutation kill');
   return {id, exit_code: r.status, intended_assertion: name || null, log_sha256: hash(path.join(output, id + '.log'))};
 }
@@ -51,7 +54,7 @@ const mutants = [
   {id:'college_career_guard_removed',from:"check(r.career_seed === 9840001 + offset + r.cluster * 20 + side * 10 + index, 'natural college career seed shifted');",
     to:"check(true, 'natural college career seed shifted');",test:'natural_college_career_ranges_are_enforced'},
   {id:'fixture_histogram_oracle_guard_removed',from:"check(oracle(r.values).display === r.current_ovr, 'fixture histogram OVR disagrees with oracle');",
-    to:"check(true, 'fixture histogram OVR disagrees with oracle');",test:'second_histogram_payload_formula_corruption_is_rejected'},
+    to:"check(true, 'fixture histogram OVR disagrees with oracle');",test:'coherent_both_histogram_formula_corruption_is_rejected',reason:'Missing expected exception'},
 ];
 const file = path.join(isolated, sourceRel), original = fs.readFileSync(file);
 for (const m of mutants) {
@@ -59,13 +62,13 @@ for (const m of mutants) {
   if (source.split(m.from).length !== 2) throw new Error(m.id + ': exact site missing');
   try {
     fs.writeFileSync(file, source.replace(m.from, m.to));
-    const r = run(m.id, m.test); metadata.results.push(r); save();
+    const r = run(m.id, m.test, m.reason); metadata.results.push(r); save();
     if (r.exit_code !== 1) throw new Error(m.id + ': mutant survived');
     process.stdout.write(m.id + ' killed by ' + m.test + '\n');
   } finally { fs.writeFileSync(file, original); }
   green('after_' + m.id);
 }
-for (const f of [sourceRel, testRel]) if (hash(path.join(root, f)) !== hashes[f] || hash(path.join(isolated, f)) !== hashes[f])
+for (const f of proofFiles) if (hash(path.join(root, f)) !== hashes[f] || hash(path.join(isolated, f)) !== hashes[f])
   throw new Error('source changed during mutation run');
 metadata.killed = mutants.length; save();
 process.stdout.write(JSON.stringify({killed: metadata.killed, output}) + '\n');
