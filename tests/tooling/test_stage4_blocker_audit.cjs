@@ -1,7 +1,7 @@
 'use strict';
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
-const {aggregationEstimate, auditReport, auditCorrectedRows, classify} = require('../../tools/stage4_blocker_audit.cjs');
+const {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue} = require('../../tools/stage4_blocker_audit.cjs');
 const clone = x => JSON.parse(JSON.stringify(x));
 function report() {
   const metrics = [
@@ -83,4 +83,16 @@ test('sample shortage is a certification blocker and population venue is a separ
   assert.equal(classify('sample.meets_certification_size').category, 'Insufficient sample or missing coverage');
   assert.equal(classify('college.home_win_rate').category, 'Infrastructure/reporting problem');
   assert.equal(classify('college.overtime_rate').category, 'Statistical target miss without a proven defect');
+});
+test('venue uses symmetrized triples and rejects duplicates', () => {
+  const r = {fixture: 'college/1', competition: 'college', home_margin: 8, reversed_margin: -2,
+    neutral_margin: 2, home_possessions: 60, neutral_possessions: 60, reversed_possessions: 60};
+  const metrics = [['venue.attributable_home_win_rate', 0.5], ['venue.points_per_100', 5],
+    ['venue.cap_respected', 0], ['home.points_per_100_contribution', 7]].map(([suffix, estimate]) =>
+    ({metric: 'college.' + suffix, estimate, verdict: 'informational'}));
+  const x = {context: {competition: 'college', sample_count: 2}, metrics,
+    sections: {venue_paired_fixtures: [r, {...r, fixture: 'college/2'}]}};
+  assert.equal(auditVenue(x).paired_points_per100.estimate, 5);
+  x.sections.venue_paired_fixtures[1].fixture = r.fixture;
+  assert.throws(() => auditVenue(x), /unique venue fixture/);
 });

@@ -127,12 +127,48 @@ function auditCorrectedRows(raw, report, summaryCell, first, comp) {
 function classify(metric) {
   if (metric === 'sample.meets_certification_size') return {category: 'Insufficient sample or missing coverage',
     next_action: 'Close mechanism, population, owner and infrastructure blockers before the authorized later §27.1 run. No gameplay defect inferred.'};
+  if (metric.endsWith('.home.combined_cap_respected')) return {category: 'Infrastructure/reporting problem',
+    next_action: 'Retain the legacy failed verdict and canonical paired cap separately; reconcile the measurement definitions, then assess controlled disjoint venue ranges before any tuning.'};
   if (metric.endsWith('.home_win_rate')) return {category: 'Infrastructure/reporting problem',
     next_action: 'Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.'};
   return {category: 'Statistical target miss without a proven defect',
     next_action: /field_goal|three_point_percentage|three_point_attempt_rate/.test(metric)
       ? 'Audit ledger FGA conventions and appropriate roster shape first; retain locked shooting bands. Contract changes require owner direction.'
       : 'Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.'};
+}
+function auditVenue(report) {
+  const rows = report.sections.venue_paired_fixtures, comp = report.context.competition;
+  assert.ok(Array.isArray(rows) && rows.length === report.context.sample_count, 'venue triple coverage');
+  const seen = new Set();
+  let winSum = 0, marginSum = 0, possessionSum = 0;
+  for (const r of rows) {
+    assert.ok(!seen.has(r.fixture), 'unique venue fixture'); seen.add(r.fixture);
+    assert.equal(r.competition, comp, 'venue competition');
+    for (const arm of ['home', 'neutral', 'reversed']) {
+      assert.ok(Number.isFinite(r[arm + '_margin']) && Number.isFinite(r[arm + '_possessions'])
+        && r[arm + '_possessions'] > 0, 'complete finite venue triple');
+      possessionSum += r[arm + '_possessions'];
+    }
+    const win = m => m > 0 ? 1 : m < 0 ? 0 : 0.5;
+    winSum += 0.5 * (win(r.home_margin) + win(r.reversed_margin));
+    marginSum += 0.5 * (r.home_margin + r.reversed_margin);
+  }
+  const metric = suffix => {
+    const found = report.metrics.filter(m => m.metric === comp + '.' + suffix);
+    assert.equal(found.length, 1, 'unique venue metric'); return found[0];
+  };
+  const winRate = winSum / rows.length, possessionBase = possessionSum / (3 * rows.length),
+    pointsPer100 = 100 * marginSum / rows.length / possessionBase;
+  approx(metric('venue.attributable_home_win_rate').estimate, winRate, 'controlled venue win estimate');
+  approx(metric('venue.points_per_100').estimate, pointsPer100, 'controlled venue points estimate');
+  const failures = report.metrics.filter(m => m.verdict === 'fail');
+  for (const m of report.metrics.filter(m => m.target)) assert.equal(m.verdict,
+    m.estimate >= m.target.minimum && m.estimate <= m.target.maximum ? 'pass' : 'fail', 'venue target verdict');
+  return {competition: comp, source_commit: report.context.commit_sha, pairs: rows.length, games: 3 * rows.length,
+    seed_range: report.context.seed_range, controlled_win: metric('venue.attributable_home_win_rate'),
+    controlled_cap: metric('venue.cap_respected'), paired_points_per100: metric('venue.points_per_100'),
+    legacy_points_per100: metric('home.points_per_100_contribution'), failed_metrics: failures,
+    note: 'Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification.'};
 }
 function main() {
   const root = path.resolve(__dirname, '..'), out = path.join(root, 'analysis/stage4_blocker_review');
@@ -161,13 +197,23 @@ function main() {
         {kind: phase + ' corrected pairing, reused evidence', games: cell.games, clusters: cell.clusters, ...m});
     }
   }
-  const result = {schema: 'leaguebound.stage4.blocker-recount/1', current: fresh, corrected,
+  const venue = {};
+  for (const comp of COMPS) {
+    const f = path.join(root, 'analysis/timing_pace_followup/reports', `home_court_diagnostics_v17_${comp}.json`);
+    sourceFiles.push(f); const cell = auditVenue(read(f)); venue[comp] = cell;
+    for (const m of cell.failed_metrics) retain(m.metric, {kind: 'reused v17 controlled venue report, legacy estimand',
+      estimate: m.estimate, target: m.target, sample_count: m.sample_count,
+      actual_legacy_points_per100: cell.legacy_points_per100.estimate,
+      canonical_paired_points_per100: cell.paired_points_per100.estimate});
+  }
+  const result = {schema: 'leaguebound.stage4.blocker-recount/1', current: fresh, corrected, venue,
     failed_verdict_registry: [...registry.values()].sort((a, b) => a.metric.localeCompare(b.metric)),
     source_sha256: Object.fromEntries(sourceFiles.map(f => [path.relative(root, f).split(path.sep).join('/'), hash(f)])),
     limitation: 'No certification. Exact raw and canonical recount, not fresh simulation of the archived validation games. Population home-win is not the controlled §17.4 verdict. Additional missing reports/owner blockers are documented separately.'};
   fs.mkdirSync(out, {recursive: true}); fs.writeFileSync(path.join(out, 'blocker_recount.json'), JSON.stringify(result, null, 2) + '\n');
-  process.stdout.write(JSON.stringify({fresh_failures: fresh.failures.length, reused_games: 4680, failure_union: registry.size,
+  process.stdout.write(JSON.stringify({fresh_failures: fresh.failures.length, reused_corrected_games: 4680,
+    reused_venue_games: 3000, failure_union: registry.size,
     output: 'analysis/stage4_blocker_review/blocker_recount.json'}) + '\n');
 }
-module.exports = {aggregationEstimate, auditReport, auditCorrectedRows, classify};
+module.exports = {aggregationEstimate, auditReport, auditCorrectedRows, classify, auditVenue};
 if (require.main === module) main();
