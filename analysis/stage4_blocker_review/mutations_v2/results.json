@@ -1,0 +1,80 @@
+{
+  "source_sha256": "d38f8bcec61a4c7c0815d7553d8d60fa6e382253326c160df4a2030b3ec2dc40",
+  "clean_before": 0,
+  "clean_after": 0,
+  "killed": 9,
+  "results": [
+    {
+      "id": "denominator_guard",
+      "intended_test": "invalid denominator is rejected",
+      "needle": "assert.ok(Number.isFinite(a.denominator) && a.denominator > 0, 'positive finite denominator');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "duplicate_metric",
+      "intended_test": "duplicate metrics are rejected",
+      "needle": "assert.ok(!seen.has(m.metric), 'unique metric ids');",
+      "replacement": "if (seen.has(m.metric)) continue;",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "verdict_guard",
+      "intended_test": "changed verdict is rejected for its target",
+      "needle": "assert.equal(m.verdict, verdict, 'canonical verdict matches unchanged target');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "target_guard",
+      "intended_test": "changed target is rejected against the reference",
+      "needle": "assert.deepEqual(m.target, refs.get(m.metric).target, 'locked target unchanged');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "duplicate_seed",
+      "intended_test": "duplicate seeds are rejected",
+      "needle": "assert.ok(!seen.has(r.seed), 'duplicate seeds rejected');",
+      "replacement": "if (seen.has(r.seed)) continue;",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "opener_guard",
+      "intended_test": "broken opener and roster pairings are rejected",
+      "needle": "assert.equal(r.opening_home, r.variation % 2 === 0, 'balanced opener');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "ratio_scale",
+      "intended_test": "raw totals use weighted denominator, never a mean of rates",
+      "needle": "return (a.scale ?? 1) * a.numerator / a.denominator;",
+      "replacement": "return a.numerator / a.denominator;",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "venue_sign",
+      "intended_test": "venue uses symmetrized triples and rejects duplicates",
+      "needle": "marginSum += 0.5 * (r.home_margin + r.reversed_margin);",
+      "replacement": "marginSum += 0.5 * (r.home_margin - r.reversed_margin);",
+      "exit_code": 1,
+      "killed": true
+    },
+    {
+      "id": "venue_duplicate",
+      "intended_test": "venue uses symmetrized triples and rejects duplicates",
+      "needle": "assert.ok(!seen.has(r.fixture), 'unique venue fixture');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true
+    }
+  ]
+}

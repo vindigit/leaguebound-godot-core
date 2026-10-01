@@ -198,6 +198,9 @@ and 16 college seeds. Natural population diagnostics contain 2000 unique
 career seeds; the identical 5850 fixture roster-state/player records are
 counted once across the two histogram files. They are not 5850 independent
 world populations or necessarily distinct numeric attribute vectors.
+The 2000 histogram career draws are separate from the additional 80 source
+careers used to construct the generated-college match populations, for 2080
+source-career executions in the retained OVR collection.
 
 ### Controlled current-attribute improvements
 

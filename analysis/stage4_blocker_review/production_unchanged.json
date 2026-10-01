@@ -1,0 +1,20 @@
+{
+  "schema": "leaguebound.stage4.unchanged-production/1",
+  "captured_utc": "2026-10-01T04:52:54.3867175Z",
+  "source_head": "0a854f815a6ca410b514941f827b7afa98f68023",
+  "baseline": "899a3972e48e8ce63de07b47b2e593e9c97df4d2",
+  "checked_byte_fingerprints": 287,
+  "all_match": true,
+  "tracked_population_unchanged": true,
+  "trees": {
+    "production": "c7bfee6dc84e6510b264ecfe375962a722b613fe",
+    "targets": "895576b8f62b63d822895408c44347fe94f8579c",
+    "goldens": "1e98998efe32e5148602e8d24f7d25825d5617bc"
+  },
+  "tracked_diff_empty": true,
+  "locked_spec_diff_empty": true,
+  "frozen_runtime_source_head": "05163e375ccce5d33030a48496424be3581163ef",
+  "frozen_runtime_diff_empty": true,
+  "production_behavior_changed": false,
+  "golden_regeneration": "none; six runtime golden assertions passed in complete default eight-step gate"
+}

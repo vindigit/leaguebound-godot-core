@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: raw totals use weighted denominator, never a mean of rates
+ok 1 - raw totals use weighted denominator, never a mean of rates
+  ---
+  duration_ms: 1.7435
+  type: 'test'
+  ...
+# Subtest: invalid denominator is rejected
+ok 2 - invalid denominator is rejected
+  ---
+  duration_ms: 1.5873
+  type: 'test'
+  ...
+# Subtest: report reconciles exact coverage and failures
+ok 3 - report reconciles exact coverage and failures
+  ---
+  duration_ms: 3.7576
+  type: 'test'
+  ...
+# Subtest: duplicate metrics are rejected
+ok 4 - duplicate metrics are rejected
+  ---
+  duration_ms: 1.1816
+  type: 'test'
+  ...
+# Subtest: changed verdict is rejected for its target
+ok 5 - changed verdict is rejected for its target
+  ---
+  duration_ms: 1.41
+  type: 'test'
+  ...
+# Subtest: changed target is rejected against the reference
+ok 6 - changed target is rejected against the reference
+  ---
+  duration_ms: 2.1484
+  type: 'test'
+  ...
+# Subtest: changed aggregate and missing competition are rejected
+ok 7 - changed aggregate and missing competition are rejected
+  ---
+  duration_ms: 0.9233
+  type: 'test'
+  ...
+# Subtest: corrected quartets and raw-to-canonical ratios reconcile
+ok 8 - corrected quartets and raw-to-canonical ratios reconcile
+  ---
+  duration_ms: 7.2076
+  type: 'test'
+  ...
+# Subtest: duplicate seeds are rejected
+ok 9 - duplicate seeds are rejected
+  ---
+  duration_ms: 0.925
+  type: 'test'
+  ...
+# Subtest: broken opener and roster pairings are rejected
+ok 10 - broken opener and roster pairings are rejected
+  ---
+  duration_ms: 5.6254
+  type: 'test'
+  ...
+# Subtest: sample shortage is a certification blocker and population venue is a separate estimand
+ok 11 - sample shortage is a certification blocker and population venue is a separate estimand
+  ---
+  duration_ms: 1.0864
+  type: 'test'
+  ...
+# Subtest: venue uses symmetrized triples and rejects duplicates
+not ok 12 - venue uses symmetrized triples and rejects duplicates
+  ---
+  duration_ms: 1.1527
+  type: 'test'
+  location: 'C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-blocker-audit-L4XLJU\\tests\\tooling\\test_stage4_blocker_audit.cjs:87:1'
+  failureType: 'testCodeFailure'
+  error: 'controlled venue points estimate'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    approx (C:\Users\VALEXA~1\AppData\Local\Temp\leaguebound-blocker-audit-L4XLJU\tools\stage4_blocker_audit.cjs:26:40)
+    auditVenue (C:\Users\VALEXA~1\AppData\Local\Temp\leaguebound-blocker-audit-L4XLJU\tools\stage4_blocker_audit.cjs:163:3)
+    TestContext.<anonymous> (C:\Users\VALEXA~1\AppData\Local\Temp\leaguebound-blocker-audit-L4XLJU\tests\tooling\test_stage4_blocker_audit.cjs:95:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1103:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+    Test.postRun (node:internal/test_runner/test:1232:19)
+    Test.run (node:internal/test_runner/test:1160:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:785:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 282.5071

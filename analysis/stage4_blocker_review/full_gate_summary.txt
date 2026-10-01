@@ -1,0 +1,26 @@
+Godot: C:\Users\valexander\Downloads\Godot_v4.7.1-stable_win64.exe\Godot_v4.7.1-stable_win64_console.exe (4.7.1.stable.official.a13da4feb)
+=== Import project (builds .godot/global_script_class_cache.cfg)
+=== Parse-check every script under warnings-as-errors
+Parse check: self-testing the detector before walking the tree.
+Parse check: the parse error immediately below is deliberate — it is the
+Parse check: broken script the self-test compiles on purpose.
+Parse check: detector verified.
+Parse check: 279 script(s) checked, 0 failure(s)
+=== Project-owned headless acceptance runner
+LeagueBound headless acceptance: PASS
+=== Fixed-seed simulation smoke diagnostics
+=== Builder smoke portfolio (BALANCE_SPEC §7.3.2 bands)
+WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+ERROR: 7 resources still in use at exit (run with --verbose for details).
+=== Attribute sensitivity suite (PR-gate sample: 100000 resolutions)
+=== Attribute marginal-value and sensitivity ===
+=== Calibration smoke (PR-gate sample: 6 games)
+=== Deterministic calibration smoke (structural, not a certification) ===
+=== GdUnit4 suites
+  res://tests/simulation/test_golden_ledgers.gd > test_committed_hashes_reproduce_exactly PASSED 5s 475ms
+Overall Summary: 727 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |
+Executed test suites: (59/59)
+Executed test cases : (727/727)
+Total execution time: 59min 20s 578ms
+Exit code: 0
+=== All requested checks passed
