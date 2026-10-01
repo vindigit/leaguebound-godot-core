@@ -1,0 +1,6 @@
+{
+  "file": "analysis\\builder_dominance_followup\\test_analysis.py",
+  "before_sha256": "6bf382363e7e92c75080e43f023c8ad9a76b1c425d958a471ac004a369272dbb",
+  "after_sha256": "0070150d039b0fbd19e9033df5ec93a63706b980231107a80cecf51791b49f95",
+  "change": "Trailing whitespace only; no tokens changed; after complete exploration and isolated mutation proof, before confirmation"
+}
