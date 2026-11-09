@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Snapshot date | October 1, 2026 |
+| Snapshot date | November 9, 2026 |
 | Repository | `vindigit/leaguebound-godot-core` |
 | Runtime | Godot 4.7.1-stable; typed GDScript |
 | Default branch baseline | `main` at `c38bd2257d27ebce86beb61439fcac524acca0ef` |
@@ -32,7 +32,17 @@ The current Godot repository contains a substantial pure-domain foundation:
 
 This is meaningful implementation progress, but it is not a completed Gate 0 and not a complete simulation certification. Persistence, three save slots, minimal application flow, the 22-scenario transition runner, and Android/iOS export-save-resume evidence remain outside the implemented foundation. Stage 4 also records unresolved calibration failures and missing reports.
 
-**Current follow-up (§5.40, 2026-09-30):** the Builder diversity and OVR
+**Current follow-up (§5.41, 2026-11-09):** the proven Wilson endpoint
+serialization defect is corrected for aggregated proportions and the margin
+covariance runner, including console rendering, historical round-trips and
+explicit symmetric overrides. A separate stale-interval reuse defect is
+corrected. The complete local gate passes 735 cases and parses 280 scripts;
+published-head CI must be verified separately. Pooled ratio uncertainty, game
+dependence, statistical target misses, coverage and owner decisions remain open.
+No match simulation, locked target or OVR/Builder contract changes.
+**Stage 4, Gate 0 and §27.1 certification remain incomplete.**
+
+**Previous follow-up (§5.40, 2026-09-30):** the Builder diversity and OVR
 truthfulness reports have real legal-construction runners, frozen two-range
 protocols, independent arithmetic/statistical tests, mutation evidence and
 bounded measurements. The consolidated review retains nine fresh failures
@@ -78,7 +88,7 @@ are unchanged from `11c4eae`. **Stage 4 and Gate 0 remain incomplete.**
 
 The following chronology summarizes earlier milestones at their historical
 source states. The timing/pace derivation is §5.37, roster pairing is §5.38,
-the margin audit is §5.39, and the current Builder/OVR blocker review is §5.40.
+the margin audit is §5.39, the Builder/OVR blocker review is §5.40, and the current interval correction is §5.41.
 Earlier categorical interpretations about margin independence and reachability
 are superseded by §5.39; older biased pairing is not a current baseline.
 
@@ -124,7 +134,7 @@ The same commit explicitly records free-throw rate, three-point percentage, and 
 
 ### 3.2 Active Stage 4 branch
 
-At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Roster-pairing work is recorded in §5.38, including its 693/693 local gate. The margin investigation is §5.39; the current Builder/OVR and blocker follow-up is §5.40, with final publication and exact-head CI tracked separately. The Stage 4 implementation adds or changes:
+At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the current and archived status documents. Pull request #1 was verified open, draft and unmerged at the roster follow-up's starting remote head `11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4`, whose 684-case CI passed. The earlier timing follow-up began at `15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87` and is recorded in §5.37. Roster-pairing work is recorded in §5.38, including its 693/693 local gate. The margin investigation is §5.39; the Builder/OVR and blocker follow-up is §5.40, and the current interval correction is §5.41, with publication and exact-head CI tracked separately. The Stage 4 implementation adds or changes:
 
 - Competition-specific calibration targets and rule profiles.
 - Attribute-sensitivity, competition, career-progression, and performance runners.
@@ -148,7 +158,7 @@ At this snapshot, `stage4-calibration` contains unmerged Stage 4 work plus the c
 - The explicit restart contract of `simulation-v14-restart-contract` (§5.31): `RestartCause` and `RestartClockMode` as domain types, `RestartClockPolicy` as the single cause-to-clock-mode policy, `CompetitionRuleProfile.made_field_goal_clock_rule` as the competition rule, `PossessionRecord.restart_cause` and the restart cause on every `INBOUND` event. It removes the §5.30 ambiguity between a made field goal and a made free throw, corrects an unrecorded timeout defect, and relocates a competition clock rule out of `PossessionEngine` without changing what it did. Six golden hashes regenerated with the first behavioural divergence located in each.
 - The owner-ruled made-field-goal timing matrix of `simulation-v15-made-field-goal-clock-matrix` (§5.33): `MadeFieldGoalClockRule` carries one window per period category and validates its own shape, `PeriodCategory` derives regulation-final-versus-overtime from `regulation_periods` without storing anything, and all five launch profiles declare their own matrix. A made field goal no longer stops the clock merely because it went in; each competition's late-game windows are data, the boundary is inclusive and written in one place, and `RestartClockPolicy` still has exactly one production call site and no threshold of its own. Two of six golden hashes regenerated, no fixture reseeded.
 
-Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. A prior PR head at `11c4eae` passed CI; later heads require their own exact-head check. The current §5.40 publication requires its own exact-head checks; this task keeps PR #1 open, draft and unmerged regardless of a green gate.
+Because the fast workflow triggers on pushes to `main` and on pull requests, an ordinary direct push to `stage4-calibration` does not by itself establish that the branch passed the pull-request gate. A prior PR head at `11c4eae` passed CI; later heads require their own exact-head check. The current §5.41 publication requires its own exact-head checks; this task keeps PR #1 open, draft and unmerged regardless of a green gate.
 
 ## 4. Implemented Godot foundations
 
@@ -9293,6 +9303,89 @@ PR #1 stays **open, draft and unmerged**. Nightly/deep infrastructure proof and
 full §27.1 certification are subsequent work. **Stage 4 and Gate 0 remain
 incomplete.**
 
+### 5.41 Probability interval reporting correction (November 9, 2026)
+
+Starting from clean `5196c1ad260a1e648709c98882e7bddd01b70431`, the
+canonical report path previously computed Wilson endpoint half-widths then
+printed them around the observed proportion. At 0/40 this yielded a negative
+lower endpoint instead of [0, 0.0876216025]. `CalibrationMetric` now retains
+the actual asymmetric endpoints in JSON and `describe()`, round-trips stored
+endpoints without rewriting historical artifacts, and keeps explicit
+symmetric overrides centered on their estimate. When a replacement aggregation
+cannot calculate an interval, its predecessor's interval is no longer reused.
+The margin covariance runner's separate `_share` path now passes both Wilson
+endpoints directly, preserving its estimates and verdicts. Existing career
+mean reports with fewer than two observations no longer retain a misleading
+zero-width interval; normal sampled means are unchanged. Match simulation,
+scoring, clocks, probabilities, Builder economics, ratings, targets and all
+six golden ledgers are unchanged.
+
+Eight focused Godot cases cover known Wilson values, zero/one observations,
+the 39/40 mirror, JSON, old width-only payloads, explicit overrides, stale
+reuse, console output and verdict ownership. The pooled synthetic-shard
+acceptance suite also checks Wilson endpoints from pooled raw terms. Seven
+actual serializer mutations fail intended assertions, with a clean 8/8 suite
+after each restore. An eighth source mutation restores the margin runner's
+old centering; independent checks reject it separately in judged and
+informational two-game probes, while all 151 point-metric signatures per mode
+remain unchanged. These are eight distinct mutants and nine detection
+outcomes, not nine mutants or calibration samples. Independent review checked
+source, archived log hashes, runner outputs, restoration and test failures.
+The same-prefix five-competition comparator additionally has fifteen Node tests
+and eleven isolated comparator-source mutants; four Python tests cover the
+separate pooled-ratio algebra. These instrument tests are included in PR CI.
+
+The complete default eight-step local gate exits 0 with 735/735 cases across
+60 suites, 280 scripts parsed with zero failures and unchanged golden hashes.
+An earlier gate was deliberately interrupted during GdUnit when independent
+review exposed remaining console, margin-runner and stale-interval paths; its
+exit 127 is not a passing gate or a failed basketball verdict. The final gate
+restarted all eight steps after the complete correction and mutations. The
+existing Builder smoke emits the baseline's eight ObjectDB and seven resource
+cleanup diagnostics while exiting 0; zero errors is the GdUnit result, not an
+assertion that the entire process log has no diagnostics. Commands, compact
+proofs, XML, source hashes and the interruption record are retained under
+`analysis/pooled_ratio_followup/`; bulky logs remain ignored.
+
+The [pooled ratio investigation](docs/STAGE4_POOLED_RATIO_INTERVAL_NOTES.md)
+identifies missing covariance moments in pooled FG% and PPP and gives an
+independent executable algebraic witness. These moments could reconstruct the
+existing team-game estimator, subject to numerical stability; that would not
+by itself validate game or quartet dependence. Current NCAA and FIBA
+statistical manuals provide relevant FGA conventions, but the locked project
+documents do not explicitly adopt either governing body's full convention for
+every fictional competition. No box-score rule is silently changed. The
+owner cap-order conflict and [FGA convention decision](docs/STAGE4_FGA_CONVENTION_OWNER_DECISION.md),
+pooled uncertainty, repeated target
+misses, broader coverage and subsequent certification prerequisites remain
+open. Exact final-head GitHub checks are verified after ordinary fast-forward
+publication; PR #1 stays open, draft and unmerged.
+
+A same-prefix five-competition 40-game-per-level replay exactly reproduces
+all 98 point-metric records and every competition/role section, including the
+same nine failures. Fifty Wilson endpoint pairs change to their correct
+centers; thirty other intervals remain unchanged. This is a reproducibility
+check, not an untouched sample. Its embedded context names base HEAD
+`5196c1a` with an empty dirty note despite the modified serializer used for
+the run; separate source hashes record the actual reporting code. HEAD alone
+is not a clean-tree or executable-content proof. Report provenance currently
+does not detect dirty inputs, and the aggregator identity signature omits a
+content fingerprint and Godot version; immutable-source verification remains
+open before trusting certification artifacts.
+An actual `ReportAggregator` probe with copied synthetic shards confirms it
+accepts a Godot-version mismatch and, separately, a dirty-note mismatch;
+both short samples remain uncertified. This demonstrates missing identity
+guards, not that real mismatched certification shards were run or accepted.
+Source, output and limitations are retained in the §5.41 evidence directory.
+
+The owner selected competition-specific FGA conventions on November 9, 2026,
+then directed that they follow real-world practice. The FGA owner package now
+maps the available high-school, college, international and domestic-pro
+references, including NCAA's explicit doubt fallback and limitations in
+current NBA/G League and high-school source verification. No box-score
+projection change has yet been made; unmodeled release timing must remain
+visible rather than silently invented.
+
 ## 6. Certification and workflow blockers
 
 ### 6.0 Blocker classification, corrected
@@ -9307,7 +9400,7 @@ Two items have been carried in the remaining-blocker lists as though they were o
 | **High-school field-goal percentage** | **Earlier finding superseded by §5.39.** The §5.22 source state had two untouched 1,000-game ranges pooling to 0.3888 ±0.0018 against a 0.390 floor, with the interval reaching the band. Under v4 roster pairing, later A/B estimates are 0.383200/0.383339 and both fail. FGA denominator accounting remains unaudited; no implementation cause is ruled out. |
 | **College field-goal percentage** | **Confirmed as a repeatable measurement; cause remains partly open (§5.22–§5.24, §5.39).** 0.4124 pooled over two untouched 1,000-game ranges against a 0.420 floor, every range interval below it; 0.4115 on a fresh 400-game range. Earlier counterfactuals narrowed roster-versus-rule-profile effects but did not exhaust production or denominator explanations — field-goal percentage follows the **roster** (±0.03 to ±0.05) and not the rule profile (∓0.005). §5.23 measures the fixture against the production creation-and-development contract and finds the fixture's rating **level** corroborated (67.01 against 67.40) and its shooting **shape** not (three-point 66.01 against 70.21). **§5.24 repairs the `_family_weights` defect those figures were measured through and re-measures on the same seeds: the level finding survives (67.01 against 67.48) and so does the three-point gap, which widens to 66.01 against 70.74; the `short_range`, `mid_range` and `dunking` rows are withdrawn, and with them the assumption that a uniform shooting lift matches production.** **A fixture-shape contribution was identified; a separate FGA convention/denominator issue remains unaudited, so implementation explanations are not exhausted.** An owner-decision package is delivered at [`docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md`](docs/STAGE4_COLLEGE_FIELD_GOAL_OWNER_DECISION.md); the decision is not taken |
 
-The table above preserves earlier source-state findings. Current precedence is §5.40 and the [consolidated blocker review](docs/STAGE4_CONSOLIDATED_BLOCKER_REVIEW.md): nine fresh canonical failures and 19 distinct failed IDs across the current/corrected/controlled evidence inventory. High-school and college FG%, all five overtime rates, Development blowouts, top-domestic close/blowouts and smaller isolated shooting misses remain statistical blockers without a proven implementation cause. Raw population home-win and the overseas legacy cap failure are reporting/estimand blockers; controlled paired venue results pass at their limited sample. A sample shortage does not diagnose gameplay. Builder/OVR bounded reports are now implemented, with broader deployment, legal-space, population and lifecycle coverage still open. The exact-cap ordering conflict requires an owner decision; canonical probability-interval serialization is a proven reporting problem. FGA denominators, perimeter help/closeout and tactical movement, report parity/stakes coverage, nightly/deep proof and full certification remain prerequisites. Earlier biased fixture measurements cannot serve as current baselines, and earlier green progression ranges do not close the newly identified lifecycle conflict.
+The table above preserves earlier source-state findings. Current precedence is §5.41 and the [consolidated blocker review](docs/STAGE4_CONSOLIDATED_BLOCKER_REVIEW.md): nine fresh canonical failures and 19 distinct failed IDs across the current/corrected/controlled evidence inventory. High-school and college FG%, all five overtime rates, Development blowouts, top-domestic close/blowouts and smaller isolated shooting misses remain statistical blockers without a proven implementation cause. Raw population home-win and the overseas legacy cap failure are reporting/estimand blockers; controlled paired venue results pass at their limited sample. A sample shortage does not diagnose gameplay. Builder/OVR bounded reports are now implemented, with broader deployment, legal-space, population and lifecycle coverage still open. The exact-cap ordering conflict requires an owner decision; the identified Wilson endpoint serialization is corrected, while pooled ratio and dependence validity remain open. FGA denominators, perimeter help/closeout and tactical movement, report parity/stakes coverage, nightly/deep proof and full certification remain prerequisites. Earlier biased fixture measurements cannot serve as current baselines, and earlier green progression ranges do not close the newly identified lifecycle conflict.
 
 ### 6.1 Sharded-report aggregation
 
@@ -9321,7 +9414,7 @@ The six pooling requirements have the following current implementation and evide
 2. **Provenance verified.** Commit SHA, Godot build mode, rules profile and version, balance profile and version, ratings version, RNG algorithm and stream-key version, target version, competition, and sample unit must all agree. Metric definition, denominator, and target must agree per metric.
 3. **Seed disjointness enforced structurally.** Reports now carry a `seed_range` interval and a shard index rather than a sentence describing them, so overlap is checkable. Two shards that declare no interval are treated as overlapping rather than assumed safe.
 4. **Raw terms combined, never rounded rates.** This required a schema change: reports previously carried only an estimate and a sample count, so combining them would necessarily have averaged shard estimates. Metrics now carry numerator, denominator, count, sum, and sum-of-squares. Percentile metrics — including the locked career-peak medians, which cannot be recovered from summed moments — carry the full bounded-integer histogram, which pools by addition and yields the exact combined percentile.
-5. **Intervals and verdicts recomputed, with a newly proven reporting limitation (§5.40).** Point estimates and verdicts are recomputed from pooled terms. The proportion path computes a Wilson half-width but serializes it around the raw estimate rather than the Wilson center; 0/40 produces a negative lower endpoint. It cannot support the earlier claim of correct Wilson coverage. FG% explicitly overrides the width with its team-game ratio interval. Endpoint/aggregation/serialization regressions and dependence units must be corrected before §27.2 acceptance. `MetricAggregation.estimate()` remains the single sharded-estimate path; this finding does not justify averaging shard means or changing locked verdicts.
+5. **Intervals and verdicts recomputed, with remaining uncertainty limitations (§5.41).** Point estimates and verdicts are recomputed from pooled terms. Aggregated proportions and margin covariance now retain their asymmetric Wilson endpoints instead of recentering them. Historical reports retain their original values. Single-run FG% explicitly overrides the width with a team-game ratio interval, but pooled reports do not retain the covariance moments needed to reconstruct it and currently fall back to a binomial proportion interval. Game/quartet dependence and the correct sampling unit are also unresolved. These limitations must close before §27.2 acceptance; the endpoint correction alone does not establish statistical coverage.
 6. **One immutable aggregate report; job fails when incomplete.** Any rejection fails the job. An aggregation that is valid but short of its required sample also fails unless `--allow-uncertified` is passed, which the nightly summary uses because nightly samples cannot reach the requirement.
 
 Metrics that genuinely cannot be pooled — a 99th percentile with no histogram — are reported as un-aggregatable rather than silently combined.
@@ -9347,7 +9440,7 @@ follow-up verified clean local HEAD, actual remote branch and PR head at
 has successful `simulation` and `test-report.xml` checks. That ancestor run
 does not validate the new report instruments.
 
-§5.40 records this follow-up's local execution evidence. The authoritative
+§5.41 records this follow-up's local execution evidence. The authoritative
 published-head CI status is the [PR #1 checks page](https://github.com/vindigit/leaguebound-godot-core/pull/1/checks);
 the PR description records the exact new head and its run after publication.
 A passing ancestor is not a passing new head: the verification must compare the
@@ -9425,7 +9518,7 @@ Level-specific and career documents remain authoritative constraints. Their exis
 
 ## 9. Immediate work queue
 
-The current dependency order is the [§5.40 consolidated queue](docs/STAGE4_CONSOLIDATED_BLOCKER_REVIEW.md#dependency-ordered-work-queue). Canonical interval validity and the FGA/3PA denominator audit can proceed safely while the owner resolves exact-cap ordering. Broader diagnoses and coverage follow those dependencies; nightly/deep infrastructure proof and full certification are subsequent separately authorized work. The numbered items below retain earlier task history and are superseded where the current evidence or queue differs.
+The current dependency order is the [consolidated queue](docs/STAGE4_CONSOLIDATED_BLOCKER_REVIEW.md#dependency-ordered-work-queue), updated by §5.41. Pooled interval validity and the FGA/3PA denominator audit can proceed safely while the owner resolves exact-cap ordering. Broader diagnoses and coverage follow those dependencies; nightly/deep infrastructure proof and full certification are subsequent separately authorized work. The numbered items below retain earlier task history and are superseded where the current evidence or queue differs.
 
 1. ~~Open a pull request from `stage4-calibration` and run the fast branch gate.~~ **Done.** PR #1 is open as a draft and its gate passed at `00567d4`. It must be re-run on the pull request's current head before the draft is lifted.
 2. ~~Add deterministic aggregation for sharded competition and progression reports.~~ **Done** (§6.1). Remaining dependency: execute a nightly or deep run, which has never happened, and confirm the `chickensoft-games/setup-godot@v2` action referenced by both new workflows actually resolves on this project's runner — it was written from convention, not verified.

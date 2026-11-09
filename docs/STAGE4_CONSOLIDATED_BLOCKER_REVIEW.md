@@ -1,10 +1,18 @@
 # Stage 4 consolidated blocker review
 
+**Current update (§5.41):** the identified Wilson endpoint serialization and
+margin-runner presentation paths are corrected and independently mutation
+tested. The historical reports and their printed intervals below remain
+unchanged. Pooled FG%/PPP ratio uncertainty, dependence units and all other
+listed statistical, coverage and owner blockers remain open; see the
+[pooled ratio investigation](STAGE4_POOLED_RATIO_INTERVAL_NOTES.md).
+
 The Builder and OVR reports now have executable instruments, fixed protocols,
 independent tests and retained measurements. Stage 4 is **not complete**.
 No §27.1 certification or nightly/deep infrastructure proof is claimed.
-Production behavior, shooting, overtime, clocks, pace, rating coefficients,
-Builder economics, targets and tolerances remain unchanged by this follow-up.
+Match simulation, shooting, overtime, clocks, pace, rating coefficients,
+Builder economics, targets and tolerances remain unchanged. The later §5.41
+follow-up changes calibration interval reporting.
 
 ## Baseline and evidence precedence
 
@@ -58,7 +66,9 @@ verdicts. A repeatable point estimate outside a band is a calibration blocker;
 it does not identify a faulty probability, clock or roster rule. Green unit
 tests also do not certify a statistical distribution.
 
-There is a separately proven **reporting implementation problem** under §27.2.
+There was a separately proven **reporting implementation problem** under §27.2
+at the archived baseline; §5.41 corrects the identified endpoints for new
+reports and preserves these historical artifacts.
 `MetricAggregation.interval_half_width()` computes half the Wilson endpoint
 width for proportions, but `CalibrationMetric.to_dictionary()` centers that
 width on the raw estimate. For 0/40, the published interval is
@@ -161,8 +171,9 @@ native units; any additional acceptance interpretation needs design authority.
 
 | Order | Work | May proceed safely / approval dependency | Must close before §27.1 acceptance? |
 | --- | --- | --- | --- |
-| 0 | Correct canonical probability interval endpoints and state dependence units | Safe bounded reporting correction with known-answer and aggregation/serialization regressions. Preserve historical artifacts and locked point-estimate verdicts; do not recenter asymmetric endpoints or treat shots as independent games. | Yes for §27.2 uncertainty evidence. |
-| 1 | Ledger FGA/3PA convention and denominator audit, known-answer fixtures, exact paired replay | Safe observation and contract tests. Missed shooting-foul attempts currently enter FGA; standard-versus-internal convention needs explicit authority before changing semantics. A deterministic unambiguous contract violation could authorize a narrow correction under repository rules. | Yes for shooting-band validity; it also affects usage/eFG instruments. |
+| 0 | Reconstruct pooled ratio uncertainty and establish dependence units | Wilson endpoint serialization is corrected (§5.41). Pool ratio moments only with explicit numeric/missingness handling; determine game/quartet dependence and preserve historical artifacts. | Yes for §27.2 uncertainty evidence. |
+| 0a | Enforce shard engine/source identity and verify immutable inputs | §5.41 demonstrates the actual aggregator accepts separately altered Godot-version and dirty-note metadata; HEAD alone does not identify modified executable bytes. Add deterministic rejection tests and a verifiable clean/immutable-source mechanism without assuming an empty note proves cleanliness. | Yes before trusting pooled certification evidence. |
+| 1 | Ledger FGA/3PA convention and denominator audit, known-answer fixtures, exact paired replay | Owner directed real-world, competition-specific conventions; the [owner package](STAGE4_FGA_CONVENTION_OWNER_DECISION.md) records source coverage, timing uncertainties and event-stream consequences. Implement with concrete regressions and retain uncertain cases explicitly. | Yes for shooting-band validity; it also affects usage/eFG instruments. |
 | 2 | Resolve exact-cap/current≤potential conflict | **Owner ruling required.** Report examples are concrete; resolving by redefining potential, restricting exceptional caps, or separately applying visible rating loss changes a locked contract. Independent reporting and other diagnoses can continue. | Yes for §6.3/B1 acceptance and lifecycle truthfulness. |
 | 3 | Reconcile population home-win labels and legacy/paired cap definitions; collect controlled disjoint mirror venue ranges | Safe reporting/diagnosis. Preserve the owner's symmetrized estimator; tuning home environment needs separate authority and replicated controlled evidence. | Yes for §14.2/§17.4 verdict consistency. |
 | 4 | Competition-appropriate generated roster-shape evidence, especially college shooting | Safe bounded generation/analysis from existing legal player/development paths; a production roster/world system remains outside current scope. An offset, economics or target amendment needs owner approval. | Yes for representative population interpretation, or explicitly unresolved as a certification blocker. |
@@ -176,7 +187,7 @@ native units; any additional acceptance interpretation needs design authority.
 | 11 | Full §27.1 samples and all locked verdicts with unchanged tolerances | **Subsequent separately authorized work** after the above prerequisites. A sample-size pass alone cannot certify failed gameplay contracts. | This is the certification step; not executed or claimed. |
 
 Recommended next engineering task: a bounded measurement-validity follow-up
-covering canonical probability endpoints and the FGA/3PA denominator audit,
+covering pooled ratio uncertainty and the FGA/3PA denominator audit,
 with known-answer and ledger replay evidence, while the owner resolves the
 exact-cap ordering conflict. It can improve measurement validity without
 tuning basketball.
@@ -187,14 +198,15 @@ tuning basketball.
 [measurements](../analysis/stage4_blocker_review/MEASUREMENTS.md),
 [Builder/OVR independent review](STAGE4_BUILDER_OVR_INDEPENDENT_REVIEW.md)
 and their respective source/manifests provide commands, versions, seeds,
-counts, tests, mutation outcomes and limitations. The complete existing
-eight-step gate passed at runtime source `05163e3`: 727/727 cases, 59 suites,
-279 parsed scripts, zero parse failures and unchanged six golden hashes.
-GdUnit has zero errors/failures/skips/orphans; the historical Builder smoke
-cleanup diagnostics remain disclosed in the execution record. The preliminary
-interrupted gate is not counted. The separate final analysis suites pass 54
-cases, and 41 actual-source semantic mutations fail their intended assertions
-with clean suites before and after. No Godot source changed after the full gate.
-Exact final-head GitHub checks and the open/draft/unmerged PR state are inspected
-after ordinary fast-forward publication, with results recorded in PR #1.
-All claims remain measured, not certified.
+counts, tests, mutation outcomes and limitations. At the historical §5.40
+runtime source `05163e3`, the eight-step gate passed 727/727 cases, 59 suites,
+279 parsed scripts and unchanged goldens; 54 separate analysis cases and 41
+semantic mutations were recorded. The current §5.41 correction has its own
+[execution record](../analysis/pooled_ratio_followup/EXECUTION.md): a fresh
+complete gate passes 735/735 cases, 60 suites, 280 parsed scripts and the same
+goldens. Its eight distinct source mutations yield nine intended detections;
+interrupted preliminary gates are not counted. GdUnit has zero
+errors/failures/skips/orphans; the historical Builder-smoke cleanup diagnostics
+remain disclosed. Exact final-head GitHub checks and the open/draft/unmerged PR
+state are inspected after ordinary fast-forward publication, with results
+recorded in PR #1. All claims remain measured, not certified.

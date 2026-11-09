@@ -114,6 +114,8 @@ jobs:
           node --test tests/tooling/test_stage4_blocker_audit.cjs
           node tests/tooling/test_ovr_truthfulness_analysis.cjs
           python3 analysis/builder_dominance_followup/test_analysis.py
+          node --test tests/tooling/test_interval_replay.cjs
+          python3 analysis/pooled_ratio_followup/verify_moments.py
 
       - name: Upload reports
         if: always()

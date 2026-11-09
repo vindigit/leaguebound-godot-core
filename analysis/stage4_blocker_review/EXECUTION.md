@@ -1,5 +1,10 @@
 # Stage 4 Builder/OVR blocker review execution
 
+This is the historical execution record at the §5.40 source state. §5.41
+subsequently corrects the identified Wilson endpoint serialization paths;
+the archived measurements and warnings here remain unchanged. Pooled ratio
+uncertainty and dependence-unit coverage remain open.
+
 Starting local HEAD, actual remote branch and PR head were all
 `899a3972e48e8ce63de07b47b2e593e9c97df4d2`. The Godot checkout was clean
 before authored report files appeared. The expected SHA was checked, not used

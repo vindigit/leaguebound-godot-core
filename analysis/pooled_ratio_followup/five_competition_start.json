@@ -1,0 +1,10 @@
+{
+  "started_utc": "2026-11-09T17:09:55.8375926Z",
+  "base_head": "5196c1ad260a1e648709c98882e7bddd01b70431",
+  "serializer_sha256": "2b85e99bed33a854ec8a5011d1ea666cc4f4b0439123514bb0b6ee6776be2c74",
+  "games_per_competition": 40,
+  "competitions": 5,
+  "seeds": "1-40 per competition",
+  "label": "interval_endpoint_40_each",
+  "note": "Same-prefix replay to verify point estimates and corrected report endpoints; not an untouched validation or certification."
+}

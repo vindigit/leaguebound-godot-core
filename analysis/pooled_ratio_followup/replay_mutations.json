@@ -1,0 +1,137 @@
+{
+  "source_sha256": "2589306102a8e308989d4bf5e0e3048dc858d89822cc319d1102d5dbc62acd98",
+  "test_sha256": "a2bb39d16076acebbfa69681ec7e57b456518d1dc5302043a890d20f413dee8a",
+  "driver_sha256": "a141a8cf1d4599ee89c1c2a407f8327872e9d63573bd2b6c87b414276bdd15f5",
+  "node_version": "v24.22.1",
+  "log_directory": "reports/interval_replay_mutations_8380_1794245035761",
+  "isolated_copies": true,
+  "mutants": 11,
+  "results": [
+    {
+      "id": "before",
+      "exit_code": 0,
+      "log_sha256": "9dc133719a2e1903c6e753923ccd7267fce7dd32c0d2387076c99ad5d5eb69e7"
+    },
+    {
+      "id": "point_guard",
+      "exit_code": 1,
+      "intended_test": "changed point metric is rejected",
+      "log_sha256": "ffe49a43e396f5ea051659ff2e0593b83d79238d9383f01675578421aa4b6b77"
+    },
+    {
+      "id": "after_point_guard",
+      "exit_code": 0,
+      "log_sha256": "a3d0237aa65a2cca6ae1f03173b899726aeca5cfe1c0a54fce5f7fdaeba155cc"
+    },
+    {
+      "id": "wilson_low_guard",
+      "exit_code": 1,
+      "intended_test": "incorrect Wilson endpoint is rejected",
+      "log_sha256": "0c49dfa967e076cde009bb4580718f349ef98ba4fc44fca261bdab19d2716c54"
+    },
+    {
+      "id": "after_wilson_low_guard",
+      "exit_code": 0,
+      "log_sha256": "32b861c861019877e8c046825e8432b65e9b9e02abdc4887545b245b59cfb241"
+    },
+    {
+      "id": "fg_override_guard",
+      "exit_code": 1,
+      "intended_test": "changed FG ratio override is rejected",
+      "log_sha256": "2e11879854193a7dadfe60dc29396eb72efd2530be51a3e4a364e9f7f2173e30"
+    },
+    {
+      "id": "after_fg_override_guard",
+      "exit_code": 0,
+      "log_sha256": "545ca3271810f075ad38b44fba3f2fea4038e62b864a0656caf7d6ee189f5eaf"
+    },
+    {
+      "id": "unique_current_guard",
+      "exit_code": 1,
+      "intended_test": "duplicate metric is rejected",
+      "log_sha256": "7bb4570d49ff4a049c93b00019939ba5dc620d7a03cbdbbc9014a8b9b565dfc1"
+    },
+    {
+      "id": "after_unique_current_guard",
+      "exit_code": 0,
+      "log_sha256": "d7800bbfd0cefd11a08aa74c81dafc97655782e44f40de754717073c47096e00"
+    },
+    {
+      "id": "section_guard",
+      "exit_code": 1,
+      "intended_test": "altered competition section is rejected",
+      "log_sha256": "d65c596c8c8e6b1ad83b2c342fc73f810b0348a44404b396c9c83390595c3ce6"
+    },
+    {
+      "id": "after_section_guard",
+      "exit_code": 0,
+      "log_sha256": "2470fc4ff78c540744f4789012e8e5826cd5afb6bf09d07f167cd2fd93396eb0"
+    },
+    {
+      "id": "games_guard",
+      "exit_code": 1,
+      "intended_test": "coherently changed game counts are rejected",
+      "log_sha256": "d5385fc83d3e5d9324a91e0ebed563a89d8e15e9d213907d1b56bd23f7880cc5"
+    },
+    {
+      "id": "after_games_guard",
+      "exit_code": 0,
+      "log_sha256": "c1cfa2db58b69f75412ae00aa8cf8e953585b0692d77f6a067c02215899035da"
+    },
+    {
+      "id": "seed_guard",
+      "exit_code": 1,
+      "intended_test": "coherently shifted seed ranges are rejected",
+      "log_sha256": "91a09e84c598f809c6f1b319e22d22174d72dce9d9f45e2b69a34cf4666c1bb0"
+    },
+    {
+      "id": "after_seed_guard",
+      "exit_code": 0,
+      "log_sha256": "a1eb5b0fde7edb90ff00290e874b303acc17f4faa52eb369fc28c6d81b3b219f"
+    },
+    {
+      "id": "competition_guard",
+      "exit_code": 1,
+      "intended_test": "coherently duplicated competition identities are rejected",
+      "log_sha256": "a92426188aa72fb9548cd52222b7da29ffe49bb938efebeadc5fe45768e4262c"
+    },
+    {
+      "id": "after_competition_guard",
+      "exit_code": 0,
+      "log_sha256": "91168d7ca53dc1f0a2320554c1ff7a97277af175e8d9bc8628ef1341c2b8f0eb"
+    },
+    {
+      "id": "rules_guard",
+      "exit_code": 1,
+      "intended_test": "coherently changed rules versions are rejected",
+      "log_sha256": "c6f3d0a5ec398e0263e9bf6985ef1f4c10dcfdb47c0a5c56effd2176bb42a4bd"
+    },
+    {
+      "id": "after_rules_guard",
+      "exit_code": 0,
+      "log_sha256": "b2f053dc13319fb185cdf868900f67f14aa7d4a02c832108dc6a3816b9829d27"
+    },
+    {
+      "id": "rng_guard",
+      "exit_code": 1,
+      "intended_test": "changed RNG version is rejected",
+      "log_sha256": "917ea739a4a2dee90c7e5916563a8d61297243a720b8e92702d9c062d9755e7d"
+    },
+    {
+      "id": "after_rng_guard",
+      "exit_code": 0,
+      "log_sha256": "3a44761203c649a95a39bcd9d6f5d930325053fa654db3d2751d1a398ca525df"
+    },
+    {
+      "id": "commit_guard",
+      "exit_code": 1,
+      "intended_test": "unverifiable commit identifier is rejected",
+      "log_sha256": "32f2652d3307a81572f40ab5c3afa476485109a8e312f1093df58f446819da9f"
+    },
+    {
+      "id": "after_commit_guard",
+      "exit_code": 0,
+      "log_sha256": "1a852c362f951ba44e208c7bd3f79f9be80aaf5a4873499667520cb5fd9b7f81"
+    }
+  ]
+}

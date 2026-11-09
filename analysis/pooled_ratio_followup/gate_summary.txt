@@ -1,0 +1,17 @@
+=== Import project (builds .godot/global_script_class_cache.cfg)
+=== Parse-check every script under warnings-as-errors
+Parse check: 280 script(s) checked, 0 failure(s)
+=== Project-owned headless acceptance runner
+=== Fixed-seed simulation smoke diagnostics
+=== Builder smoke portfolio (BALANCE_SPEC §7.3.2 bands)
+WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+ERROR: 7 resources still in use at exit (run with --verbose for details).
+=== Attribute sensitivity suite (PR-gate sample: 100000 resolutions)
+=== Attribute marginal-value and sensitivity ===
+=== Calibration smoke (PR-gate sample: 6 games)
+=== Deterministic calibration smoke (structural, not a certification) ===
+=== GdUnit4 suites
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 735 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (60/60)[0m
+[38;2;233;150;122mExecuted test cases : (735/735)[0m
+=== All requested checks passed

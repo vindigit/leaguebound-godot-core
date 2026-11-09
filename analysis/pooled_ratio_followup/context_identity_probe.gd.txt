@@ -1,0 +1,40 @@
+extends SceneTree
+
+
+func _init() -> void:
+	var report: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(
+		"res://analysis/pooled_ratio_followup/competition_40_each.json"))
+	var context: Dictionary = report["context"]
+	var version_changed: Dictionary = context.duplicate(true)
+	version_changed["godot_version"] = "synthetic-different-version"
+	var dirty_changed: Dictionary = context.duplicate(true)
+	dirty_changed["commit_note"] = "synthetic-modified-source"
+	var original := ReportContext.from_dictionary(context)
+	var other_version := ReportContext.from_dictionary(version_changed)
+	var other_dirty := ReportContext.from_dictionary(dirty_changed)
+	var left: Dictionary = report.duplicate(true)
+	var right: Dictionary = report.duplicate(true)
+	var left_context: Dictionary = left["context"]
+	var right_context: Dictionary = right["context"]
+	left_context["shard"] = {"index": 0, "count": 2}
+	left_context["seed_range"] = {"start": 1, "end": 40}
+	right_context["shard"] = {"index": 1, "count": 2}
+	right_context["seed_range"] = {"start": 41, "end": 80}
+	right_context["godot_version"] = "synthetic-different-version"
+	var payloads: Array[Dictionary] = [left, right]
+	var version_result := ReportAggregator.aggregate(payloads, &"competition_calibration", 2)
+	right_context["godot_version"] = original.godot_version
+	right_context["commit_note"] = "synthetic-modified-source"
+	var dirty_result := ReportAggregator.aggregate(payloads, &"competition_calibration", 2)
+	print("CONTEXT_PROBE " + JSON.stringify({
+		"version_change_same_signature": original.identity_signature() == other_version.identity_signature(),
+		"dirty_note_change_same_signature": original.identity_signature() == other_dirty.identity_signature(),
+		"aggregator_accepted_version_mismatch": version_result.ok(),
+		"aggregator_accepted_dirty_note_mismatch": dirty_result.ok(),
+		"version_certified": version_result.certified,
+		"dirty_certified": dirty_result.certified,
+		"version_rejections": version_result.rejections,
+		"dirty_rejections": dirty_result.rejections,
+		"note": "Synthetic altered metadata over copied report rows; no second game sample is claimed.",
+	}))
+	quit(0)

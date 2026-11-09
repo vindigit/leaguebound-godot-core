@@ -1,0 +1,22 @@
+{
+  "schema": "leaguebound.context-identity-probe/1",
+  "captured_utc": "2026-11-09T17:29:14.7153397Z",
+  "base_head": "5196c1ad260a1e648709c98882e7bddd01b70431",
+  "source_sha256": "2db0f9e6d1e4fe7cb76fe212984ac5f3939ac5662a18a8224abf52f25e35872d",
+  "input_report_sha256": "6045bd06b028981813dc4a81ae29275631adcf9127b306303f96f5de27433469",
+  "context_source_sha256": "99981892dcddac7d9848420bd537a4d104cf9336031b5462afd63e79f79b3b48",
+  "aggregator_source_sha256": "99ae095931d5e0a24c98c60e64bbc56c1a7e3838945482be387f8a52dffb8359",
+  "log_sha256": "71dc8ae114ba9087cf9196515de2bb297a7d1ca6bf161391160dc4455c6132b3",
+  "observations": {
+    "aggregator_accepted_dirty_note_mismatch": true,
+    "aggregator_accepted_version_mismatch": true,
+    "dirty_certified": false,
+    "dirty_note_change_same_signature": true,
+    "dirty_rejections": [],
+    "note": "Synthetic altered metadata over copied report rows; no second game sample is claimed.",
+    "version_certified": false,
+    "version_change_same_signature": true,
+    "version_rejections": []
+  },
+  "limitation": "Synthetic metadata mismatches are applied to copied report rows; no second match sample or completed certification is claimed."
+}
