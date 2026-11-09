@@ -1,0 +1,14 @@
+{
+  "schema": "leaguebound.clean-replay-provenance/1",
+  "source_head": "f82e69c3b8138e76de26288d46e4bf4083ac1902",
+  "clean_status_at_start_and_end": true,
+  "report_context_head": "f82e69c3b8138e76de26288d46e4bf4083ac1902",
+  "files": {
+    "competition_clean_40_each.json": "23adf490913a83870bcbcfa6c9378f62c7ced458cf2bcb62135dbfb036b1e493",
+    "clean_comparison.json": "d75c66c19ea0a703a331a6d50052c5bcc054aa4346f3f3f45fd80d2e16d1712c",
+    "clean_start.json": "3ce5bc8550904fb6cd71099781c1823c4477a49242ad39f0dc49841367520507",
+    "clean_result.json": "6404a1d49d50df227a5a2a6238c33cad96ead7dea4acfe9f4693571107b4f473"
+  },
+  "limitations": "External status does not attest executable inputs; declared seed prefix does not prove individual seeds or ledgers.",
+  "certification": false
+}

@@ -127,3 +127,18 @@ the competition mapping and release-timing coverage still need implementation
 and validation. Statistical
 misses, population and deployment coverage, the exact-cap owner decision,
 nightly/deep infrastructure proof and §27.1 certification remain open.
+
+## Clean committed-source replay
+
+A second same-prefix replay ran from clean tracked and nonignored HEAD
+`f82e69c3b8138e76de26288d46e4bf4083ac1902` with the serializer and runner
+hashes recorded in `clean_start.json`. `clean_result.json` records an empty
+post-run status and exit 1 for the same nine locked point-verdict failures.
+The retained `competition_clean_40_each.json` reports that exact HEAD. The
+independent comparator in `clean_comparison.json` again verifies 200 games,
+98 unchanged point-metric records, 50 corrected Wilson intervals, 30
+preserved other intervals and nine failures. Its metrics and sections also
+match the preceding dirty-source replay exactly. Start/end status is external
+provenance, not an in-report content attestation; aggregate metadata still
+cannot prove individual seeds or event ledgers. This is a reproduction of the
+same declared seed prefix, not a new validation range or certification.
