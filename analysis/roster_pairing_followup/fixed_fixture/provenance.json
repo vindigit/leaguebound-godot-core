@@ -1,0 +1,19 @@
+{
+  "baseline_commit": "11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4",
+  "candidate_commit": "8b8fd437ca700beef14886b61f95f7ce9eb77c93",
+  "baseline_path": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-roster-baseline-11c4eae",
+  "fixture_variations": [
+    905000,
+    905023
+  ],
+  "seed_formula": "variation + 1",
+  "games": 24,
+  "competition": "college",
+  "home_environment": 0.5,
+  "baseline_audit_sha256": "3665281FC93822901217F6ABBE096DDF47423BC138CF7FF852ED708B9188A1D9",
+  "candidate_audit_sha256": "57B919CF8F259911EC1BB98C1A7FB0DFA4292C1E09FC2D432E5143D1BC5C61EC",
+  "baseline_catalog_sha256": "7289331D4CD9EB028940072C98E3503F9F9A45431E55A93795A9C7BEA555B0BE",
+  "candidate_catalog_sha256": "83C7562EF44584A843B42FA45672C069E09242E2C7E8CB039CDA30CC45B9C099",
+  "script": "res://tools/audit_fixed_fixture_channels.gd",
+  "godot_version": "4.7.1.stable.official.a13da4feb"
+}

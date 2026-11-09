@@ -19,7 +19,33 @@ const SEED: int = 606060
 ## fixture can land on the same shot mix by coincidence, so the mix comparisons
 ## aggregate over a fixed seed set â€” still fully deterministic, just not
 ## balanced on one sample.
-const MIX_SEEDS: PackedInt64Array = [606060, 11235, 98765, 4321, 24680]
+## The seed sweep the two shot-mix helpers below aggregate over.
+##
+## It was five fixed seeds, which on this 2x180-second fixture is about 55
+## attempts per arm. That is not a sample: the tendency contract's own gap is
+## about three percentage points, and at 55 attempts a three-point gap is inside
+## the noise, so `test_tendency_changes_attempt_mix_without_touching_ratings`
+## passed before `simulation-v14` and failed after it without the mechanism
+## having moved at all. Measured over a widening sweep on the v14 tree, the
+## interior-minus-perimeter paint gap is +0.0182 at 5 seeds (19/55 against
+## 18/55), +0.0307 at 20, +0.0401 at 60, +0.0287 at 120 (586/1354 against
+## 548/1356) and +0.0299 at 150 — positive at every size and only legible above
+## about twenty.
+##
+## Raised to 120, which is a **strengthened** assertion rather than a relaxed
+## one: the same claim is now made against roughly 1,350 attempts per arm
+## instead of 55. Both arms of both helpers stay deterministic, and 240 games of
+## this fixture cost about 33 seconds (`PROJECT_STATUS.md` §5.31).
+const MIX_SEED_COUNT: int = 120
+const MIX_SEED_BASE: int = 606060
+const MIX_SEED_STRIDE: int = 7919
+
+
+static func mix_seeds() -> PackedInt64Array:
+	var seeds := PackedInt64Array()
+	for index in range(MIX_SEED_COUNT):
+		seeds.append(MIX_SEED_BASE + index * MIX_SEED_STRIDE)
+	return seeds
 
 
 ## Â§12.4: tactical role reaches `RoleOpportunity` and nothing else, and it can
@@ -168,7 +194,7 @@ func test_usage_budget_sums_across_the_lineup() -> void:
 func _three_point_rate_for_role(role: int) -> float:
 	var attempts: int = 0
 	var threes: int = 0
-	for seed_value in MIX_SEEDS:
+	for seed_value in mix_seeds():
 		var input: MatchInput = MatchFixtureFactory.match_between(
 			_role_team(&"home", role), MatchFixtureFactory.uniform_team(&"away", 70),
 			MatchFixtureFactory.quick_match().rule_profile)
@@ -189,7 +215,7 @@ func _paint_rate_for_tendency(slider: int, position: int) -> float:
 	var tendencies := PlayerTendencies.new(values)
 	var attempts: int = 0
 	var paint: int = 0
-	for seed_value in MIX_SEEDS:
+	for seed_value in mix_seeds():
 		var input: MatchInput = MatchFixtureFactory.match_between(
 			_tendency_team(&"home", tendencies), MatchFixtureFactory.uniform_team(&"away", 70),
 			MatchFixtureFactory.quick_match().rule_profile)

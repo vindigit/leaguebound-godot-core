@@ -1,0 +1,118 @@
+{
+  "source_sha256": "2b85e99bed33a854ec8a5011d1ea666cc4f4b0439123514bb0b6ee6776be2c74",
+  "test_sha256": "5bee1bdea249ecea7637d4f1619b47619f09908c57cb986e44e0743e616a0415",
+  "driver_sha256": "e8f3c9f4346aaba46f61785956fe0d0ad075ea7da1687e7cacb7e88082a623e4",
+  "node_version": "v24.22.1",
+  "godot": "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+  "mutants": 7,
+  "results": [
+    {
+      "id": "before",
+      "exit_code": 0,
+      "log_sha256": "b2699488ef3946f78f9adc89640e4f1f58a65d3010b74d1eaff7ee7917b2744a"
+    },
+    {
+      "id": "wilson_low_centered",
+      "exit_code": 100,
+      "intended": "test_wilson_endpoints_survive_serialization",
+      "failed_tests": [
+        "test_wilson_endpoints_survive_serialization",
+        "test_known_wilson_endpoints_survive_json_and_console_rendering",
+        "test_one_trial_has_a_bounded_interval"
+      ],
+      "log_sha256": "1607e60cce32a0282fa2bb02f06895639aee071e6dbe137f75d36e3c77bb4f8e"
+    },
+    {
+      "id": "after_wilson_low_centered",
+      "exit_code": 0,
+      "log_sha256": "299a83d369a2c41452a4a7abf4c01e1f2da347baca0a0b2fdfd0433083efa63a"
+    },
+    {
+      "id": "wilson_high_centered",
+      "exit_code": 100,
+      "intended": "test_wilson_endpoints_survive_serialization",
+      "failed_tests": [
+        "test_wilson_endpoints_survive_serialization",
+        "test_known_wilson_endpoints_survive_json_and_console_rendering",
+        "test_one_trial_has_a_bounded_interval"
+      ],
+      "log_sha256": "6f4b33116d921e4afd63441f6e9a22cfba86d534038616404551a92f67be847f"
+    },
+    {
+      "id": "after_wilson_high_centered",
+      "exit_code": 0,
+      "log_sha256": "c717ae6e71361a3d95e0eac31f302659c04bb4808a5e62aeb09badb9e9a85d46"
+    },
+    {
+      "id": "console_recenters",
+      "exit_code": 100,
+      "intended": "test_known_wilson_endpoints_survive_json_and_console_rendering",
+      "failed_tests": [
+        "test_known_wilson_endpoints_survive_json_and_console_rendering"
+      ],
+      "log_sha256": "06bb45a9e3483b20717eddf4d4962c9feb71f3e5ad17822d3c8b76bbbeb10a62"
+    },
+    {
+      "id": "after_console_recenters",
+      "exit_code": 0,
+      "log_sha256": "d749249713c91e06174fecfc701339f13a392cf08d0ae6053fc4aaf0d98c9c20"
+    },
+    {
+      "id": "stale_width",
+      "exit_code": 100,
+      "intended": "test_replacing_aggregation_clears_unavailable_interval",
+      "failed_tests": [
+        "test_replacing_aggregation_clears_unavailable_interval"
+      ],
+      "log_sha256": "e848f2e9e418b99ac5f73a95bf886b91faaab4ffcfcfe817e7efe9d9099cec80"
+    },
+    {
+      "id": "after_stale_width",
+      "exit_code": 0,
+      "log_sha256": "ab440aba893d9860cf3d91df5079da0cb2df30737eab1cb04041887a0493ed1d"
+    },
+    {
+      "id": "override_keeps_low",
+      "exit_code": 100,
+      "intended": "test_explicit_interval_override_stays_centered_on_estimate",
+      "failed_tests": [
+        "test_explicit_interval_override_stays_centered_on_estimate"
+      ],
+      "log_sha256": "0e58eca310a71b3b85cf1141ed391e2066a5bc9f35342afc58ce729116fbb609"
+    },
+    {
+      "id": "after_override_keeps_low",
+      "exit_code": 0,
+      "log_sha256": "324e4ff0ef1f0a76af3890b5791df3a67d429aa8f4e42b37d6070a4e0e26041c"
+    },
+    {
+      "id": "drop_archived_endpoints",
+      "exit_code": 100,
+      "intended": "test_wilson_endpoints_survive_serialization",
+      "failed_tests": [
+        "test_wilson_endpoints_survive_serialization",
+        "test_known_wilson_endpoints_survive_json_and_console_rendering"
+      ],
+      "log_sha256": "9b983895dd5878206791c22b387172eb6791b2cb887dbe192a93f8ffc45f3e2a"
+    },
+    {
+      "id": "after_drop_archived_endpoints",
+      "exit_code": 0,
+      "log_sha256": "0fa2b598224562d3e20ec52c9dc77c28380749e827c4314ebf411c761afc60b1"
+    },
+    {
+      "id": "drop_explicit_low",
+      "exit_code": 100,
+      "intended": "test_explicit_bounds_keep_banded_estimate_and_verdict",
+      "failed_tests": [
+        "test_explicit_bounds_keep_banded_estimate_and_verdict"
+      ],
+      "log_sha256": "3fd7c9fe6fa50787106cb8db7549f275ef0bced5f30d3be59058fb97a691e84b"
+    },
+    {
+      "id": "after_drop_explicit_low",
+      "exit_code": 0,
+      "log_sha256": "36e83721ca8a0c16f22ea5628183b24399f5c57512e8657aa34e8ed5f8ba5cbf"
+    }
+  ]
+}

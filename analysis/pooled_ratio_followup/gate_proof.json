@@ -1,0 +1,29 @@
+{
+  "schema": "leaguebound.interval-gate-proof/1",
+  "start": {
+    "started_utc": "2026-11-09T16:16:57.8110413Z",
+    "base_head": "5196c1ad260a1e648709c98882e7bddd01b70431",
+    "serializer_sha256": "2b85e99bed33a854ec8a5011d1ea666cc4f4b0439123514bb0b6ee6776be2c74",
+    "runner_sha256": "8ad557fc54cfa05bc79f7f0483dc1e3805f74e57eb17a971d1b208f006a8676d",
+    "test_sha256": "5bee1bdea249ecea7637d4f1619b47619f09908c57cb986e44e0743e616a0415",
+    "pooled_suite_sha256": "272f6ef5f672008d8d75e4982f7255ae4e136c88be66b6a3a228de51105f7f21",
+    "command": "tools/run_checks.sh",
+    "note": "Fresh complete eight-step gate after documented preliminary interruption and final semantic mutations."
+  },
+  "result": {
+    "finished_utc": "2026-11-09T17:04:28.2345882Z",
+    "exit_code": 0,
+    "log_sha256": "569c05fc885577666254797b4e04049dae6ce5021fb804e54ff7cc564b65c721"
+  },
+  "parsed_scripts": 280,
+  "parse_failures": 0,
+  "gdunit_cases": 735,
+  "gdunit_suites": 60,
+  "junit_failure_error_skip_nodes": 0,
+  "junit_sha256": "3ec83d5ec555a23119761eddd5570219bcdff0dbbf300748c2b4640edda6ae55",
+  "goldens": "six unchanged committed hashes reproduced",
+  "known_baseline_diagnostic": "Builder smoke emits 8 ObjectDB and 7 resource cleanup diagnostics; step exits zero. GdUnit zero errors does not mean every log line is error-free.",
+  "simulation_behavior_changed": false,
+  "targets_or_golden_changed": false,
+  "full_certification_run": false
+}

@@ -1,0 +1,64 @@
+{
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "killed": 9,
+  "isolated_copy": "C:\\Users\\valexander\\AppData\\Local\\Temp\\leaguebound-timing-048e7a3122c94a05bcf6dc3a47a44719",
+  "baseline_and_mutants": [
+    {
+      "summary": "7 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "baseline",
+      "exit_code": 0
+    },
+    {
+      "summary": "2 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "floor_horn_equality",
+      "exit_code": 100
+    },
+    {
+      "summary": "2 test cases | 0 errors | 16 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "floor_ignores_competition_pace",
+      "exit_code": 100
+    },
+    {
+      "summary": "2 test cases | 0 errors | 30 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "eligibility_wrong_deficit",
+      "exit_code": 100
+    },
+    {
+      "summary": "2 test cases | 0 errors | 25 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "eligibility_first_attempt",
+      "exit_code": 100
+    },
+    {
+      "summary": "1 test cases | 0 errors | 192 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "nonbonus_admin_charges_clock",
+      "exit_code": 100
+    },
+    {
+      "summary": "3 test cases | 0 errors | 365 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "awarded_free_throw_charges_clock",
+      "exit_code": 100
+    },
+    {
+      "summary": "3 test cases | 0 errors | 200 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "live_rebound_uncharged",
+      "exit_code": 100
+    },
+    {
+      "summary": "3 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "putback_invents_action_time",
+      "exit_code": 100
+    },
+    {
+      "summary": "4 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "id": "floor_truncates_instead_of_rounding",
+      "exit_code": 100
+    }
+  ],
+  "source_sha256": {
+    "src/domain/basketball/simulation/possession_engine.gd": "59E5674035F9415E18DC47D0C0E7E7D73E4679A409004107C00D816F19B60B0B",
+    "src/domain/basketball/config/simulation_balance_profile.gd": "318DC0FA31C1E848AABD4E839DFB51736A91E391E2343CFF4C5494E0E3E112CF",
+    "tests/simulation/test_stopped_clock_followup.gd": "8D09764A109709C4AC410AB213EE6C5DCA9C87ED540709FE0B9521C1A14B8359",
+    "src/domain/basketball/simulation/endgame_strategy.gd": "93282376CA7C2C6B914C02717675EB91CD46AAAC534956FF5F04755A99F36C09",
+    "calibration/targets/competition_catalog.gd": "7289331D4CD9EB028940072C98E3503F9F9A45431E55A93795A9C7BEA555B0BE"
+  }
+}

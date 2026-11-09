@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "checks": [
+    "ratio of totals and independent influence example",
+    "unit scaling",
+    "zero-variance and sparse-event guards",
+    "paired bootstrap identity"
+  ],
+  "analyzer_sha256": "bca56044642e7b0aa19afa6ec2d10f92fb0548fb1fad40e8cfb10bbac1bd666e"
+}

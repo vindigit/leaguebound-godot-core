@@ -1,0 +1,92 @@
+{
+  "source_commit": "51a115ee22d1bd622fae991fc450a4eef7e43bcb",
+  "started_utc": "2026-10-01T02:51:08.167Z",
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "isolated_copy": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-ovr-truthfulness-EzOP16",
+  "source_sha256": {
+    "src/domain/basketball/ratings/overall_calculator.gd": "3d2a6b23fa6802c2b308ce2ff77644e97cd981efdf9407364e53da9991a24bc7",
+    "calibration/harness/ovr_truthfulness_audit.gd": "ca5f676e131dc0b90a0679eebe2e27ac8b5a26c24636263eeee15602f366954b",
+    "tests/calibration/test_ovr_truthfulness_audit.gd": "1823f14f70bfb791bbfd109fb6d3c45acab99ca6b6effba286f8229ccc583948"
+  },
+  "results": [
+    {
+      "id": "before",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "8e1d332a83c12f21c49b3bc6e39e45b820d47b2b7490c3376705cac1c5bc32c6"
+    },
+    {
+      "id": "formula_offset",
+      "exit_code": 100,
+      "summary": "14 test cases | 0 errors | 2530 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": "test_exact_formula_matches_independent_rational_oracle",
+      "log_sha256": "569dd9a235d2dee2e9e985d5fd2fecb1802a3797f7bd63a1879387c2bd98fe32"
+    },
+    {
+      "id": "after_formula_offset",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "59f77e9d997b699d87d22767bd5ec4f1bc3798419a2eb324eac0cd8e2a1aaec4"
+    },
+    {
+      "id": "floor_instead_of_round",
+      "exit_code": 100,
+      "summary": "14 test cases | 0 errors | 988 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": "test_exact_half_rounding_neighbor_and_helper_clamping",
+      "log_sha256": "3536e6e3e58b7bbda84c1a46bc279f96d0165b988239c0a37b745aa2c00d92a0"
+    },
+    {
+      "id": "after_floor_instead_of_round",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "268a1a26e0db5d508e18b0cc9a624743ced2bc196a02493a2ca417ba58718c3c"
+    },
+    {
+      "id": "potential_wrong_exact_cap",
+      "exit_code": 100,
+      "summary": "14 test cases | 0 errors | 4 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": "test_exact_caps_use_same_formula_and_do_not_change_current",
+      "log_sha256": "450d03424aaacdfd7f42db99937c9e4b210b2dfa4026d9da81414e153a3235f1"
+    },
+    {
+      "id": "after_potential_wrong_exact_cap",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "783b45a6f4cb3f4a36d75ed3a5c9d9c4bd220506be57255051fbae8dc88a089d"
+    },
+    {
+      "id": "repeated_gameplay_seed",
+      "exit_code": 100,
+      "summary": "14 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": "test_balanced_schedule_detects_duplicates_and_missing_exposure",
+      "log_sha256": "213487c1807a0f9c07f2ff7eddfca5e4cc7b1ae119249bb0ac5ec883db8c5025"
+    },
+    {
+      "id": "after_repeated_gameplay_seed",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "da0e069b7582afce18b4cd30f03f328f3bc647f8ff40e054486b03c213f60d47"
+    },
+    {
+      "id": "touch_denominator_offset",
+      "exit_code": 100,
+      "summary": "14 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": "test_live_measurement_denominators_counts_and_determinism",
+      "log_sha256": "ec6cb9ca6b8f9c47df00d4f125ad7b707361fccdf00c5e2f7c240e68aa4b6f44"
+    },
+    {
+      "id": "after_touch_denominator_offset",
+      "exit_code": 0,
+      "summary": "14 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |",
+      "intended_assertion": null,
+      "log_sha256": "ac6ea1cfffc7599538df5c2eae11128872240a62a55b633d3de793563676a24d"
+    }
+  ],
+  "killed": 5,
+  "finished_utc": "2026-10-01T02:54:45.357Z"
+}

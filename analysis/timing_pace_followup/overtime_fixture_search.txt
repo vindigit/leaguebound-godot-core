@@ -1,0 +1,4 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+Searching for golden scenario seeds (limit 100 per scenario)
+  overtime                 seed 190056 NEEDED (was 7919) for: at least one overtime period

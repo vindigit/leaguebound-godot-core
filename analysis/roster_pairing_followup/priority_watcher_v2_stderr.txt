@@ -1,0 +1,5 @@
+InvalidOperation: C:\Users\valexander\leaguebound-godot-core\analysis\roster_pairing_followup\maintain_worker_priority.ps1:14
+Line |
+  14 |  .         if ($p.StartTime -lt $cutoff -or $p.ProcessorAffinity.ToInt64 .
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | You cannot call a method on a null-valued expression.

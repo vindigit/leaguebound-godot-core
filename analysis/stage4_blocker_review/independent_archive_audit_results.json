@@ -1,0 +1,90 @@
+{
+  "independent_checks": 152340,
+  "primary_contrasts": 374,
+  "combined_unique_roster_pairs": 32,
+  "distinct_build_draws": 592,
+  "ranges": {
+    "validation_a": {
+      "rows": 1184,
+      "primary_rows": 1152,
+      "shared_seeds": 64,
+      "distinct_build_draws": 296,
+      "frontier": 18,
+      "raw_sha256": "9de2c0ff7fd1e317b40a565ab6aaf7e66dba8ec9271678ee3261f7d6d8793f10",
+      "interval_critical_values": [
+        5.087669065
+      ],
+      "body_raw_ovr": {
+        "balanced_flat": 47.62833333333333,
+        "body_small": 47.6825,
+        "body_large": 47.59291666666666
+      }
+    },
+    "validation_b": {
+      "rows": 1184,
+      "primary_rows": 1152,
+      "shared_seeds": 64,
+      "distinct_build_draws": 296,
+      "frontier": 18,
+      "raw_sha256": "3f9cfb9cb1f0ca5ffda71e663e37b08d1bf71641acfa216c80661cea62e97f4a",
+      "interval_critical_values": [
+        5.087669065
+      ],
+      "body_raw_ovr": {
+        "balanced_flat": 47.62833333333333,
+        "body_small": 47.6825,
+        "body_large": 47.59291666666666
+      }
+    }
+  },
+  "independent_builder_checks": 81533,
+  "ovr": {
+    "additional_independent_checks": 70807,
+    "ranges": {
+      "A": {
+        "within_rows": 288,
+        "catalog_player_game_rows": 800,
+        "college_player_game_rows": 160,
+        "unique_gameplay_seeds": 144,
+        "manifest_sha256": "cbcb25ee844bbcea87ccb99c2ef410b0bcbe247de1508d79f2b54513aab219b7",
+        "raw_sha256": {
+          "catalog": "4d582bb9a10c2d7616d7e236bcc207c791101ecd7bd2246488099af57056fe59",
+          "college": "fe4d7717402f984973a6125e97d21846cae53b4d74f4db91dcf4cebd91d59ad4",
+          "histograms": "f6e47488d9df2b60a24d3634f4b0079cd6ae84cdb657bbd32ced7d3875e2df2f",
+          "within": "458d3207da10c9e10758787814573c5536f3cd126afd8583b7bb2c51bcfc7919"
+        },
+        "execution_head": "f3bca23cab22e7833808ea037dfbf2ef2f259292"
+      },
+      "B": {
+        "within_rows": 288,
+        "catalog_player_game_rows": 800,
+        "college_player_game_rows": 160,
+        "unique_gameplay_seeds": 144,
+        "manifest_sha256": "0bfb2f3eccc0b41e65c5ebe710e6d2777b6e77176503e0a5ad28b9217f1d6061",
+        "raw_sha256": {
+          "catalog": "f83975ae6f0cf49502aba7bebe8724e79ce0053e3bb365db27e3ef2b75b650ec",
+          "college": "8c75710d60b546a43146a88264a21d984450a16f984b361c18c43ee6ef313381",
+          "histograms": "06a02eff0dfefd052051f59ea855f9468b9d770d6df9e164ed8dbca076b710f3",
+          "within": "b983fba389fb8e8dd745723ffab78c70a341f67b104d17203e1ac4b098a8b01e"
+        },
+        "execution_head": "05163e375ccce5d33030a48496424be3581163ef"
+      }
+    },
+    "natural_careers": 2000,
+    "fixture_population_states_counted_once": 5850,
+    "primary_bootstrap_intervals_independently_replayed": 14,
+    "stratified_correlations_and_demeaning_reconciled": true,
+    "aggregate_sha256": "e33c45a0559e6c7c0e3df1b17e70ca7b7282b792370f1461fd21822c09797b68",
+    "mature_world_rarity_tested": false
+  },
+  "auditor_sha256": "2c8bf2c97b652b97905b7b2491441eb2f2773245531ba9ddebf678ca25afb635",
+  "embedded_program_sha256": "2515504279c0c27ceec135a3105a5e481108b1544f4eac050f738097976d165f",
+  "command": [
+    "C:\\nvm4w\\nodejs\\node.exe",
+    "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\stage4_blocker_review\\independent_archive_audit.cjs",
+    "C:\\Users\\valexander\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+    "analysis/stage4_blocker_review/independent_archive_audit_results.json",
+    "--with-ovr"
+  ],
+  "no_certification": true
+}

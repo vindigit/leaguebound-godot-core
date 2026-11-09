@@ -1,0 +1,670 @@
+{
+  "definitions": {
+    "conference": "provider conference_competition flag; not equal-strength control",
+    "intervals": "95% Wilson binomial; descriptive, not team/season-cluster robust",
+    "mbb_type_2": "provider type 2; includes conference tournaments, not strict regular season",
+    "missing_linescores": "retain otherwise eligible game, report verification coverage",
+    "nba_type_2": "regular season; exclude ALLSTAR and CC (Cup final); retain other Cup games",
+    "overtime": "completed unique game; final period > regulation periods",
+    "rejected_seasons": "excluded whole from pooled estimates, never silently repaired",
+    "type_3": "provider postseason; not necessarily NCAA tournament alone",
+    "type_5": "NBA play-in, separate"
+  },
+  "quality": [
+    {
+      "exclusions": {
+        "not_full_game_or_forfeit": 10
+      },
+      "file": "mbb_schedule_2022.csv",
+      "first_game": "2021-11-09T20:00Z",
+      "issues": [],
+      "last_game": "2022-04-05T01:20Z",
+      "league": "mbb",
+      "line_score_verified": 0,
+      "raw_rows": 5976,
+      "retained": 5966,
+      "season": 2022,
+      "sha256": "70a341f448e197e0443ab6a8bd4a168c0a419db78d91abb842f4e6802cf2db7d"
+    },
+    {
+      "exclusions": {
+        "not_completed": 33,
+        "not_full_game_or_forfeit": 6
+      },
+      "file": "mbb_schedule_2023.csv",
+      "first_game": "2022-11-07T17:00Z",
+      "issues": [],
+      "last_game": "2023-04-04T01:20Z",
+      "league": "mbb",
+      "line_score_verified": 6222,
+      "raw_rows": 6261,
+      "retained": 6222,
+      "season": 2023,
+      "sha256": "41991919d7b39032be40c4b259aedbad8f404f9993fc6139361d0af69b9a89a2"
+    },
+    {
+      "file": "mbb_schedule_2024.csv",
+      "league": "mbb",
+      "raw_rows": 716,
+      "rejected_season": "malformed_or_truncated_csv",
+      "season": 2024,
+      "sha256": "bb2b10f96ce7c8f022d37d0c31d5b182ac19352a67978b6928a4566644a4aa2d"
+    },
+    {
+      "exclusions": {
+        "not_completed": 7,
+        "regulation_tie_disagrees_with_period": 1
+      },
+      "file": "mbb_schedule_2025.csv",
+      "first_game": "2024-11-04T16:00Z",
+      "issues": [
+        {
+          "game_id": "401711727",
+          "reason": "regulation_tie_disagrees_with_period"
+        }
+      ],
+      "last_game": "2025-04-08T00:50Z",
+      "league": "mbb",
+      "line_score_verified": 6291,
+      "raw_rows": 6299,
+      "retained": 6291,
+      "season": 2025,
+      "sha256": "fd5e653f419033aafe7229bc6dbf5a5592e9b9ab99f62606555bb6436d6d3fff"
+    },
+    {
+      "exclusions": {
+        "not_completed": 18
+      },
+      "file": "mbb_schedule_2026.csv",
+      "first_game": "2025-11-03T13:00Z",
+      "issues": [],
+      "last_game": "2026-04-07T00:50Z",
+      "league": "mbb",
+      "line_score_verified": 6300,
+      "raw_rows": 6318,
+      "retained": 6300,
+      "season": 2026,
+      "sha256": "4d3a8671fe8cfd2c4d4c2faaff4d70460afc4b55880e89d3d9bb8a4797639ac6"
+    },
+    {
+      "exclusions": {
+        "all_star_or_cup_final": 1,
+        "not_completed": 11
+      },
+      "file": "nba_schedule_2022.csv",
+      "first_game": "2021-10-19T23:30Z",
+      "issues": [],
+      "last_game": "2022-06-17T01:00Z",
+      "league": "nba",
+      "line_score_verified": 1323,
+      "raw_rows": 1335,
+      "retained": 1323,
+      "season": 2022,
+      "sha256": "8cd13a11b16aa49f26e766e7af1d674aecb96ef427bfe1655740b7fd252b24ed"
+    },
+    {
+      "exclusions": {
+        "all_star_or_cup_final": 1,
+        "not_completed": 1
+      },
+      "file": "nba_schedule_2023.csv",
+      "first_game": "2022-10-18T23:30Z",
+      "issues": [],
+      "last_game": "2023-06-13T00:30Z",
+      "league": "nba",
+      "line_score_verified": 1320,
+      "raw_rows": 1322,
+      "retained": 1320,
+      "season": 2023,
+      "sha256": "71aad62f4c082455ba7659b5cc900745a72b113b85bc22727ac04a603a9b5dca"
+    },
+    {
+      "exclusions": {
+        "all_star_or_cup_final": 2,
+        "not_completed": 2
+      },
+      "file": "nba_schedule_2024.csv",
+      "first_game": "2023-10-24T23:30Z",
+      "issues": [],
+      "last_game": "2024-06-18T00:30Z",
+      "league": "nba",
+      "line_score_verified": 1318,
+      "raw_rows": 1322,
+      "retained": 1318,
+      "season": 2024,
+      "sha256": "ae89a6e51dec1817b41e457d02ffc4cfc26d25b411d318906c1ec5f39a6c5527"
+    },
+    {
+      "exclusions": {
+        "all_star_or_cup_final": 4,
+        "not_completed": 5
+      },
+      "file": "nba_schedule_2025.csv",
+      "first_game": "2024-10-22T23:30Z",
+      "issues": [],
+      "last_game": "2025-06-23T00:00Z",
+      "league": "nba",
+      "line_score_verified": 1320,
+      "raw_rows": 1329,
+      "retained": 1320,
+      "season": 2025,
+      "sha256": "a7a5b6607a256c84a324f819e4461248bdff90a78b1ddb675a5a117a9a94e74f"
+    },
+    {
+      "exclusions": {
+        "all_star_or_cup_final": 5,
+        "not_completed": 4
+      },
+      "file": "nba_schedule_2026.csv",
+      "first_game": "2025-10-21T23:30Z",
+      "issues": [],
+      "last_game": "2026-06-14T00:30Z",
+      "league": "nba",
+      "line_score_verified": 1321,
+      "raw_rows": 1330,
+      "retained": 1321,
+      "season": 2026,
+      "sha256": "5a4a7473fce1c49d56382211c5955ad405f421d59869143b1d501e997e79223e"
+    }
+  ],
+  "review_date": "2026-09-15",
+  "schema": "overtime-reference-recount-v1",
+  "source_urls": [
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_mens_college_basketball_schedules/mbb_schedule_2022.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_mens_college_basketball_schedules/mbb_schedule_2023.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_mens_college_basketball_schedules/mbb_schedule_2024.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_mens_college_basketball_schedules/mbb_schedule_2025.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_mens_college_basketball_schedules/mbb_schedule_2026.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2022.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2023.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2024.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2025.csv",
+    "https://github.com/sportsdataverse/sportsdataverse-data/releases/download/espn_nba_schedules/nba_schedule_2026.csv"
+  ],
+  "summaries": [
+    {
+      "games": 14396,
+      "overtime_games": 925,
+      "population": "mbb_conference_types_2_3",
+      "rate": 0.06425395943317588,
+      "season": "pooled",
+      "wilson_95": [
+        0.06036355716048869,
+        0.06837685044206265
+      ]
+    },
+    {
+      "games": 3498,
+      "overtime_games": 214,
+      "population": "mbb_conference_types_2_3",
+      "rate": 0.061177815894797025,
+      "season": 2022,
+      "wilson_95": [
+        0.053707025585782324,
+        0.06961136672262451
+      ]
+    },
+    {
+      "games": 3593,
+      "overtime_games": 251,
+      "population": "mbb_conference_types_2_3",
+      "rate": 0.06985805733370443,
+      "season": 2023,
+      "wilson_95": [
+        0.061974309970216634,
+        0.07866059557453475
+      ]
+    },
+    {
+      "games": 3645,
+      "overtime_games": 230,
+      "population": "mbb_conference_types_2_3",
+      "rate": 0.06310013717421124,
+      "season": 2025,
+      "wilson_95": [
+        0.05565751463770531,
+        0.07146268613161168
+      ]
+    },
+    {
+      "games": 3660,
+      "overtime_games": 230,
+      "population": "mbb_conference_types_2_3",
+      "rate": 0.06284153005464481,
+      "season": 2026,
+      "wilson_95": [
+        0.05542856793826728,
+        0.0711711946426152
+      ]
+    },
+    {
+      "games": 24308,
+      "overtime_games": 1300,
+      "population": "mbb_type_2",
+      "rate": 0.05348033569195327,
+      "season": "pooled",
+      "wilson_95": [
+        0.050721868412446296,
+        0.05637991008635936
+      ]
+    },
+    {
+      "games": 5836,
+      "overtime_games": 309,
+      "population": "mbb_type_2",
+      "rate": 0.05294722412611377,
+      "season": 2022,
+      "wilson_95": [
+        0.04749054193173042,
+        0.05899205065328638
+      ]
+    },
+    {
+      "games": 6109,
+      "overtime_games": 352,
+      "population": "mbb_type_2",
+      "rate": 0.05761990505811098,
+      "season": 2023,
+      "wilson_95": [
+        0.05204977636770329,
+        0.06374603865368822
+      ]
+    },
+    {
+      "games": 6168,
+      "overtime_games": 319,
+      "population": "mbb_type_2",
+      "rate": 0.05171854734111543,
+      "season": 2025,
+      "wilson_95": [
+        0.046465521732612584,
+        0.057529608910833356
+      ]
+    },
+    {
+      "games": 6195,
+      "overtime_games": 320,
+      "population": "mbb_type_2",
+      "rate": 0.0516545601291364,
+      "season": 2026,
+      "wilson_95": [
+        0.04641566988540406,
+        0.057449135029800605
+      ]
+    },
+    {
+      "games": 471,
+      "overtime_games": 32,
+      "population": "mbb_type_3",
+      "rate": 0.06794055201698514,
+      "season": "pooled",
+      "wilson_95": [
+        0.04853366434945587,
+        0.09433814593683147
+      ]
+    },
+    {
+      "games": 130,
+      "overtime_games": 11,
+      "population": "mbb_type_3",
+      "rate": 0.08461538461538462,
+      "season": 2022,
+      "wilson_95": [
+        0.0479038816400668,
+        0.14517126150607623
+      ]
+    },
+    {
+      "games": 113,
+      "overtime_games": 9,
+      "population": "mbb_type_3",
+      "rate": 0.07964601769911504,
+      "season": 2023,
+      "wilson_95": [
+        0.042466177654392596,
+        0.14446626089220418
+      ]
+    },
+    {
+      "games": 123,
+      "overtime_games": 5,
+      "population": "mbb_type_3",
+      "rate": 0.04065040650406504,
+      "season": 2025,
+      "wilson_95": [
+        0.01748635648148216,
+        0.09163773393331442
+      ]
+    },
+    {
+      "games": 105,
+      "overtime_games": 7,
+      "population": "mbb_type_3",
+      "rate": 0.06666666666666667,
+      "season": 2026,
+      "wilson_95": [
+        0.03266588465602071,
+        0.1312556486825412
+      ]
+    },
+    {
+      "games": 24779,
+      "overtime_games": 1332,
+      "population": "mbb_types_2_3",
+      "rate": 0.05375519593203923,
+      "season": "pooled",
+      "wilson_95": [
+        0.05101559553031758,
+        0.05663313648669485
+      ]
+    },
+    {
+      "games": 5966,
+      "overtime_games": 320,
+      "population": "mbb_types_2_3",
+      "rate": 0.05363727790814616,
+      "season": 2022,
+      "wilson_95": [
+        0.04820212312831739,
+        0.059646881449415746
+      ]
+    },
+    {
+      "games": 6222,
+      "overtime_games": 361,
+      "population": "mbb_types_2_3",
+      "rate": 0.058019929283188686,
+      "season": 2023,
+      "wilson_95": [
+        0.052479149744918956,
+        0.06410612850567494
+      ]
+    },
+    {
+      "games": 6291,
+      "overtime_games": 324,
+      "population": "mbb_types_2_3",
+      "rate": 0.05150214592274678,
+      "season": 2025,
+      "wilson_95": [
+        0.0463090650930357,
+        0.05724262291767604
+      ]
+    },
+    {
+      "games": 6300,
+      "overtime_games": 327,
+      "population": "mbb_types_2_3",
+      "rate": 0.051904761904761905,
+      "season": 2026,
+      "wilson_95": [
+        0.04669487394106479,
+        0.0576607738203815
+      ]
+    },
+    {
+      "games": 6150,
+      "overtime_games": 310,
+      "population": "nba_type_2",
+      "rate": 0.05040650406504065,
+      "season": "pooled",
+      "wilson_95": [
+        0.04521373729060979,
+        0.056160577110438425
+      ]
+    },
+    {
+      "games": 1230,
+      "overtime_games": 58,
+      "population": "nba_type_2",
+      "rate": 0.04715447154471545,
+      "season": 2022,
+      "wilson_95": [
+        0.036653180354331835,
+        0.0604755536203221
+      ]
+    },
+    {
+      "games": 1230,
+      "overtime_games": 79,
+      "population": "nba_type_2",
+      "rate": 0.06422764227642276,
+      "season": 2023,
+      "wilson_95": [
+        0.051837944642599824,
+        0.07933081911038854
+      ]
+    },
+    {
+      "games": 1230,
+      "overtime_games": 59,
+      "population": "nba_type_2",
+      "rate": 0.04796747967479675,
+      "season": 2024,
+      "wilson_95": [
+        0.037368191943993545,
+        0.06138149582962869
+      ]
+    },
+    {
+      "games": 1230,
+      "overtime_games": 60,
+      "population": "nba_type_2",
+      "rate": 0.04878048780487805,
+      "season": 2025,
+      "wilson_95": [
+        0.0380841261453503,
+        0.062286515427240244
+      ]
+    },
+    {
+      "games": 1230,
+      "overtime_games": 54,
+      "population": "nba_type_2",
+      "rate": 0.04390243902439024,
+      "season": 2026,
+      "wilson_95": [
+        0.03380282217948548,
+        0.05684209659929522
+      ]
+    },
+    {
+      "games": 422,
+      "overtime_games": 18,
+      "population": "nba_type_3",
+      "rate": 0.04265402843601896,
+      "season": "pooled",
+      "wilson_95": [
+        0.027148458369462187,
+        0.06641091213201328
+      ]
+    },
+    {
+      "games": 87,
+      "overtime_games": 1,
+      "population": "nba_type_3",
+      "rate": 0.011494252873563218,
+      "season": 2022,
+      "wilson_95": [
+        0.0020319077375923027,
+        0.06227197835723791
+      ]
+    },
+    {
+      "games": 84,
+      "overtime_games": 4,
+      "population": "nba_type_3",
+      "rate": 0.047619047619047616,
+      "season": 2023,
+      "wilson_95": [
+        0.018671746809490054,
+        0.11613315032758317
+      ]
+    },
+    {
+      "games": 82,
+      "overtime_games": 3,
+      "population": "nba_type_3",
+      "rate": 0.036585365853658534,
+      "season": 2024,
+      "wilson_95": [
+        0.012519573081569195,
+        0.10212734643608476
+      ]
+    },
+    {
+      "games": 84,
+      "overtime_games": 5,
+      "population": "nba_type_3",
+      "rate": 0.05952380952380952,
+      "season": 2025,
+      "wilson_95": [
+        0.025690561091495437,
+        0.13188262822618113
+      ]
+    },
+    {
+      "games": 85,
+      "overtime_games": 5,
+      "population": "nba_type_3",
+      "rate": 0.058823529411764705,
+      "season": 2026,
+      "wilson_95": [
+        0.025385160033412506,
+        0.13041438450839762
+      ]
+    },
+    {
+      "games": 30,
+      "overtime_games": 3,
+      "population": "nba_type_5",
+      "rate": 0.1,
+      "season": "pooled",
+      "wilson_95": [
+        0.03459988874733419,
+        0.25621082579184085
+      ]
+    },
+    {
+      "games": 6,
+      "overtime_games": 0,
+      "population": "nba_type_5",
+      "rate": 0.0,
+      "season": 2022,
+      "wilson_95": [
+        2.7755575615628914e-17,
+        0.3903342879021653
+      ]
+    },
+    {
+      "games": 6,
+      "overtime_games": 1,
+      "population": "nba_type_5",
+      "rate": 0.16666666666666666,
+      "season": 2023,
+      "wilson_95": [
+        0.030053369748306635,
+        0.5635028221864702
+      ]
+    },
+    {
+      "games": 6,
+      "overtime_games": 0,
+      "population": "nba_type_5",
+      "rate": 0.0,
+      "season": 2024,
+      "wilson_95": [
+        2.7755575615628914e-17,
+        0.3903342879021653
+      ]
+    },
+    {
+      "games": 6,
+      "overtime_games": 1,
+      "population": "nba_type_5",
+      "rate": 0.16666666666666666,
+      "season": 2025,
+      "wilson_95": [
+        0.030053369748306635,
+        0.5635028221864702
+      ]
+    },
+    {
+      "games": 6,
+      "overtime_games": 1,
+      "population": "nba_type_5",
+      "rate": 0.16666666666666666,
+      "season": 2026,
+      "wilson_95": [
+        0.030053369748306635,
+        0.5635028221864702
+      ]
+    },
+    {
+      "games": 6572,
+      "overtime_games": 328,
+      "population": "nba_types_2_3",
+      "rate": 0.04990870359099209,
+      "season": "pooled",
+      "wilson_95": [
+        0.04490195354881079,
+        0.05544132007674122
+      ]
+    },
+    {
+      "games": 1317,
+      "overtime_games": 59,
+      "population": "nba_types_2_3",
+      "rate": 0.044798785117691725,
+      "season": 2022,
+      "wilson_95": [
+        0.03488852110647612,
+        0.05735681084235563
+      ]
+    },
+    {
+      "games": 1314,
+      "overtime_games": 83,
+      "population": "nba_types_2_3",
+      "rate": 0.06316590563165905,
+      "season": 2023,
+      "wilson_95": [
+        0.051243913258502916,
+        0.07763460826917867
+      ]
+    },
+    {
+      "games": 1312,
+      "overtime_games": 62,
+      "population": "nba_types_2_3",
+      "rate": 0.04725609756097561,
+      "season": 2024,
+      "wilson_95": [
+        0.037037180131059826,
+        0.060118490078077964
+      ]
+    },
+    {
+      "games": 1314,
+      "overtime_games": 65,
+      "population": "nba_types_2_3",
+      "rate": 0.04946727549467275,
+      "season": 2025,
+      "wilson_95": [
+        0.038999770436142264,
+        0.06256135281191956
+      ]
+    },
+    {
+      "games": 1315,
+      "overtime_games": 59,
+      "population": "nba_types_2_3",
+      "rate": 0.044866920152091254,
+      "season": 2026,
+      "wilson_95": [
+        0.034941823498321825,
+        0.05744339688263628
+      ]
+    }
+  ]
+}

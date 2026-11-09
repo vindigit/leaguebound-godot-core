@@ -1,0 +1,598 @@
+{
+  "verdict": "ACCEPT A/B evidence and rendered directional claims",
+  "directional_rows_checked": 90,
+  "replicated_directional_exclusions": [],
+  "rows": [
+    {
+      "competition": "high_school",
+      "metric": "possessions_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "points_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "points_per_possession",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "field_goal_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "three_point_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "free_throw_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "three_point_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "free_throw_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "turnovers_per_100_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "offensive_rebound_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "assist_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "home_win_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "overtime_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "close_game_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "blowout_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "regulation_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "overtime_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "high_school",
+      "metric": "final_margin_sd",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "possessions_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "points_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "points_per_possession",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "field_goal_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "three_point_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "free_throw_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "three_point_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "free_throw_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "turnovers_per_100_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "offensive_rebound_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "assist_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "home_win_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "overtime_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "close_game_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "blowout_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "regulation_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "overtime_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "college",
+      "metric": "final_margin_sd",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "possessions_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "points_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "points_per_possession",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "field_goal_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "three_point_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "free_throw_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "three_point_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "free_throw_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "turnovers_per_100_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "offensive_rebound_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "assist_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "home_win_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "overtime_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "close_game_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "blowout_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "regulation_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "overtime_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "development",
+      "metric": "final_margin_sd",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "possessions_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "points_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "points_per_possession",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "field_goal_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "three_point_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "free_throw_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "three_point_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "free_throw_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "turnovers_per_100_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "offensive_rebound_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "assist_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "home_win_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "overtime_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "close_game_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "blowout_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "regulation_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "overtime_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "overseas",
+      "metric": "final_margin_sd",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "possessions_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "points_per_game",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "points_per_possession",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "field_goal_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "three_point_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "free_throw_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "three_point_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "free_throw_attempt_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "turnovers_per_100_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "offensive_rebound_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "assist_percentage",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "home_win_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "overtime_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "close_game_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "blowout_rate",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "regulation_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "overtime_possessions",
+      "sparse": false,
+      "same_direction_exclusion": false
+    },
+    {
+      "competition": "top_domestic_pro",
+      "metric": "final_margin_sd",
+      "sparse": false,
+      "same_direction_exclusion": false
+    }
+  ],
+  "B_outcomes": [
+    {
+      "competition": "high_school",
+      "B_possessions": 66.39423076923077,
+      "B_pace_verdict": "pass",
+      "B_ppp_verdict": "pass",
+      "B_new_home_failures": [],
+      "B_resolved_home_failures": []
+    },
+    {
+      "competition": "college",
+      "B_possessions": 68.16880341880342,
+      "B_pace_verdict": "pass",
+      "B_ppp_verdict": "pass",
+      "B_new_home_failures": [],
+      "B_resolved_home_failures": [
+        "college.home_win_rate"
+      ]
+    },
+    {
+      "competition": "development",
+      "B_possessions": 94.49358974358974,
+      "B_pace_verdict": "pass",
+      "B_ppp_verdict": "pass",
+      "B_new_home_failures": [],
+      "B_resolved_home_failures": [
+        "development.home_win_rate"
+      ]
+    },
+    {
+      "competition": "overseas",
+      "B_possessions": 75.55021367521367,
+      "B_pace_verdict": "pass",
+      "B_ppp_verdict": "pass",
+      "B_new_home_failures": [
+        "overseas.home_win_rate"
+      ],
+      "B_resolved_home_failures": []
+    },
+    {
+      "competition": "top_domestic_pro",
+      "B_possessions": 99.23290598290598,
+      "B_pace_verdict": "pass",
+      "B_ppp_verdict": "pass",
+      "B_new_home_failures": [
+        "top_domestic_pro.close_game_rate"
+      ],
+      "B_resolved_home_failures": []
+    }
+  ],
+  "scope": "Zero repeated interval exclusions is not equivalence or no effect. Locked bands and all failures retained. No controlled-venue or certification claim."
+}

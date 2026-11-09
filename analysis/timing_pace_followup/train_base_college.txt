@@ -1,0 +1,50 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  college 25/200 pace=1.041000
+  college 50/200 pace=1.041000
+  college 75/200 pace=1.041000
+  college 100/200 pace=1.041000
+  college 125/200 pace=1.041000
+  college 150/200 pace=1.041000
+  college 175/200 pace=1.041000
+  college 200/200 pace=1.041000
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  college              74.6   78.7  1.054   41.1   33.2   34.3   71.0   25.5   15.4   25.6   52.8   16.8   5.7   3.1
+
+  home win rate / overtime / close / blowout, by competition:
+  college              56.0%    3.0%   20.5%   17.0%
+
+=== Competition basketball calibration ===
+  commit=15225e8cab5fca2bca9dc2ea4757e2f9e74bbc87 godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=college/competition-v1 balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 85000 of 85001, seeds 17000001..17000200 inclusive n=200 complete games per competition elapsed=510601ms rate=0.4/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 200.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  college.possessions_per_game                              74.6475 ±0.3209  target[64.0000, 73.0000]  FAIL
+  college.possession_estimate_per_game                      79.5735  INFORMATIONAL
+  college.points_per_game                                   78.6900 ±1.0545  INFORMATIONAL
+  college.points_per_possession                              1.0542 ±0.0137  target[0.9800, 1.1000]  PASS
+  college.field_goal_percentage                              0.4112 ±0.0059  target[0.4200, 0.4900]  FAIL
+  college.three_point_percentage                             0.3315 ±0.0094  target[0.3100, 0.3800]  PASS
+  college.three_point_attempt_rate                           0.3429 ±0.0055  target[0.3200, 0.4600]  PASS
+  college.free_throw_percentage                              0.7095 ±0.0105  target[0.6700, 0.7900]  PASS
+  college.free_throw_attempt_rate                            0.2550 ±0.0051  target[0.2000, 0.3800]  PASS
+  college.turnovers_per_100_possessions                     15.3555  target[15.0000, 21.0000]  PASS
+  college.offensive_rebound_percentage                       0.2562 ±0.0068  target[0.2400, 0.3400]  PASS
+  college.assist_percentage                                  0.5277 ±0.0091  target[0.4800, 0.6800]  PASS
+  college.home_win_rate                                      0.5600 ±0.0682  target[0.5300, 0.5600]  PASS
+  college.overtime_rate                                      0.0300 ±0.0250  target[0.0400, 0.0800]  FAIL
+  college.close_game_rate                                    0.2050 ±0.0557  target[0.2200, 0.3400]  FAIL
+  college.blowout_rate                                       0.1700 ±0.0519  target[0.0800, 0.1800]  PASS
+  college.starter_mean_minutes                              24.7932 ±0.1773  INFORMATIONAL
+  college.team_leading_scorer_mean                          16.7300 ±0.3522  INFORMATIONAL
+  college.team_leading_scorer_p99                           26.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_train_base_college.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL college.possessions_per_game: estimate 74.6475 outside BALANCE_SPEC.md §14.1 target [64.0000, 73.0000]
+  FAIL college.field_goal_percentage: estimate 0.4112 outside BALANCE_SPEC.md §14.1 target [0.4200, 0.4900]
+  FAIL college.overtime_rate: estimate 0.0300 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  FAIL college.close_game_rate: estimate 0.2050 outside BALANCE_SPEC.md §14.2 target [0.2200, 0.3400]
+  20 metric(s), 15 judged, 5 failure(s): FAIL

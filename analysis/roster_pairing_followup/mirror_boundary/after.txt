@@ -1,0 +1,6 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+{"expected_first_rating":63,"first_rating":63,"int64":2147483646,"opener":"away","packed32":2147483646,"same_roster":true,"variation":1073741823}
+{"expected_first_rating":65,"first_rating":65,"int64":2147483648,"opener":"home","packed32":-2147483648,"same_roster":true,"variation":1073741824}
+{"expected_first_rating":62,"first_rating":62,"int64":2147483650,"opener":"away","packed32":-2147483646,"same_roster":true,"variation":1073741825}
+{"expected_first_rating":65,"first_rating":65,"int64":4294967296,"opener":"home","packed32":0,"same_roster":true,"variation":2147483648}

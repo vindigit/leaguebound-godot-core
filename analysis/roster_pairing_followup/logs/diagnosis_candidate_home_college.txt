@@ -1,0 +1,63 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+roster diagnosis_candidate_home_college college 20/468
+roster diagnosis_candidate_home_college college 40/468
+roster diagnosis_candidate_home_college college 60/468
+roster diagnosis_candidate_home_college college 80/468
+roster diagnosis_candidate_home_college college 100/468
+roster diagnosis_candidate_home_college college 120/468
+roster diagnosis_candidate_home_college college 140/468
+roster diagnosis_candidate_home_college college 160/468
+roster diagnosis_candidate_home_college college 180/468
+roster diagnosis_candidate_home_college college 200/468
+roster diagnosis_candidate_home_college college 220/468
+roster diagnosis_candidate_home_college college 240/468
+roster diagnosis_candidate_home_college college 260/468
+roster diagnosis_candidate_home_college college 280/468
+roster diagnosis_candidate_home_college college 300/468
+roster diagnosis_candidate_home_college college 320/468
+roster diagnosis_candidate_home_college college 340/468
+roster diagnosis_candidate_home_college college 360/468
+roster diagnosis_candidate_home_college college 380/468
+roster diagnosis_candidate_home_college college 400/468
+roster diagnosis_candidate_home_college college 420/468
+roster diagnosis_candidate_home_college college 440/468
+roster diagnosis_candidate_home_college college 460/468
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  college              68.3   71.3  1.043   40.8   32.3   33.9   72.3   25.1   15.5   25.6   52.0   15.4   5.1   2.9
+
+  home win rate / overtime / close / blowout, by competition:
+  college              52.8%    4.1%   30.1%   13.7%
+
+=== Competition basketball calibration ===
+  commit=7a206187ad52e0e287342ff97bfb51c867c5d7c4 godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=college/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 50000 of 50001, seeds 23400001..23400468 inclusive n=468 complete games per competition elapsed=1449891ms rate=0.3/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 468.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  college.possessions_per_game                              68.3312 ±0.2022  target[64.0000, 73.0000]  PASS
+  college.possession_estimate_per_game                      72.7835  INFORMATIONAL
+  college.points_per_game                                   71.2853 ±0.6383  INFORMATIONAL
+  college.points_per_possession                              1.0432 ±0.0090  target[0.9800, 1.1000]  PASS
+  college.field_goal_percentage                              0.4079 ±0.0038  target[0.4200, 0.4900]  FAIL
+  college.three_point_percentage                             0.3234 ±0.0064  target[0.3100, 0.3800]  PASS
+  college.three_point_attempt_rate                           0.3391 ±0.0038  target[0.3200, 0.4600]  PASS
+  college.free_throw_percentage                              0.7227 ±0.0071  target[0.6700, 0.7900]  PASS
+  college.free_throw_attempt_rate                            0.2506 ±0.0035  target[0.2000, 0.3800]  PASS
+  college.turnovers_per_100_possessions                     15.5477  target[15.0000, 21.0000]  PASS
+  college.offensive_rebound_percentage                       0.2556 ±0.0046  target[0.2400, 0.3400]  PASS
+  college.assist_percentage                                  0.5195 ±0.0062  target[0.4800, 0.6800]  PASS
+  college.home_win_rate                                      0.5278 ±0.0450  target[0.5300, 0.5600]  FAIL
+  college.overtime_rate                                      0.0406 ±0.0182  target[0.0400, 0.0800]  PASS
+  college.close_game_rate                                    0.3013 ±0.0414  target[0.2200, 0.3400]  PASS
+  college.blowout_rate                                       0.1368 ±0.0311  target[0.0800, 0.1800]  PASS
+  college.starter_mean_minutes                              24.9995 ±0.1131  INFORMATIONAL
+  college.team_leading_scorer_mean                          15.5021 ±0.2154  INFORMATIONAL
+  college.team_leading_scorer_p99                           26.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_diagnosis_candidate_home_college.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL college.field_goal_percentage: estimate 0.4079 outside BALANCE_SPEC.md §14.1 target [0.4200, 0.4900]
+  FAIL college.home_win_rate: estimate 0.5278 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  20 metric(s), 15 judged, 3 failure(s): FAIL

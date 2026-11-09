@@ -168,6 +168,56 @@ func resolve_intentional_foul(
 		true, FoulType.Value.INTENTIONAL, fouler_id, context.ball_handler_id, 0)
 
 
+## `EndgameStrategy`'s leading-by-three foul: the mirror image of the
+## intentional foul above, for the side that is *ahead*. A defence up exactly
+## three with little time left may prefer sending the offence to the line for
+## two over letting them attempt the tying three at all. Real coaching staffs
+## disagree about this one, which is why it is a probability
+## (`leading_foul_share`) rather than a certainty the way the desperation foul
+## above effectively is inside its own window — this is the "optional" of the
+## production brief, not the "necessary" of the intentional free-throw miss.
+##
+## **The bonus gate is what makes the tactic the tactic.** "Send them to the
+## line for two" is the entire reason a coach gives up a foul here, and it is
+## only what happens when the fouling team is already over the team-foul
+## threshold. Below it the whistle awards no free throws at all: the offence
+## keeps the ball, inbounds it with a fresh shot clock, and can still shoot the
+## three the foul was meant to prevent — so the defence has paid a team foul
+## and bought the opposite of what it wanted. Worse, nothing about the state
+## changes, so the same eligibility held again on the next action of the same
+## possession, and again after that: one leading-by-three "decision" could
+## become a run of whistles inside a single possession. The count read here is
+## the same `defense_state().team_fouls` the consequence branch in
+## `PossessionEngine` reads, so the decision and its outcome cannot disagree
+## about whether anybody is going to the line.
+##
+## `PossessionEngine` additionally allows this at most once per possession; the
+## two guards are independent, and the once-per-possession one holds even where
+## a rule profile's bonus makes every whistle a trip to the line.
+func resolve_leading_by_three_foul(
+	context: PossessionContext,
+	random_source: RandomSource,
+) -> FoulCall:
+	if context.state.period < context.input.rule_profile.regulation_periods:
+		return FoulCall.none()
+	if context.state.clock_ms > _balance.leading_foul_clock_ms:
+		return FoulCall.none()
+	var defense_margin: int = -context.offense_margin()
+	if defense_margin != GameManagement.TIE_SEEKING_MAXIMUM_DEFICIT:
+		return FoulCall.none()
+	if context.input.rule_profile.bonus_free_throws_for(
+		context.defense_state().team_fouls
+	) <= 0:
+		return FoulCall.none()
+	if random_source.next_float() >= _balance.leading_foul_share:
+		return FoulCall.none()
+	var fouler_id: StringName = _least_protected_defender(context)
+	if fouler_id.is_empty() or context.ball_handler_id.is_empty():
+		return FoulCall.none()
+	return FoulCall.new(
+		true, FoulType.Value.LEADING_PROTECT, fouler_id, context.ball_handler_id, 0)
+
+
 ## The shared contact model. §14.3's 20% is the rate at which a *valid*
 ## illegal-contact opportunity becomes a whistle, so `contact_load` — how much
 ## contact the action actually generated — is the opportunity term and the base
@@ -204,12 +254,25 @@ func _contact_probability(
 	var units: float = _capability.differential_units(force + leverage, discipline)
 	var base: float = (
 		_balance.foul_conversion_base * clampf(contact_load, 0.0, 1.0) * aggression * gamble)
-	if not context.input.is_home(context.offense.team_id):
-		base *= 1.0 - _balance.home_environment_foul_bonus * context.input.home_environment
-	else:
-		base *= 1.0 + _balance.home_environment_foul_bonus * context.input.home_environment
-	return _balance.opposed_probability(
+	var probability: float = _balance.opposed_probability(
 		base, units, _balance.foul_conversion_floor, _balance.foul_conversion_ceiling)
+	# §19.4 officiating. The whistle is nudged, never invented: this runs only
+	# after a real action produced real contact, so the opportunity exists
+	# whatever the venue says, and the shift is applied to its conversion.
+	#
+	# It reads the venue and nothing else — not the score, not the clock, not
+	# the margin, not who is expected to win — so it cannot rescue a trailing
+	# home team, and it is symmetric: the same magnitude that makes the visiting
+	# defence marginally likelier to be whistled makes the home defence
+	# marginally less so.
+	var officiating: float = context.input.home_environment_context.officiating()
+	if officiating > 0.0:
+		var direction: float = (
+			1.0 if context.input.is_home(context.offense.team_id) else -1.0)
+		probability = clampf(
+			probability + direction * officiating,
+			_balance.foul_conversion_floor, _balance.foul_conversion_ceiling)
+	return probability
 
 
 func _least_protected_defender(context: PossessionContext) -> StringName:

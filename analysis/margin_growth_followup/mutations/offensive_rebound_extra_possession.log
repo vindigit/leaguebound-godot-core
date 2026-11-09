@@ -1,0 +1,60 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;0;191;255mDisabled fail fast![0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_known_signed_components_are_not_only_an_identity_check[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_known_signed_components_are_not_only_an_identity_check[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_zero_attempt_side_still_closes[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_zero_attempt_side_still_closes[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_exact_late_and_normalized_period_boundaries[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_exact_late_and_normalized_period_boundaries[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hand_authored_ledger_has_known_period_and_shooting_answers[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hand_authored_ledger_has_known_period_and_shooting_answers[0m[38;2;178;34;34m[1m FAILED[0m[38;2;100;149;237m 32ms[0m
+  [38;2;0;206;209m[1m[4mReport:[0m
+  [38;2;128;128;128m[38;2;255;69;0mExpecting:[0m
+ must be empty but was
+ '[38;2;30;144;255m["engine possession denominator mismatch", "engine possession denominator mismatch", "partition count/time conservation failed: home.possessions", "partition count/time conservation failed: away.possessions"][0m'[0m[38;2;173;216;230m	at 'test_hand_authored_ledger_has_known_period_and_shooting_answers' in res://tests/calibration/test_margin_growth_audit.gd:61[0m[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_missing_channel_coverage_is_a_failure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_missing_channel_coverage_is_a_failure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_dropped_probe_and_wrong_probability_outcome_cannot_pass[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_dropped_probe_and_wrong_probability_outcome_cannot_pass[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_score_possession_and_sequence_corruption_is_rejected[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_score_possession_and_sequence_corruption_is_rejected[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_period_score_and_nonfinite_probability_are_rejected[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_period_score_and_nonfinite_probability_are_rejected[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 25ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_attempt_shooter_and_timestamp_linkage_are_checked[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_growth_audit.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_attempt_shooter_and_timestamp_linkage_are_checked[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 52ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 357ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mOverall Summary:[0m[38;2;255;255;255m 9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |[0m
+[38;2;233;150;122mExecuted test suites: (1/1)[0m
+[38;2;233;150;122mExecuted test cases : (9/9)[0m
+[38;2;233;150;122mTotal execution time: 357ms[0m
+[38;2;255;255;255m [0m[38;2;100;149;237mOpen XML Report at: file://C:/Users/VALEXA~1/AppData/Local/Temp/leaguebound-margin-growth-6VPHkL/reports/report_11/results.xml[0m
+[38;2;100;149;237mOpen HTML Report at: file://C:/Users/VALEXA~1/AppData/Local/Temp/leaguebound-margin-growth-6VPHkL/reports/report_11/index.html[0m
+[38;2;178;34;34mExit code: 100[0m
+Run dispose test resources

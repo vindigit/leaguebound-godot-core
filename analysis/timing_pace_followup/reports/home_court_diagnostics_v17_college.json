@@ -1,0 +1,4242 @@
+{
+  "schema": "leaguebound.calibration.report/1",
+  "context": {
+    "report_id": "home_court_diagnostics",
+    "title": "Home-court advantage diagnostic",
+    "commit_sha": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+    "commit_note": "",
+    "godot_version": "4.7.1-stable (official)",
+    "build_mode": "editor-debug (asserts active)",
+    "rules_profile": {
+      "id": "college",
+      "version": "competition-v2-stopped-clock-pace"
+    },
+    "balance_profile": {
+      "id": "simulation_baseline",
+      "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+    },
+    "ratings_profile_version": "ratings-v1",
+    "targets_version": "calibration-targets-v1",
+    "rng": {
+      "algorithm": "godot-pcg32-v1",
+      "stream_key_version": "sha256-stream-key-v1"
+    },
+    "seeds": "shard 0 of 1, seeds 710001..710200 inclusive",
+    "seed_range": {
+      "start": 710001,
+      "end": 710200
+    },
+    "shard": {
+      "index": 0,
+      "count": 1
+    },
+    "competition": "college",
+    "certification": {
+      "required_sample": 100000,
+      "source": "BALANCE_SPEC.md §27.1"
+    },
+    "sample_count": 200,
+    "sample_unit": "complete games per arm per competition",
+    "elapsed_ms": 1527050,
+    "throughput_per_second": 0.130971480960021,
+    "notes": [
+      "BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.",
+      "Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.",
+      "Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.",
+      "Fixture mode: mirror; home environment 0.500; neutral environment 0.000.",
+      "Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.",
+      "OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.",
+      "`home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.",
+      "Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for."
+    ]
+  },
+  "summary": {
+    "passed": true,
+    "metric_count": 196,
+    "judged_metric_count": 8,
+    "failure_count": 0
+  },
+  "metrics": [
+    {
+      "metric": "college.home.win_rate",
+      "definition": "Share of decided games won by the team playing at its own venue, between two identical rosters at the production home environment. INFORMATIONAL population diagnostic: §14.2 is judged by `venue.attributable_home_win_rate`, the paired venue-side estimator.",
+      "denominator": "decided games",
+      "estimate": 0.505,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.069291726917864,
+        "low": 0.435708273082136,
+        "high": 0.574291726917864
+      }
+    },
+    {
+      "metric": "college.neutral.win_rate",
+      "definition": "Share of decided games won by the nominal home team with the §19.4 environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.47,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.069170347958169,
+        "low": 0.400829652041831,
+        "high": 0.539170347958169
+      }
+    },
+    {
+      "metric": "college.neutral.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin with the environment at zero.",
+      "denominator": "complete games",
+      "estimate": -0.81,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.70021601678098,
+        "low": -2.51021601678098,
+        "high": 0.890216016780983
+      }
+    },
+    {
+      "metric": "college.home.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 0.27,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.66385263915532,
+        "low": -1.39385263915532,
+        "high": 1.93385263915532
+      }
+    },
+    {
+      "metric": "college.home.median_margin",
+      "definition": "Median venue-minus-visitor final margin at the production environment.",
+      "denominator": "complete games",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.win_rate",
+      "definition": "Share of decided games won by the venue side after home and away are swapped. It must reproduce the home arm, not the neutral arm.",
+      "denominator": "decided games",
+      "estimate": 0.57,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0686127383146034,
+        "low": 0.501387261685396,
+        "high": 0.638612738314603
+      }
+    },
+    {
+      "metric": "college.reversed.mean_margin",
+      "definition": "Mean venue-minus-visitor final margin after the venue is swapped.",
+      "denominator": "complete games",
+      "estimate": 2.095,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.57172582153837,
+        "low": 0.523274178461634,
+        "high": 3.66672582153837
+      }
+    },
+    {
+      "metric": "college.home.points_per_100_contribution",
+      "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+      "denominator": "points per 100 possessions",
+      "estimate": 1.47488905989088,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.combined_cap_respected",
+      "definition": "The measured environment contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "college.home.environment_margin_gain",
+      "definition": "Mean per-game venue-minus-neutral final margin for the same roster at the same seed. The §19.4 environment with everything else cancelled.",
+      "denominator": "matched pairs",
+      "estimate": 1.08,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.00195043398404,
+        "low": 0.078049566015961,
+        "high": 2.08195043398404
+      }
+    },
+    {
+      "metric": "college.reversed.environment_margin_gain",
+      "definition": "The same quantity measured from the other bench after the venue is swapped. It must agree with the home arm in sign and size.",
+      "denominator": "matched pairs",
+      "estimate": 1.285,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.910393338261961,
+        "low": 0.374606661738039,
+        "high": 2.19539333826196
+      }
+    },
+    {
+      "metric": "college.home.environment_win_gain",
+      "definition": "Mean per-game change in the venue side's win/draw value from playing at home rather than neutral. Add 0.50 to read it as a home win rate.",
+      "denominator": "matched pairs",
+      "estimate": 0.035,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0526830877862476,
+        "low": -0.0176830877862476,
+        "high": 0.0876830877862476
+      }
+    },
+    {
+      "metric": "college.reversed.environment_win_gain",
+      "definition": "The same quantity after the venue is swapped.",
+      "denominator": "matched pairs",
+      "estimate": 0.04,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0497865514322652,
+        "low": -0.00978655143226519,
+        "high": 0.0897865514322652
+      }
+    },
+    {
+      "metric": "college.home.home_arm_points_per_100",
+      "definition": "Paired venue-minus-neutral margin per 100 venue possessions, from the home arm alone. One of two estimates of the same quantity and the noisier of the pair. Published for comparison; §17.4 is NOT judged on this figure.",
+      "denominator": "points per 100 possessions",
+      "estimate": 1.58427460759865,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 1.46978206540126,
+        "low": 0.11449254219739,
+        "high": 3.05405667299991
+      }
+    },
+    {
+      "metric": "college.venue_reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals. Cross-checks `venue.reversal_agrees`, which computes the same verdict from the estimator; the two must agree.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "college.home.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.04657473962153,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.04223183517853,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00434290444300212,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 68.17,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 68.195,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0249999999999915,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.410244434065079,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.412111801242236,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00186736717715741,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.452839098099398,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.453260107501753,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.000421009402354844,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.327771428571429,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.330633965756594,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0028625371851656,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.340572940993305,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.33555900621118,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0050139347821252,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.720338983050847,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.713581058862216,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00675792418863108,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.248014946286782,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.23610248447205,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0119124618147322,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 15.8427460759865,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 15.5436615587653,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.2990845172212,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.257389162561576,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.254074784276127,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00331437828544978,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.523719165085389,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.523172569706104,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00054659537928492,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.834088848594742,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.841005451241672,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00691660264693006,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.11,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 15.25,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.140000000000001,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 4.975,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.315,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.340000000000001,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.81,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 2.925,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.115,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.11,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.235,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.125,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 34.555,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 34.26,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.295000000000002,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.035,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.305,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.055,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.home.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 12.0053212657333,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.03455344070278,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.04495942685869,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0104059861559067,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 68.3,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 68.395,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0949999999999989,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.410724027745304,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.41144456538641,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00072053764110519,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.455774247095091,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.453190990145472,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00258325694961969,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.32431203093018,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.329414476717381,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00510244578720159,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.342685683111215,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.337272585911989,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00541309719922617,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.71816976127321,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.718198992443325,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0000292311701154402,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.235055724417427,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.246928937956772,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0118732135393454,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 16.1566617862372,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 15.5055194093135,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.651142376923646,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.253796689013545,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.253254762231054,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.000541926782491098,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.521252371916509,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.52588813303099,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00463576111448161,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.831920048455482,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.838253012048193,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00633296359271129,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 15.455,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 14.935,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.52,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.015,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.11,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0950000000000006,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.91,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 2.9,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0100000000000002,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.2,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.215,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0150000000000001,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 34.21,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 33.99,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.219999999999999,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.045,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.305,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.085,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.neutral.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 12.267696683141,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "venue side",
+      "estimate": 1.05227754624552,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.points_per_possession",
+      "definition": "Points per engine possession.",
+      "denominator": "visiting side",
+      "estimate": 1.02209055665277,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.points_per_possession",
+      "definition": "Points per engine possession. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0301869895927529,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "venue side",
+      "estimate": 68.385,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.possessions_per_game",
+      "definition": "Engine possessions per team game.",
+      "denominator": "visiting side",
+      "estimate": 68.355,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.possessions_per_game",
+      "definition": "Engine possessions per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0300000000000011,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.407826423866718,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.field_goal_percentage",
+      "definition": "Field goals made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.409260991580917,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.field_goal_percentage",
+      "definition": "Field goals made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00143456771419842,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.449520916101893,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.453223692051007,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.two_point_percentage",
+      "definition": "Two-point makes over two-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00370277594911406,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "venue side",
+      "estimate": 0.325741890959282,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.326121253098941,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.three_point_percentage",
+      "definition": "Three-point makes over three-point attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.000379362139658501,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.336846183649748,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.345884003741815,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.three_point_attempt_rate",
+      "definition": "Three-point attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.00903782009206661,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "venue side",
+      "estimate": 0.718475073313783,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.free_throw_percentage",
+      "definition": "Free throws made over attempted.",
+      "denominator": "visiting side",
+      "estimate": 0.711376404494382,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.free_throw_percentage",
+      "definition": "Free throws made over attempted. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00709866881940102,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "venue side",
+      "estimate": 0.264238667183262,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts.",
+      "denominator": "visiting side",
+      "estimate": 0.222014343623324,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.free_throw_attempt_rate",
+      "definition": "Free-throw attempts over field-goal attempts. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0422243235599383,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "venue side",
+      "estimate": 14.9740440155005,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions.",
+      "denominator": "visiting side",
+      "estimate": 16.2826420890937,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.turnovers_per_100",
+      "definition": "Turnovers per 100 engine possessions. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -1.30859807359323,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "venue side",
+      "estimate": 0.253329709160098,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances.",
+      "denominator": "visiting side",
+      "estimate": 0.251804439602342,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.offensive_rebound_percentage",
+      "definition": "Offensive rebounds over available chances. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00152526955775545,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "venue side",
+      "estimate": 0.521185635569067,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.assist_percentage",
+      "definition": "Credited assists over made field goals.",
+      "denominator": "visiting side",
+      "estimate": 0.519428571428571,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.assist_percentage",
+      "definition": "Credited assists over made field goals. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00175706414049559,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "venue side",
+      "estimate": 0.835516296070667,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator.",
+      "denominator": "visiting side",
+      "estimate": 0.829127394344786,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.conditional_assist_rate",
+      "definition": "Credited assists over made field goals that carried a recorded creator. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.00638890172588136,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "venue side",
+      "estimate": 14.6,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.fouls_per_game",
+      "definition": "Personal fouls per team game.",
+      "denominator": "visiting side",
+      "estimate": 16.115,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.fouls_per_game",
+      "definition": "Personal fouls per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -1.515,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "venue side",
+      "estimate": 5.035,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.steals_per_game",
+      "definition": "Steals per team game.",
+      "denominator": "visiting side",
+      "estimate": 5.035,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.steals_per_game",
+      "definition": "Steals per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": 0.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "venue side",
+      "estimate": 2.975,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.blocks_per_game",
+      "definition": "Blocks per team game.",
+      "denominator": "visiting side",
+      "estimate": 3.025,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.blocks_per_game",
+      "definition": "Blocks per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0499999999999998,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "venue side",
+      "estimate": 1.205,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.timeouts_per_game",
+      "definition": "Timeouts called per team game.",
+      "denominator": "visiting side",
+      "estimate": 1.235,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.timeouts_per_game",
+      "definition": "Timeouts called per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.03,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.venue.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "venue side",
+      "estimate": 34.01,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.visitor.substitutions_per_game",
+      "definition": "Check-ins per team game.",
+      "denominator": "visiting side",
+      "estimate": 34.105,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.delta.substitutions_per_game",
+      "definition": "Check-ins per team game. Venue minus visitor.",
+      "denominator": "paired difference",
+      "estimate": -0.0949999999999989,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.overtime_rate",
+      "definition": "Share of games reaching overtime.",
+      "denominator": "complete games",
+      "estimate": 0.05,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.close_game_rate",
+      "definition": "Share of games decided by five points or fewer.",
+      "denominator": "complete games",
+      "estimate": 0.37,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.blowout_rate",
+      "definition": "Share of games decided by twenty points or more.",
+      "denominator": "complete games",
+      "estimate": 0.065,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.reversed.margin_standard_deviation",
+      "definition": "Standard deviation of the venue-minus-visitor final margin.",
+      "denominator": "complete games",
+      "estimate": 11.3405916997528,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.raw_home_win_rate",
+      "definition": "Share of decided games won by the venue side at the production environment, with nothing subtracted.",
+      "denominator": "decided games",
+      "estimate": 0.505,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.neutral_home_win_rate",
+      "definition": "The same share on the identical fixtures with the environment at zero. The control: it should centre on 0.50.",
+      "denominator": "decided games",
+      "estimate": 0.47,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.attributable_home_win_rate",
+      "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+      "denominator": "matched pairs",
+      "estimate": 0.5375,
+      "sample_count": 200,
+      "verdict": "pass",
+      "interval_95": {
+        "half_width": 0.0317879081653329,
+        "low": 0.505712091834667,
+        "high": 0.569287908165333
+      },
+      "target": {
+        "minimum": 0.53,
+        "maximum": 0.56,
+        "source": "BALANCE_SPEC.md §14.2"
+      }
+    },
+    {
+      "metric": "college.venue.canonical_form_agrees",
+      "definition": "The paired-fixture estimator and the directly-computed canonical form 0.5 x [P(home arm) + P(reversed arm)] return the same value.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "owner ruling, §14.2 home-win estimator"
+      }
+    },
+    {
+      "metric": "college.venue.paired_win_rate_change",
+      "definition": "The venue-attributable change in win rate on its own, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 0.0375,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.0317879081653329,
+        "low": 0.00571209183466709,
+        "high": 0.0692879081653329
+      }
+    },
+    {
+      "metric": "college.venue.raw_margin_difference",
+      "definition": "Mean venue-minus-visitor final margin at the production environment, unadjusted.",
+      "denominator": "complete games",
+      "estimate": 0.27,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.paired_margin_difference",
+      "definition": "The venue's effect on final margin with the roster, the matchup and the seed cancelled, pooled over both venue arms.",
+      "denominator": "matched pairs",
+      "estimate": 1.1825,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.559017465005258,
+        "low": 0.623482534994742,
+        "high": 1.74151746500526
+      }
+    },
+    {
+      "metric": "college.venue.points_per_100",
+      "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+      "denominator": "points per 100 possessions",
+      "estimate": 1.73171267481877,
+      "sample_count": 200,
+      "verdict": "informational",
+      "interval_95": {
+        "half_width": 0.8186533865494,
+        "low": 0.913059288269375,
+        "high": 2.55036606136817
+      }
+    },
+    {
+      "metric": "college.venue.points_per_100_standard_error",
+      "definition": "Standard error of the paired venue contribution.",
+      "denominator": "matched pairs",
+      "estimate": 0.417680299259898,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.cap_respected",
+      "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "BALANCE_SPEC.md §17.4"
+      }
+    },
+    {
+      "metric": "college.venue.reversal_agrees",
+      "definition": "The home arm and the venue-reversed arm estimate the same environment effect within their combined intervals.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "SIMULATION_SPEC.md §19.4"
+      }
+    },
+    {
+      "metric": "college.venue.matched_pairs",
+      "definition": "Independent matched fixtures behind every paired figure above. This is the sample size.",
+      "denominator": "matched pairs",
+      "estimate": 200.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.complete_games",
+      "definition": "Complete games simulated behind those pairs, which is three per pair — one in each arm. Three simulations of one fixture are one piece of independent evidence, and this figure is NOT the sample size.",
+      "denominator": "complete games",
+      "estimate": 600.0,
+      "sample_count": 200,
+      "verdict": "informational"
+    },
+    {
+      "metric": "college.venue.sample_well_formed",
+      "definition": "Every fixture offered carries all three arms, nothing was observed twice, and no shard overlapped another.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "college.venue.sample_complete",
+      "definition": "The estimator holds every matched pair the run asked for.",
+      "denominator": "boolean invariant",
+      "estimate": 1.0,
+      "sample_count": 200,
+      "verdict": "pass",
+      "target": {
+        "minimum": 1.0,
+        "maximum": 1.0,
+        "source": "calibration estimator contract"
+      }
+    },
+    {
+      "metric": "college.venue.certification_sample_reached",
+      "definition": "Share of §27.1's certifying sample this run reached, against 100000 complete games per competition. Zero point something is not certification. Source: BALANCE_SPEC.md §27.1",
+      "denominator": "complete games",
+      "estimate": 0.006,
+      "sample_count": 200,
+      "verdict": "informational"
+    }
+  ],
+  "sections": {
+    "matched_arms": [
+      {
+        "arm": "home",
+        "competition": "college",
+        "games": 200,
+        "venue_win_rate": 0.505,
+        "mean_margin": 0.27,
+        "median_margin": 1.0,
+        "margin_standard_deviation": 12.0053212657333,
+        "overtime_rate": 0.035,
+        "close_game_rate": 0.305,
+        "blowout_rate": 0.055,
+        "points_per_100_gap": 0.434290444300212,
+        "venue_points_per_possession": 1.04657473962153,
+        "visitor_points_per_possession": 1.04223183517853,
+        "venue_possessions_per_game": 68.17,
+        "visitor_possessions_per_game": 68.195,
+        "venue_field_goal_percentage": 0.410244434065079,
+        "visitor_field_goal_percentage": 0.412111801242236,
+        "venue_two_point_percentage": 0.452839098099398,
+        "visitor_two_point_percentage": 0.453260107501753,
+        "venue_three_point_percentage": 0.327771428571429,
+        "visitor_three_point_percentage": 0.330633965756594,
+        "venue_three_point_attempt_rate": 0.340572940993305,
+        "visitor_three_point_attempt_rate": 0.33555900621118,
+        "venue_free_throw_percentage": 0.720338983050847,
+        "visitor_free_throw_percentage": 0.713581058862216,
+        "venue_free_throw_attempt_rate": 0.248014946286782,
+        "visitor_free_throw_attempt_rate": 0.23610248447205,
+        "venue_turnovers_per_100": 15.8427460759865,
+        "visitor_turnovers_per_100": 15.5436615587653,
+        "venue_offensive_rebound_percentage": 0.257389162561576,
+        "visitor_offensive_rebound_percentage": 0.254074784276127,
+        "venue_assist_percentage": 0.523719165085389,
+        "visitor_assist_percentage": 0.523172569706104,
+        "venue_conditional_assist_rate": 0.834088848594742,
+        "visitor_conditional_assist_rate": 0.841005451241672,
+        "venue_fouls_per_game": 15.11,
+        "visitor_fouls_per_game": 15.25,
+        "venue_steals_per_game": 4.975,
+        "visitor_steals_per_game": 5.315,
+        "venue_blocks_per_game": 2.81,
+        "visitor_blocks_per_game": 2.925,
+        "venue_timeouts_per_game": 1.11,
+        "visitor_timeouts_per_game": 1.235,
+        "venue_substitutions_per_game": 34.555,
+        "visitor_substitutions_per_game": 34.26,
+        "venue_action_mix": {
+          "pass_swing": 0.336687891215195,
+          "drive": 0.0663177206993309,
+          "pull_up": 0.134820850420894,
+          "post_action": 0.0186434275847183,
+          "pick_action": 0.050480250377725,
+          "handoff": 0.060031297215627,
+          "off_ball_cut": 0.106788258148068,
+          "relocation": 0.0958881933952083,
+          "screen": 0.0896557306281027,
+          "reset": 0.0204511115907619,
+          "transition_attack": 0.00995575221238938,
+          "putback": 0.0102795165119793
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.337319102265736,
+          "drive": 0.0642270550785116,
+          "pull_up": 0.13781665462911,
+          "post_action": 0.0195275927560656,
+          "pick_action": 0.0490329829066688,
+          "handoff": 0.0593852820800899,
+          "off_ball_cut": 0.107000508252414,
+          "relocation": 0.0951502019634593,
+          "screen": 0.0902549287109114,
+          "reset": 0.020142845678517,
+          "transition_attack": 0.0104592996816735,
+          "putback": 0.00968354599684348
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.116612174996108,
+          "close_non_rim": 0.301572473921843,
+          "midrange": 0.241242410088744,
+          "standard_three": 0.265763661840262,
+          "deep_three": 0.0748092791530438
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.118400621118012,
+          "close_non_rim": 0.295574534161491,
+          "midrange": 0.250465838509317,
+          "standard_three": 0.259316770186335,
+          "deep_three": 0.0762422360248447
+        }
+      },
+      {
+        "arm": "neutral",
+        "competition": "college",
+        "games": 200,
+        "venue_win_rate": 0.47,
+        "mean_margin": -0.81,
+        "median_margin": -1.5,
+        "margin_standard_deviation": 12.267696683141,
+        "overtime_rate": 0.045,
+        "close_game_rate": 0.305,
+        "blowout_rate": 0.085,
+        "points_per_100_gap": -1.04059861559067,
+        "venue_points_per_possession": 1.03455344070278,
+        "visitor_points_per_possession": 1.04495942685869,
+        "venue_possessions_per_game": 68.3,
+        "visitor_possessions_per_game": 68.395,
+        "venue_field_goal_percentage": 0.410724027745304,
+        "visitor_field_goal_percentage": 0.41144456538641,
+        "venue_two_point_percentage": 0.455774247095091,
+        "visitor_two_point_percentage": 0.453190990145472,
+        "venue_three_point_percentage": 0.32431203093018,
+        "visitor_three_point_percentage": 0.329414476717381,
+        "venue_three_point_attempt_rate": 0.342685683111215,
+        "visitor_three_point_attempt_rate": 0.337272585911989,
+        "venue_free_throw_percentage": 0.71816976127321,
+        "visitor_free_throw_percentage": 0.718198992443325,
+        "venue_free_throw_attempt_rate": 0.235055724417427,
+        "visitor_free_throw_attempt_rate": 0.246928937956772,
+        "venue_turnovers_per_100": 16.1566617862372,
+        "visitor_turnovers_per_100": 15.5055194093135,
+        "venue_offensive_rebound_percentage": 0.253796689013545,
+        "visitor_offensive_rebound_percentage": 0.253254762231054,
+        "venue_assist_percentage": 0.521252371916509,
+        "visitor_assist_percentage": 0.52588813303099,
+        "venue_conditional_assist_rate": 0.831920048455482,
+        "visitor_conditional_assist_rate": 0.838253012048193,
+        "venue_fouls_per_game": 15.455,
+        "visitor_fouls_per_game": 14.935,
+        "venue_steals_per_game": 5.015,
+        "visitor_steals_per_game": 5.11,
+        "venue_blocks_per_game": 2.91,
+        "visitor_blocks_per_game": 2.9,
+        "venue_timeouts_per_game": 1.2,
+        "visitor_timeouts_per_game": 1.215,
+        "venue_substitutions_per_game": 34.21,
+        "visitor_substitutions_per_game": 33.99,
+        "venue_action_mix": {
+          "pass_swing": 0.335852111725813,
+          "drive": 0.0653622992848469,
+          "pull_up": 0.135501281878289,
+          "post_action": 0.0188908379435974,
+          "pick_action": 0.0509243017136689,
+          "handoff": 0.0603697206854675,
+          "off_ball_cut": 0.108406422884901,
+          "relocation": 0.0949669410335987,
+          "screen": 0.0900013493455674,
+          "reset": 0.0197814060180812,
+          "transition_attack": 0.00966131426258265,
+          "putback": 0.0102820132235866
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.337830645590505,
+          "drive": 0.0648783862898504,
+          "pull_up": 0.136702325828942,
+          "post_action": 0.0198520410878706,
+          "pick_action": 0.0492841556229709,
+          "handoff": 0.0592633987971686,
+          "off_ball_cut": 0.106072702112938,
+          "relocation": 0.0950556176486242,
+          "screen": 0.0915429240513066,
+          "reset": 0.019772207142477,
+          "transition_attack": 0.0103251902709032,
+          "putback": 0.0094204055564426
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.118229288442054,
+          "close_non_rim": 0.297872340425532,
+          "midrange": 0.241212688021199,
+          "standard_three": 0.267243394902969,
+          "deep_three": 0.0754422882082457
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.118177577359664,
+          "close_non_rim": 0.298009640802364,
+          "midrange": 0.246540195925984,
+          "standard_three": 0.261545638314415,
+          "deep_three": 0.0757269475975742
+        }
+      },
+      {
+        "arm": "reversed",
+        "competition": "college",
+        "games": 200,
+        "venue_win_rate": 0.57,
+        "mean_margin": 2.095,
+        "median_margin": 3.0,
+        "margin_standard_deviation": 11.3405916997528,
+        "overtime_rate": 0.05,
+        "close_game_rate": 0.37,
+        "blowout_rate": 0.065,
+        "points_per_100_gap": 3.01869895927529,
+        "venue_points_per_possession": 1.05227754624552,
+        "visitor_points_per_possession": 1.02209055665277,
+        "venue_possessions_per_game": 68.385,
+        "visitor_possessions_per_game": 68.355,
+        "venue_field_goal_percentage": 0.407826423866718,
+        "visitor_field_goal_percentage": 0.409260991580917,
+        "venue_two_point_percentage": 0.449520916101893,
+        "visitor_two_point_percentage": 0.453223692051007,
+        "venue_three_point_percentage": 0.325741890959282,
+        "visitor_three_point_percentage": 0.326121253098941,
+        "venue_three_point_attempt_rate": 0.336846183649748,
+        "visitor_three_point_attempt_rate": 0.345884003741815,
+        "venue_free_throw_percentage": 0.718475073313783,
+        "visitor_free_throw_percentage": 0.711376404494382,
+        "venue_free_throw_attempt_rate": 0.264238667183262,
+        "visitor_free_throw_attempt_rate": 0.222014343623324,
+        "venue_turnovers_per_100": 14.9740440155005,
+        "visitor_turnovers_per_100": 16.2826420890937,
+        "venue_offensive_rebound_percentage": 0.253329709160098,
+        "visitor_offensive_rebound_percentage": 0.251804439602342,
+        "venue_assist_percentage": 0.521185635569067,
+        "visitor_assist_percentage": 0.519428571428571,
+        "venue_conditional_assist_rate": 0.835516296070667,
+        "visitor_conditional_assist_rate": 0.829127394344786,
+        "venue_fouls_per_game": 14.6,
+        "visitor_fouls_per_game": 16.115,
+        "venue_steals_per_game": 5.035,
+        "visitor_steals_per_game": 5.035,
+        "venue_blocks_per_game": 2.975,
+        "visitor_blocks_per_game": 3.025,
+        "venue_timeouts_per_game": 1.205,
+        "visitor_timeouts_per_game": 1.235,
+        "venue_substitutions_per_game": 34.01,
+        "visitor_substitutions_per_game": 34.105,
+        "venue_action_mix": {
+          "pass_swing": 0.335189604879342,
+          "drive": 0.0652081675948024,
+          "pull_up": 0.136701140281093,
+          "post_action": 0.0199681782020684,
+          "pick_action": 0.0491911959692389,
+          "handoff": 0.0583134447096261,
+          "off_ball_cut": 0.107610713338637,
+          "relocation": 0.0966852293821268,
+          "screen": 0.0909838239193848,
+          "reset": 0.0200477326968974,
+          "transition_attack": 0.0106337841421374,
+          "putback": 0.00946698488464598
+        },
+        "visitor_action_mix": {
+          "pass_swing": 0.334804845222073,
+          "drive": 0.0661372812920592,
+          "pull_up": 0.134562584118439,
+          "post_action": 0.0189771197846568,
+          "pick_action": 0.0497173620457604,
+          "handoff": 0.0602960969044415,
+          "off_ball_cut": 0.10950201884253,
+          "relocation": 0.095693135935397,
+          "screen": 0.0898519515477793,
+          "reset": 0.0201076716016151,
+          "transition_attack": 0.010228802153432,
+          "putback": 0.010121130551817
+        },
+        "venue_zone_mix": {
+          "restricted_rim": 0.116311507167764,
+          "close_non_rim": 0.298953893839597,
+          "midrange": 0.24788841534289,
+          "standard_three": 0.260829135993801,
+          "deep_three": 0.0760170476559473
+        },
+        "visitor_zone_mix": {
+          "restricted_rim": 0.117243529778609,
+          "close_non_rim": 0.2973963205488,
+          "midrange": 0.239476145930776,
+          "standard_three": 0.269566573121297,
+          "deep_three": 0.0763174306205176
+        }
+      }
+    ],
+    "venue_effect_estimator": [
+      {
+        "pairs": 200,
+        "unique_games": 600,
+        "incomplete_fixtures": 0,
+        "duplicate_attempts": 0,
+        "overlapping_keys": 0,
+        "well_formed": true,
+        "raw_home_win_rate": 0.505,
+        "neutral_home_win_rate": 0.47,
+        "venue_attributable_win_rate": 0.5375,
+        "venue_attributable_win_rate_half_width": 0.0317879081653329,
+        "raw_margin_difference": 0.27,
+        "paired_margin_difference": 1.1825,
+        "paired_margin_half_width": 0.559017465005258,
+        "points_per_100": 1.73171267481877,
+        "points_per_100_half_width": 0.8186533865494,
+        "points_per_100_standard_error": 0.417680299259898,
+        "home_arm_points_per_100": 1.58160650216006,
+        "possession_base": 68.285,
+        "cap_respected": true,
+        "venue_reversal_agrees": true,
+        "competition": "college"
+      }
+    ],
+    "venue_paired_fixtures": [
+      {
+        "fixture": "college/710000",
+        "home_margin": -6.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710001",
+        "home_margin": -6.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 20.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710002",
+        "home_margin": 22.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 22.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710003",
+        "home_margin": 1.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710004",
+        "home_margin": 2.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710005",
+        "home_margin": 4.0,
+        "home_possessions": 64.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 16.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710006",
+        "home_margin": 18.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710007",
+        "home_margin": -5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710008",
+        "home_margin": 5.0,
+        "home_possessions": 77.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710009",
+        "home_margin": 2.0,
+        "home_possessions": 79.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710010",
+        "home_margin": -8.0,
+        "home_possessions": 62.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710011",
+        "home_margin": 10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 84.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710012",
+        "home_margin": 13.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710013",
+        "home_margin": -6.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 16.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710014",
+        "home_margin": -2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710015",
+        "home_margin": -3.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 72.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710016",
+        "home_margin": -15.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -28.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 20.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710017",
+        "home_margin": -16.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710018",
+        "home_margin": 4.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710019",
+        "home_margin": 17.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710020",
+        "home_margin": 10.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710021",
+        "home_margin": -18.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710022",
+        "home_margin": 8.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710023",
+        "home_margin": -4.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 81.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 82.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710024",
+        "home_margin": -13.0,
+        "home_possessions": 63.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710025",
+        "home_margin": 1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710026",
+        "home_margin": -11.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710027",
+        "home_margin": 11.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710028",
+        "home_margin": -12.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710029",
+        "home_margin": 2.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 60.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 63.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710030",
+        "home_margin": 9.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710031",
+        "home_margin": -12.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710032",
+        "home_margin": -19.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710033",
+        "home_margin": -4.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710034",
+        "home_margin": -1.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710035",
+        "home_margin": -3.0,
+        "home_possessions": 81.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710036",
+        "home_margin": 12.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710037",
+        "home_margin": 6.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 83.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710038",
+        "home_margin": 21.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710039",
+        "home_margin": -7.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710040",
+        "home_margin": -17.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710041",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710042",
+        "home_margin": -18.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -21.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710043",
+        "home_margin": -8.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710044",
+        "home_margin": 11.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710045",
+        "home_margin": -16.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710046",
+        "home_margin": -13.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710047",
+        "home_margin": 10.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710048",
+        "home_margin": -10.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 73.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710049",
+        "home_margin": 15.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -20.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710050",
+        "home_margin": -1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710051",
+        "home_margin": -3.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710052",
+        "home_margin": 15.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710053",
+        "home_margin": 9.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 18.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710054",
+        "home_margin": -20.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 19.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710055",
+        "home_margin": -14.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710056",
+        "home_margin": -16.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710057",
+        "home_margin": -4.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710058",
+        "home_margin": -1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710059",
+        "home_margin": -14.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710060",
+        "home_margin": -12.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710061",
+        "home_margin": 14.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710062",
+        "home_margin": 2.0,
+        "home_possessions": 73.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 75.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710063",
+        "home_margin": 2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710064",
+        "home_margin": -9.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710065",
+        "home_margin": -4.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 78.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710066",
+        "home_margin": 1.0,
+        "home_possessions": 76.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710067",
+        "home_margin": 16.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710068",
+        "home_margin": 6.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 90.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710069",
+        "home_margin": 1.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710070",
+        "home_margin": 5.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710071",
+        "home_margin": -2.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710072",
+        "home_margin": 22.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710073",
+        "home_margin": 16.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710074",
+        "home_margin": -15.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 16.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710075",
+        "home_margin": -4.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710076",
+        "home_margin": -4.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 16.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710077",
+        "home_margin": -35.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -35.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 36.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710078",
+        "home_margin": -8.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710079",
+        "home_margin": -7.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 5.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710080",
+        "home_margin": -12.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -21.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710081",
+        "home_margin": -9.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710082",
+        "home_margin": -15.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -27.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710083",
+        "home_margin": 13.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710084",
+        "home_margin": 9.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 17.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710085",
+        "home_margin": -5.0,
+        "home_possessions": 74.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 74.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710086",
+        "home_margin": 10.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710087",
+        "home_margin": -11.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -21.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 20.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710088",
+        "home_margin": 11.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710089",
+        "home_margin": -14.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -31.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710090",
+        "home_margin": 6.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710091",
+        "home_margin": 22.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -11.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710092",
+        "home_margin": -5.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710093",
+        "home_margin": 20.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 20.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710094",
+        "home_margin": -3.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710095",
+        "home_margin": 5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 74.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710096",
+        "home_margin": -10.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710097",
+        "home_margin": 23.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -16.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710098",
+        "home_margin": 4.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 76.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 75.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710099",
+        "home_margin": -7.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710100",
+        "home_margin": 9.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 77.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710101",
+        "home_margin": -6.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710102",
+        "home_margin": -3.0,
+        "home_possessions": 65.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 85.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710103",
+        "home_margin": -8.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -10.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710104",
+        "home_margin": 18.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710105",
+        "home_margin": 12.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 73.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710106",
+        "home_margin": 12.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710107",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710108",
+        "home_margin": 5.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 77.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710109",
+        "home_margin": -12.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710110",
+        "home_margin": -26.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710111",
+        "home_margin": 10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710112",
+        "home_margin": -13.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710113",
+        "home_margin": -9.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710114",
+        "home_margin": 5.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710115",
+        "home_margin": -2.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710116",
+        "home_margin": 1.0,
+        "home_possessions": 78.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710117",
+        "home_margin": 4.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -2.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710118",
+        "home_margin": -12.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 63.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710119",
+        "home_margin": 5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710120",
+        "home_margin": 20.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 16.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710121",
+        "home_margin": -7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710122",
+        "home_margin": -4.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710123",
+        "home_margin": -7.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710124",
+        "home_margin": -8.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710125",
+        "home_margin": 2.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710126",
+        "home_margin": 13.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710127",
+        "home_margin": 14.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -19.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710128",
+        "home_margin": 7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710129",
+        "home_margin": -6.0,
+        "home_possessions": 72.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 73.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710130",
+        "home_margin": -12.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710131",
+        "home_margin": 35.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 35.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -35.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710132",
+        "home_margin": -15.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -15.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 17.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710133",
+        "home_margin": -4.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 80.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710134",
+        "home_margin": -5.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -9.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 72.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710135",
+        "home_margin": 8.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710136",
+        "home_margin": -17.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 12.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710137",
+        "home_margin": 6.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710138",
+        "home_margin": -2.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -11.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 79.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710139",
+        "home_margin": -1.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -6.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710140",
+        "home_margin": 13.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710141",
+        "home_margin": -11.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710142",
+        "home_margin": -17.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -17.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710143",
+        "home_margin": 16.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 16.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -14.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710144",
+        "home_margin": 17.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710145",
+        "home_margin": 5.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 73.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 73.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710146",
+        "home_margin": -12.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -22.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710147",
+        "home_margin": -8.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -6.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710148",
+        "home_margin": 7.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 11.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710149",
+        "home_margin": -20.0,
+        "home_possessions": 61.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": 25.0,
+        "reversed_possessions": 62.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710150",
+        "home_margin": 3.0,
+        "home_possessions": 62.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 6.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710151",
+        "home_margin": -5.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -12.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710152",
+        "home_margin": 8.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 3.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710153",
+        "home_margin": 12.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 13.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710154",
+        "home_margin": 2.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710155",
+        "home_margin": -18.0,
+        "home_possessions": 73.0,
+        "neutral_margin": -22.0,
+        "neutral_possessions": 74.0,
+        "reversed_margin": 22.0,
+        "reversed_possessions": 74.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710156",
+        "home_margin": 19.0,
+        "home_possessions": 62.0,
+        "neutral_margin": 21.0,
+        "neutral_possessions": 63.0,
+        "reversed_margin": -25.0,
+        "reversed_possessions": 61.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710157",
+        "home_margin": -4.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -10.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710158",
+        "home_margin": 15.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 16.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710159",
+        "home_margin": -18.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -18.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 15.0,
+        "reversed_possessions": 72.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710160",
+        "home_margin": -13.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -13.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 13.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710161",
+        "home_margin": 12.0,
+        "home_possessions": 70.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710162",
+        "home_margin": -7.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710163",
+        "home_margin": 10.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710164",
+        "home_margin": -7.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710165",
+        "home_margin": -11.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 8.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 74.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710166",
+        "home_margin": -17.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -14.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 14.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710167",
+        "home_margin": 20.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 71.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710168",
+        "home_margin": -2.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -7.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710169",
+        "home_margin": -2.0,
+        "home_possessions": 60.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 61.0,
+        "reversed_margin": 4.0,
+        "reversed_possessions": 63.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710170",
+        "home_margin": 5.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -8.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710171",
+        "home_margin": 5.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -5.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710172",
+        "home_margin": 14.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 15.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -15.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710173",
+        "home_margin": -18.0,
+        "home_possessions": 72.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 72.0,
+        "reversed_margin": 18.0,
+        "reversed_possessions": 73.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710174",
+        "home_margin": 8.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 24.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710175",
+        "home_margin": 18.0,
+        "home_possessions": 64.0,
+        "neutral_margin": 14.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -13.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710176",
+        "home_margin": 11.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710177",
+        "home_margin": 6.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": 7.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710178",
+        "home_margin": 11.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 5.0,
+        "neutral_possessions": 64.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 64.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710179",
+        "home_margin": -5.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -5.0,
+        "neutral_possessions": 68.0,
+        "reversed_margin": 9.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710180",
+        "home_margin": 17.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 12.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -18.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710181",
+        "home_margin": 10.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 10.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -4.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710182",
+        "home_margin": -3.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -12.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 10.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710183",
+        "home_margin": 7.0,
+        "home_possessions": 68.0,
+        "neutral_margin": -3.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710184",
+        "home_margin": -17.0,
+        "home_possessions": 69.0,
+        "neutral_margin": -20.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710185",
+        "home_margin": 1.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 66.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710186",
+        "home_margin": -5.0,
+        "home_possessions": 71.0,
+        "neutral_margin": 1.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": -1.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710187",
+        "home_margin": 27.0,
+        "home_possessions": 67.0,
+        "neutral_margin": 27.0,
+        "neutral_possessions": 67.0,
+        "reversed_margin": -27.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710188",
+        "home_margin": 7.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -1.0,
+        "neutral_possessions": 71.0,
+        "reversed_margin": 1.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710189",
+        "home_margin": 2.0,
+        "home_possessions": 75.0,
+        "neutral_margin": 2.0,
+        "neutral_possessions": 75.0,
+        "reversed_margin": 8.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710190",
+        "home_margin": 3.0,
+        "home_possessions": 66.0,
+        "neutral_margin": 4.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 65.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710191",
+        "home_margin": 10.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 3.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": -3.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710192",
+        "home_margin": 7.0,
+        "home_possessions": 63.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 57.0,
+        "reversed_margin": -9.0,
+        "reversed_possessions": 57.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710193",
+        "home_margin": -6.0,
+        "home_possessions": 67.0,
+        "neutral_margin": -4.0,
+        "neutral_possessions": 84.0,
+        "reversed_margin": -2.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710194",
+        "home_margin": 28.0,
+        "home_possessions": 69.0,
+        "neutral_margin": 28.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -23.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710195",
+        "home_margin": 6.0,
+        "home_possessions": 65.0,
+        "neutral_margin": 6.0,
+        "neutral_possessions": 65.0,
+        "reversed_margin": -7.0,
+        "reversed_possessions": 67.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710196",
+        "home_margin": 6.0,
+        "home_possessions": 71.0,
+        "neutral_margin": -16.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 11.0,
+        "reversed_possessions": 70.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710197",
+        "home_margin": -19.0,
+        "home_possessions": 66.0,
+        "neutral_margin": -19.0,
+        "neutral_possessions": 66.0,
+        "reversed_margin": 19.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710198",
+        "home_margin": -29.0,
+        "home_possessions": 70.0,
+        "neutral_margin": -27.0,
+        "neutral_possessions": 70.0,
+        "reversed_margin": 27.0,
+        "reversed_possessions": 69.0,
+        "competition": "college",
+        "range": "diagnosis"
+      },
+      {
+        "fixture": "college/710199",
+        "home_margin": 10.0,
+        "home_possessions": 68.0,
+        "neutral_margin": 9.0,
+        "neutral_possessions": 69.0,
+        "reversed_margin": -8.0,
+        "reversed_possessions": 68.0,
+        "competition": "college",
+        "range": "diagnosis"
+      }
+    ]
+  }
+}

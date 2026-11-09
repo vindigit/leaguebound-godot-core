@@ -1,0 +1,64 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+roster validation_a_baseline_neutral_high_school high_school 20/468
+roster validation_a_baseline_neutral_high_school high_school 40/468
+roster validation_a_baseline_neutral_high_school high_school 60/468
+roster validation_a_baseline_neutral_high_school high_school 80/468
+roster validation_a_baseline_neutral_high_school high_school 100/468
+roster validation_a_baseline_neutral_high_school high_school 120/468
+roster validation_a_baseline_neutral_high_school high_school 140/468
+roster validation_a_baseline_neutral_high_school high_school 160/468
+roster validation_a_baseline_neutral_high_school high_school 180/468
+roster validation_a_baseline_neutral_high_school high_school 200/468
+roster validation_a_baseline_neutral_high_school high_school 220/468
+roster validation_a_baseline_neutral_high_school high_school 240/468
+roster validation_a_baseline_neutral_high_school high_school 260/468
+roster validation_a_baseline_neutral_high_school high_school 280/468
+roster validation_a_baseline_neutral_high_school high_school 300/468
+roster validation_a_baseline_neutral_high_school high_school 320/468
+roster validation_a_baseline_neutral_high_school high_school 340/468
+roster validation_a_baseline_neutral_high_school high_school 360/468
+roster validation_a_baseline_neutral_high_school high_school 380/468
+roster validation_a_baseline_neutral_high_school high_school 400/468
+roster validation_a_baseline_neutral_high_school high_school 420/468
+roster validation_a_baseline_neutral_high_school high_school 440/468
+roster validation_a_baseline_neutral_high_school high_school 460/468
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  high_school          66.6   63.5  0.953   38.5   30.6   32.1   67.0   20.3   16.7   25.0   49.1   15.6   5.3   2.5
+
+  home win rate / overtime / close / blowout, by competition:
+  high_school          45.9%    2.4%   31.8%   10.7%
+
+=== Competition basketball calibration ===
+  commit=unknown godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=high_school/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 60000 of 60001, seeds 28080001..28080468 inclusive n=468 complete games per competition elapsed=1352950ms rate=0.3/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 468.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  high_school.possessions_per_game                          66.6143 ±0.1944  target[61.0000, 72.0000]  PASS
+  high_school.possession_estimate_per_game                  70.7208  INFORMATIONAL
+  high_school.points_per_game                               63.4551 ±0.6061  INFORMATIONAL
+  high_school.points_per_possession                          0.9526 ±0.0089  target[0.9100, 1.0500]  PASS
+  high_school.field_goal_percentage                          0.3852 ±0.0038  target[0.3900, 0.4700]  FAIL
+  high_school.three_point_percentage                         0.3062 ±0.0066  target[0.2800, 0.3600]  PASS
+  high_school.three_point_attempt_rate                       0.3206 ±0.0038  target[0.2400, 0.3900]  PASS
+  high_school.free_throw_percentage                          0.6703 ±0.0084  target[0.6200, 0.7600]  PASS
+  high_school.free_throw_attempt_rate                        0.2034 ±0.0032  target[0.1800, 0.3800]  PASS
+  high_school.turnovers_per_100_possessions                 16.6509  target[15.0000, 24.0000]  PASS
+  high_school.offensive_rebound_percentage                   0.2502 ±0.0046  target[0.2500, 0.3800]  PASS
+  high_school.assist_percentage                              0.4911 ±0.0065  target[0.4200, 0.6600]  PASS
+  high_school.home_win_rate                                  0.4594 ±0.0450  target[0.5300, 0.5600]  FAIL
+  high_school.overtime_rate                                  0.0235 ±0.0142  target[0.0400, 0.0800]  FAIL
+  high_school.close_game_rate                                0.3184 ±0.0421  target[0.2200, 0.3400]  PASS
+  high_school.blowout_rate                                   0.1068 ±0.0281  target[0.0800, 0.1800]  PASS
+  high_school.starter_mean_minutes                          19.7864 ±0.0938  INFORMATIONAL
+  high_school.team_leading_scorer_mean                      14.3622 ±0.2051  INFORMATIONAL
+  high_school.team_leading_scorer_p99                       24.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_a_baseline_neutral_high_school.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL high_school.field_goal_percentage: estimate 0.3852 outside BALANCE_SPEC.md §14.1 target [0.3900, 0.4700]
+  FAIL high_school.home_win_rate: estimate 0.4594 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL high_school.overtime_rate: estimate 0.0235 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  20 metric(s), 15 judged, 4 failure(s): FAIL

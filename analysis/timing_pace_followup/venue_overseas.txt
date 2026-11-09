@@ -1,0 +1,218 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  overseas: 50/200 matched pairs (150 complete games)
+  overseas: 100/200 matched pairs (300 complete games)
+  overseas: 150/200 matched pairs (450 complete games)
+  overseas: 200/200 matched pairs (600 complete games)
+
+=== Home-court advantage diagnostic ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=overseas/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 0 of 1, seeds 710001..710200 inclusive n=200 complete games per arm per competition elapsed=1553223ms rate=0.1/s
+  note: BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.
+  note: Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.
+  note: Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.
+  note: Fixture mode: mirror; home environment 0.500; neutral environment 0.000.
+  note: Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.
+  note: OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.
+  note: `home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.
+  note: Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for.
+
+  overseas.home.win_rate                                     0.5850 ±0.0683  INFORMATIONAL
+  overseas.neutral.win_rate                                  0.5050 ±0.0693  INFORMATIONAL
+  overseas.neutral.mean_margin                               0.7700 ±1.7752  INFORMATIONAL
+  overseas.home.mean_margin                                  2.6450 ±1.8358  INFORMATIONAL
+  overseas.home.median_margin                                4.0000  INFORMATIONAL
+  overseas.reversed.win_rate                                 0.5300 ±0.0692  INFORMATIONAL
+  overseas.reversed.mean_margin                              0.2950 ±1.7431  INFORMATIONAL
+  overseas.home.points_per_100_contribution                  2.6322  INFORMATIONAL
+  overseas.home.combined_cap_respected                       0.0000  target[1.0000, 1.0000]  FAIL
+  overseas.home.environment_margin_gain                      1.8750 ±1.0228  INFORMATIONAL
+  overseas.reversed.environment_margin_gain                  1.0650 ±0.9972  INFORMATIONAL
+  overseas.home.environment_win_gain                         0.0800 ±0.0545  INFORMATIONAL
+  overseas.reversed.environment_win_gain                     0.0350 ±0.0596  INFORMATIONAL
+  overseas.home.home_arm_points_per_100                      2.4866 ±1.3564  INFORMATIONAL
+  overseas.venue_reversal_agrees                             1.0000  target[1.0000, 1.0000]  PASS
+  overseas.home.venue.points_per_possession                  1.1155  INFORMATIONAL
+  overseas.home.visitor.points_per_possession                1.0791  INFORMATIONAL
+  overseas.home.delta.points_per_possession                  0.0364  INFORMATIONAL
+  overseas.home.venue.possessions_per_game                  75.4050  INFORMATIONAL
+  overseas.home.visitor.possessions_per_game                75.5000  INFORMATIONAL
+  overseas.home.delta.possessions_per_game                  -0.0950  INFORMATIONAL
+  overseas.home.venue.field_goal_percentage                  0.4397  INFORMATIONAL
+  overseas.home.visitor.field_goal_percentage                0.4347  INFORMATIONAL
+  overseas.home.delta.field_goal_percentage                  0.0050  INFORMATIONAL
+  overseas.home.venue.two_point_percentage                   0.4886  INFORMATIONAL
+  overseas.home.visitor.two_point_percentage                 0.4799  INFORMATIONAL
+  overseas.home.delta.two_point_percentage                   0.0087  INFORMATIONAL
+  overseas.home.venue.three_point_percentage                 0.3488  INFORMATIONAL
+  overseas.home.visitor.three_point_percentage               0.3507  INFORMATIONAL
+  overseas.home.delta.three_point_percentage                -0.0019  INFORMATIONAL
+  overseas.home.venue.three_point_attempt_rate               0.3498  INFORMATIONAL
+  overseas.home.visitor.three_point_attempt_rate             0.3500  INFORMATIONAL
+  overseas.home.delta.three_point_attempt_rate              -0.0002  INFORMATIONAL
+  overseas.home.venue.free_throw_percentage                  0.7685  INFORMATIONAL
+  overseas.home.visitor.free_throw_percentage                0.7631  INFORMATIONAL
+  overseas.home.delta.free_throw_percentage                  0.0054  INFORMATIONAL
+  overseas.home.venue.free_throw_attempt_rate                0.2345  INFORMATIONAL
+  overseas.home.visitor.free_throw_attempt_rate              0.2123  INFORMATIONAL
+  overseas.home.delta.free_throw_attempt_rate                0.0222  INFORMATIONAL
+  overseas.home.venue.turnovers_per_100                     14.4089  INFORMATIONAL
+  overseas.home.visitor.turnovers_per_100                   15.7086  INFORMATIONAL
+  overseas.home.delta.turnovers_per_100                     -1.2998  INFORMATIONAL
+  overseas.home.venue.offensive_rebound_percentage           0.2553  INFORMATIONAL
+  overseas.home.visitor.offensive_rebound_percentage         0.2570  INFORMATIONAL
+  overseas.home.delta.offensive_rebound_percentage          -0.0017  INFORMATIONAL
+  overseas.home.venue.assist_percentage                      0.5425  INFORMATIONAL
+  overseas.home.visitor.assist_percentage                    0.5408  INFORMATIONAL
+  overseas.home.delta.assist_percentage                      0.0017  INFORMATIONAL
+  overseas.home.venue.conditional_assist_rate                0.9013  INFORMATIONAL
+  overseas.home.visitor.conditional_assist_rate              0.9088  INFORMATIONAL
+  overseas.home.delta.conditional_assist_rate               -0.0075  INFORMATIONAL
+  overseas.home.venue.fouls_per_game                        15.7850  INFORMATIONAL
+  overseas.home.visitor.fouls_per_game                      17.5250  INFORMATIONAL
+  overseas.home.delta.fouls_per_game                        -1.7400  INFORMATIONAL
+  overseas.home.venue.steals_per_game                        5.3450  INFORMATIONAL
+  overseas.home.visitor.steals_per_game                      5.1200  INFORMATIONAL
+  overseas.home.delta.steals_per_game                        0.2250  INFORMATIONAL
+  overseas.home.venue.blocks_per_game                        3.3500  INFORMATIONAL
+  overseas.home.visitor.blocks_per_game                      3.5000  INFORMATIONAL
+  overseas.home.delta.blocks_per_game                       -0.1500  INFORMATIONAL
+  overseas.home.venue.timeouts_per_game                      1.0550  INFORMATIONAL
+  overseas.home.visitor.timeouts_per_game                    1.5050  INFORMATIONAL
+  overseas.home.delta.timeouts_per_game                     -0.4500  INFORMATIONAL
+  overseas.home.venue.substitutions_per_game                39.1350  INFORMATIONAL
+  overseas.home.visitor.substitutions_per_game              39.3500  INFORMATIONAL
+  overseas.home.delta.substitutions_per_game                -0.2150  INFORMATIONAL
+  overseas.home.overtime_rate                                0.0200  INFORMATIONAL
+  overseas.home.close_game_rate                              0.2900  INFORMATIONAL
+  overseas.home.blowout_rate                                 0.1200  INFORMATIONAL
+  overseas.home.margin_standard_deviation                   13.2460  INFORMATIONAL
+  overseas.neutral.venue.points_per_possession               1.1003  INFORMATIONAL
+  overseas.neutral.visitor.points_per_possession             1.0902  INFORMATIONAL
+  overseas.neutral.delta.points_per_possession               0.0101  INFORMATIONAL
+  overseas.neutral.venue.possessions_per_game               75.5850  INFORMATIONAL
+  overseas.neutral.visitor.possessions_per_game             75.5800  INFORMATIONAL
+  overseas.neutral.delta.possessions_per_game                0.0050  INFORMATIONAL
+  overseas.neutral.venue.field_goal_percentage               0.4374  INFORMATIONAL
+  overseas.neutral.visitor.field_goal_percentage             0.4344  INFORMATIONAL
+  overseas.neutral.delta.field_goal_percentage               0.0030  INFORMATIONAL
+  overseas.neutral.venue.two_point_percentage                0.4828  INFORMATIONAL
+  overseas.neutral.visitor.two_point_percentage              0.4792  INFORMATIONAL
+  overseas.neutral.delta.two_point_percentage                0.0036  INFORMATIONAL
+  overseas.neutral.venue.three_point_percentage              0.3531  INFORMATIONAL
+  overseas.neutral.visitor.three_point_percentage            0.3525  INFORMATIONAL
+  overseas.neutral.delta.three_point_percentage              0.0006  INFORMATIONAL
+  overseas.neutral.venue.three_point_attempt_rate            0.3502  INFORMATIONAL
+  overseas.neutral.visitor.three_point_attempt_rate          0.3536  INFORMATIONAL
+  overseas.neutral.delta.three_point_attempt_rate           -0.0034  INFORMATIONAL
+  overseas.neutral.venue.free_throw_percentage               0.7709  INFORMATIONAL
+  overseas.neutral.visitor.free_throw_percentage             0.7643  INFORMATIONAL
+  overseas.neutral.delta.free_throw_percentage               0.0066  INFORMATIONAL
+  overseas.neutral.venue.free_throw_attempt_rate             0.2241  INFORMATIONAL
+  overseas.neutral.visitor.free_throw_attempt_rate           0.2271  INFORMATIONAL
+  overseas.neutral.delta.free_throw_attempt_rate            -0.0031  INFORMATIONAL
+  overseas.neutral.venue.turnovers_per_100                  14.8905  INFORMATIONAL
+  overseas.neutral.visitor.turnovers_per_100                15.6854  INFORMATIONAL
+  overseas.neutral.delta.turnovers_per_100                  -0.7948  INFORMATIONAL
+  overseas.neutral.venue.offensive_rebound_percentage        0.2542  INFORMATIONAL
+  overseas.neutral.visitor.offensive_rebound_percentage       0.2603  INFORMATIONAL
+  overseas.neutral.delta.offensive_rebound_percentage       -0.0061  INFORMATIONAL
+  overseas.neutral.venue.assist_percentage                   0.5417  INFORMATIONAL
+  overseas.neutral.visitor.assist_percentage                 0.5417  INFORMATIONAL
+  overseas.neutral.delta.assist_percentage                  -0.0000  INFORMATIONAL
+  overseas.neutral.venue.conditional_assist_rate             0.9021  INFORMATIONAL
+  overseas.neutral.visitor.conditional_assist_rate           0.9057  INFORMATIONAL
+  overseas.neutral.delta.conditional_assist_rate            -0.0036  INFORMATIONAL
+  overseas.neutral.venue.fouls_per_game                     16.6000  INFORMATIONAL
+  overseas.neutral.visitor.fouls_per_game                   16.9950  INFORMATIONAL
+  overseas.neutral.delta.fouls_per_game                     -0.3950  INFORMATIONAL
+  overseas.neutral.venue.steals_per_game                     5.3600  INFORMATIONAL
+  overseas.neutral.visitor.steals_per_game                   5.1650  INFORMATIONAL
+  overseas.neutral.delta.steals_per_game                     0.1950  INFORMATIONAL
+  overseas.neutral.venue.blocks_per_game                     3.3450  INFORMATIONAL
+  overseas.neutral.visitor.blocks_per_game                   3.5150  INFORMATIONAL
+  overseas.neutral.delta.blocks_per_game                    -0.1700  INFORMATIONAL
+  overseas.neutral.venue.timeouts_per_game                   1.1700  INFORMATIONAL
+  overseas.neutral.visitor.timeouts_per_game                 1.3550  INFORMATIONAL
+  overseas.neutral.delta.timeouts_per_game                  -0.1850  INFORMATIONAL
+  overseas.neutral.venue.substitutions_per_game             38.6650  INFORMATIONAL
+  overseas.neutral.visitor.substitutions_per_game           39.2350  INFORMATIONAL
+  overseas.neutral.delta.substitutions_per_game             -0.5700  INFORMATIONAL
+  overseas.neutral.overtime_rate                             0.0250  INFORMATIONAL
+  overseas.neutral.close_game_rate                           0.2900  INFORMATIONAL
+  overseas.neutral.blowout_rate                              0.1050  INFORMATIONAL
+  overseas.neutral.margin_standard_deviation                12.8089  INFORMATIONAL
+  overseas.reversed.venue.points_per_possession              1.1007  INFORMATIONAL
+  overseas.reversed.visitor.points_per_possession            1.0968  INFORMATIONAL
+  overseas.reversed.delta.points_per_possession              0.0039  INFORMATIONAL
+  overseas.reversed.venue.possessions_per_game              75.7950  INFORMATIONAL
+  overseas.reversed.visitor.possessions_per_game            75.7950  INFORMATIONAL
+  overseas.reversed.delta.possessions_per_game               0.0000  INFORMATIONAL
+  overseas.reversed.venue.field_goal_percentage              0.4354  INFORMATIONAL
+  overseas.reversed.visitor.field_goal_percentage            0.4398  INFORMATIONAL
+  overseas.reversed.delta.field_goal_percentage             -0.0044  INFORMATIONAL
+  overseas.reversed.venue.two_point_percentage               0.4784  INFORMATIONAL
+  overseas.reversed.visitor.two_point_percentage             0.4894  INFORMATIONAL
+  overseas.reversed.delta.two_point_percentage              -0.0110  INFORMATIONAL
+  overseas.reversed.venue.three_point_percentage             0.3550  INFORMATIONAL
+  overseas.reversed.visitor.three_point_percentage           0.3488  INFORMATIONAL
+  overseas.reversed.delta.three_point_percentage             0.0062  INFORMATIONAL
+  overseas.reversed.venue.three_point_attempt_rate           0.3487  INFORMATIONAL
+  overseas.reversed.visitor.three_point_attempt_rate         0.3531  INFORMATIONAL
+  overseas.reversed.delta.three_point_attempt_rate          -0.0044  INFORMATIONAL
+  overseas.reversed.venue.free_throw_percentage              0.7713  INFORMATIONAL
+  overseas.reversed.visitor.free_throw_percentage            0.7605  INFORMATIONAL
+  overseas.reversed.delta.free_throw_percentage              0.0109  INFORMATIONAL
+  overseas.reversed.venue.free_throw_attempt_rate            0.2363  INFORMATIONAL
+  overseas.reversed.visitor.free_throw_attempt_rate          0.2166  INFORMATIONAL
+  overseas.reversed.delta.free_throw_attempt_rate            0.0197  INFORMATIONAL
+  overseas.reversed.venue.turnovers_per_100                 15.1989  INFORMATIONAL
+  overseas.reversed.visitor.turnovers_per_100               15.0604  INFORMATIONAL
+  overseas.reversed.delta.turnovers_per_100                  0.1385  INFORMATIONAL
+  overseas.reversed.venue.offensive_rebound_percentage       0.2570  INFORMATIONAL
+  overseas.reversed.visitor.offensive_rebound_percentage       0.2569  INFORMATIONAL
+  overseas.reversed.delta.offensive_rebound_percentage       0.0001  INFORMATIONAL
+  overseas.reversed.venue.assist_percentage                  0.5412  INFORMATIONAL
+  overseas.reversed.visitor.assist_percentage                0.5496  INFORMATIONAL
+  overseas.reversed.delta.assist_percentage                 -0.0083  INFORMATIONAL
+  overseas.reversed.venue.conditional_assist_rate            0.9054  INFORMATIONAL
+  overseas.reversed.visitor.conditional_assist_rate          0.9067  INFORMATIONAL
+  overseas.reversed.delta.conditional_assist_rate           -0.0013  INFORMATIONAL
+  overseas.reversed.venue.fouls_per_game                    16.6450  INFORMATIONAL
+  overseas.reversed.visitor.fouls_per_game                  16.9850  INFORMATIONAL
+  overseas.reversed.delta.fouls_per_game                    -0.3400  INFORMATIONAL
+  overseas.reversed.venue.steals_per_game                    5.1650  INFORMATIONAL
+  overseas.reversed.visitor.steals_per_game                  5.4550  INFORMATIONAL
+  overseas.reversed.delta.steals_per_game                   -0.2900  INFORMATIONAL
+  overseas.reversed.venue.blocks_per_game                    3.4200  INFORMATIONAL
+  overseas.reversed.visitor.blocks_per_game                  3.2900  INFORMATIONAL
+  overseas.reversed.delta.blocks_per_game                    0.1300  INFORMATIONAL
+  overseas.reversed.venue.timeouts_per_game                  1.3600  INFORMATIONAL
+  overseas.reversed.visitor.timeouts_per_game                1.1850  INFORMATIONAL
+  overseas.reversed.delta.timeouts_per_game                  0.1750  INFORMATIONAL
+  overseas.reversed.venue.substitutions_per_game            39.1000  INFORMATIONAL
+  overseas.reversed.visitor.substitutions_per_game          39.0800  INFORMATIONAL
+  overseas.reversed.delta.substitutions_per_game             0.0200  INFORMATIONAL
+  overseas.reversed.overtime_rate                            0.0350  INFORMATIONAL
+  overseas.reversed.close_game_rate                          0.2500  INFORMATIONAL
+  overseas.reversed.blowout_rate                             0.1000  INFORMATIONAL
+  overseas.reversed.margin_standard_deviation               12.5769  INFORMATIONAL
+  overseas.venue.raw_home_win_rate                           0.5850  INFORMATIONAL
+  overseas.venue.neutral_home_win_rate                       0.5050  INFORMATIONAL
+  overseas.venue.attributable_home_win_rate                  0.5575 ±0.0334  target[0.5300, 0.5600]  PASS
+  overseas.venue.canonical_form_agrees                       1.0000  target[1.0000, 1.0000]  PASS
+  overseas.venue.paired_win_rate_change                      0.0575 ±0.0334  INFORMATIONAL
+  overseas.venue.raw_margin_difference                       2.6450  INFORMATIONAL
+  overseas.venue.paired_margin_difference                    1.4700 ±0.6066  INFORMATIONAL
+  overseas.venue.points_per_100                              1.9446 ±0.8024  INFORMATIONAL
+  overseas.venue.points_per_100_standard_error               0.4094  INFORMATIONAL
+  overseas.venue.cap_respected                               1.0000  target[1.0000, 1.0000]  PASS
+  overseas.venue.reversal_agrees                             1.0000  target[1.0000, 1.0000]  PASS
+  overseas.venue.matched_pairs                             200.0000  INFORMATIONAL
+  overseas.venue.complete_games                            600.0000  INFORMATIONAL
+  overseas.venue.sample_well_formed                          1.0000  target[1.0000, 1.0000]  PASS
+  overseas.venue.sample_complete                             1.0000  target[1.0000, 1.0000]  PASS
+  overseas.venue.certification_sample_reached                0.0060  INFORMATIONAL
+
+  report: res://reports/home_court_diagnostics_v17_overseas.json
+  FAIL overseas.home.combined_cap_respected: estimate 0.0000 outside BALANCE_SPEC.md §17.4 target [1.0000, 1.0000]
+  196 metric(s), 8 judged, 1 failure(s): FAIL

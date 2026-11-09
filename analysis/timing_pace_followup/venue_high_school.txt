@@ -1,0 +1,217 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  high_school: 50/200 matched pairs (150 complete games)
+  high_school: 100/200 matched pairs (300 complete games)
+  high_school: 150/200 matched pairs (450 complete games)
+  high_school: 200/200 matched pairs (600 complete games)
+
+=== Home-court advantage diagnostic ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=high_school/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 0 of 1, seeds 710001..710200 inclusive n=200 complete games per arm per competition elapsed=1508400ms rate=0.1/s
+  note: BELOW CERTIFICATION REQUIREMENT. 200 games per arm against the §27.1 requirement; this is directional evidence and certifies nothing.
+  note: Matched design: the three arms play the identical fixtures at the identical seeds. A column difference is the venue by construction.
+  note: Seed range: diagnosis, variations 710000-710199, RNG seeds 710001-710200.
+  note: Fixture mode: mirror; home environment 0.500; neutral environment 0.000.
+  note: Initial possession alternates on variation parity and is identical across the three arms, so the opening inbound is balanced over the sample and constant within every matched triple.
+  note: OWNER RULING: §14.2's home-win row is judged by `venue.attributable_home_win_rate` = 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture over the home and reversed arms against a shared neutral control. Denominator is matched pairs, not simulations. A win is 1, a loss 0, a tie 0.5. Every pair carries weight 1. The interval is 1.96 x SE of the paired series. Pooling is the union of fixture keys, refusing overlaps.
+  note: `home.win_rate` is an INFORMATIONAL population diagnostic and does not determine the home-environment calibration verdict.
+  note: Mirror matches are played between two identical rosters, so the pregame strength gap is exactly zero. §14.2's even-team home win rate is the one game-shape row this fixture is the correct measurement for.
+
+  high_school.home.win_rate                                  0.5600 ±0.0688  INFORMATIONAL
+  high_school.neutral.win_rate                               0.5000 ±0.0693  INFORMATIONAL
+  high_school.neutral.mean_margin                           -0.3600 ±1.6531  INFORMATIONAL
+  high_school.home.mean_margin                               1.3650 ±1.6114  INFORMATIONAL
+  high_school.home.median_margin                             2.0000  INFORMATIONAL
+  high_school.reversed.win_rate                              0.5550 ±0.0689  INFORMATIONAL
+  high_school.reversed.mean_margin                           1.3350 ±1.7398  INFORMATIONAL
+  high_school.home.points_per_100_contribution               2.4430  INFORMATIONAL
+  high_school.home.combined_cap_respected                    1.0000  target[1.0000, 1.0000]  PASS
+  high_school.home.environment_margin_gain                   1.7250 ±0.9873  INFORMATIONAL
+  high_school.reversed.environment_margin_gain               0.9750 ±1.0228  INFORMATIONAL
+  high_school.home.environment_win_gain                      0.0600 ±0.0567  INFORMATIONAL
+  high_school.reversed.environment_win_gain                  0.0550 ±0.0593  INFORMATIONAL
+  high_school.home.home_arm_points_per_100                   2.6026 ±1.4895  INFORMATIONAL
+  high_school.venue_reversal_agrees                          1.0000  target[1.0000, 1.0000]  PASS
+  high_school.home.venue.points_per_possession               0.9717  INFORMATIONAL
+  high_school.home.visitor.points_per_possession             0.9534  INFORMATIONAL
+  high_school.home.delta.points_per_possession               0.0183  INFORMATIONAL
+  high_school.home.venue.possessions_per_game               66.2800  INFORMATIONAL
+  high_school.home.visitor.possessions_per_game             66.1200  INFORMATIONAL
+  high_school.home.delta.possessions_per_game                0.1600  INFORMATIONAL
+  high_school.home.venue.field_goal_percentage               0.3867  INFORMATIONAL
+  high_school.home.visitor.field_goal_percentage             0.3897  INFORMATIONAL
+  high_school.home.delta.field_goal_percentage              -0.0029  INFORMATIONAL
+  high_school.home.venue.two_point_percentage                0.4161  INFORMATIONAL
+  high_school.home.visitor.two_point_percentage              0.4269  INFORMATIONAL
+  high_school.home.delta.two_point_percentage               -0.0108  INFORMATIONAL
+  high_school.home.venue.three_point_percentage              0.3246  INFORMATIONAL
+  high_school.home.visitor.three_point_percentage            0.3109  INFORMATIONAL
+  high_school.home.delta.three_point_percentage              0.0137  INFORMATIONAL
+  high_school.home.venue.three_point_attempt_rate            0.3211  INFORMATIONAL
+  high_school.home.visitor.three_point_attempt_rate          0.3212  INFORMATIONAL
+  high_school.home.delta.three_point_attempt_rate           -0.0001  INFORMATIONAL
+  high_school.home.venue.free_throw_percentage               0.6647  INFORMATIONAL
+  high_school.home.visitor.free_throw_percentage             0.6632  INFORMATIONAL
+  high_school.home.delta.free_throw_percentage               0.0015  INFORMATIONAL
+  high_school.home.venue.free_throw_attempt_rate             0.2050  INFORMATIONAL
+  high_school.home.visitor.free_throw_attempt_rate           0.1945  INFORMATIONAL
+  high_school.home.delta.free_throw_attempt_rate             0.0105  INFORMATIONAL
+  high_school.home.venue.turnovers_per_100                  16.0607  INFORMATIONAL
+  high_school.home.visitor.turnovers_per_100                16.7498  INFORMATIONAL
+  high_school.home.delta.turnovers_per_100                  -0.6892  INFORMATIONAL
+  high_school.home.venue.offensive_rebound_percentage        0.2619  INFORMATIONAL
+  high_school.home.visitor.offensive_rebound_percentage       0.2503  INFORMATIONAL
+  high_school.home.delta.offensive_rebound_percentage        0.0117  INFORMATIONAL
+  high_school.home.venue.assist_percentage                   0.4918  INFORMATIONAL
+  high_school.home.visitor.assist_percentage                 0.4870  INFORMATIONAL
+  high_school.home.delta.assist_percentage                   0.0048  INFORMATIONAL
+  high_school.home.venue.conditional_assist_rate             0.7736  INFORMATIONAL
+  high_school.home.visitor.conditional_assist_rate           0.7608  INFORMATIONAL
+  high_school.home.delta.conditional_assist_rate             0.0128  INFORMATIONAL
+  high_school.home.venue.fouls_per_game                     15.5100  INFORMATIONAL
+  high_school.home.visitor.fouls_per_game                   16.1050  INFORMATIONAL
+  high_school.home.delta.fouls_per_game                     -0.5950  INFORMATIONAL
+  high_school.home.venue.steals_per_game                     5.3950  INFORMATIONAL
+  high_school.home.visitor.steals_per_game                   5.2650  INFORMATIONAL
+  high_school.home.delta.steals_per_game                     0.1300  INFORMATIONAL
+  high_school.home.venue.blocks_per_game                     2.3800  INFORMATIONAL
+  high_school.home.visitor.blocks_per_game                   2.5550  INFORMATIONAL
+  high_school.home.delta.blocks_per_game                    -0.1750  INFORMATIONAL
+  high_school.home.venue.timeouts_per_game                   0.9750  INFORMATIONAL
+  high_school.home.visitor.timeouts_per_game                 1.1150  INFORMATIONAL
+  high_school.home.delta.timeouts_per_game                  -0.1400  INFORMATIONAL
+  high_school.home.venue.substitutions_per_game             30.7900  INFORMATIONAL
+  high_school.home.visitor.substitutions_per_game           30.5450  INFORMATIONAL
+  high_school.home.delta.substitutions_per_game              0.2450  INFORMATIONAL
+  high_school.home.overtime_rate                             0.0050  INFORMATIONAL
+  high_school.home.close_game_rate                           0.3550  INFORMATIONAL
+  high_school.home.blowout_rate                              0.0650  INFORMATIONAL
+  high_school.home.margin_standard_deviation                11.6266  INFORMATIONAL
+  high_school.neutral.venue.points_per_possession            0.9590  INFORMATIONAL
+  high_school.neutral.visitor.points_per_possession          0.9652  INFORMATIONAL
+  high_school.neutral.delta.points_per_possession           -0.0061  INFORMATIONAL
+  high_school.neutral.venue.possessions_per_game            66.5250  INFORMATIONAL
+  high_school.neutral.visitor.possessions_per_game          66.4750  INFORMATIONAL
+  high_school.neutral.delta.possessions_per_game             0.0500  INFORMATIONAL
+  high_school.neutral.venue.field_goal_percentage            0.3890  INFORMATIONAL
+  high_school.neutral.visitor.field_goal_percentage          0.3906  INFORMATIONAL
+  high_school.neutral.delta.field_goal_percentage           -0.0016  INFORMATIONAL
+  high_school.neutral.venue.two_point_percentage             0.4188  INFORMATIONAL
+  high_school.neutral.visitor.two_point_percentage           0.4251  INFORMATIONAL
+  high_school.neutral.delta.two_point_percentage            -0.0063  INFORMATIONAL
+  high_school.neutral.venue.three_point_percentage           0.3246  INFORMATIONAL
+  high_school.neutral.visitor.three_point_percentage         0.3180  INFORMATIONAL
+  high_school.neutral.delta.three_point_percentage           0.0066  INFORMATIONAL
+  high_school.neutral.venue.three_point_attempt_rate         0.3165  INFORMATIONAL
+  high_school.neutral.visitor.three_point_attempt_rate       0.3221  INFORMATIONAL
+  high_school.neutral.delta.three_point_attempt_rate        -0.0055  INFORMATIONAL
+  high_school.neutral.venue.free_throw_percentage            0.6512  INFORMATIONAL
+  high_school.neutral.visitor.free_throw_percentage          0.6606  INFORMATIONAL
+  high_school.neutral.delta.free_throw_percentage           -0.0094  INFORMATIONAL
+  high_school.neutral.venue.free_throw_attempt_rate          0.1952  INFORMATIONAL
+  high_school.neutral.visitor.free_throw_attempt_rate        0.2033  INFORMATIONAL
+  high_school.neutral.delta.free_throw_attempt_rate         -0.0082  INFORMATIONAL
+  high_school.neutral.venue.turnovers_per_100               16.8358  INFORMATIONAL
+  high_school.neutral.visitor.turnovers_per_100             16.7131  INFORMATIONAL
+  high_school.neutral.delta.turnovers_per_100                0.1227  INFORMATIONAL
+  high_school.neutral.venue.offensive_rebound_percentage       0.2623  INFORMATIONAL
+  high_school.neutral.visitor.offensive_rebound_percentage       0.2521  INFORMATIONAL
+  high_school.neutral.delta.offensive_rebound_percentage       0.0102  INFORMATIONAL
+  high_school.neutral.venue.assist_percentage                0.4938  INFORMATIONAL
+  high_school.neutral.visitor.assist_percentage              0.4886  INFORMATIONAL
+  high_school.neutral.delta.assist_percentage                0.0052  INFORMATIONAL
+  high_school.neutral.venue.conditional_assist_rate          0.7805  INFORMATIONAL
+  high_school.neutral.visitor.conditional_assist_rate        0.7542  INFORMATIONAL
+  high_school.neutral.delta.conditional_assist_rate          0.0263  INFORMATIONAL
+  high_school.neutral.venue.fouls_per_game                  15.9600  INFORMATIONAL
+  high_school.neutral.visitor.fouls_per_game                15.5450  INFORMATIONAL
+  high_school.neutral.delta.fouls_per_game                   0.4150  INFORMATIONAL
+  high_school.neutral.venue.steals_per_game                  5.2500  INFORMATIONAL
+  high_school.neutral.visitor.steals_per_game                5.3550  INFORMATIONAL
+  high_school.neutral.delta.steals_per_game                 -0.1050  INFORMATIONAL
+  high_school.neutral.venue.blocks_per_game                  2.3650  INFORMATIONAL
+  high_school.neutral.visitor.blocks_per_game                2.4900  INFORMATIONAL
+  high_school.neutral.delta.blocks_per_game                 -0.1250  INFORMATIONAL
+  high_school.neutral.venue.timeouts_per_game                1.0250  INFORMATIONAL
+  high_school.neutral.visitor.timeouts_per_game              1.0450  INFORMATIONAL
+  high_school.neutral.delta.timeouts_per_game               -0.0200  INFORMATIONAL
+  high_school.neutral.venue.substitutions_per_game          31.0750  INFORMATIONAL
+  high_school.neutral.visitor.substitutions_per_game        30.5700  INFORMATIONAL
+  high_school.neutral.delta.substitutions_per_game           0.5050  INFORMATIONAL
+  high_school.neutral.overtime_rate                          0.0250  INFORMATIONAL
+  high_school.neutral.close_game_rate                        0.3450  INFORMATIONAL
+  high_school.neutral.blowout_rate                           0.0700  INFORMATIONAL
+  high_school.neutral.margin_standard_deviation             11.9278  INFORMATIONAL
+  high_school.reversed.venue.points_per_possession           0.9677  INFORMATIONAL
+  high_school.reversed.visitor.points_per_possession         0.9463  INFORMATIONAL
+  high_school.reversed.delta.points_per_possession           0.0214  INFORMATIONAL
+  high_school.reversed.venue.possessions_per_game           66.4900  INFORMATIONAL
+  high_school.reversed.visitor.possessions_per_game         66.5850  INFORMATIONAL
+  high_school.reversed.delta.possessions_per_game           -0.0950  INFORMATIONAL
+  high_school.reversed.venue.field_goal_percentage           0.3892  INFORMATIONAL
+  high_school.reversed.visitor.field_goal_percentage         0.3856  INFORMATIONAL
+  high_school.reversed.delta.field_goal_percentage           0.0036  INFORMATIONAL
+  high_school.reversed.venue.two_point_percentage            0.4247  INFORMATIONAL
+  high_school.reversed.visitor.two_point_percentage          0.4197  INFORMATIONAL
+  high_school.reversed.delta.two_point_percentage            0.0050  INFORMATIONAL
+  high_school.reversed.venue.three_point_percentage          0.3137  INFORMATIONAL
+  high_school.reversed.visitor.three_point_percentage        0.3135  INFORMATIONAL
+  high_school.reversed.delta.three_point_percentage          0.0002  INFORMATIONAL
+  high_school.reversed.venue.three_point_attempt_rate        0.3194  INFORMATIONAL
+  high_school.reversed.visitor.three_point_attempt_rate       0.3207  INFORMATIONAL
+  high_school.reversed.delta.three_point_attempt_rate       -0.0013  INFORMATIONAL
+  high_school.reversed.venue.free_throw_percentage           0.6683  INFORMATIONAL
+  high_school.reversed.visitor.free_throw_percentage         0.6580  INFORMATIONAL
+  high_school.reversed.delta.free_throw_percentage           0.0103  INFORMATIONAL
+  high_school.reversed.venue.free_throw_attempt_rate         0.2139  INFORMATIONAL
+  high_school.reversed.visitor.free_throw_attempt_rate       0.1851  INFORMATIONAL
+  high_school.reversed.delta.free_throw_attempt_rate         0.0288  INFORMATIONAL
+  high_school.reversed.venue.turnovers_per_100              16.3182  INFORMATIONAL
+  high_school.reversed.visitor.turnovers_per_100            16.8056  INFORMATIONAL
+  high_school.reversed.delta.turnovers_per_100              -0.4873  INFORMATIONAL
+  high_school.reversed.venue.offensive_rebound_percentage       0.2461  INFORMATIONAL
+  high_school.reversed.visitor.offensive_rebound_percentage       0.2598  INFORMATIONAL
+  high_school.reversed.delta.offensive_rebound_percentage      -0.0137  INFORMATIONAL
+  high_school.reversed.venue.assist_percentage               0.4926  INFORMATIONAL
+  high_school.reversed.visitor.assist_percentage             0.4909  INFORMATIONAL
+  high_school.reversed.delta.assist_percentage               0.0017  INFORMATIONAL
+  high_school.reversed.venue.conditional_assist_rate         0.7582  INFORMATIONAL
+  high_school.reversed.visitor.conditional_assist_rate       0.7763  INFORMATIONAL
+  high_school.reversed.delta.conditional_assist_rate        -0.0180  INFORMATIONAL
+  high_school.reversed.venue.fouls_per_game                 15.3050  INFORMATIONAL
+  high_school.reversed.visitor.fouls_per_game               16.4100  INFORMATIONAL
+  high_school.reversed.delta.fouls_per_game                 -1.1050  INFORMATIONAL
+  high_school.reversed.venue.steals_per_game                 5.3600  INFORMATIONAL
+  high_school.reversed.visitor.steals_per_game               5.3700  INFORMATIONAL
+  high_school.reversed.delta.steals_per_game                -0.0100  INFORMATIONAL
+  high_school.reversed.venue.blocks_per_game                 2.4200  INFORMATIONAL
+  high_school.reversed.visitor.blocks_per_game               2.3500  INFORMATIONAL
+  high_school.reversed.delta.blocks_per_game                 0.0700  INFORMATIONAL
+  high_school.reversed.venue.timeouts_per_game               1.0250  INFORMATIONAL
+  high_school.reversed.visitor.timeouts_per_game             1.1450  INFORMATIONAL
+  high_school.reversed.delta.timeouts_per_game              -0.1200  INFORMATIONAL
+  high_school.reversed.venue.substitutions_per_game         31.1300  INFORMATIONAL
+  high_school.reversed.visitor.substitutions_per_game       31.4400  INFORMATIONAL
+  high_school.reversed.delta.substitutions_per_game         -0.3100  INFORMATIONAL
+  high_school.reversed.overtime_rate                         0.0300  INFORMATIONAL
+  high_school.reversed.close_game_rate                       0.3200  INFORMATIONAL
+  high_school.reversed.blowout_rate                          0.1050  INFORMATIONAL
+  high_school.reversed.margin_standard_deviation            12.5531  INFORMATIONAL
+  high_school.venue.raw_home_win_rate                        0.5600  INFORMATIONAL
+  high_school.venue.neutral_home_win_rate                    0.5000  INFORMATIONAL
+  high_school.venue.attributable_home_win_rate               0.5575 ±0.0334  target[0.5300, 0.5600]  PASS
+  high_school.venue.canonical_form_agrees                    1.0000  target[1.0000, 1.0000]  PASS
+  high_school.venue.paired_win_rate_change                   0.0575 ±0.0334  INFORMATIONAL
+  high_school.venue.raw_margin_difference                    1.3650  INFORMATIONAL
+  high_school.venue.paired_margin_difference                 1.3500 ±0.6099  INFORMATIONAL
+  high_school.venue.points_per_100                           2.0322 ±0.9181  INFORMATIONAL
+  high_school.venue.points_per_100_standard_error            0.4684  INFORMATIONAL
+  high_school.venue.cap_respected                            1.0000  target[1.0000, 1.0000]  PASS
+  high_school.venue.reversal_agrees                          1.0000  target[1.0000, 1.0000]  PASS
+  high_school.venue.matched_pairs                          200.0000  INFORMATIONAL
+  high_school.venue.complete_games                         600.0000  INFORMATIONAL
+  high_school.venue.sample_well_formed                       1.0000  target[1.0000, 1.0000]  PASS
+  high_school.venue.sample_complete                          1.0000  target[1.0000, 1.0000]  PASS
+  high_school.venue.certification_sample_reached             0.0060  INFORMATIONAL
+
+  report: res://reports/home_court_diagnostics_v17_high_school.json
+  196 metric(s), 8 judged, 0 failures: PASS

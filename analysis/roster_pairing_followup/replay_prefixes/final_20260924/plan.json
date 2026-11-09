@@ -1,0 +1,487 @@
+{
+  "cells": [
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_home_high_school",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_neutral_high_school",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_home_college",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_neutral_college",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_home_development",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_neutral_development",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_home_overseas",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_neutral_overseas",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_home_top_domestic_pro",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_baseline_neutral_top_domestic_pro",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_home_high_school",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_neutral_high_school",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_home_college",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_neutral_college",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_home_development",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_neutral_development",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_home_overseas",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_neutral_overseas",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "home"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_home_top_domestic_pro",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "label": "replay_prefix_final_20260924_candidate_neutral_top_domestic_pro",
+      "games": 4,
+      "shard": 5850000,
+      "shards": 5850001,
+      "variations": [
+        23400000,
+        23400001,
+        23400002,
+        23400003
+      ],
+      "seeds": [
+        23400001,
+        23400002,
+        23400003,
+        23400004
+      ]
+    }
+  ],
+  "total_games": 80,
+  "protocol_sha256": "d9b72de7670e95edd17cdf717973f3d7d8f239f1488fbb03ca0956e19b8e67aa",
+  "freeze_sha256": "cea55fa95b752b90cbe2378afd38070e249b79be5437b58cfa0755cf1a8bd7d2"
+}

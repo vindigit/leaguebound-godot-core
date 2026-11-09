@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-09-14" name="report_1" tests="4" failures="15" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="test_free_throw_stopped_clock" package="tests/simulation" timestamp="2026-09-15T02:23:20" hostname="localhost" tests="4" failures="15" errors="0" skipped="0" flaky="0" time="3.884">
+		<testcase name="test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts" classname="test_free_throw_stopped_clock" time="3.870">
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:28" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 68000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:28
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:29" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 64000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:29
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:30" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 680000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:30
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:28" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 66000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:28
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:29" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 66000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:29
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:30" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 660000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:30
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:28" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 76000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:28
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:29" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 70000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:29
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:30" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 760000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:30
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:28" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 66000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:28
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:29" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 56349
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:29
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:30" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 660000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:30
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:28" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 42000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:28
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:29" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 42000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:29
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_free_throw_stopped_clock.gd:30" type="FAILURE">
+<![CDATA[
+Expecting:
+ 0
+ but was
+ 420000
+	at 'test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts' in res://tests/simulation/test_free_throw_stopped_clock.gd:30
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+</testsuites>

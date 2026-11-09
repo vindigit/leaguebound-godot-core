@@ -1,0 +1,167 @@
+{
+  "schema": "leaguebound.stage4.transcript-archival/1",
+  "preserved_byte_identical": true,
+  "note": "Original raw mutation transcripts moved to ignored .log files; compact proofs remain checked in. Subsequent final source replay has its own logs and proof. Intermediate mutation counts are never added.",
+  "transcripts": [
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/after.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/after.log",
+      "sha256": "0c4264299e11f66060089095d2fb5d7c3c598a95a31b0adeee89d8a74ba143bd"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/before.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/before.log",
+      "sha256": "bb96d259ffb4b314b343b818a9364a0c5b9eda236d160152ee6f355e40ed323a"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/denominator_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/denominator_guard.log",
+      "sha256": "9658a1d25d9107b04e1a2fb8bd3ea790af54b4dcdfd6de4dc46cc0cdc8e79618"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/duplicate_metric.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/duplicate_metric.log",
+      "sha256": "c3b6b15921be0244840977d86f4280074f7f7ae42b341d84261791b02a872be3"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/duplicate_seed.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/duplicate_seed.log",
+      "sha256": "685dcad6c33f6e559ab77b77240706b1f6a9d5c393566cb12493db4bd82ef3c5"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/opener_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/opener_guard.log",
+      "sha256": "83cecf6084689bcc94edb401f8069c313eb67287037692b7ddfddd1e79d40680"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/ratio_scale.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/ratio_scale.log",
+      "sha256": "da675063d743f5c1f2077f16e36c5a380bf72deca7243c7c2048ac1718818d7a"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/target_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/target_guard.log",
+      "sha256": "08d113b24d380e1e1947f86d06188e194d6df5b693edf0c0a0bbd7ddd65267a1"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations/verdict_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations/archived_transcripts/verdict_guard.log",
+      "sha256": "05c9f4e08d7a07a39e5e76696df8d2ef262f05dac946f324a89d8b4ff99bf38d"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/after.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/after.log",
+      "sha256": "d1be520863c0127ca72d9d6752adc1eff925d0646d58ba216cb9e1b0de6a37e1"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/before.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/before.log",
+      "sha256": "0d154afe84e4fe588356b80b05e559ce575b1b90f74dcdd1ef6e4407c51aed30"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/denominator_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/denominator_guard.log",
+      "sha256": "864a82a1058be2b60aa1bf151b391c379af18e0518b0a9da3795caeb9252b601"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/duplicate_metric.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/duplicate_metric.log",
+      "sha256": "61ddd09f8398ea74117efd93bbca0b21ac614cc92e7ee8698b248577af883eea"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/duplicate_seed.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/duplicate_seed.log",
+      "sha256": "a59f9f6a907f2e1e1d408d3daec6c0a98f40cee654e22d14052ad4b7f4e93a15"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/opener_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/opener_guard.log",
+      "sha256": "17fa77fb096d19b891ed37d784b1efcb9b93c80cad7c7d47740314e18a5ca49c"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/ratio_scale.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/ratio_scale.log",
+      "sha256": "c91d9759c3a41616701615877085c5108f1853f8dde5a1922fa95bee726f74b2"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/target_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/target_guard.log",
+      "sha256": "eef92a8dcf9ecfeef81df9fe54e67499437d3dab5ad5d99f8aa654cd4d52c970"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/venue_duplicate.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/venue_duplicate.log",
+      "sha256": "84d61b46e767a1fb37ba1e8f844e350d01b0848b3d88091ff2473ca5fb423a59"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/venue_sign.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/venue_sign.log",
+      "sha256": "13a4797518fa4e4b191a744018a00b6b8be7b839232c47c27fbdba6368d150ff"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v2/verdict_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v2/archived_transcripts/verdict_guard.log",
+      "sha256": "89dd7b0f8fe0a59d902eb46f33a74bea2fd10581eb34410e353f52175213e1c8"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/after.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/after.log",
+      "sha256": "8232b07bdfcf5174abaced7f2a4b17a3a751fc4a78d8d766e478d74428d14b67"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/before.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/before.log",
+      "sha256": "904b767867bdd0e0513c52e1992c08090393239bc05f9ae18ba8d5066cc03a46"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/denominator_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/denominator_guard.log",
+      "sha256": "822171d87cd9bdf02e66bb596c2fa196d5badf434c5a9abe4fffe21ec9b787a7"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/duplicate_metric.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/duplicate_metric.log",
+      "sha256": "e2b9f3e8883113b6b28edc937712fafc17e962e4385846549f1414d09709511c"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/duplicate_seed.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/duplicate_seed.log",
+      "sha256": "7e84b965dcf8c2b0c2ede975bd7ea29a614597bb05d571a96fcb81633b77cee9"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/opener_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/opener_guard.log",
+      "sha256": "ff5d35039cc5bdb8fb91ade41dceb73a598681ed46b374ebb6b43fa142405533"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/ratio_scale.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/ratio_scale.log",
+      "sha256": "13838a240b0410ad30e7127e75e3a66fb8306c4dd692407ee9818d6f7f16e527"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/target_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/target_guard.log",
+      "sha256": "adeedb4723b6866b7222cac6f408ea5ace0791ca45c0fbe84d3d7219b6d8f5d3"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/venue_duplicate.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/venue_duplicate.log",
+      "sha256": "ed76e4d2dd58dc39346654fdb41d2350766123b90edea1c93fbb5142781489eb"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/venue_sign.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/venue_sign.log",
+      "sha256": "2920473c0f6ff815424edc97c392dc17b7bad07d35f348da0778c17e4a559453"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/verdict_guard.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/verdict_guard.log",
+      "sha256": "b8d756fb14968059db17d32c0d43721ad50d321892c8d18af53b699ac573e229"
+    },
+    {
+      "original_path": "analysis/stage4_blocker_review/mutations_v3/Wilson_center.txt",
+      "ignored_archive_path": "analysis/stage4_blocker_review/mutations_v3/archived_transcripts/Wilson_center.log",
+      "sha256": "9a031f63cdc95fc3c4f73158a5c0007dafe6d042dc0410b4132487f3db1bac39"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+# Independent validation B and untouched-range review
+
+Verdict: ACCEPT validation B evidence integrity and the bounded A/B reproducibility claims. This does not certify Stage 4 or all calibration bands.
+
+All twenty B cells completed at variations 32760000–32760467, with 468 games per cell and simulation seed equal to variation plus one. Independent archive checks verify process/raw/report hashes, recorded primary source identities, clean runtime logs, and complete canonical failure listings. All diagnostic/A/B variation ranges are disjoint. The original outcome ranges and construction were retained through the documented interruption/resume.
+
+Independent arithmetic reconciles 300 canonical estimates and original target/verdict objects, 340 cell ratio intervals, 170 paired ratio intervals, thirty venue intervals and all ten paired 10,000-draw final-margin SD bootstrap comparisons. Full-vector before/after and home/away roster marginal equality, quartet orientation, opener parity, same-input environment arms, event/complement counts, signed discordance, sparse warnings and unavailable degenerate intervals pass. Every canonical failure object is retained. See `validation_b_independent_review.json`.
+
+All five candidate home-arm possession and PPP judgments pass in B, as they did in A. B possession means are 66.394231, 68.168803, 94.493590, 75.550214 and 99.232906 for high school, college, development, overseas and top domestic respectively. Other failures remain. Top-domestic close-game share newly fails against its matched baseline in B, as it did in A. Population home-win verdict changes differ between ranges and do not judge the controlled equal-team venue estimand.
+
+The independent cross-range review checks all ninety rendered directional rows against both summaries, including interval endpoints, sparse exclusions and interpretation text. None meets the preregistered repeated same-direction interval-exclusion rule. That finding is not evidence of equivalence, no effect, or an absent roster contribution to overtime. Individual intervals exclude zero in only one range for some metrics; those results cannot be promoted into a replicated directional claim. A threshold verdict can change without a replicated causal effect being established.
+
+The exact fixture construction fixes venue/opener assignment imbalance while preserving roster marginals. These finite schedule slices establish neither complete Cartesian-population behavior nor guaranteed interval coverage. No multiplicity adjustment, three-arm home-environment verdict, overtime-cause conclusion or §27.1 certification is claimed. No outcome-driven parameter, seed, target or tolerance change is justified by this review.
+
+`untouched_ranges_independent_review.json` records all ninety checks and B verdict transitions. Arithmetic/statistical acceptance is complete for A and B; exact-row replay and final publication/head/CI verification remain distinct requirements. This review does not independently replace the complete-gate critic's acceptance.

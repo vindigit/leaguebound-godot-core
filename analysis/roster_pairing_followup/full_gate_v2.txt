@@ -1,0 +1,1118 @@
+Godot: C:/Users/valexander/Downloads/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe (4.7.1.stable.official.a13da4feb)
+
+=== Import project (builds .godot/global_script_class_cache.cfg)
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[38;2;218;165;32mIt was recognized that GdUnit4 is running in a test environment, therefore the GdUnit4 plugin will not be executed![0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (2 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | TestPopulationPairing[39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | logo.png[39m[0m
+[  50% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+=== Parse-check every script under warnings-as-errors
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+Parse check: self-testing the detector before walking the tree.
+Parse check: the parse error immediately below is deliberate — it is the
+Parse check: broken script the self-test compiles on purpose.
+SCRIPT ERROR: Parse Error: Expected parameter name.
+   at: GDScript::reload (gdscript://-9223372010111892020.gd:4)
+   GDScript backtrace (most recent call first):
+       [0] self_test (res://tools/script_validity.gd:103)
+       [1] _run (res://tools/parse_check.gd:67)
+Parse check: detector verified.
+Parse check: 266 script(s) checked, 0 failure(s)
+
+=== Project-owned headless acceptance runner
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+LeagueBound headless acceptance: PASS
+
+=== Fixed-seed simulation smoke diagnostics
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+LeagueBound Stage 3 simulation smoke
+  games: 10 (0 with overtime) in 18525 ms
+  engine possessions/game: 39.5
+  points/game: 41.5
+  points/possession: 1.052
+  FG%: 44.2%
+  3P%: 32.3%
+  3PA/FGA: 34.8%
+  FT%: 80.7%
+  FTA/FGA: 16.1%
+  turnovers/100 possessions: 14.9
+  offensive rebound %: 25.0%
+  assist % of made FG: 52.8%
+  steals/game: 2.7
+  blocks/game: 1.6
+  personal fouls/game: 8.1
+  paint points/game: 18.4
+  second-chance points/game: 4.5
+  possession estimate/game: 40.6
+Invariants: PASS
+
+=== Builder smoke portfolio (BALANCE_SPEC §7.3.2 bands)
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+Ordinary completed-build high water: 50 OVR (guard/ready_now/early/body0/conventional), ceiling 54
+Report written to res://reports/builder_calibration.json
+Builds evaluated: 810
+
+prospect       class           n   min   med   max     band
+ready_now      ordinary      177    49    50    50    48-52
+ready_now      specialist     93    47    48    49    46-54
+balanced       ordinary      163    48    49    49    46-50
+balanced       specialist    107    46    47    48    44-52
+high_upside    ordinary      162    47    47    47    44-48
+high_upside    specialist    108    45    46    46    42-50
+Builder calibration: PASS
+WARNING: 8 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 7 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+
+=== Attribute sensitivity suite (PR-gate sample: 100000 resolutions)
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+
+  attribute                monotone     50->80 probe capability              
+  short_range                   yes      58.1% rim_touch_finish              
+  dunking                       yes      58.1% dunk_threat                   
+  mid_range                     yes      85.7% midrange_shotmaking           
+  three_point                   yes      88.8% three_point_shotmaking        
+  free_throw                    yes     105.3% free_throw_shotmaking         
+  handle                        yes      64.5% ball_security                 
+  passing                       yes      64.5% pass_accuracy                 
+  vision                        yes      58.1% pass_read_quality             
+  offensive_iq                  yes      82.4% shot_selection                
+  perimeter_defense             yes      52.0% point_of_attack_containment   
+  interior_defense              yes      58.1% interior_positioning          
+  stealing                      yes      58.1% passing_lane_defense          
+  blocking                      yes      52.0% rim_protection                
+  defensive_iq                  yes      90.9% help_recognition              
+  offensive_rebounding          yes      58.1% offensive_rebound_positioning 
+  defensive_rebounding          yes      58.1% defensive_rebound_positioning 
+  speed                         yes     120.0% court_speed                   
+  strength                      yes     120.0% contact_force                 
+  stamina                       yes     120.0% work_capacity                 
+  vertical                      yes      58.1% burst_reach                   
+
+=== Attribute marginal-value and sensitivity ===
+  commit=7e4a73128f7c64b786679d40dee064cb2b40994e godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=top_domestic_pro/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=1..100000 per test point n=100000 resolutions per probability test point elapsed=453ms rate=220750.6/s
+  note: Â§27.1 isolated-boundary sample is 100000 resolutions per test point; this run used 100000.
+  note: Capability movements are exact functions of the ratings and carry no interval. Probability movements are sampled and carry Wilson intervals.
+  note: Box-score, role-relative, team-impact, and fatigue/availability observables are NOT covered by this run; they require the match-level suite.
+
+  sample.meets_certification_size                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.short_range.is_addressed                         1.0000  target[1.0000, 1.0000]  PASS
+  attribute.short_range.monotonic                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.short_range.effect_50_to_80                      0.5806  target[0.1000, 100.0000]  PASS
+  attribute.dunking.is_addressed                             1.0000  target[1.0000, 1.0000]  PASS
+  attribute.dunking.monotonic                                1.0000  target[1.0000, 1.0000]  PASS
+  attribute.dunking.effect_50_to_80                          0.5806  target[0.1000, 100.0000]  PASS
+  attribute.mid_range.is_addressed                           1.0000  target[1.0000, 1.0000]  PASS
+  attribute.mid_range.monotonic                              1.0000  target[1.0000, 1.0000]  PASS
+  attribute.mid_range.effect_50_to_80                        0.8571  target[0.1000, 100.0000]  PASS
+  attribute.three_point.is_addressed                         1.0000  target[1.0000, 1.0000]  PASS
+  attribute.three_point.monotonic                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.three_point.effect_50_to_80                      0.8881  target[0.1000, 100.0000]  PASS
+  attribute.free_throw.is_addressed                          1.0000  target[1.0000, 1.0000]  PASS
+  attribute.free_throw.monotonic                             1.0000  target[1.0000, 1.0000]  PASS
+  attribute.free_throw.effect_50_to_80                       1.0534  target[0.1000, 100.0000]  PASS
+  attribute.handle.is_addressed                              1.0000  target[1.0000, 1.0000]  PASS
+  attribute.handle.monotonic                                 1.0000  target[1.0000, 1.0000]  PASS
+  attribute.handle.effect_50_to_80                           0.6446  target[0.1000, 100.0000]  PASS
+  attribute.passing.is_addressed                             1.0000  target[1.0000, 1.0000]  PASS
+  attribute.passing.monotonic                                1.0000  target[1.0000, 1.0000]  PASS
+  attribute.passing.effect_50_to_80                          0.6446  target[0.1000, 100.0000]  PASS
+  attribute.vision.is_addressed                              1.0000  target[1.0000, 1.0000]  PASS
+  attribute.vision.monotonic                                 1.0000  target[1.0000, 1.0000]  PASS
+  attribute.vision.effect_50_to_80                           0.5806  target[0.1000, 100.0000]  PASS
+  attribute.offensive_iq.is_addressed                        1.0000  target[1.0000, 1.0000]  PASS
+  attribute.offensive_iq.monotonic                           1.0000  target[1.0000, 1.0000]  PASS
+  attribute.offensive_iq.effect_50_to_80                     0.8235  target[0.1000, 100.0000]  PASS
+  attribute.perimeter_defense.is_addressed                   1.0000  target[1.0000, 1.0000]  PASS
+  attribute.perimeter_defense.monotonic                      1.0000  target[1.0000, 1.0000]  PASS
+  attribute.perimeter_defense.effect_50_to_80                0.5197  target[0.1000, 100.0000]  PASS
+  attribute.interior_defense.is_addressed                    1.0000  target[1.0000, 1.0000]  PASS
+  attribute.interior_defense.monotonic                       1.0000  target[1.0000, 1.0000]  PASS
+  attribute.interior_defense.effect_50_to_80                 0.5806  target[0.1000, 100.0000]  PASS
+  attribute.stealing.is_addressed                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.stealing.monotonic                               1.0000  target[1.0000, 1.0000]  PASS
+  attribute.stealing.effect_50_to_80                         0.5806  target[0.1000, 100.0000]  PASS
+  attribute.blocking.is_addressed                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.blocking.monotonic                               1.0000  target[1.0000, 1.0000]  PASS
+  attribute.blocking.effect_50_to_80                         0.5197  target[0.1000, 100.0000]  PASS
+  attribute.defensive_iq.is_addressed                        1.0000  target[1.0000, 1.0000]  PASS
+  attribute.defensive_iq.monotonic                           1.0000  target[1.0000, 1.0000]  PASS
+  attribute.defensive_iq.effect_50_to_80                     0.9091  target[0.1000, 100.0000]  PASS
+  attribute.offensive_rebounding.is_addressed                1.0000  target[1.0000, 1.0000]  PASS
+  attribute.offensive_rebounding.monotonic                   1.0000  target[1.0000, 1.0000]  PASS
+  attribute.offensive_rebounding.effect_50_to_80             0.5806  target[0.1000, 100.0000]  PASS
+  attribute.defensive_rebounding.is_addressed                1.0000  target[1.0000, 1.0000]  PASS
+  attribute.defensive_rebounding.monotonic                   1.0000  target[1.0000, 1.0000]  PASS
+  attribute.defensive_rebounding.effect_50_to_80             0.5806  target[0.1000, 100.0000]  PASS
+  attribute.speed.is_addressed                               1.0000  target[1.0000, 1.0000]  PASS
+  attribute.speed.monotonic                                  1.0000  target[1.0000, 1.0000]  PASS
+  attribute.speed.effect_50_to_80                            1.2000  target[0.1000, 100.0000]  PASS
+  attribute.strength.is_addressed                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.strength.monotonic                               1.0000  target[1.0000, 1.0000]  PASS
+  attribute.strength.effect_50_to_80                         1.2000  target[0.1000, 100.0000]  PASS
+  attribute.stamina.is_addressed                             1.0000  target[1.0000, 1.0000]  PASS
+  attribute.stamina.monotonic                                1.0000  target[1.0000, 1.0000]  PASS
+  attribute.stamina.effect_50_to_80                          1.2000  target[0.1000, 100.0000]  PASS
+  attribute.vertical.is_addressed                            1.0000  target[1.0000, 1.0000]  PASS
+  attribute.vertical.monotonic                               1.0000  target[1.0000, 1.0000]  PASS
+  attribute.vertical.effect_50_to_80                         0.5806  target[0.1000, 100.0000]  PASS
+  amplifier.offensive_iq.in.ball_security                    0.3077  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.handle_creation                  0.3636  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.pass_accuracy                    0.3077  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.pass_read_quality                0.4167  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.rim_touch_finish                 0.2500  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.midrange_shotmaking              0.2500  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.three_point_shotmaking           0.2195  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.free_throw_shotmaking            0.0870  target[0.0000, 0.6000]  PASS
+  amplifier.offensive_iq.in.offensive_rebound_positioning       0.1667  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.point_of_attack_containment       0.2727  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.perimeter_contest                0.3636  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.interior_positioning             0.3333  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.rim_protection                   0.2727  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.passing_lane_defense             0.4167  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.on_ball_disruption               0.2727  target[0.0000, 0.6000]  PASS
+  amplifier.defensive_iq.in.defensive_rebound_positioning       0.1667  target[0.0000, 0.6000]  PASS
+  shot.short_range.close_non_rim.effect_50_to_80             0.2602 ±0.0044  target[0.1000, 100.0000]  PASS
+  shot.mid_range.midrange.effect_50_to_80                    0.4354 ±0.0042  target[0.1000, 100.0000]  PASS
+  shot.three_point.standard_three.effect_50_to_80            0.4697 ±0.0041  target[0.1000, 100.0000]  PASS
+
+  report: res://reports/attribute_sensitivity_pr.json
+  80 metric(s), 80 judged, 0 failures: PASS
+
+=== Calibration smoke (PR-gate sample: 6 games)
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+
+=== Deterministic calibration smoke (structural, not a certification) ===
+  commit=7e4a73128f7c64b786679d40dee064cb2b40994e godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=top_domestic_pro/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=1..6 n=6 complete games elapsed=30349ms rate=0.2/s
+  note: STRUCTURAL SMOKE ONLY. Control limits are the §14.1 bands widened by 125% of their own width. §27.1 requires 100000 games per competition to certify; this run used 6.
+
+  possessions_per_game                                      99.6667  target[87.2500, 111.7500]  PASS
+  points_per_possession                                      1.1622  target[0.9550, 1.3050]  PASS
+  field_goal_percentage                                      0.4540  target[0.3750, 0.5850]  PASS
+  three_point_attempt_rate                                   0.3481  target[0.1975, 0.6525]  PASS
+  free_throw_attempt_rate                                    0.2135  target[-0.0200, 0.5400]  PASS
+  turnovers_per_100_possessions                             13.7960  target[4.7500, 22.2500]  PASS
+  offensive_rebound_percentage                               0.2596  target[0.0625, 0.4475]  PASS
+  assist_percentage                                          0.5870  target[0.2700, 0.9700]  PASS
+  event_family.assists.present                               1.0000  target[1.0000, 1.0000]  PASS
+  event_family.free_throws_attempted.present                 1.0000  target[1.0000, 1.0000]  PASS
+  event_family.offensive_rebounds.present                    1.0000  target[1.0000, 1.0000]  PASS
+  event_family.steals.present                                1.0000  target[1.0000, 1.0000]  PASS
+  event_family.blocks.present                                1.0000  target[1.0000, 1.0000]  PASS
+  event_family.three_pointers_attempted.present              1.0000  target[1.0000, 1.0000]  PASS
+  event_family.personal_fouls.present                        1.0000  target[1.0000, 1.0000]  PASS
+
+  report: res://reports/calibration_smoke_pr.json
+  15 metric(s), 15 judged, 0 failures: PASS
+  verdict: structural smoke only; not a §27.1 certification.
+
+=== GdUnit4 suites
+ERROR: The remote port number must be between 1 and 65535 (inclusive).
+   at: connect_to_host (core/io/stream_peer_tcp.cpp:69)
+ERROR: Remote Debugger: Unable to connect to host '127.0.0.1:0'.
+   at: create_tcp (core/debugger/remote_debugger_peer.cpp:247)
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+Scanning for test suites in: res://tests
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_identities_close_on_every_axis[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_identities_close_on_every_axis[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 20s 305ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_made_field_goals_are_exactly_the_two_and_three_pointers[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_made_field_goals_are_exactly_the_two_and_three_pointers[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21s 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ledger_and_the_box_score_agree_about_field_goals[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ledger_and_the_box_score_agree_about_field_goals[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26s 541ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6s 150ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1min 21s 229ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_zone_and_contest_shares_each_sum_to_one[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_zone_and_contest_shares_each_sum_to_one[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23s 494ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shooter_capability_moves_make_probability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shooter_capability_moves_make_probability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 37s 789ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defender_capability_moves_contest_pressure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defender_capability_moves_contest_pressure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36s 514ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rating_normalization_round_trips_through_the_baseline_curve[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rating_normalization_round_trips_through_the_baseline_curve[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_roster_ladder_preserves_the_intended_rating_gap_between_levels[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_roster_ladder_preserves_the_intended_rating_gap_between_levels[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_probe_cannot_change_the_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_probe_cannot_change_the_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 7s 347ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_is_detached_by_default[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_is_detached_by_default[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_probe_whose_owner_was_freed_is_ignored[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_probe_whose_owner_was_freed_is_ignored[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 7s 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_terms_sum_to_the_probability_they_describe[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_probe_terms_sum_to_the_probability_they_describe[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 19s 513ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_interval_is_a_ratio_estimator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_field_goal_interval_is_a_ratio_estimator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 13ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_published_field_goal_interval_goes_through_the_ratio_estimator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_published_field_goal_interval_goes_through_the_ratio_estimator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ratio_estimator_refuses_an_unusable_series[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_ratio_estimator_refuses_an_unusable_series[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_has_no_compensation_channel[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_has_no_compensation_channel[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_cannot_name_a_competition[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_shot_resolution_cannot_name_a_competition[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_make_resolution_cannot_see_the_scoreboard[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_make_resolution_cannot_see_the_scoreboard[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_shoots_against_one_shared_shot_profile[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_shoots_against_one_shared_shot_profile[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 39ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_compensation_channels_are_pinned_on_a_fixed_fixture[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_fg_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_compensation_channels_are_pinned_on_a_fixed_fixture[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1min 18s 697ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 22 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6min 6s 338ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_estimator_is_the_judged_metric[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_estimator_is_the_judged_metric[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_marginal_metric_is_informational_and_cannot_fail_the_gate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_marginal_metric_is_informational_and_cannot_fail_the_gate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_disagreement_is_resolved_by_the_judged_metric[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_disagreement_is_resolved_by_the_judged_metric[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 13ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_judged_metric_still_fails_when_the_venue_effect_is_wrong[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_judged_metric_still_fails_when_the_venue_effect_is_wrong[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_fourteen_two_band_is_untouched[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_fourteen_two_band_is_untouched[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_runner_emits_exactly_one_judged_home_win_metric[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_home_win_verdict_ownership.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_runner_emits_exactly_one_judged_home_win_metric[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 14ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 6 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 155ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_margin_classification_uses_the_specified_boundaries[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_margin_classification_uses_the_specified_boundaries[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 13ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_classification_is_signless[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_classification_is_signless[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_six_term_identity_reconstructs_the_margin[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_six_term_identity_reconstructs_the_margin[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_component_variance_shares_sum_to_one[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_component_variance_shares_sum_to_one[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_independent_possessions_report_a_ratio_near_one[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_independent_possessions_report_a_ratio_near_one[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 33ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_persistent_game_level_effect_raises_the_ratio[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_persistent_game_level_effect_raises_the_ratio[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 8ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_strength_regression_recovers_a_known_slope[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_strength_regression_recovers_a_known_slope[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_matchup_bands_partition_the_sample[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_margin_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_matchup_bands_partition_the_sample[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 8 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 246ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_production_script_constructs_a_match_input[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_production_script_constructs_a_match_input[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 287ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rebuilding_an_input_for_new_stakes_keeps_the_same_opener[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_rebuilding_an_input_for_new_stakes_keeps_the_same_opener[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_opening_possession_outside_the_two_teams_is_rejected[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_opening_possession_outside_the_two_teams_is_rejected[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 33ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_arrow_rule_flag_is_still_unread[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_arrow_rule_flag_is_still_unread[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 273ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_population_fixture_alternates_the_opening_inbound[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_population_fixture_alternates_the_opening_inbound[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 63ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_mirror_fixture_alternates_the_opening_inbound[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_mirror_fixture_alternates_the_opening_inbound[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 75ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_opening_inbound_is_split_exactly_evenly_over_a_range[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_opening_inbound_is_split_exactly_evenly_over_a_range[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 480ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_diagnostic_can_hold_the_opening_inbound_on_one_side[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_diagnostic_can_hold_the_opening_inbound_on_one_side[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 86ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_counterbalance_moves_the_opener_and_nothing_else[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_counterbalance_moves_the_opener_and_nothing_else[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 25ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_counterbalance_is_deterministic_and_consumes_no_randomness[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_counterbalance_is_deterministic_and_consumes_no_randomness[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 5s 574ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_named_side_actually_receives_the_first_possession[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_named_side_actually_receives_the_first_possession[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6s 414ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_moving_the_opening_inbound_changes_the_game[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_opening_possession.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_moving_the_opening_inbound_changes_the_game[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 9s 100ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 12 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23s 610ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 15ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 5s 662ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_actual_rounded_rosters_cross_venue_and_opener[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_actual_rounded_rosters_cross_venue_and_opener[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 33s 544ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_roster_period_repeatability_and_eligibility[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_roster_period_repeatability_and_eligibility[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 11s 934ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_explicit_offsets_and_openers_remain_venue_attached[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_explicit_offsets_and_openers_remain_venue_attached[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 3ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_direct_mirror_keeps_original_roster_schedule[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_direct_mirror_keeps_original_roster_schedule[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 55ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_large_variations_preserve_identity_profiles_and_cycle[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_large_variations_preserve_identity_profiles_and_cycle[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 805ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_custom_population_consumers_share_the_schedule[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_custom_population_consumers_share_the_schedule[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 37ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_actual_venue_consumer_preserves_int64_mirror_indices[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_actual_venue_consumer_preserves_int64_mirror_indices[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 4s 187ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 9 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 59s 370ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_scoring_terms_account_for_every_point[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_scoring_terms_account_for_every_point[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27s 246ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_made_free_throw_is_worth_one_point_by_event_type[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_made_free_throw_is_worth_one_point_by_event_type[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 7s 762ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_denominator_reconciles_against_every_source[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_denominator_reconciles_against_every_source[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18s 193ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reconciliation_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reconciliation_reports_a_breach_rather_than_absorbing_it[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_widening_the_capability_span_shifts_contest_pressure_upward[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_widening_the_capability_span_shifts_contest_pressure_upward[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 49s 202ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_capability_span_is_the_corrected_value[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_capability_span_is_the_corrected_value[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 20ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_correction_does_not_pay_for_itself_with_turnovers_or_rebounds[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_correction_does_not_pay_for_itself_with_turnovers_or_rebounds[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 54s 169ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_balance_profile_is_shared_and_the_rules_are_per_competition[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_balance_profile_is_shared_and_the_rules_are_per_competition[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_contest_path_cannot_read_a_competition_or_a_target[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_contest_path_cannot_read_a_competition_or_a_target[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_pressure_never_reads_the_scoreboard[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_contest_pressure_never_reads_the_scoreboard[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_golden_scenario_still_exercises_its_named_behaviour[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_ppp_decomposition.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_golden_scenario_still_exercises_its_named_behaviour[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6s 749ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 11 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 43s 642ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_college_snapshot_is_not_taken_by_default[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_college_snapshot_is_not_taken_by_default[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 402ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_taking_the_college_snapshot_changes_no_career_outcome[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_taking_the_college_snapshot_changes_no_career_outcome[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 8s 926ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_each_college_class_year_holds_its_own_ratings[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_each_college_class_year_holds_its_own_ratings[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 385ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_snapshot_covers_exactly_the_college_seasons[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_snapshot_covers_exactly_the_college_seasons[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 4s 479ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_college_snapshot_reconciles_with_the_season_record[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_college_snapshot_reconciles_with_the_season_record[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 4s 466ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_production_constructs_no_roster_and_no_player_profile[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_production_constructs_no_roster_and_no_player_profile[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 280ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_fixture_roster_is_one_scalar_per_player[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_roster_provenance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_fixture_roster_is_one_scalar_per_player[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 43ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 7 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 19s 97ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_margin_variance_identity_closes_exactly[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_margin_variance_identity_closes_exactly[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_known_covariance_is_recovered[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_known_covariance_is_recovered[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_orthogonal_columns_report_no_covariance[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_orthogonal_columns_report_no_covariance[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_residualization_removes_a_shared_predictor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_residualization_removes_a_shared_predictor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_corrected_variance_ratio_is_one_without_serial_structure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_corrected_variance_ratio_is_one_without_serial_structure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_corrected_variance_ratio_moves_with_the_real_statistic[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_corrected_variance_ratio_moves_with_the_real_statistic[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_damping_the_leading_team_reduces_dispersion_monotonically[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_damping_the_leading_team_reduces_dispersion_monotonically[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 659ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_damped_model_keeps_the_margin_on_the_lattice[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_damped_model_keeps_the_margin_on_the_lattice[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 265ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_margin_classification_uses_the_specified_boundaries[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_margin_classification_uses_the_specified_boundaries[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_score_states_use_the_documented_boundaries[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_scoring_covariance.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_score_states_use_the_documented_boundaries[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 10 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 231ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reversed_arm_moves_the_published_contribution[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reversed_arm_moves_the_published_contribution[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_neutral_control_cancels_out_of_the_pooled_estimate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_neutral_control_cancels_out_of_the_pooled_estimate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_missing_neutral_arm_is_refused_even_though_it_cancels[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_missing_neutral_arm_is_refused_even_though_it_cancels[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_arms_are_differenced_within_a_fixture_and_not_across_fixtures[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_arms_are_differenced_within_a_fixture_and_not_across_fixtures[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_correct_pairing_shows_up_as_zero_dispersion_not_as_the_mean[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_correct_pairing_shows_up_as_zero_dispersion_not_as_the_mean[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_series_is_ordered_by_fixture_key_not_by_arrival[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_series_is_ordered_by_fixture_key_not_by_arrival[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_fixture_with_one_arm_contributes_to_no_published_figure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_fixture_with_one_arm_contributes_to_no_published_figure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_estimate_is_invariant_to_the_order_the_arms_arrive_in[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_estimate_is_invariant_to_the_order_the_arms_arrive_in[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_pooled_estimate_is_symmetric_in_the_two_venue_arms[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_pooled_estimate_is_symmetric_in_the_two_venue_arms[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 25ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_disjoint_shards_pool_by_union_of_fixtures[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_disjoint_shards_pool_by_union_of_fixtures[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fixture_rows_replay_into_an_identical_estimator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fixture_rows_replay_into_an_identical_estimator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fixture_rows_omit_an_incomplete_fixture[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fixture_rows_omit_an_incomplete_fixture[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_from_rows_matches_pooling_the_estimators[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_from_rows_matches_pooling_the_estimators[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_is_independent_of_shard_order[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_is_independent_of_shard_order[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_overlapping_shard_is_refused_rather_than_pooled[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_overlapping_shard_is_refused_rather_than_pooled[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pairs_and_complete_games_are_reported_as_different_numbers[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pairs_and_complete_games_are_reported_as_different_numbers[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 70ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_incomplete_fixture_raises_neither_count[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_incomplete_fixture_raises_neither_count[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_duplicated_observation_is_refused_and_changes_nothing[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_duplicated_observation_is_refused_and_changes_nothing[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_replaying_the_whole_sample_does_not_narrow_the_interval[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_replaying_the_whole_sample_does_not_narrow_the_interval[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_three_win_rates_are_each_what_they_claim_to_be[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_three_win_rates_are_each_what_they_claim_to_be[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_form_equals_the_canonical_ruling_form[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_paired_form_equals_the_canonical_ruling_form[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_equivalence_survives_a_tied_fixture[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_equivalence_survives_a_tied_fixture[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_reversing_the_venue_arms_preserves_the_judged_estimate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_reversing_the_venue_arms_preserves_the_judged_estimate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_biased_neutral_control_cannot_contaminate_the_judged_estimate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_biased_neutral_control_cannot_contaminate_the_judged_estimate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 25ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_weights_by_matched_pairs_and_not_by_report_count[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pooling_weights_by_matched_pairs_and_not_by_report_count[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 35ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_malformed_pair_can_reach_the_judged_estimate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_malformed_pair_can_reach_the_judged_estimate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_cap_judges_the_pooled_contribution_and_not_the_home_arm[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_cap_judges_the_pooled_contribution_and_not_the_home_arm[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 49ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_genuine_breach_of_the_cap_is_still_reported[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_genuine_breach_of_the_cap_is_still_reported[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_base_is_taken_across_the_arms[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_possession_base_is_taken_across_the_arms[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reversal_control_fails_on_disagreement_and_passes_on_agreement[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reversal_control_fails_on_disagreement_and_passes_on_agreement[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_empty_estimator_reports_nothing_rather_than_a_number[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_venue_effect_estimator.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_empty_estimator_reports_nothing_rather_than_a_number[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 35ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 31 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 240ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_made_field_goal_is_classified_exactly_once[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_made_field_goal_is_classified_exactly_once[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 42ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_assist_is_explained_by_a_recorded_creation_event[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_assist_is_explained_by_a_recorded_creation_event[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 73ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_missed_shot_produces_no_assist[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_missed_shot_produces_no_assist[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throws_produce_no_assists[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throws_produce_no_assists[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 34ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_self_created_shot_is_unassisted[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_self_created_shot_is_unassisted[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_catch_and_shoot_preserves_and_credits_its_creator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_catch_and_shoot_preserves_and_credits_its_creator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_delivery_only_creates_for_the_man_it_reached[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_delivery_only_creates_for_the_man_it_reached[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_turnover_and_a_possession_change_clear_creation_context[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_turnover_and_a_possession_change_clear_creation_context[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 37ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_credited_assist_crosses_an_invalidating_event[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_credited_assist_crosses_an_invalidating_event[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 47ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_delivery_creates_at_most_one_attempt[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_delivery_creates_at_most_one_attempt[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23s 118ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_later_pass_replaces_the_previous_creator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_later_pass_replaces_the_previous_creator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_putback_never_inherits_a_pre_rebound_creator[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_putback_never_inherits_a_pre_rebound_creator[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_team_and_player_assists_reconcile[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_team_and_player_assists_reconcile[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reducer_counts_assisted_makes_from_the_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_reducer_counts_assisted_makes_from_the_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 20ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_attempt_records_the_creation_state_before_the_shot_resolves[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_attempt_records_the_creation_state_before_the_shot_resolves[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 44ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_completed_pass_records_the_contract_fields[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_completed_pass_records_the_contract_fields[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_credited_assist_rule_comes_from_the_competition_profile[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_credited_assist_rule_comes_from_the_competition_profile[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_identical_seeds_reproduce_identical_attribution[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_identical_seeds_reproduce_identical_attribution[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 12s 52ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_target_or_aggregate_reaches_the_attribution_decision[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_target_or_aggregate_reaches_the_attribution_decision[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 3s 231ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_passing_drives_the_conditional_credit_rate_in_production[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_passing_drives_the_conditional_credit_rate_in_production[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27s 285ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_play_sim_and_skip_agree_on_every_credited_assist[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_play_sim_and_skip_agree_on_every_credited_assist[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 5s 522ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_game_stakes_do_not_reach_the_assist_chain[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_assist_attribution.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_game_stakes_do_not_reach_the_assist_chain[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 8s 510ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 22 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1min 20s 554ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_short_range_changes_close_finishing[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_short_range_changes_close_finishing[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 54ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_mid_range_changes_midrange_shotmaking[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_mid_range_changes_midrange_shotmaking[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 50ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_three_point_changes_three_point_shotmaking[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_three_point_changes_three_point_shotmaking[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 50ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_dunking_changes_dunk_finishing[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_dunking_changes_dunk_finishing[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 60ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throw_changes_free_throw_quality[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throw_changes_free_throw_quality[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 51ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_handle_changes_creation_and_ball_security[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_handle_changes_creation_and_ball_security[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 132ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_passing_changes_delivery_execution_and_assist_conversion[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_passing_changes_delivery_execution_and_assist_conversion[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 152ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vision_changes_open_target_recognition_and_creation[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vision_changes_open_target_recognition_and_creation[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 498ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vision_and_passing_remain_meaningfully_distinct[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vision_and_passing_remain_meaningfully_distinct[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 379ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_iq_changes_shot_selection[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_iq_changes_shot_selection[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 63ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_perimeter_defense_changes_containment_and_contest[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_perimeter_defense_changes_containment_and_contest[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 42ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_interior_defense_changes_interior_positioning[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_interior_defense_changes_interior_positioning[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stealing_changes_strip_and_interception_success[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stealing_changes_strip_and_interception_success[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 149ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_blocking_changes_block_success[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_blocking_changes_block_success[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 135ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defensive_iq_changes_help_and_discipline[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defensive_iq_changes_help_and_discipline[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 142ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_rebounding_changes_crash_positioning[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_rebounding_changes_crash_positioning[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 614ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defensive_rebounding_changes_box_out_share[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_defensive_rebounding_changes_box_out_share[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_speed_changes_court_speed_and_creation[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_speed_changes_court_speed_and_creation[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_strength_changes_contact_force_and_leverage[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_strength_changes_contact_force_and_leverage[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stamina_changes_fatigue_accumulation_and_recovery[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stamina_changes_fatigue_accumulation_and_recovery[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vertical_changes_reach_and_dunk_access[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_vertical_changes_reach_and_dunk_access[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_rating_feeds_at_least_one_capability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_rating_feeds_at_least_one_capability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 24ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_capability_keeps_its_primary_input_dominant[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_attribute_contracts.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_capability_keeps_its_primary_input_dominant[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 23 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 3s 2ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_college_refuses_to_advance_the_ball_on_a_timeout[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_college_refuses_to_advance_the_ball_on_a_timeout[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 28ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_college_game_emits_an_advance_timeout[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_college_game_emits_an_advance_timeout[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18s 590ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_top_domestic_still_advances_the_ball_when_a_coach_would[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_top_domestic_still_advances_the_ball_when_a_coach_would[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 25ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_advance_timeout_is_still_reachable_in_real_top_domestic_games[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_advance_timeout_is_still_reachable_in_real_top_domestic_games[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 13s 752ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_advancing_team_finishes_the_match_still_holding_its_reserve[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_an_advancing_team_finishes_the_match_still_holding_its_reserve[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 12s 156ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_holds_for_the_final_shot[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_holds_for_the_final_shot[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 28ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_comfortable_lead_drains_the_clock_instead_of_boosting_its_closer[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_comfortable_lead_drains_the_clock_instead_of_boosting_its_closer[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_trailing_team_intentionally_misses_its_final_free_throw[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_trailing_team_intentionally_misses_its_final_free_throw[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 41ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_intentional_miss_enters_the_ordinary_live_rebound[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_intentional_miss_enters_the_ordinary_live_rebound[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_defence_can_win_the_board_after_an_intentional_miss[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_defence_can_win_the_board_after_an_intentional_miss[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 761ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_at_the_line_never_intentionally_misses[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_at_the_line_never_intentionally_misses[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 908ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_leading_by_three_foul_is_committed_outside_the_bonus[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_leading_by_three_foul_is_committed_outside_the_bonus[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 196ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_at_most_one_leading_by_three_foul_per_possession[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_at_most_one_leading_by_three_foul_per_possession[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 503ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_played_match_commits_two_leading_by_three_fouls_in_one_possession[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_no_played_match_commits_two_leading_by_three_fouls_in_one_possession[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 54s 831ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_never_overlaps_the_tie_seeking_window_at_any_stakes_tier[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_never_overlaps_the_tie_seeking_window_at_any_stakes_tier[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 40ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_regular_season_quick_two_clock_boundaries_are_unchanged[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_regular_season_quick_two_clock_boundaries_are_unchanged[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 34ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_does_not_depend_on_an_unspent_timeout[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_does_not_depend_on_an_unspent_timeout[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 49ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_putbacks_carry_the_endgame_decision_in_force[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_putbacks_carry_the_endgame_decision_in_force[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 865ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_validate_refuses_a_quick_two_window_with_no_span[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_corrections.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_validate_refuses_a_quick_two_window_with_no_span[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 19 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 5min 49s 238ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_off_outside_its_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_off_outside_its_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_on_for_a_trailing_or_tied_team_with_a_second_possession_to_win[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_is_on_for_a_trailing_or_tied_team_with_a_second_possession_to_win[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_off_outside_its_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_off_outside_its_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_on_for_a_leading_team_with_the_game_in_hand[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_is_on_for_a_leading_team_with_the_game_in_hand[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 28ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_clock_condition_binds_only_the_tied_team[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shot_clock_condition_binds_only_the_tied_team[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_hold_are_mutually_exclusive[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_hold_are_mutually_exclusive[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 44ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_needs_the_exact_deficit_and_the_outer_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_needs_the_exact_deficit_and_the_outer_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_is_on_only_for_the_truly_final_possession[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_is_on_only_for_the_truly_final_possession[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_leading_team_at_every_lead[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_leading_team_at_every_lead[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 33ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_deficit_the_clock_cannot_close[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_refuses_a_deficit_the_clock_cannot_close[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_selected_designed_play_action_releases_before_the_horn[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_selected_designed_play_action_releases_before_the_horn[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 33ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_final_release_deadline_is_scoped_to_a_tieable_designed_play[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_final_release_deadline_is_scoped_to_a_tieable_designed_play[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_recoverable_deficit_grows_one_possession_at_a_time[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_recoverable_deficit_grows_one_possession_at_a_time[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designated_closer_is_the_best_shot_selection_rating_on_the_floor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designated_closer_is_the_best_shot_selection_rating_on_the_floor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 39ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_action_multiplier_is_the_identity_through_ordinary_basketball[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_action_multiplier_is_the_identity_through_ordinary_basketball[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_reweights_reset_versus_a_direct_shot[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_reweights_reset_versus_a_direct_shot[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_stops_boosting_the_reset_once_the_shot_clock_is_late[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_hold_stops_boosting_the_reset_once_the_shot_clock_is_late[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 34ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_swings_two_point_weight_against_three_point_weight[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_quick_two_swings_two_point_weight_against_three_point_weight[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_boosts_only_the_designated_actor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_designed_play_boosts_only_the_designated_actor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 30ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 34ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 37ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_never_intentionally_misses[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_leading_team_never_intentionally_misses[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 53ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_profile_keeps_the_miss_window_above_its_own_floor[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_shipped_profile_keeps_the_miss_window_above_its_own_floor[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_never_touches_free_throw_probability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_never_touches_free_throw_probability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 46ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 48ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 28ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_timeout_advance_possession_skips_the_backcourt_walk[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_timeout_advance_possession_skips_the_backcourt_walk[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 96ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_fires_only_when_eligible[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_fires_only_when_eligible[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_when_ineligible[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_when_ineligible[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_outside_the_bonus[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_leading_by_three_foul_refuses_outside_the_bonus[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_designed_play_are_reachable_in_real_games[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_endgame_strategy.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_two_for_one_and_designed_play_are_reachable_in_real_games[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 42s 858ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 35 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2min 44s 597ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_box_score_reconciles_from_events_in_every_scenario[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_box_score_reconciles_from_events_in_every_scenario[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_projection_state_and_result_agree_on_score[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_projection_state_and_result_agree_on_score[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_scoring_event_appears_exactly_once[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_scoring_event_appears_exactly_once[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 50ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_period_scores_sum_to_the_final_score[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_period_scores_sum_to_the_final_score[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_engine_possessions_and_estimate_are_separate[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_engine_possessions_and_estimate_are_separate[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 39ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_event_ledger_is_contiguous[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_event_ledger_is_contiguous[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 307ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_role_evaluation_evidence_comes_from_events[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_role_evaluation_evidence_comes_from_events[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_paint_summary_matches_the_zones_in_the_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_event_stat_reconciliation.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_paint_summary_matches_the_zones_in_the_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 8 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 614ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_accumulates_on_court_and_recovers_on_the_bench[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_accumulates_on_court_and_recovers_on_the_bench[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 678ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stamina_changes_accumulated_fatigue_over_a_match[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_stamina_changes_accumulated_fatigue_over_a_match[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 770ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_penalty_is_not_uniform_across_capabilities[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_penalty_is_not_uniform_across_capabilities[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_band_penalty_is_monotonic_from_zero[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_band_penalty_is_monotonic_from_zero[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 13ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_drives_substitutions[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fatigue.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_fatigue_drives_substitutions[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 5 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 577ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_multiple_foul_types_occur_across_the_fixture_set[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_multiple_foul_types_occur_across_the_fixture_set[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_fouls_become_turnovers_and_do_not_advance_the_bonus[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_offensive_fouls_become_turnovers_and_do_not_advance_the_bonus[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 22ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_and_one_awards_exactly_one_attempt_after_a_made_basket[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_and_one_awards_exactly_one_attempt_after_a_made_basket[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 23ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throw_attempts_are_attributed_exactly_once[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_free_throw_attempts_are_attributed_exactly_once[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_one_and_one_second_attempt_must_be_earned[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_one_and_one_second_attempt_must_be_earned[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 576ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_awarded_free_throws_survive_the_period_buzzer[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_awarded_free_throws_survive_the_period_buzzer[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 21ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_missed_final_free_throw_is_reboundable[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_missed_final_free_throw_is_reboundable[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 41ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_bonus_state_converts_non_shooting_fouls_into_free_throws[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_bonus_state_converts_non_shooting_fouls_into_free_throws[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 18ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_foul_out_removes_the_player_and_replaces_him[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_foul_out_removes_the_player_and_replaces_him[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 26ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_team_fouls_reset_each_period_and_personal_fouls_do_not[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_fouls_and_free_throws.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_team_fouls_reset_each_period_and_personal_fouls_do_not[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 444ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 10 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 1s 343ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_all_profiles_preserve_both_clocks_and_playing_time_during_attempts[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_all_profiles_preserve_both_clocks_and_playing_time_during_attempts[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17s 207ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_awarded_one_two_and_three_shot_trips_preserve_the_whistle_clock[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_awarded_one_two_and_three_shot_trips_preserve_the_whistle_clock[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 108ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_one_and_one_earns_second_attempt_only_after_first_make[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_one_and_one_earns_second_attempt_only_after_first_make[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 242ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_keeps_time_then_live_rebound_consumes_it[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_free_throw_stopped_clock.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_intentional_miss_keeps_time_then_live_rebound_consumes_it[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 4 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 17s 647ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_full_game_determinism.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_full_game_determinism.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_same_seed_reproduces_complete_result_and_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_full_game_determinism.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_same_seed_reproduces_complete_result_and_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 2s 897ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_full_game_determinism.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_different_seed_changes_complete_result_or_ledger[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_full_game_determinism.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_different_seed_changes_complete_result_or_ledger[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 3s 662ms[0m
+[38;2;128;128;128m[0m
+[38;2;30;144;255mStatistics:[0m[38;2;128;128;128m 2 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 6s 591ms[0m
+[38;2;128;128;128m[0m
+[38;2;128;128;128m[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pressure_is_zero_through_ordinary_basketball[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pressure_is_zero_through_ordinary_basketball[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 47ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pressure_reaches_its_ceiling_when_the_clock_runs_out[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pressure_reaches_its_ceiling_when_the_clock_runs_out[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_large_early_margin_is_not_an_endgame[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_a_large_early_margin_is_not_an_endgame[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_both_teams_share_one_pressure[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_both_teams_share_one_pressure[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_policy_mirrors_when_the_scoreboard_is_reversed[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_policy_mirrors_when_the_scoreboard_is_reversed[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 32ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_policy_cannot_read_strength_or_an_intended_winner[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_policy_cannot_read_strength_or_an_intended_winner[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 33ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pace_control_is_bounded[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_pace_control_is_bounded[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 42ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_chasing_strategy_changes_selection_and_stays_inside_its_guardrail[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_chasing_strategy_changes_selection_and_stays_inside_its_guardrail[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 29ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_score_grants_no_shot_probability[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_score_grants_no_shot_probability[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 44ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_free_throw_pressure_term_is_symmetric[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_free_throw_pressure_term_is_symmetric[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 31ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_endgame_rule_seeks_the_tying_shot_value[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_endgame_rule_seeks_the_tying_shot_value[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 36ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_endgame_rule_applies_only_to_a_levelling_deficit[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_the_endgame_rule_applies_only_to_a_levelling_deficit[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 38ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_grants_a_bounded_timeout_allowance[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_every_competition_grants_a_bounded_timeout_allowance[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 27ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeouts_are_spent_and_never_replenished[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeouts_are_spent_and_never_replenished[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 16s 507ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/simulation/test_game_management.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_timeouts_trigger_only_under_valid_conditions[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m

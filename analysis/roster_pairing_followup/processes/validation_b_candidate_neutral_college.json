@@ -1,0 +1,33 @@
+{
+  "cell": [
+    "validation_b",
+    "candidate",
+    "college",
+    "neutral"
+  ],
+  "args": [
+    "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\Users\\valexander\\leaguebound-godot-core",
+    "--script",
+    "res://calibration/runners/run_roster_pairing_followup.gd",
+    "--",
+    "--games=468",
+    "--competition=college",
+    "--shard=70000",
+    "--shards=70001",
+    "--environment=0.0",
+    "--label=validation_b_candidate_neutral_college"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 2096.4578857421875,
+  "started_unix": 1790215797.7747693,
+  "source_hashes": {
+    "calibration/targets/competition_catalog.gd": "2c09ae26cb1ecc180f0485afb99568b6556eac172aedb6e779ae9d2a9e28c312",
+    "calibration/runners/run_roster_pairing_followup.gd": "b50ac6884fb0e3c99c28f864e098ba2dcb825de7c62f09f329a26bd965a6faed",
+    "src/domain/basketball/config/competition_rule_profile.gd": "6907c519b9fc9a31db5f37df93f38917938488b196e89034b46a7e6d3707bc3d"
+  },
+  "raw_sha256": "e41d26e669d73e1f77a985fe18fe7f8fd2273d724d9a71ed48eb1377560671ac",
+  "report_sha256": "923e30008f183870976a3900edcd51d48fbc7e0a9c5d38e723f7d0c4e56a05f6"
+}

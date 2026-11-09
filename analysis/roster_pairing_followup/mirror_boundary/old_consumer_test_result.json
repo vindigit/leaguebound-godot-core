@@ -1,0 +1,10 @@
+{
+  "witness": "competition0 mirror variation1073741824 reversedfalse environment0",
+  "cases": 9,
+  "errors": 0,
+  "log_sha256": "F371C9E90143F144FC9969C9D15FA486B199D6157C4EB764B419BC03B494F260",
+  "failures": 1,
+  "scope": "New actual-runner boundary test catches preserved original narrowed consumer; previous8tests green",
+  "orphans": 0,
+  "exit_code": 100
+}

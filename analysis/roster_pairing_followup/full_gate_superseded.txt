@@ -1,0 +1,8 @@
+The first 692-case gate passed at bf275ccc89e16fe75830fd34a37529faf8df610a.
+It did not cover the subsequently discovered large-index mirror-consumer
+narrowing regression. Its evidence remains historical, not final-source
+acceptance. The corrected consumer and ninth construction test require the
+fresh full gate. The v2 attempt at 7e4a731 was interrupted in the
+test_game_management suite without an exit code; its raw log and an interruption
+record are retained, but no pass is claimed. A complete v3 run restarted from
+the import step on 2026-09-23 and is pending independent review.

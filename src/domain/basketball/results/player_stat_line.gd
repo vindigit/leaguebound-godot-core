@@ -45,6 +45,12 @@ var screens_set: int = 0
 var screen_advantages_created: int = 0
 var off_ball_actions: int = 0
 var advantages_created: int = 0
+## §11.3: made field goals whose ledger event carries a recorded creator. The
+## denominator of the §14.3 conditional, projected so the box score can be
+## reconciled against it: a player can never have more assists than the makes he
+## is recorded as having created.
+var assisted_field_goals_made: int = 0
+var created_field_goals_made: int = 0
 
 
 func _init(p_player_id: StringName = &"player", p_team_id: StringName = &"team") -> void:
@@ -68,7 +74,7 @@ func points_reconcile() -> bool:
 
 
 func signature() -> String:
-	return "%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d" % [
+	return "%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d" % [
 		player_id, seconds_played, 1 if started else 0, points,
 		field_goals_made, field_goals_attempted,
 		three_pointers_made, three_pointers_attempted,
@@ -77,4 +83,5 @@ func signature() -> String:
 		turnovers, personal_fouls, 1 if fouled_out else 0, plus_minus,
 		paint_attempts, paint_points, dunk_attempts, dunks_made,
 		touches, screens_set, advantages_created,
+		assisted_field_goals_made, created_field_goals_made,
 	]

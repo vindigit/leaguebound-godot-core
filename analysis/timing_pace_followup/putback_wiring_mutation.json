@@ -1,0 +1,17 @@
+{
+  "isolated_copy": "C:\\Users\\valexander\\AppData\\Local\\Temp\\leaguebound-timing-447d7a632ec140cfbac376bc91a29894",
+  "test_source_sha256": "116A68E4522B72D8659D8C6FD465A9C4327849305C74A36CFCD45CFA7CFF3D55",
+  "engine_sha256": "59E5674035F9415E18DC47D0C0E7E7D73E4679A409004107C00D816F19B60B0B",
+  "results": [
+    {
+      "arm": "baseline",
+      "exit_code": 0,
+      "summary": "1 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "arm": "remove_putback_tag",
+      "exit_code": 100,
+      "summary": "1 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |"
+    }
+  ]
+}

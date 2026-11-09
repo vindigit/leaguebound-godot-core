@@ -1,0 +1,26 @@
+[
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\src\\domain\\basketball\\simulation\\endgame_strategy.gd",
+    "Hash": "93282376CA7C2C6B914C02717675EB91CD46AAAC534956FF5F04755A99F36C09"
+  },
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\src\\domain\\basketball\\simulation\\possession_engine.gd",
+    "Hash": "59E5674035F9415E18DC47D0C0E7E7D73E4679A409004107C00D816F19B60B0B"
+  },
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\src\\domain\\basketball\\simulation\\clock_resolver.gd",
+    "Hash": "F21B38AEC273BA535F877547D65D54B2D1FDADB6EF04972C06A2CB5098A2F85D"
+  },
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\src\\domain\\basketball\\config\\simulation_balance_profile.gd",
+    "Hash": "318DC0FA31C1E848AABD4E839DFB51736A91E391E2343CFF4C5494E0E3E112CF"
+  },
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\src\\domain\\basketball\\config\\competition_rule_profile.gd",
+    "Hash": "1BA17E61CA84CA3C0D15AC620531256340ECFCC722EEDCF72A89CDAE222F1168"
+  },
+  {
+    "Path": "C:\\Users\\valexander\\leaguebound-godot-core\\calibration\\runners\\run_timing_pace_followup.gd",
+    "Hash": "76530B1B4BE96E7D46F983D1D5CBFFD47E4DF41B21295FF0E1D0E3985E841131"
+  }
+]

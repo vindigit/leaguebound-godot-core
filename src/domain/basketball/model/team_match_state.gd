@@ -18,6 +18,13 @@ var period_scores: Array[int]
 ## Terminal possession records this team has completed (§24.2 engine
 ## possessions). Counted from possession termination, never estimated.
 var possessions: int
+## §5 `TimeoutState`: charged timeouts this team has left.
+var timeouts_remaining: int
+## §18.2 score and time: whether this coach is protecting a settled lead,
+## conceding a settled deficit, or playing his ordinary rotation. Written only
+## by `MatchStateReducer` from a `GARBAGE_TIME` event, so the state a rotation
+## decision reads is the state the ledger explains.
+var settled_mode: int
 var runtimes: Array[PlayerMatchRuntime]
 var _index: Dictionary
 
@@ -29,6 +36,8 @@ func _init(profile: TeamMatchProfile = null) -> void:
 	total_team_fouls = 0
 	period_scores = [0]
 	possessions = 0
+	timeouts_remaining = 0
+	settled_mode = GarbageTimeRule.Mode.NONE
 	runtimes = []
 	_index = {}
 	if profile == null:
@@ -49,6 +58,8 @@ func copy() -> TeamMatchState:
 	result.total_team_fouls = total_team_fouls
 	result.period_scores = period_scores.duplicate()
 	result.possessions = possessions
+	result.timeouts_remaining = timeouts_remaining
+	result.settled_mode = settled_mode
 	result.runtimes = []
 	result._index = {}
 	for runtime in runtimes:

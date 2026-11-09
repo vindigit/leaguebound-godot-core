@@ -1,0 +1,260 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+=== Pace decomposition ===
+  games=30 per competition, variations 0-29, pace-scale=1.0000
+  DIAGNOSTIC ONLY. Reads no target, judges nothing, writes nothing.
+
+--- high_school (30 games) ---
+  nominal pace input
+    pace_multiplier                    0.8340
+    period structure                   4 x 480s + OT 240s
+    made-FG clock stop (non-final reg)  0ms
+    made-FG clock stop (final reg)     0ms
+    made-FG clock stop (overtime)      0ms
+  possession count
+    possessions per team per game      72.7000
+    possessions per game (both teams)  145.4000
+    game milliseconds per game         1936000.0
+    mean possession duration (ms)      13315.0
+    implied duration from game clock   13315.0
+  possession duration decomposition (mean ms per possession)
+    throw-in charged                   735.92
+    advance                            2909.56
+    half-court entry                   1975.42
+    actions                            6176.48
+    residual (rebounds, dead ball, FT) 1517.63
+  restart mix (per game)
+    foul                   free   7.300   charged   0.000
+    made_field_goal        free   0.000   charged  42.767
+    made_free_throw        free  11.500   charged   0.000
+    out_of_bounds          free   5.133   charged   0.000
+    period_start           free   4.067   charged   0.000
+    timeout                free   2.300   charged   0.000
+    violation              free   0.100   charged   0.000
+    ALL                    free  30.400   charged  42.767
+    throw-in ms charged per game       107002.2
+  possession-creating processes (per game)
+    turnovers                          24.200
+    offensive rebounds                 20.767
+    free-throw trips                   17.800
+    free-throw attempts                29.033
+    live transfers                     71.800
+    possessions ending on the horn     4.067
+  overtime contribution
+    games reaching overtime            1 (0.0333)
+    overtime possessions               1.233 per game (0.85% of all)
+    regulation-only possessions/team   72.0833
+  scoring
+    points per possession              0.9610
+    points per team per game           69.8667
+  rare possession shapes (raw count, then rate on its own denominator)
+    expired without an attempt         61 raw / 4362 possessions = 0.01398
+    possessions opening under 5s       69 raw / 4362 possessions = 0.01582
+  game shape (denominator 30 games)
+    close games (margin <= 5)          11 raw = 0.3667
+    blowouts (margin >= 20)            3 raw = 0.1000
+    overtime games                     1 raw = 0.0333
+
+--- college (30 games) ---
+  nominal pace input
+    pace_multiplier                    1.0410
+    period structure                   2 x 1200s + OT 300s
+    made-FG clock stop (non-final reg)  0ms
+    made-FG clock stop (final reg)     60000ms
+    made-FG clock stop (overtime)      60000ms
+  possession count
+    possessions per team per game      74.6500
+    possessions per game (both teams)  149.3000
+    game milliseconds per game         2400000.0
+    mean possession duration (ms)      16075.0
+    implied duration from game clock   16075.0
+  possession duration decomposition (mean ms per possession)
+    throw-in charged                   956.86
+    advance                            3621.20
+    half-court entry                   2547.93
+    actions                            7216.20
+    residual (rebounds, dead ball, FT) 1732.82
+  restart mix (per game)
+    foul                   free   6.633   charged   0.000
+    made_field_goal        free   1.567   charged  46.033
+    made_free_throw        free  15.533   charged   0.000
+    out_of_bounds          free   3.700   charged   0.000
+    period_start           free   2.000   charged   0.000
+    timeout                free   2.467   charged   0.000
+    violation              free   0.767   charged   0.000
+    ALL                    free  32.667   charged  46.033
+    throw-in ms charged per game       142859.9
+  possession-creating processes (per game)
+    turnovers                          21.200
+    offensive rebounds                 19.467
+    free-throw trips                   21.967
+    free-throw attempts                37.667
+    live transfers                     70.567
+    possessions ending on the horn     2.000
+  overtime contribution
+    games reaching overtime            0 (0.0000)
+    overtime possessions               0.000 per game (0.00% of all)
+    regulation-only possessions/team   74.6500
+  scoring
+    points per possession              1.0639
+    points per team per game           79.4167
+  rare possession shapes (raw count, then rate on its own denominator)
+    expired without an attempt         33 raw / 4479 possessions = 0.00737
+    possessions opening under 5s       35 raw / 4479 possessions = 0.00781
+  game shape (denominator 30 games)
+    close games (margin <= 5)          8 raw = 0.2667
+    blowouts (margin >= 20)            7 raw = 0.2333
+    overtime games                     0 raw = 0.0000
+
+--- development (30 games) ---
+  nominal pace input
+    pace_multiplier                    0.9550
+    period structure                   4 x 720s + OT 300s
+    made-FG clock stop (non-final reg)  60000ms
+    made-FG clock stop (final reg)     120000ms
+    made-FG clock stop (overtime)      120000ms
+  possession count
+    possessions per team per game      98.7000
+    possessions per game (both teams)  197.4000
+    game milliseconds per game         2880000.0
+    mean possession duration (ms)      14589.7
+    implied duration from game clock   14589.7
+  possession duration decomposition (mean ms per possession)
+    throw-in charged                   840.34
+    advance                            3323.36
+    half-court entry                   2359.06
+    actions                            6594.31
+    residual (rebounds, dead ball, FT) 1472.59
+  restart mix (per game)
+    foul                   free   8.900   charged   0.000
+    made_field_goal        free   7.733   charged  58.600
+    made_free_throw        free  19.033   charged   0.000
+    out_of_bounds          free   5.100   charged   0.000
+    period_start           free   4.000   charged   0.000
+    timeout                free   3.800   charged   0.000
+    violation              free   1.200   charged   0.000
+    ALL                    free  49.767   charged  58.600
+    throw-in ms charged per game       165883.5
+  possession-creating processes (per game)
+    turnovers                          29.833
+    offensive rebounds                 24.433
+    free-throw trips                   26.633
+    free-throw attempts                43.633
+    live transfers                     89.200
+    possessions ending on the horn     4.000
+  overtime contribution
+    games reaching overtime            0 (0.0000)
+    overtime possessions               0.000 per game (0.00% of all)
+    regulation-only possessions/team   98.7000
+  scoring
+    points per possession              1.1045
+    points per team per game           109.0167
+  rare possession shapes (raw count, then rate on its own denominator)
+    expired without an attempt         69 raw / 5922 possessions = 0.01165
+    possessions opening under 5s       73 raw / 5922 possessions = 0.01233
+  game shape (denominator 30 games)
+    close games (margin <= 5)          8 raw = 0.2667
+    blowouts (margin >= 20)            7 raw = 0.2333
+    overtime games                     0 raw = 0.0000
+
+--- overseas (30 games) ---
+  nominal pace input
+    pace_multiplier                    1.0310
+    period structure                   4 x 600s + OT 300s
+    made-FG clock stop (non-final reg)  0ms
+    made-FG clock stop (final reg)     120000ms
+    made-FG clock stop (overtime)      120000ms
+  possession count
+    possessions per team per game      76.4167
+    possessions per game (both teams)  152.8333
+    game milliseconds per game         2400000.0
+    mean possession duration (ms)      15703.4
+    implied duration from game clock   15703.4
+  possession duration decomposition (mean ms per possession)
+    throw-in charged                   1016.83
+    advance                            3566.04
+    half-court entry                   2551.68
+    actions                            7006.43
+    residual (rebounds, dead ball, FT) 1562.39
+  restart mix (per game)
+    foul                   free   6.600   charged   0.000
+    made_field_goal        free   2.533   charged  49.567
+    made_free_throw        free  14.933   charged   0.000
+    out_of_bounds          free   3.733   charged   0.000
+    period_start           free   4.000   charged   0.000
+    timeout                free   2.767   charged   0.000
+    violation              free   1.233   charged   0.000
+    ALL                    free  35.800   charged  49.567
+    throw-in ms charged per game       155406.1
+  possession-creating processes (per game)
+    turnovers                          21.767
+    offensive rebounds                 19.667
+    free-throw trips                   20.233
+    free-throw attempts                33.033
+    live transfers                     67.167
+    possessions ending on the horn     4.000
+  overtime contribution
+    games reaching overtime            0 (0.0000)
+    overtime possessions               0.000 per game (0.00% of all)
+    regulation-only possessions/team   76.4167
+  scoring
+    points per possession              1.1333
+    points per team per game           86.6000
+  rare possession shapes (raw count, then rate on its own denominator)
+    expired without an attempt         82 raw / 4585 possessions = 0.01788
+    possessions opening under 5s       47 raw / 4585 possessions = 0.01025
+  game shape (denominator 30 games)
+    close games (margin <= 5)          5 raw = 0.1667
+    blowouts (margin >= 20)            2 raw = 0.0667
+    overtime games                     0 raw = 0.0000
+
+--- top_domestic_pro (30 games) ---
+  nominal pace input
+    pace_multiplier                    0.8910
+    period structure                   4 x 720s + OT 300s
+    made-FG clock stop (non-final reg)  60000ms
+    made-FG clock stop (final reg)     120000ms
+    made-FG clock stop (overtime)      120000ms
+  possession count
+    possessions per team per game      106.0333
+    possessions per game (both teams)  212.0667
+    game milliseconds per game         2890000.0
+    mean possession duration (ms)      13627.8
+    implied duration from game clock   13627.8
+  possession duration decomposition (mean ms per possession)
+    throw-in charged                   828.26
+    advance                            3102.81
+    half-court entry                   2191.03
+    actions                            6105.88
+    residual (rebounds, dead ball, FT) 1399.82
+  restart mix (per game)
+    foul                   free   8.033   charged   0.000
+    made_field_goal        free   7.900   charged  65.633
+    made_free_throw        free  21.500   charged   0.000
+    out_of_bounds          free   4.867   charged   0.000
+    period_start           free   4.033   charged   0.000
+    timeout                free   4.100   charged   0.000
+    violation              free   1.533   charged   0.000
+    ALL                    free  51.967   charged  65.633
+    throw-in ms charged per game       175645.8
+  possession-creating processes (per game)
+    turnovers                          31.367
+    offensive rebounds                 26.900
+    free-throw trips                   28.500
+    free-throw attempts                46.667
+    live transfers                     94.633
+    possessions ending on the horn     4.033
+  overtime contribution
+    games reaching overtime            1 (0.0333)
+    overtime possessions               0.633 per game (0.30% of all)
+    regulation-only possessions/team   105.7167
+  scoring
+    points per possession              1.1467
+    points per team per game           121.5833
+  rare possession shapes (raw count, then rate on its own denominator)
+    expired without an attempt         78 raw / 6362 possessions = 0.01226
+    possessions opening under 5s       61 raw / 6362 possessions = 0.00959
+  game shape (denominator 30 games)
+    close games (margin <= 5)          3 raw = 0.1000
+    blowouts (margin >= 20)            7 raw = 0.2333
+    overtime games                     1 raw = 0.0333

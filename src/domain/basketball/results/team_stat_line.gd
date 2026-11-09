@@ -20,6 +20,10 @@ var free_throws_attempted: int = 0
 var offensive_rebounds: int = 0
 var defensive_rebounds: int = 0
 var assists: int = 0
+## §11.3: made field goals whose ledger event carries a recorded creator. Team
+## assists can never exceed this, which is the reconciliation that makes assist
+## attribution checkable from the box score rather than only from the ledger.
+var assisted_field_goals_made: int = 0
 var steals: int = 0
 var blocks: int = 0
 var turnovers: int = 0
@@ -70,11 +74,12 @@ func signature() -> String:
 	var periods: PackedStringArray = []
 	for score in period_scores:
 		periods.append(str(score))
-	return "%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%.2f:%d:%d:%d:%d:%s:%d:%d:%d" % [
+	return "%s:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%.2f:%d:%d:%d:%d:%s:%d:%d:%d" % [
 		team_id, points, field_goals_made, field_goals_attempted,
 		three_pointers_made, three_pointers_attempted,
 		free_throws_made, free_throws_attempted,
-		offensive_rebounds, defensive_rebounds, assists, steals, blocks,
+		offensive_rebounds, defensive_rebounds, assists, assisted_field_goals_made,
+		steals, blocks,
 		turnovers, personal_fouls, team_fouls, periods_in_bonus,
 		engine_possessions, possession_estimate,
 		paint_attempts, paint_points, transition_points, second_chance_points,

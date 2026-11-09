@@ -184,6 +184,13 @@ func _apply_make(
 	var line: PlayerStatLine = statistics.player_line(event.primary_player_id)
 	var team: TeamStatLine = statistics.team_line(event.team_id)
 	var zone: int = ShotZone.from_id(event.zone_id)
+	# §11.3: the creator the attempt was made with, recorded on the event. This
+	# is the §14.3 conditional's denominator and it is projected here so the box
+	# score carries it; an assist is only ever credited against one of these.
+	if not event.tertiary_player_id.is_empty():
+		team.assisted_field_goals_made += 1
+		statistics.player_line(event.tertiary_player_id).created_field_goals_made += 1
+		line.assisted_field_goals_made += 1
 	line.field_goals_made += 1
 	line.points += event.points
 	team.field_goals_made += 1

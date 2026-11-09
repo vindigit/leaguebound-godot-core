@@ -1,0 +1,9 @@
+{
+  "head": "f82e69c3b8138e76de26288d46e4bf4083ac1902",
+  "status": "clean tracked and nonignored",
+  "serializer_sha256": "2b85e99bed33a854ec8a5011d1ea666cc4f4b0439123514bb0b6ee6776be2c74",
+  "runner_sha256": "8ad557fc54cfa05bc79f7f0483dc1e3805f74e57eb17a971d1b208f006a8676d",
+  "started_utc": "2026-11-09T17:38:06.1139281Z",
+  "seeds": "1-40 per competition",
+  "command": "run_competition_calibration.gd --games=40 --competition=all --label=interval_endpoint_clean"
+}

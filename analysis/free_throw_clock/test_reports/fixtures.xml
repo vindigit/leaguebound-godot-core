@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-09-14" name="report_1" tests="54" failures="0" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="test_home_environment" package="tests/simulation" timestamp="2026-09-15T02:35:58" hostname="localhost" tests="22" failures="0" errors="0" skipped="0" flaky="0" time="44.343">
+		<testcase name="test_a_neutral_court_applies_no_home_effect" classname="test_home_environment" time="0.003">
+		</testcase>
+		<testcase name="test_a_missing_home_context_uses_the_documented_default" classname="test_home_environment" time="0.004">
+		</testcase>
+		<testcase name="test_swapping_the_venue_swaps_the_advantage" classname="test_home_environment" time="0.481">
+		</testcase>
+		<testcase name="test_identical_home_and_away_identity_is_rejected" classname="test_home_environment" time="0.007">
+		</testcase>
+		<testcase name="test_the_modifier_reads_only_venue_strength" classname="test_home_environment" time="0.005">
+		</testcase>
+		<testcase name="test_no_single_modifier_exceeds_four_absolute_points" classname="test_home_environment" time="0.003">
+		</testcase>
+		<testcase name="test_combined_contributions_stay_inside_the_budget" classname="test_home_environment" time="0.006">
+		</testcase>
+		<testcase name="test_an_identical_shot_context_has_no_home_make_bonus" classname="test_home_environment" time="0.006">
+		</testcase>
+		<testcase name="test_effects_operate_only_through_documented_channels" classname="test_home_environment" time="0.003">
+		</testcase>
+		<testcase name="test_the_venue_changes_no_rating_or_capability" classname="test_home_environment" time="0.011">
+		</testcase>
+		<testcase name="test_the_advantage_does_not_depend_on_the_margin" classname="test_home_environment" time="11.186">
+		</testcase>
+		<testcase name="test_a_neutral_game_cannot_observe_the_home_modifiers" classname="test_home_environment" time="1.842">
+		</testcase>
+		<testcase name="test_no_channel_reads_the_scoreboard" classname="test_home_environment" time="1.274">
+		</testcase>
+		<testcase name="test_the_foul_and_turnover_resolvers_never_read_the_score" classname="test_home_environment" time="0.005">
+		</testcase>
+		<testcase name="test_team_identity_does_not_change_any_channel" classname="test_home_environment" time="1.361">
+		</testcase>
+		<testcase name="test_every_channel_actually_moves_its_own_rate" classname="test_home_environment" time="0.645">
+		</testcase>
+		<testcase name="test_away_teams_still_win_a_substantial_share" classname="test_home_environment" time="10.703">
+		</testcase>
+		<testcase name="test_stakes_tiers_do_not_change_the_home_contract" classname="test_home_environment" time="0.004">
+		</testcase>
+		<testcase name="test_identical_venue_inputs_and_seed_reproduce_the_ledger" classname="test_home_environment" time="3.629">
+		</testcase>
+		<testcase name="test_play_sim_and_skip_agree_at_every_venue" classname="test_home_environment" time="5.519">
+		</testcase>
+		<testcase name="test_ledger_and_box_score_reconcile_at_every_venue" classname="test_home_environment" time="7.564">
+		</testcase>
+		<testcase name="test_the_diagnostic_distinguishes_the_three_fixtures" classname="test_home_environment" time="0.010">
+		</testcase>
+	</testsuite>
+	<testsuite id="1" name="test_game_stakes" package="tests/simulation" timestamp="2026-09-15T02:36:42" hostname="localhost" tests="22" failures="0" errors="0" skipped="0" flaky="0" time="60.617">
+		<testcase name="test_the_contract_is_exactly_three_ordered_tiers" classname="test_game_stakes" time="0.005">
+		</testcase>
+		<testcase name="test_a_match_built_without_stakes_is_a_regular_season_game" classname="test_game_stakes" time="0.013">
+		</testcase>
+		<testcase name="test_the_regular_tier_multiplies_every_effect_by_exactly_one" classname="test_game_stakes" time="0.003">
+		</testcase>
+		<testcase name="test_the_default_and_an_explicit_regular_tier_are_the_same_game" classname="test_game_stakes" time="2.098">
+		</testcase>
+		<testcase name="test_every_tier_reproduces_byte_for_byte_and_across_executors" classname="test_game_stakes" time="8.503">
+		</testcase>
+		<testcase name="test_the_four_authorized_thresholds_move_and_stay_bounded" classname="test_game_stakes" time="0.004">
+		</testcase>
+		<testcase name="test_no_step_can_push_a_factor_past_the_declared_maximum" classname="test_game_stakes" time="0.003">
+		</testcase>
+		<testcase name="test_higher_stakes_widen_and_sharpen_the_tie_seeking_window_only" classname="test_game_stakes" time="0.005">
+		</testcase>
+		<testcase name="test_the_same_shot_resolves_identically_at_every_tier" classname="test_game_stakes" time="0.004">
+		</testcase>
+		<testcase name="test_turnover_foul_and_rebound_resolution_are_identical_at_every_tier" classname="test_game_stakes" time="0.005">
+		</testcase>
+		<testcase name="test_the_endgame_window_changes_selection_and_never_resolution" classname="test_game_stakes" time="0.005">
+		</testcase>
+		<testcase name="test_no_rating_or_capability_moves_with_the_stakes" classname="test_game_stakes" time="0.019">
+		</testcase>
+		<testcase name="test_reversing_the_scoreboard_reverses_the_policy_at_every_tier" classname="test_game_stakes" time="0.008">
+		</testcase>
+		<testcase name="test_mirroring_home_and_away_mirrors_the_whole_game" classname="test_game_stakes" time="16.401">
+		</testcase>
+		<testcase name="test_strength_identity_and_the_expected_winner_do_not_reach_the_policy" classname="test_game_stakes" time="0.025">
+		</testcase>
+		<testcase name="test_high_stakes_settle_later_but_still_settle" classname="test_game_stakes" time="0.012">
+		</testcase>
+		<testcase name="test_the_settled_guards_survive_the_highest_tier" classname="test_game_stakes" time="0.007">
+		</testcase>
+		<testcase name="test_a_settled_championship_coach_is_released_when_the_lead_is_cut" classname="test_game_stakes" time="0.007">
+		</testcase>
+		<testcase name="test_championship_games_still_blow_out_and_still_reach_garbage_time" classname="test_game_stakes" time="21.895">
+		</testcase>
+		<testcase name="test_regular_season_games_still_reach_overtime" classname="test_game_stakes" time="0.164">
+		</testcase>
+		<testcase name="test_state_transitions_stay_reducer_owned_at_the_highest_tier" classname="test_game_stakes" time="11.313">
+		</testcase>
+		<testcase name="test_only_the_declared_consumers_read_a_stakes_tier" classname="test_game_stakes" time="0.016">
+		</testcase>
+	</testsuite>
+	<testsuite id="2" name="test_fouls_and_free_throws" package="tests/simulation" timestamp="2026-09-15T02:37:43" hostname="localhost" tests="10" failures="0" errors="0" skipped="0" flaky="0" time="1.768">
+		<testcase name="test_multiple_foul_types_occur_across_the_fixture_set" classname="test_fouls_and_free_throws" time="1.408">
+		</testcase>
+		<testcase name="test_offensive_fouls_become_turnovers_and_do_not_advance_the_bonus" classname="test_fouls_and_free_throws" time="0.004">
+		</testcase>
+		<testcase name="test_and_one_awards_exactly_one_attempt_after_a_made_basket" classname="test_fouls_and_free_throws" time="0.005">
+		</testcase>
+		<testcase name="test_free_throw_attempts_are_attributed_exactly_once" classname="test_fouls_and_free_throws" time="0.007">
+		</testcase>
+		<testcase name="test_one_and_one_second_attempt_must_be_earned" classname="test_fouls_and_free_throws" time="0.147">
+		</testcase>
+		<testcase name="test_awarded_free_throws_survive_the_period_buzzer" classname="test_fouls_and_free_throws" time="0.007">
+		</testcase>
+		<testcase name="test_missed_final_free_throw_is_reboundable" classname="test_fouls_and_free_throws" time="0.011">
+		</testcase>
+		<testcase name="test_bonus_state_converts_non_shooting_fouls_into_free_throws" classname="test_fouls_and_free_throws" time="0.005">
+		</testcase>
+		<testcase name="test_foul_out_removes_the_player_and_replaces_him" classname="test_fouls_and_free_throws" time="0.007">
+		</testcase>
+		<testcase name="test_team_fouls_reset_each_period_and_personal_fouls_do_not" classname="test_fouls_and_free_throws" time="0.130">
+		</testcase>
+	</testsuite>
+</testsuites>

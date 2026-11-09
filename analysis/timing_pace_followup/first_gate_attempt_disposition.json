@@ -1,0 +1,11 @@
+{
+  "stopped_utc": "2026-09-21T17:42:21.7482674Z",
+  "status": "stopped_after_known_assertion_failure",
+  "reason": "The stale seed7095 putback reachability test failed; corrected full eight-step run will replace this failed attempt. Remaining cases were not claimed complete.",
+  "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+  "failures_observed_on_complete_log_review": [
+    "test_putbacks_carry_the_endgame_decision_in_force",
+    "test_a_capability_edge_does_not_decide_every_game"
+  ],
+  "review_note": "The score-margin failure was present before this attempt was stopped but missed by the progress-tail review. It was recognized on the second run and added here retrospectively; no first-attempt pass is claimed."
+}

@@ -1,0 +1,9 @@
+{
+  "recorded_utc": "2026-09-23T22:42:44.743590+00:00",
+  "first_attempt": "Exited before changing a process because process-visible ProcessorCount was four after the watcher itself was pinned to four CPUs, while an initial guard expected eight",
+  "first_error_sha256": "e479893e9efebf5ec5baf6a64c61a2fe4ab2d0ed194323c989a22ca5dee20289",
+  "corrected_script_sha256": "3e678981a14e60f2a0b29187294725549801dbf8157b2a5547b39c198e66c4c0",
+  "second_attempt": "Background watcher PID42076 active, first event sets new gate child PID9796 from Normal to High inside F0",
+  "first_event_sha256": "0f21d8dc5542dd5c9642cbb16fd2523e0bc9cec302af4843139f1694478f6a7e",
+  "scope": "Resource scheduling only, no simulation observation or contract change"
+}

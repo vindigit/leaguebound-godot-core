@@ -1,0 +1,286 @@
+{
+  "phase": "diagnosis",
+  "verdict": "PASS archive/log integrity",
+  "cells": [
+    {
+      "cell": "diagnosis_baseline_home_high_school",
+      "games": 468,
+      "canonical_failures": [
+        "high_school.field_goal_percentage",
+        "high_school.home_win_rate",
+        "high_school.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "8c730811845ed5ae717cb4a92eff1435a1b489a2b773b370f13ef24fc581075c",
+      "process_sha256": "240d11dfbbeec184ced691748e2102579e52e04482e558b80cc5d5c6a23f7353",
+      "raw_sha256": "59a8a023ab5dcdce66b97d2e43465c9744bd54c0d9a0f37b2d28727091ae6508",
+      "report_sha256": "48440b9abbe5e46bf3574b6965ea732ccab3fe34b8105ad5a8bc7d29b11eda0c"
+    },
+    {
+      "cell": "diagnosis_baseline_neutral_high_school",
+      "games": 468,
+      "canonical_failures": [
+        "high_school.field_goal_percentage",
+        "high_school.home_win_rate",
+        "high_school.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "38682e3d70c1686f6341ec3c5be78269c1ea4a882cd8ef0a6e6182a4c601401d",
+      "process_sha256": "e6095895a51c0939153046cdd444d928dc9a28c9a7a965d3b0a37b34b0fc5769",
+      "raw_sha256": "fbf0db43bc4518a81bce337180cc2d7f2893cf4cd885f1d77deec80c9d71514f",
+      "report_sha256": "0f6fd3b28e2a5c1a74efb89c5603ffdb85982c8a073e4f590df5abcc8c4abe1f"
+    },
+    {
+      "cell": "diagnosis_candidate_home_high_school",
+      "games": 468,
+      "canonical_failures": [
+        "high_school.field_goal_percentage",
+        "high_school.home_win_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "13aafbdec2c8f14f960d382650b6f0f43ca69470c0d8532434f1df0b22e9c337",
+      "process_sha256": "3bc291d8a933c55a70ea3057359439ca862c0b841f9b103ed45cdba9cd8a45e8",
+      "raw_sha256": "e1c9bd1432e5c0b948e0ce526f3cd786e85704668e27717a2dd1abcea7420da7",
+      "report_sha256": "fba5b0872a702830054162473a2f285f0b34d72af8939102a7dbc792da530bde"
+    },
+    {
+      "cell": "diagnosis_candidate_neutral_high_school",
+      "games": 468,
+      "canonical_failures": [
+        "high_school.field_goal_percentage",
+        "high_school.home_win_rate",
+        "high_school.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "cae7257bb68568cbf39fa26d34bcc51b2a4b1aeb893de53dd49c57b3e9d3958e",
+      "process_sha256": "4cb3560d306ca4b324b5b59741052a365b11152d8130df5a98ad7a7e9845eb66",
+      "raw_sha256": "725cd1d11b6bf4489270c360a708ecf0eeb07c5f0585b93dd28ae4e5bad49f10",
+      "report_sha256": "f1449971472fdb02fd7c2afeb4d2b93e4852fae9142ff3f0a66e87dc5613e3f3"
+    },
+    {
+      "cell": "diagnosis_baseline_home_college",
+      "games": 468,
+      "canonical_failures": [
+        "college.field_goal_percentage",
+        "college.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "2a38f68e13b0b05b33f159c61cde84a83b298fa7bd9ab177c12af891b95fc8f3",
+      "process_sha256": "0ada084e14587d8c8c8b82910bc1d9c7b6ebe5bfcdd4ae8688c02e7491e7199d",
+      "raw_sha256": "b9c5c583597c5982f1b6f563e365b127fcdc91bccfd3c31d84fc4d70c221d1de",
+      "report_sha256": "80ae88aee22f9d68900637d48bf8e69f35a216bcdf043197911b25187077fa8f"
+    },
+    {
+      "cell": "diagnosis_baseline_neutral_college",
+      "games": 468,
+      "canonical_failures": [
+        "college.field_goal_percentage",
+        "college.home_win_rate",
+        "college.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "9bced16bb9423edc3020387cfc1692280162bcfccfef9de05d918b1a7d107f88",
+      "process_sha256": "fadc3327ee9a4b5a7d7b77b2bb922c858acc61c82110c2a02fb00d288632cd4c",
+      "raw_sha256": "d0e3403851dc5174974473d7e0c84647addff2a194adde458b6afb7b64f3e5e3",
+      "report_sha256": "16576707cb1510340b2616f92c8009bddf6a9a611e9329b9ac999f00626db9b7"
+    },
+    {
+      "cell": "diagnosis_candidate_home_college",
+      "games": 468,
+      "canonical_failures": [
+        "college.field_goal_percentage",
+        "college.home_win_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "58f8c9d32c4b43151d94c3646354dbd7b707830f51e9ef375bbed8b949e958dd",
+      "process_sha256": "2396507dc4ff8726665d8d9dbaeea98cd994e51cc9a3e160269e99fc4e7d8ff1",
+      "raw_sha256": "619f6bce8be54efcd41bc85de8e25f8ba153da1b008c14ab92cd799d49527d6a",
+      "report_sha256": "cb95756fe5adfc4f9436d8b1c333633717548de50d46f05871b3803706c93795"
+    },
+    {
+      "cell": "diagnosis_candidate_neutral_college",
+      "games": 468,
+      "canonical_failures": [
+        "college.field_goal_percentage",
+        "college.home_win_rate",
+        "college.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "4f4e5f0e0c9a8621781fe8875f42a648fc475d37318c405390e9b0b52f3d8827",
+      "process_sha256": "ce523d8c7eeff454da1f352f5f57c4baee41ef88565476d097d0b678487767c5",
+      "raw_sha256": "df4e2a173d626a9aeef1de4cb9f4480710d7c21794623edd46464e063ccd92e0",
+      "report_sha256": "c3e80d2f7b6a4e9a0fe7df586ad7937d5fcda28f1ed8b22620ea3ee7502f1384"
+    },
+    {
+      "cell": "diagnosis_baseline_home_development",
+      "games": 468,
+      "canonical_failures": [
+        "development.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "e1ddc9233b2e105cdaa70b6e530a70058d7af6dc4a14d1755eed8279b5e5d282",
+      "process_sha256": "b834c0844f6ce617f010123c1b8aa76c46f7ec12233938d289a64e8c8b9fd1ef",
+      "raw_sha256": "f481e22222323f07d93b2dfa7fdab470497417cee60cbfdad738c481735903dc",
+      "report_sha256": "e9d08713101c28f429364cba63bdb13b0fe70bf1467d6ae3e5e64bbb470972bc"
+    },
+    {
+      "cell": "diagnosis_baseline_neutral_development",
+      "games": 468,
+      "canonical_failures": [
+        "development.blowout_rate",
+        "development.close_game_rate",
+        "development.home_win_rate",
+        "development.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "a8fa46c1572f2c6a88d8f6c873638dfa15e8c873e8bb2dec01b36615fc21750e",
+      "process_sha256": "e924656e92a36f4fb450390f5527e2ef1ff627a5c452fbdc60b4d7f83c769780",
+      "raw_sha256": "fd1c06a690a04d9d3f242f08ba1973ace95483eac7bc35bae534f44b41f110fa",
+      "report_sha256": "b513cf228c06456f2ad0b4878cf0544014286baa5cd74de335414b2d2e2cd5c9"
+    },
+    {
+      "cell": "diagnosis_candidate_home_development",
+      "games": 468,
+      "canonical_failures": [
+        "development.blowout_rate",
+        "development.home_win_rate",
+        "development.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "cbbc879c307334bf8c3b68362bde26dc1214e7ddb364a9f05260e28743c4d7e6",
+      "process_sha256": "bf30e2fbdd5db27ff0631bbd69c89ff9d2892d6ace8e069da04fb0eafddadb21",
+      "raw_sha256": "b87ae9b5e50a70ebb0e7f860c70d21a518243e0e8c4b2dc9927758503db22663",
+      "report_sha256": "ec5e2698983c4a85ec68c06772c8a273580273455466c8916cd23a827d6add37"
+    },
+    {
+      "cell": "diagnosis_candidate_neutral_development",
+      "games": 468,
+      "canonical_failures": [
+        "development.blowout_rate",
+        "development.close_game_rate",
+        "development.home_win_rate",
+        "development.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "c2282856523275832cf454bcfc4cf12ad93f768674603c21b434cba6e779957f",
+      "process_sha256": "d921b566fa77ae9105a1a236a23aff3bf4fef212a19ba809f31010f375e994f2",
+      "raw_sha256": "a0b1acf6e055d0988e49b17e547d724cf03f060a00f95ee605a0ad58e67e0b58",
+      "report_sha256": "508c58a1780259a3651ef3c9240638dfe3680019ae34c02d132b15d03f77a3fb"
+    },
+    {
+      "cell": "diagnosis_baseline_home_overseas",
+      "games": 468,
+      "canonical_failures": [
+        "overseas.blowout_rate",
+        "overseas.home_win_rate",
+        "overseas.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "9ba87840e554901cafeffc233a462f57045b8082784533f7ecedfb3655ab3838",
+      "process_sha256": "89feeeba28ab6d7d169978739d72459192c6eae68778da7638c55bca84d1c561",
+      "raw_sha256": "7deabd306456eda0339f587ddcb08ba3634cc1c75d9ffef621f3c99564431bfd",
+      "report_sha256": "da7fc7aabf09c0bb300ad783e399290a02d9c9599d00d65ae04dcbd7e0595636"
+    },
+    {
+      "cell": "diagnosis_baseline_neutral_overseas",
+      "games": 468,
+      "canonical_failures": [
+        "overseas.blowout_rate",
+        "overseas.home_win_rate",
+        "overseas.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "bdf16eab65f9fb519a2716b8ee308d879ad0a4ec7492018916439ab404400ccb",
+      "process_sha256": "4f2378c5bbf32a67da8e0268eb5aebd8bb1b14ce656fdbe717541f8cfd44a6da",
+      "raw_sha256": "081c6bdc7a21d079e17f5ea2e0c9897e2dfad3edf2d1bc8b20a7de25af5c06b3",
+      "report_sha256": "dd666d3c66e9526abf6993f3bbaff5c8757549f059e77578c4e1b436299b72c0"
+    },
+    {
+      "cell": "diagnosis_candidate_home_overseas",
+      "games": 468,
+      "canonical_failures": [
+        "overseas.blowout_rate",
+        "overseas.home_win_rate",
+        "overseas.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "b2505e9fd9eda74f9e28feb84f0177224151f8becc97d3adab170d04b2b7caa8",
+      "process_sha256": "7d1a11d38f07d35bc429aae4a7ad4bb5b1271c9e8ba961a1cf0ef82bd46403d9",
+      "raw_sha256": "ad9c7d9e223aafac4520111b2e6499013911bd508b3d6e16a4a51e2854016247",
+      "report_sha256": "6c957f6e7b7d4bb8d7579bda76856724f5227a67dd0b64c23f370af7f8870e25"
+    },
+    {
+      "cell": "diagnosis_candidate_neutral_overseas",
+      "games": 468,
+      "canonical_failures": [
+        "overseas.home_win_rate",
+        "overseas.overtime_rate",
+        "sample.meets_certification_size"
+      ],
+      "log_sha256": "3e5930d2c2369ddea55a681f8c701204869889c9c67f5cd843331c0d13921089",
+      "process_sha256": "798a7adcee1ecca4805ba419f3ed8e5fc9606948b7b3a31c1b89161be1882907",
+      "raw_sha256": "ce60682df21c2363c5f36a24a24440091720f36caa1a62051f44d30ebb3993ac",
+      "report_sha256": "c7b1fd85817c6769f8ad2835db65c26bc8cad307ea710209e4c0b12ea2adbec4"
+    },
+    {
+      "cell": "diagnosis_baseline_home_top_domestic_pro",
+      "games": 468,
+      "canonical_failures": [
+        "sample.meets_certification_size",
+        "top_domestic_pro.blowout_rate",
+        "top_domestic_pro.close_game_rate",
+        "top_domestic_pro.home_win_rate",
+        "top_domestic_pro.overtime_rate"
+      ],
+      "log_sha256": "b8e3bf5639da251848ad80d2fa8203b312c384d1a1c0332bd71ca363d9b48bdd",
+      "process_sha256": "6c20c7d16924adbb5ab602eec843f6e72ac87b0632cfb4bd3cd854b106775bcb",
+      "raw_sha256": "b5bb98bf131b70e5f5a71c9859d5ba3dddcecef7b885dfaa3886f2aec630af7a",
+      "report_sha256": "af9af22887c9b511a6f45da68762958bc27736f7191b094973ce3e8a2e62c2ef"
+    },
+    {
+      "cell": "diagnosis_baseline_neutral_top_domestic_pro",
+      "games": 468,
+      "canonical_failures": [
+        "sample.meets_certification_size",
+        "top_domestic_pro.blowout_rate",
+        "top_domestic_pro.close_game_rate",
+        "top_domestic_pro.home_win_rate",
+        "top_domestic_pro.overtime_rate"
+      ],
+      "log_sha256": "3aac85d50710e3af064eaf591785f58e78cc54684774727c4b031952cb24362c",
+      "process_sha256": "a5bf58d8e2a13711921c869b302f624d3769b08a87645447adc14713d9cd9f73",
+      "raw_sha256": "603fea4ba9879ef3d7e36152b76dc7c55d777e237dd883ce8e5731e3d587d1af",
+      "report_sha256": "a7c110472489eccb85126ad005348d3e71aed036383d34850fb941a5c9298bb3"
+    },
+    {
+      "cell": "diagnosis_candidate_home_top_domestic_pro",
+      "games": 468,
+      "canonical_failures": [
+        "sample.meets_certification_size",
+        "top_domestic_pro.blowout_rate",
+        "top_domestic_pro.close_game_rate",
+        "top_domestic_pro.home_win_rate",
+        "top_domestic_pro.overtime_rate"
+      ],
+      "log_sha256": "d15ad9ffb681822ca9cc63b9d64e45fadc361e9c85e78b5e8878821145d2e856",
+      "process_sha256": "ac0fc7884b1ed2dcb4c51a371712219fcdda151a116d8dcbacb3061d9dfd5662",
+      "raw_sha256": "92795c583be2fb95eea20d3f5830c45ba13d94bf3e9ece836dd9394f89db48e9",
+      "report_sha256": "64c5f43f2a73469b99025334065acf2fd6e21983677bd519b208fd73a5c12e8a"
+    },
+    {
+      "cell": "diagnosis_candidate_neutral_top_domestic_pro",
+      "games": 468,
+      "canonical_failures": [
+        "sample.meets_certification_size",
+        "top_domestic_pro.blowout_rate",
+        "top_domestic_pro.close_game_rate",
+        "top_domestic_pro.overtime_rate"
+      ],
+      "log_sha256": "4e47e6e25d25183f3a6696e4bca25c406edd514f49d203137c0cb526410ae821",
+      "process_sha256": "a0c22c27a079cb7f878cf8a4dee86d060f921631daaad0153b527fd5a4077474",
+      "raw_sha256": "2e6cf105cf82cca2f7c7a75fcf4e102eec3399981022060790ee9a256b9148e7",
+      "report_sha256": "9c017746f8ac66036717f14d5d144c2e53f8311c080b4464e68821fd60405b5e"
+    }
+  ],
+  "scope": "All 20 completed cells only. No outcome acceptance or certification. Statistical formulas and source freeze exceptions reviewed separately."
+}

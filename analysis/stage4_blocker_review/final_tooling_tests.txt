@@ -1,0 +1,76 @@
+node --test tests/tooling/test_stage4_blocker_audit.cjs
+
+✔ raw totals use weighted denominator, never a mean of rates (3.0788ms)
+✔ invalid denominator is rejected (2.7961ms)
+✔ report reconciles exact coverage and failures (2.4636ms)
+✔ duplicate metrics are rejected (0.6707ms)
+✔ changed verdict is rejected for its target (1.2336ms)
+✔ changed target is rejected against the reference (1.4023ms)
+✔ changed aggregate and missing competition are rejected (0.8714ms)
+✔ corrected quartets and raw-to-canonical ratios reconcile (6.9408ms)
+✔ duplicate seeds are rejected (1.5655ms)
+✔ broken opener and roster pairings are rejected (2.815ms)
+✔ sample shortage is a certification blocker and population venue is a separate estimand (0.46ms)
+✔ venue uses symmetrized triples and rejects duplicates (1.0945ms)
+✔ probability reproducer preserves actual and correct Wilson endpoints (1.5959ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 575.7691
+
+node tests/tooling/test_ovr_truthfulness_analysis.cjs
+
+PASSED exact_rational_formula_and_rounding
+PASSED complete_pairing_and_shuffled_rows
+PASSED duplicate_seed_is_rejected
+PASSED missing_counterbalance_is_rejected
+PASSED controlled_roster_mutation_is_rejected
+PASSED coherently_shifted_confirmation_archive_is_rejected
+PASSED missing_both_control_hashes_is_rejected
+PASSED invalid_slot_domain_is_rejected
+PASSED catalog_and_college_fixed_coverage_is_validated
+PASSED missing_complete_population_game_is_rejected
+PASSED coherently_shifted_catalog_archive_is_rejected
+PASSED coherently_flipped_catalog_openers_are_rejected
+PASSED corrected_catalog_pairing_is_preserved
+PASSED natural_college_career_ranges_are_enforced
+PASSED college_chronological_body_provenance_is_enforced
+PASSED histogram_all_ranges_and_five_populations_are_checked
+PASSED coherent_both_histogram_formula_corruption_is_rejected
+PASSED enlarged_duplicate_fixture_histogram_is_rejected
+PASSED missing_histogram_competition_is_rejected
+PASSED coherently_shifted_natural_histogram_seeds_are_rejected
+PASSED natural_peak_and_final_vectors_are_independently_checked
+PASSED touch_denominator_corruption_is_rejected
+PASSED ratio_of_pooled_attempts_and_zero_denominator
+PASSED bootstrap_retains_paired_clusters_and_is_deterministic
+PASSED multiplicity_interval_is_wider_than_pointwise
+PASSED raw_count_minutes_and_opportunity_denominators
+PASSED aggregate_relationship_does_not_imply_within_stratum
+PASSED shared_builder_same_ovr_pairs_are_actually_read
+PASSED shared_builder_missing_counters_are_unavailable_and_real_layout_is_mapped
+PASSED shared_builder_unequal_starting_budget_is_rejected
+PASSED shared_builder_coherent_schedule_corruption_is_rejected
+31/31 passed, 0 failed
+
+python3 analysis/builder_dominance_followup/test_analysis.py
+
+test_complete_schedule_counts_and_equal_resource_controls (__main__.TestBuilderAnalysis.test_complete_schedule_counts_and_equal_resource_controls) ... ok
+test_descriptive_frontier_and_profile_separation_are_not_certification (__main__.TestBuilderAnalysis.test_descriptive_frontier_and_profile_separation_are_not_certification) ... ok
+test_duplicate_seeds_missing_coverage_and_venue_bias_rejected (__main__.TestBuilderAnalysis.test_duplicate_seeds_missing_coverage_and_venue_bias_rejected) ... ok
+test_low_counts_and_zero_empirical_variance_do_not_claim_exact_ci (__main__.TestBuilderAnalysis.test_low_counts_and_zero_empirical_variance_do_not_claim_exact_ci) ... ok
+test_matched_cluster_covariance_and_familywise_intervals (__main__.TestBuilderAnalysis.test_matched_cluster_covariance_and_familywise_intervals) ... ok
+test_minutes_and_denominator_corruptions_rejected (__main__.TestBuilderAnalysis.test_minutes_and_denominator_corruptions_rejected) ... ok
+test_primary_metric_direction_and_zero_denominator (__main__.TestBuilderAnalysis.test_primary_metric_direction_and_zero_denominator) ... ok
+test_student_quantiles_have_independent_known_values (__main__.TestBuilderAnalysis.test_student_quantiles_have_independent_known_values) ... ok
+test_sum_ratio_uses_opportunities_not_mean_game_percentages (__main__.TestBuilderAnalysis.test_sum_ratio_uses_opportunities_not_mean_game_percentages) ... ok
+test_tendency_facts_and_teammate_control_corruptions_rejected (__main__.TestBuilderAnalysis.test_tendency_facts_and_teammate_control_corruptions_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 2.431s
+
+OK

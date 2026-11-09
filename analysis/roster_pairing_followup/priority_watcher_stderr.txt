@@ -1,0 +1,5 @@
+Exception: C:\Users\valexander\leaguebound-godot-core\analysis\roster_pairing_followup\maintain_worker_priority.ps1:7
+Line |
+   7 |  . onment]::ProcessorCount -ne 8) { throw 'Unexpected processor count' }
+     |                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Unexpected processor count

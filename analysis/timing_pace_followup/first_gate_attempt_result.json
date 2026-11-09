@@ -1,0 +1,6 @@
+{
+  "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+  "completed_utc": "2026-09-21T17:42:25.7187733Z",
+  "command": "GODOT_BIN=<pinned Windows console binary> bash tools/run_checks.sh",
+  "exit_code": 127
+}

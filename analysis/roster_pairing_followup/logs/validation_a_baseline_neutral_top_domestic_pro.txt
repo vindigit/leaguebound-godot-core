@@ -1,0 +1,67 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 20/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 40/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 60/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 80/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 100/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 120/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 140/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 160/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 180/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 200/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 220/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 240/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 260/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 280/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 300/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 320/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 340/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 360/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 380/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 400/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 420/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 440/468
+roster validation_a_baseline_neutral_top_domestic_pro top_domestic_pro 460/468
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  top_domestic_pro     99.4  115.4  1.160   45.2   37.1   36.2   80.6   21.9   14.1   25.3   57.3   22.3   7.0   5.3
+
+  home win rate / overtime / close / blowout, by competition:
+  top_domestic_pro     48.1%    1.9%   21.6%   19.2%
+
+=== Competition basketball calibration ===
+  commit=unknown godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=top_domestic_pro/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 60000 of 60001, seeds 28080001..28080468 inclusive n=468 complete games per competition elapsed=4768166ms rate=0.1/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 468.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  top_domestic_pro.possessions_per_game                     99.4295 ±0.2181  target[96.0000, 103.0000]  PASS
+  top_domestic_pro.possession_estimate_per_game            105.7589  INFORMATIONAL
+  top_domestic_pro.points_per_game                         115.3504 ±0.8031  INFORMATIONAL
+  top_domestic_pro.points_per_possession                     1.1601 ±0.0078  target[1.0800, 1.1800]  PASS
+  top_domestic_pro.field_goal_percentage                     0.4525 ±0.0032  target[0.4500, 0.5100]  PASS
+  top_domestic_pro.three_point_percentage                    0.3712 ±0.0053  target[0.3400, 0.4000]  PASS
+  top_domestic_pro.three_point_attempt_rate                  0.3620 ±0.0032  target[0.3600, 0.4900]  PASS
+  top_domestic_pro.free_throw_percentage                     0.8057 ±0.0056  target[0.7300, 0.8300]  PASS
+  top_domestic_pro.free_throw_attempt_rate                   0.2187 ±0.0027  target[0.1800, 0.3400]  PASS
+  top_domestic_pro.turnovers_per_100_possessions            14.1104  target[11.0000, 16.0000]  PASS
+  top_domestic_pro.offensive_rebound_percentage              0.2533 ±0.0040  target[0.2000, 0.3100]  PASS
+  top_domestic_pro.assist_percentage                         0.5728 ±0.0048  target[0.5200, 0.7200]  PASS
+  top_domestic_pro.home_win_rate                             0.4808 ±0.0451  target[0.5300, 0.5600]  FAIL
+  top_domestic_pro.overtime_rate                             0.0192 ±0.0130  target[0.0400, 0.0800]  FAIL
+  top_domestic_pro.close_game_rate                           0.2158 ±0.0372  target[0.2200, 0.3400]  FAIL
+  top_domestic_pro.blowout_rate                              0.1923 ±0.0356  target[0.0800, 0.1800]  FAIL
+  top_domestic_pro.starter_mean_minutes                     29.1021 ±0.1547  target[27.0000, 35.0000]  PASS
+  top_domestic_pro.star_mean_minutes                        32.0506  target[12.0000, 36.0000]  PASS
+  top_domestic_pro.rotation_mean_minutes                    20.9895  target[12.0000, 36.0000]  PASS
+  top_domestic_pro.team_leading_scorer_mean                 22.6763 ±0.2789  INFORMATIONAL
+  top_domestic_pro.team_leading_scorer_p99                  35.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_a_baseline_neutral_top_domestic_pro.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL top_domestic_pro.home_win_rate: estimate 0.4808 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL top_domestic_pro.overtime_rate: estimate 0.0192 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  FAIL top_domestic_pro.close_game_rate: estimate 0.2158 outside BALANCE_SPEC.md §14.2 target [0.2200, 0.3400]
+  FAIL top_domestic_pro.blowout_rate: estimate 0.1923 outside BALANCE_SPEC.md §14.2 target [0.0800, 0.1800]
+  22 metric(s), 18 judged, 5 failure(s): FAIL

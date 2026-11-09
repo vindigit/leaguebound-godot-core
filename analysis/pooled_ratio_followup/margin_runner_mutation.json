@@ -1,0 +1,54 @@
+{
+  "source_sha256": "8ad557fc54cfa05bc79f7f0483dc1e3805f74e57eb17a971d1b208f006a8676d",
+  "checker_sha256": "a5d35de112ebb582a1cde07497861fb0e2730670e6c438383ad758fc66c5d8e7",
+  "driver_sha256": "258a7e0554094ea0d4bfeea4b5073d515a6a6a59ea2f6a2b45bb8401156d31bd",
+  "godot": "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+  "node_version": "v24.22.1",
+  "mutation": "restore centered half-width serialization in both _share branches",
+  "preserved_point_metrics": 151,
+  "source_restored": true,
+  "runs": {
+    "mutant_population": {
+      "sha256": "d9f0b61f2acc974e97f741decd431b03722c185ebb064e4fc8b0b4ff4af6af77",
+      "log_sha256": "5591d8a63c601a2c4c1bfb56477b92f3fdfb75f98bb24984390ab87f70ceda17",
+      "exit_code": 1
+    },
+    "mutant_mirror": {
+      "sha256": "ca38165e0036ccf7f5ee821a3bc832e8e926bdb9aaf203e9b4a80663962d5fbb",
+      "log_sha256": "b749fe6ce163428ad5da2dd47ea0323c5634753f0648199b5636defc020e164b",
+      "exit_code": 0
+    },
+    "after_population": {
+      "sha256": "a16a70dde8cf1b40c47a0b83128963db065c6989df3d12e9a093d76a0e032733",
+      "log_sha256": "872d1809a640f4455d04eceac00e14496ec3c2858de260738c278f6cb86adffc",
+      "exit_code": 1
+    },
+    "after_mirror": {
+      "sha256": "1c7ad33fc2268c529c9163524086ed2f66fb3804fb3fec21e7fb3dc03b1b3edc",
+      "log_sha256": "ce0bba476e37e0e07bb5cb96399a2b7bb03ecd4d596da00a1041acd15e5140e1",
+      "exit_code": 0
+    }
+  },
+  "checks": [
+    {
+      "id": "before",
+      "exit_code": 0,
+      "log_sha256": "bddad25c9028b1bd38880c0ec6d13e23425b978930c844b087f8d01bce16b02c"
+    },
+    {
+      "id": "population_mutant",
+      "exit_code": 1,
+      "log_sha256": "720d370587e4734d7d65fc4f0777a54db82549a11f0ef8ca0d92f72db929ff51"
+    },
+    {
+      "id": "mirror_mutant",
+      "exit_code": 1,
+      "log_sha256": "089fc0c66b950d57694d40541d688ebb491a0aa9260c77da5600a11506e1d87d"
+    },
+    {
+      "id": "after",
+      "exit_code": 0,
+      "log_sha256": "b1d8cffe646ea61a7e942b33e1b865782cc669a5567ac858d01652d81651fd6a"
+    }
+  ]
+}

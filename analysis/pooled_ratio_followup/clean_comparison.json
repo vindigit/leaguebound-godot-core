@@ -1,0 +1,518 @@
+{
+  "historical_sha256": "a575e4c0f2848e2b16fe7f7e7a2cf3de51fc1b06a1a1a463435f26806daec1e4",
+  "current_sha256": "23adf490913a83870bcbcfa6c9378f62c7ced458cf2bcb62135dbfb036b1e493",
+  "historical_head": "899a3972e48e8ce63de07b47b2e593e9c97df4d2",
+  "current_head": "f82e69c3b8138e76de26288d46e4bf4083ac1902",
+  "same_declared_seed_prefix": true,
+  "games": 200,
+  "games_per_competition": 40,
+  "metrics": 98,
+  "failures": 9,
+  "limitation": "Metadata and equal outcomes do not independently prove individual game seeds or event ledgers. Commit identifiers name HEAD only and do not establish working-tree cleanliness; use separate source fingerprints.",
+  "point_metrics_and_sections_identical": true,
+  "wilson_intervals_checked": 50,
+  "wilson_intervals_with_shifted_endpoints": 50,
+  "other_intervals_preserved": 30,
+  "corrected": [
+    {
+      "metric": "high_school.three_point_percentage",
+      "successes": 515,
+      "trials": 1685,
+      "estimate": 0.305637982195846,
+      "old_low": 0.28366251096488,
+      "old_high": 0.327613453426812,
+      "low": 0.2841046091236819,
+      "high": 0.3280555515856141
+    },
+    {
+      "metric": "high_school.three_point_attempt_rate",
+      "successes": 1685,
+      "trials": 5120,
+      "estimate": 0.3291015625,
+      "old_low": 0.31623492252632,
+      "old_high": 0.34196820247368,
+      "low": 0.31636304891855943,
+      "high": 0.3420963288659196
+    },
+    {
+      "metric": "high_school.free_throw_percentage",
+      "successes": 674,
+      "trials": 1037,
+      "estimate": 0.649951783992285,
+      "old_low": 0.620969040084563,
+      "old_high": 0.678934527900008,
+      "low": 0.6204156093891687,
+      "high": 0.6783810972046146
+    },
+    {
+      "metric": "high_school.free_throw_attempt_rate",
+      "successes": 1037,
+      "trials": 5120,
+      "estimate": 0.2025390625,
+      "old_low": 0.1915325805027,
+      "old_high": 0.2135455444973,
+      "low": 0.1917555936402779,
+      "high": 0.21376855763487834
+    },
+    {
+      "metric": "high_school.offensive_rebound_percentage",
+      "successes": 806,
+      "trials": 3060,
+      "estimate": 0.263398692810458,
+      "old_low": 0.247798982232147,
+      "old_high": 0.278998403388768,
+      "low": 0.24809563406776824,
+      "high": 0.27929505522438913
+    },
+    {
+      "metric": "high_school.assist_percentage",
+      "successes": 925,
+      "trials": 1902,
+      "estimate": 0.486330178759201,
+      "old_low": 0.463890704764194,
+      "old_high": 0.508769652754207,
+      "low": 0.4639182579774833,
+      "high": 0.508797205967496
+    },
+    {
+      "metric": "high_school.home_win_rate",
+      "successes": 22,
+      "trials": 40,
+      "estimate": 0.55,
+      "old_low": 0.402671996987968,
+      "old_high": 0.697328003012032,
+      "low": 0.39829091686504514,
+      "high": 0.6929469228891086
+    },
+    {
+      "metric": "high_school.overtime_rate",
+      "successes": 2,
+      "trials": 40,
+      "estimate": 0.05,
+      "old_low": -0.02560905384475,
+      "old_high": 0.12560905384475,
+      "low": 0.01382066726155863,
+      "high": 0.16503877495105868
+    },
+    {
+      "metric": "high_school.close_game_rate",
+      "successes": 11,
+      "trials": 40,
+      "estimate": 0.275,
+      "old_low": 0.14136530122462,
+      "old_high": 0.40863469877538,
+      "low": 0.16108016177777446,
+      "high": 0.4283495593285342
+    },
+    {
+      "metric": "high_school.blowout_rate",
+      "successes": 6,
+      "trials": 40,
+      "estimate": 0.15,
+      "old_low": 0.039944315900612,
+      "old_high": 0.260055684099388,
+      "low": 0.07061187676107432,
+      "high": 0.29072324495985025
+    },
+    {
+      "metric": "college.three_point_percentage",
+      "successes": 547,
+      "trials": 1778,
+      "estimate": 0.307649043869516,
+      "old_low": 0.286215903872225,
+      "old_high": 0.329082183866808,
+      "low": 0.2866305918822441,
+      "high": 0.3294968718768269
+    },
+    {
+      "metric": "college.three_point_attempt_rate",
+      "successes": 1778,
+      "trials": 5166,
+      "estimate": 0.344173441734417,
+      "old_low": 0.33122224155201,
+      "old_high": 0.357124641916825,
+      "low": 0.33133802872284535,
+      "high": 0.35724042908765996
+    },
+    {
+      "metric": "college.free_throw_percentage",
+      "successes": 946,
+      "trials": 1333,
+      "estimate": 0.709677419354839,
+      "old_low": 0.685337891504609,
+      "old_high": 0.734016947205068,
+      "low": 0.6847353763900185,
+      "high": 0.7334144320904771
+    },
+    {
+      "metric": "college.free_throw_attempt_rate",
+      "successes": 1333,
+      "trials": 5166,
+      "estimate": 0.25803329461866,
+      "old_low": 0.246104710384236,
+      "old_high": 0.269961878853085,
+      "low": 0.24628450412776914,
+      "high": 0.27014167259661803
+    },
+    {
+      "metric": "college.offensive_rebound_percentage",
+      "successes": 770,
+      "trials": 2982,
+      "estimate": 0.258215962441315,
+      "old_low": 0.242514856028424,
+      "old_high": 0.273917068854205,
+      "low": 0.24282592527011934,
+      "high": 0.2742281380958995
+    },
+    {
+      "metric": "college.assist_percentage",
+      "successes": 1087,
+      "trials": 2080,
+      "estimate": 0.522596153846154,
+      "old_low": 0.501150334767378,
+      "old_high": 0.54404197292493,
+      "low": 0.5011086798729975,
+      "high": 0.5440003180305492
+    },
+    {
+      "metric": "college.home_win_rate",
+      "successes": 16,
+      "trials": 40,
+      "estimate": 0.4,
+      "old_low": 0.254721095673855,
+      "old_high": 0.545278904326145,
+      "low": 0.2634832559197014,
+      "high": 0.5540410645719913
+    },
+    {
+      "metric": "college.overtime_rate",
+      "successes": 2,
+      "trials": 40,
+      "estimate": 0.05,
+      "old_low": -0.02560905384475,
+      "old_high": 0.12560905384475,
+      "low": 0.01382066726155863,
+      "high": 0.16503877495105868
+    },
+    {
+      "metric": "college.close_game_rate",
+      "successes": 11,
+      "trials": 40,
+      "estimate": 0.275,
+      "old_low": 0.14136530122462,
+      "old_high": 0.40863469877538,
+      "low": 0.16108016177777446,
+      "high": 0.4283495593285342
+    },
+    {
+      "metric": "college.blowout_rate",
+      "successes": 4,
+      "trials": 40,
+      "estimate": 0.1,
+      "old_low": 0.0045308874240261,
+      "old_high": 0.195469112575974,
+      "low": 0.039579528407411566,
+      "high": 0.23051775355935938
+    },
+    {
+      "metric": "development.three_point_percentage",
+      "successes": 872,
+      "trials": 2587,
+      "estimate": 0.337069965210669,
+      "old_low": 0.318866259857902,
+      "old_high": 0.355273670563436,
+      "low": 0.3191078373681837,
+      "high": 0.35551524807371726
+    },
+    {
+      "metric": "development.three_point_attempt_rate",
+      "successes": 2587,
+      "trials": 7114,
+      "estimate": 0.363649142535845,
+      "old_low": 0.352473488337532,
+      "old_high": 0.374824796734157,
+      "low": 0.3525470761261059,
+      "high": 0.3748983845227313
+    },
+    {
+      "metric": "development.free_throw_percentage",
+      "successes": 1285,
+      "trials": 1660,
+      "estimate": 0.774096385542169,
+      "old_low": 0.753993124259647,
+      "old_high": 0.79419964682469,
+      "low": 0.7533602935359315,
+      "high": 0.7935668161009745
+    },
+    {
+      "metric": "development.free_throw_attempt_rate",
+      "successes": 1660,
+      "trials": 7114,
+      "estimate": 0.233342704526286,
+      "old_low": 0.223515765401152,
+      "old_high": 0.24316964365142,
+      "low": 0.22365967883921892,
+      "high": 0.24331355708948646
+    },
+    {
+      "metric": "development.offensive_rebound_percentage",
+      "successes": 949,
+      "trials": 3786,
+      "estimate": 0.250660327522451,
+      "old_low": 0.236859898792897,
+      "old_high": 0.264460756252006,
+      "low": 0.237112634457354,
+      "high": 0.2647134919164631
+    },
+    {
+      "metric": "development.assist_percentage",
+      "successes": 1658,
+      "trials": 3077,
+      "estimate": 0.538836529086773,
+      "old_low": 0.521234163873509,
+      "old_high": 0.556438894300036,
+      "low": 0.521185739139043,
+      "high": 0.55639046956557
+    },
+    {
+      "metric": "development.home_win_rate",
+      "successes": 22,
+      "trials": 40,
+      "estimate": 0.55,
+      "old_low": 0.402671996987968,
+      "old_high": 0.697328003012032,
+      "low": 0.39829091686504514,
+      "high": 0.6929469228891086
+    },
+    {
+      "metric": "development.overtime_rate",
+      "successes": 0,
+      "trials": 40,
+      "estimate": 0,
+      "old_low": -0.0438108012292318,
+      "old_high": 0.0438108012292318,
+      "low": 0,
+      "high": 0.08762160245846368
+    },
+    {
+      "metric": "development.close_game_rate",
+      "successes": 10,
+      "trials": 40,
+      "estimate": 0.25,
+      "old_low": 0.119965785129264,
+      "old_high": 0.380034214870736,
+      "low": 0.1418711857438798,
+      "high": 0.40193961548535195
+    },
+    {
+      "metric": "development.blowout_rate",
+      "successes": 6,
+      "trials": 40,
+      "estimate": 0.15,
+      "old_low": 0.039944315900612,
+      "old_high": 0.260055684099388,
+      "low": 0.07061187676107432,
+      "high": 0.29072324495985025
+    },
+    {
+      "metric": "overseas.three_point_percentage",
+      "successes": 716,
+      "trials": 1986,
+      "estimate": 0.360523665659617,
+      "old_low": 0.339425079454324,
+      "old_high": 0.38162225186491,
+      "low": 0.33969434342050153,
+      "high": 0.3818915158310878
+    },
+    {
+      "metric": "overseas.three_point_attempt_rate",
+      "successes": 1986,
+      "trials": 5641,
+      "estimate": 0.352065236660167,
+      "old_low": 0.339605363835711,
+      "old_high": 0.364525109484622,
+      "low": 0.33970603722301934,
+      "high": 0.36462578287193054
+    },
+    {
+      "metric": "overseas.free_throw_percentage",
+      "successes": 1045,
+      "trials": 1327,
+      "estimate": 0.787490580256217,
+      "old_low": 0.765496487523281,
+      "old_high": 0.809484672989153,
+      "low": 0.7646666492014855,
+      "high": 0.808654834667357
+    },
+    {
+      "metric": "overseas.free_throw_attempt_rate",
+      "successes": 1327,
+      "trials": 5641,
+      "estimate": 0.235241978372629,
+      "old_low": 0.224175760339257,
+      "old_high": 0.246308196406001,
+      "low": 0.22435593493955075,
+      "high": 0.24648837100629445
+    },
+    {
+      "metric": "overseas.offensive_rebound_percentage",
+      "successes": 792,
+      "trials": 2978,
+      "estimate": 0.265950302216253,
+      "old_low": 0.250088691769536,
+      "old_high": 0.281811912662969,
+      "low": 0.25039021426917746,
+      "high": 0.28211343516261017
+    },
+    {
+      "metric": "overseas.assist_percentage",
+      "successes": 1382,
+      "trials": 2476,
+      "estimate": 0.558158319870759,
+      "old_low": 0.538612549519705,
+      "old_high": 0.577704090221813,
+      "low": 0.5385224579561546,
+      "high": 0.5776139986582624
+    },
+    {
+      "metric": "overseas.home_win_rate",
+      "successes": 23,
+      "trials": 40,
+      "estimate": 0.575,
+      "old_low": 0.428522304453426,
+      "old_high": 0.721477695546574,
+      "low": 0.42195068426904103,
+      "high": 0.7149060753621894
+    },
+    {
+      "metric": "overseas.overtime_rate",
+      "successes": 0,
+      "trials": 40,
+      "estimate": 0,
+      "old_low": -0.0438108012292318,
+      "old_high": 0.0438108012292318,
+      "low": 0,
+      "high": 0.08762160245846368
+    },
+    {
+      "metric": "overseas.close_game_rate",
+      "successes": 9,
+      "trials": 40,
+      "estimate": 0.225,
+      "old_low": 0.099064971966654,
+      "old_high": 0.350935028033346,
+      "low": 0.12316091264273149,
+      "high": 0.37503096870942354
+    },
+    {
+      "metric": "overseas.blowout_rate",
+      "successes": 6,
+      "trials": 40,
+      "estimate": 0.15,
+      "old_low": 0.039944315900612,
+      "old_high": 0.260055684099388,
+      "low": 0.07061187676107432,
+      "high": 0.29072324495985025
+    },
+    {
+      "metric": "top_domestic_pro.three_point_percentage",
+      "successes": 1033,
+      "trials": 2761,
+      "estimate": 0.374139804418689,
+      "old_low": 0.356101778349073,
+      "old_high": 0.392177830488305,
+      "low": 0.3562766479657612,
+      "high": 0.39235270010499257
+    },
+    {
+      "metric": "top_domestic_pro.three_point_attempt_rate",
+      "successes": 2761,
+      "trials": 7623,
+      "estimate": 0.362193362193362,
+      "old_low": 0.351406391796191,
+      "old_high": 0.372980332590534,
+      "low": 0.3514758017263114,
+      "high": 0.37304974252065465
+    },
+    {
+      "metric": "top_domestic_pro.free_throw_percentage",
+      "successes": 1424,
+      "trials": 1821,
+      "estimate": 0.781987918725975,
+      "old_low": 0.763034440023275,
+      "old_high": 0.800941397428674,
+      "low": 0.7624408295539731,
+      "high": 0.8003477869593725
+    },
+    {
+      "metric": "top_domestic_pro.free_throw_attempt_rate",
+      "successes": 1821,
+      "trials": 7623,
+      "estimate": 0.238882329791421,
+      "old_low": 0.229311829042834,
+      "old_high": 0.248452830540007,
+      "low": 0.22944334781095008,
+      "high": 0.24858434930812282
+    },
+    {
+      "metric": "top_domestic_pro.offensive_rebound_percentage",
+      "successes": 1007,
+      "trials": 3907,
+      "estimate": 0.25774251343742,
+      "old_low": 0.244032157336521,
+      "old_high": 0.271452869538319,
+      "low": 0.2442701169119987,
+      "high": 0.2716908291137968
+    },
+    {
+      "metric": "top_domestic_pro.assist_percentage",
+      "successes": 2009,
+      "trials": 3438,
+      "estimate": 0.58435136707388,
+      "old_low": 0.567886433849868,
+      "old_high": 0.600816300297892,
+      "low": 0.5677922888080157,
+      "high": 0.6007221552560399
+    },
+    {
+      "metric": "top_domestic_pro.home_win_rate",
+      "successes": 22,
+      "trials": 40,
+      "estimate": 0.55,
+      "old_low": 0.402671996987968,
+      "old_high": 0.697328003012032,
+      "low": 0.39829091686504514,
+      "high": 0.6929469228891086
+    },
+    {
+      "metric": "top_domestic_pro.overtime_rate",
+      "successes": 1,
+      "trials": 40,
+      "estimate": 0.025,
+      "old_low": -0.0371934297140659,
+      "old_high": 0.0871934297140659,
+      "low": 0.004426831453704344,
+      "high": 0.12881369088183614
+    },
+    {
+      "metric": "top_domestic_pro.close_game_rate",
+      "successes": 10,
+      "trials": 40,
+      "estimate": 0.25,
+      "old_low": 0.119965785129264,
+      "old_high": 0.380034214870736,
+      "low": 0.1418711857438798,
+      "high": 0.40193961548535195
+    },
+    {
+      "metric": "top_domestic_pro.blowout_rate",
+      "successes": 7,
+      "trials": 40,
+      "estimate": 0.175,
+      "old_low": 0.0589771161859549,
+      "old_high": 0.291022883814045,
+      "low": 0.08745413698495559,
+      "high": 0.3194999046130458
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "source_head": "0d05a764466f035293fc0d9a484df429d3b73ab6",
+  "consumer": "calibration/runners/run_home_court_diagnostics.gd",
+  "old_sha256": "E0E1A5E8BD9245679E25B9AE78DA4EEFBFE56B841300816203BCFE6CF75221DA",
+  "new_sha256": "030DC30CB6717538E93268146068DDAA76505E3D2EC7BE2C768891DA5163C235",
+  "probe_sha256": "6F29B6E041D645C2CEC3B488DF8A4E99F2C64FF39BDEF1FB6301A32735E898EF",
+  "command": [
+    "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    ".",
+    "--script",
+    "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-mirror-int64-probe.gd"
+  ],
+  "working_directory": "C:\\Users\\valexander\\leaguebound-godot-core",
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "before_exit": 0,
+  "after_exit": 0,
+  "before_sha256": "24E0C565385535EA92DE54670190B859723531E7F3AFD21683F9A03483F121E3",
+  "after_sha256": "FBAA1E808B758B2D381ED109F524EE821C4B2A1899CCEA4CAB5CA414E592880F",
+  "scope": "Actual runner fixture construction only; no match simulations. Probe compares all 10 players rating vectors for high school mirror forward arm; broader fields/modes await the separate deterministic suite.",
+  "same_probe_bytes": true
+}

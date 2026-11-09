@@ -21,9 +21,35 @@ var matchups: MatchupState
 var possession_id: int
 ## Ball location and possession-history facts the action families read.
 var ball_handler_id: StringName
-var last_passer_id: StringName
-var last_pass_created_advantage: bool
+## §11.3: the live passer-to-shot relationship. Replaces the bare
+## `last_passer_id` and the `last_pass_created_advantage` flag that was written
+## on every completed pass and read by nothing — the openness a pass created was
+## computed and discarded, so a pass could never create a shot.
+var pass_creation: PassCreation
 var in_transition: bool
+## Where the ball actually is, when the possession's opening left it somewhere
+## an ordinary half-court set did not (`SIMULATION_SPEC.md` §16.1).
+##
+## **Ownership.** Written only by `PossessionEngine._open_desperate`, and read
+## only by `ShotResolver` for its §12.6 distance consequence. It is `null` on
+## every possession that ran the ordinary opening, because this engine does not
+## yet track ball location generally — §30.2 still carries tactical coordinates
+## as outstanding, and this task does not close that. Null therefore means "no
+## spatial claim is made", not "at the arc", which is what keeps an ordinary
+## possession's shot resolution byte-identical to what it was before.
+var ball_location: TacticalLocation
+## Whether this possession opened inside `desperation_opening_clock_ms` and so
+## never ran an ordinary advance-and-half-court-set opening.
+##
+## **Ownership.** Written only by `PossessionEngine._open_possession`, and read
+## only by `EndgameStrategy.final_release_due` so a selected action can be
+## released before the horn. It is a statement about *how the possession
+## opened* — a clock fact, fixed before any action is chosen — and never about
+## the score, the margin, or what outcome would be convenient. It is deliberately
+## a separate fact from `live_start` and `advance_start`, which answer different
+## questions (whether the ball was live, and whether a timeout bought the
+## frontcourt) and must not be overloaded to answer this one.
+var desperation_opening: bool
 var offensive_rebounds: int
 var action_count: int
 var advantage: AdvantageResult
@@ -45,9 +71,10 @@ func _init(
 	matchups = p_matchups
 	possession_id = p_possession_id
 	ball_handler_id = &""
-	last_passer_id = &""
-	last_pass_created_advantage = false
+	pass_creation = PassCreation.none()
 	in_transition = false
+	ball_location = null
+	desperation_opening = false
 	offensive_rebounds = 0
 	action_count = 0
 	advantage = AdvantageResult.new()
@@ -95,6 +122,13 @@ func defender_of(offense_player_id: StringName) -> StringName:
 	var on_court: Array[StringName] = defense_on_court()
 	assert(not on_court.is_empty(), "a live possession requires defenders on court")
 	return on_court[0]
+
+
+## Ends the live creation relationship. Every caller names why, because "when
+## does pass context stop being true" is the contract this record exists to
+## make explicit rather than incidental.
+func clear_pass_creation() -> void:
+	pass_creation = PassCreation.none()
 
 
 func is_late_clock() -> bool:

@@ -1,0 +1,1505 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites id="2026-09-14" name="report_4" tests="676" failures="15" skipped="0" flaky="0" time="0.000">
+	<testsuite id="0" name="test_body_maturation" package="tests/unit/basketball" timestamp="2026-09-15T02:23:47" hostname="localhost" tests="11" failures="0" errors="0" skipped="0" flaky="0" time="0.686">
+		<testcase name="test_growth_is_deterministic_from_the_career_seed" classname="test_body_maturation" time="0.017">
+		</testcase>
+		<testcase name="test_realized_adult_body_stays_inside_the_stored_range" classname="test_body_maturation" time="0.492">
+		</testcase>
+		<testcase name="test_growth_resolves_once_per_career_year" classname="test_body_maturation" time="0.011">
+		</testcase>
+		<testcase name="test_growth_claims_the_shared_career_year_receipt" classname="test_body_maturation" time="0.010">
+		</testcase>
+		<testcase name="test_growth_never_changes_a_rating" classname="test_body_maturation" time="0.010">
+		</testcase>
+		<testcase name="test_growth_touches_neither_caps_nor_currency" classname="test_body_maturation" time="0.011">
+		</testcase>
+		<testcase name="test_timing_profiles_produce_different_high_school_bodies" classname="test_body_maturation" time="0.034">
+		</testcase>
+		<testcase name="test_timing_profiles_deliver_the_same_total_growth" classname="test_body_maturation" time="0.040">
+		</testcase>
+		<testcase name="test_weight_training_is_separate_and_bounded" classname="test_body_maturation" time="0.014">
+		</testcase>
+		<testcase name="test_no_increment_is_legal_after_the_body_is_final" classname="test_body_maturation" time="0.010">
+		</testcase>
+		<testcase name="test_lost_projected_range_is_reconstructed_at_its_widest" classname="test_body_maturation" time="0.004">
+		</testcase>
+	</testsuite>
+	<testsuite id="1" name="test_development_projection" package="tests/unit/basketball" timestamp="2026-09-15T02:23:48" hostname="localhost" tests="10" failures="0" errors="0" skipped="0" flaky="0" time="2.083">
+		<testcase name="test_the_three_values_have_distinct_labels" classname="test_development_projection" time="0.004">
+		</testcase>
+		<testcase name="test_projected_peak_is_always_a_range" classname="test_development_projection" time="0.022">
+		</testcase>
+		<testcase name="test_projected_peak_respects_its_ordering_bounds" classname="test_development_projection" time="1.670">
+		</testcase>
+		<testcase name="test_projected_peak_responds_to_opportunity_supply" classname="test_development_projection" time="0.038">
+		</testcase>
+		<testcase name="test_projected_peak_falls_with_age" classname="test_development_projection" time="0.020">
+		</testcase>
+		<testcase name="test_projected_peak_responds_to_caps" classname="test_development_projection" time="0.025">
+		</testcase>
+		<testcase name="test_projected_peak_responds_to_timing_profile" classname="test_development_projection" time="0.046">
+		</testcase>
+		<testcase name="test_projection_is_deterministic" classname="test_development_projection" time="0.202">
+		</testcase>
+		<testcase name="test_projected_peak_width_stays_inside_its_guardrail" classname="test_development_projection" time="0.024">
+		</testcase>
+		<testcase name="test_a_filled_player_projects_no_further_growth" classname="test_development_projection" time="0.004">
+		</testcase>
+	</testsuite>
+	<testsuite id="2" name="test_projected_peak_model" package="tests/unit/basketball" timestamp="2026-09-15T02:23:50" hostname="localhost" tests="11" failures="0" errors="0" skipped="0" flaky="0" time="1.941">
+		<testcase name="test_interval_generation_is_deterministic" classname="test_projected_peak_model" time="0.308">
+		</testcase>
+		<testcase name="test_bounds_and_ordering_hold_at_extremes" classname="test_projected_peak_model" time="1.064">
+		</testcase>
+		<testcase name="test_projection_ignores_identity_and_career_state" classname="test_projected_peak_model" time="0.084">
+		</testcase>
+		<testcase name="test_risk_profile_changes_the_interval_width" classname="test_projected_peak_model" time="0.090">
+		</testcase>
+		<testcase name="test_more_uncertainty_never_narrows_the_interval" classname="test_projected_peak_model" time="0.133">
+		</testcase>
+		<testcase name="test_binding_caps_narrow_the_interval_without_a_rule" classname="test_projected_peak_model" time="0.033">
+		</testcase>
+		<testcase name="test_reachable_growth_respects_caps_under_any_opportunity" classname="test_projected_peak_model" time="0.074">
+		</testcase>
+		<testcase name="test_opportunity_shares_move_the_projection" classname="test_projected_peak_model" time="0.044">
+		</testcase>
+		<testcase name="test_horizon_and_age_reduce_expected_opportunity" classname="test_projected_peak_model" time="0.004">
+		</testcase>
+		<testcase name="test_regression_against_the_previous_pessimistic_model" classname="test_projected_peak_model" time="0.003">
+		</testcase>
+		<testcase name="test_minimum_width_holds_where_the_legal_interval_permits_it" classname="test_projected_peak_model" time="0.067">
+		</testcase>
+	</testsuite>
+	<testsuite id="3" name="test_player_model" package="tests/unit/basketball" timestamp="2026-09-15T02:23:52" hostname="localhost" tests="15" failures="0" errors="0" skipped="0" flaky="0" time="0.092">
+		<testcase name="test_all_twenty_attributes_exist_exactly_once" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_attribute_ids_are_stable" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_attribute_serialization_is_stable" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_rating_domain_is_enforced" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_a_sub_active_rating_is_rejected" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_cap_domain_is_enforced" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_caps_are_immutable" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_body_profile_carries_standing_reach" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_standing_reach_never_falls_as_height_or_wingspan_rises" classname="test_player_model" time="0.011">
+		</testcase>
+		<testcase name="test_standing_reach_rises_across_a_growth_span" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_migration_preserves_hidden_fractional_progress" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_migration_has_no_side_effects_on_caps_or_currency" classname="test_player_model" time="0.004">
+		</testcase>
+		<testcase name="test_migration_derives_standing_reach_only_when_missing" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_migration_reports_every_conversion" classname="test_player_model" time="0.003">
+		</testcase>
+		<testcase name="test_receipts_decline_duplicates_quietly" classname="test_player_model" time="0.003">
+		</testcase>
+	</testsuite>
+	<testsuite id="4" name="test_cap_selection_pressure" package="tests/unit/basketball" timestamp="2026-09-15T02:23:52" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="0.563">
+		<testcase name="test_a_pool_of_one_is_bit_identical_to_no_selection" classname="test_cap_selection_pressure" time="0.018">
+		</testcase>
+		<testcase name="test_selection_is_deterministic_from_the_seed" classname="test_cap_selection_pressure" time="0.017">
+		</testcase>
+		<testcase name="test_a_larger_pool_raises_the_population_ceiling" classname="test_cap_selection_pressure" time="0.074">
+		</testcase>
+		<testcase name="test_selection_never_exceeds_the_profile_ceiling_maximum" classname="test_cap_selection_pressure" time="0.248">
+		</testcase>
+		<testcase name="test_every_selected_ceiling_was_already_reachable" classname="test_cap_selection_pressure" time="0.170">
+		</testcase>
+		<testcase name="test_selection_preserves_attribute_shape" classname="test_cap_selection_pressure" time="0.017">
+		</testcase>
+	</testsuite>
+	<testsuite id="5" name="test_guardrail_exception" package="tests/unit/basketball" timestamp="2026-09-15T02:23:53" hostname="localhost" tests="17" failures="0" errors="0" skipped="0" flaky="0" time="3.617">
+		<testcase name="test_the_permitted_share_is_twenty_percent" classname="test_guardrail_exception" time="0.004">
+		</testcase>
+		<testcase name="test_an_excess_inside_the_permitted_share_is_allowed" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_an_excess_exactly_at_the_permitted_share_is_allowed" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_an_excess_beyond_the_permitted_share_is_a_violation" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_a_career_without_the_condition_may_not_exceed_at_all" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_a_career_without_the_condition_inside_its_guardrails_is_fine" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_the_condition_is_persistent_and_survives_duplication" classname="test_guardrail_exception" time="0.011">
+		</testcase>
+		<testcase name="test_the_condition_is_part_of_the_invariant_signature" classname="test_guardrail_exception" time="0.019">
+		</testcase>
+		<testcase name="test_an_unexplained_season_is_a_violation_inside_the_share" classname="test_guardrail_exception" time="0.012">
+		</testcase>
+		<testcase name="test_an_unexplained_season_is_a_violation_without_any_excess" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_the_exception_changes_no_attribute_point_cost" classname="test_guardrail_exception" time="0.016">
+		</testcase>
+		<testcase name="test_the_exception_does_not_lift_the_game_development_cap" classname="test_guardrail_exception" time="0.010">
+		</testcase>
+		<testcase name="test_the_population_shares_are_unchanged" classname="test_guardrail_exception" time="0.004">
+		</testcase>
+		<testcase name="test_only_the_generational_path_carries_the_condition" classname="test_guardrail_exception" time="0.369">
+		</testcase>
+		<testcase name="test_no_career_violates_the_ruling" classname="test_guardrail_exception" time="2.205">
+		</testcase>
+		<testcase name="test_the_generational_cohort_actually_uses_the_exception" classname="test_guardrail_exception" time="0.768">
+		</testcase>
+		<testcase name="test_the_exception_does_not_silence_the_seasonal_warning" classname="test_guardrail_exception" time="0.092">
+		</testcase>
+	</testsuite>
+	<testsuite id="6" name="test_player_attributes" package="tests/unit/basketball" timestamp="2026-09-15T02:23:56" hostname="localhost" tests="2" failures="0" errors="0" skipped="0" flaky="0" time="0.017">
+		<testcase name="test_canonical_model_has_exactly_twenty_attributes" classname="test_player_attributes" time="0.004">
+		</testcase>
+		<testcase name="test_default_active_ratings_are_in_domain" classname="test_player_attributes" time="0.004">
+		</testcase>
+	</testsuite>
+	<testsuite id="7" name="test_overall_calculator" package="tests/unit/basketball" timestamp="2026-09-15T02:23:56" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="0.046">
+		<testcase name="test_empty_preview_reproduces_the_documented_derivation" classname="test_overall_calculator" time="0.004">
+		</testcase>
+		<testcase name="test_overall_is_monotonic_in_every_attribute" classname="test_overall_calculator" time="0.006">
+		</testcase>
+		<testcase name="test_scale_is_preserved_at_uniform_ratings" classname="test_overall_calculator" time="0.004">
+		</testcase>
+		<testcase name="test_no_non_rating_state_changes_current_overall" classname="test_overall_calculator" time="0.004">
+		</testcase>
+		<testcase name="test_maximum_potential_is_never_below_current_overall" classname="test_overall_calculator" time="0.005">
+		</testcase>
+		<testcase name="test_user_and_npc_use_the_same_function" classname="test_overall_calculator" time="0.006">
+		</testcase>
+	</testsuite>
+	<testsuite id="8" name="test_generational_progression" package="tests/unit/basketball" timestamp="2026-09-15T02:23:57" hostname="localhost" tests="29" failures="0" errors="0" skipped="0" flaky="0" time="40.816">
+		<testcase name="test_game_development_stops_at_the_seasonal_cap" classname="test_generational_progression" time="0.010">
+		</testcase>
+		<testcase name="test_the_game_cap_is_a_seasonal_pool_not_a_per_grant_limit" classname="test_generational_progression" time="0.011">
+		</testcase>
+		<testcase name="test_the_game_cap_follows_the_phase_and_resets_each_career_year" classname="test_generational_progression" time="0.010">
+		</testcase>
+		<testcase name="test_no_career_season_exceeds_the_game_development_cap" classname="test_generational_progression" time="3.983">
+		</testcase>
+		<testcase name="test_an_ordinary_season_raises_no_guardrail_warning" classname="test_generational_progression" time="0.012">
+		</testcase>
+		<testcase name="test_an_exceptional_season_warns_and_carries_its_explanation" classname="test_generational_progression" time="0.011">
+		</testcase>
+		<testcase name="test_the_offseason_note_alone_does_not_explain_an_exceptional_season" classname="test_generational_progression" time="0.013">
+		</testcase>
+		<testcase name="test_an_unnamed_grant_cannot_explain_an_exceptional_season" classname="test_generational_progression" time="0.012">
+		</testcase>
+		<testcase name="test_every_exceptional_season_in_the_cohort_is_explained" classname="test_generational_progression" time="0.006">
+		</testcase>
+		<testcase name="test_the_seasonal_total_matches_a_full_ledger_scan" classname="test_generational_progression" time="0.011">
+		</testcase>
+		<testcase name="test_spending_and_decline_do_not_reduce_the_seasonal_total" classname="test_generational_progression" time="0.012">
+		</testcase>
+		<testcase name="test_the_at_cap_conversion_is_not_seasonal_availability" classname="test_generational_progression" time="0.012">
+		</testcase>
+		<testcase name="test_the_seasonal_index_survives_ledger_duplication" classname="test_generational_progression" time="0.012">
+		</testcase>
+		<testcase name="test_every_rating_point_is_reconstructible_from_the_ledger" classname="test_generational_progression" time="0.060">
+		</testcase>
+		<testcase name="test_annual_opportunity_resolves_once_per_career_year" classname="test_generational_progression" time="0.036">
+		</testcase>
+		<testcase name="test_the_generational_uplift_carries_ledger_provenance" classname="test_generational_progression" time="0.163">
+		</testcase>
+		<testcase name="test_the_outcome_label_grants_ratings_through_no_other_channel" classname="test_generational_progression" time="0.051">
+		</testcase>
+		<testcase name="test_the_wallet_reconciles_with_the_ledger" classname="test_generational_progression" time="0.027">
+		</testcase>
+		<testcase name="test_the_generational_cohort_never_exceeds_a_cap" classname="test_generational_progression" time="0.014">
+		</testcase>
+		<testcase name="test_the_generational_cohort_reaches_its_locked_band" classname="test_generational_progression" time="0.005">
+		</testcase>
+		<testcase name="test_the_generational_cohort_does_not_reach_ninety_six" classname="test_generational_progression" time="0.005">
+		</testcase>
+		<testcase name="test_the_adjacent_cohorts_stay_inside_their_own_bands" classname="test_generational_progression" time="6.037">
+		</testcase>
+		<testcase name="test_no_ordinary_career_reaches_the_generational_band" classname="test_generational_progression" time="0.010">
+		</testcase>
+		<testcase name="test_every_executor_produces_the_same_generational_career" classname="test_generational_progression" time="1.134">
+		</testcase>
+		<testcase name="test_the_forced_path_override_reproduces_the_natural_career" classname="test_generational_progression" time="27.311">
+		</testcase>
+		<testcase name="test_the_corrected_cohort_is_deterministic" classname="test_generational_progression" time="0.789">
+		</testcase>
+		<testcase name="test_the_outcome_label_never_reaches_the_projected_peak" classname="test_generational_progression" time="0.939">
+		</testcase>
+		<testcase name="test_a_spend_stops_at_the_cap_even_when_asked_to_pass_it" classname="test_generational_progression" time="0.017">
+		</testcase>
+		<testcase name="test_no_exceptional_career_reaches_the_generational_band" classname="test_generational_progression" time="0.009">
+		</testcase>
+	</testsuite>
+	<testsuite id="9" name="test_family_weight_contract" package="tests/unit/basketball" timestamp="2026-09-15T02:24:37" hostname="localhost" tests="30" failures="0" errors="0" skipped="0" flaky="0" time="0.484">
+		<testcase name="test_every_declared_attribute_receives_its_declared_tier_weight" classname="test_family_weight_contract" time="0.013">
+		</testcase>
+		<testcase name="test_the_three_tiers_are_strictly_ordered" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_no_undeclared_attribute_receives_a_family_specific_weight" classname="test_family_weight_contract" time="0.011">
+		</testcase>
+		<testcase name="test_the_number_of_emphasized_attributes_matches_the_declaration" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_the_top_weighted_attributes_are_exactly_the_declared_primaries" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_the_weight_total_is_exactly_what_the_declaration_implies" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_every_family_produces_one_positive_weight_per_canonical_attribute" classname="test_family_weight_contract" time="0.012">
+		</testcase>
+		<testcase name="test_each_canonical_index_maps_its_own_emphasis_to_its_own_weight" classname="test_family_weight_contract" time="0.011">
+		</testcase>
+		<testcase name="test_a_single_emphasized_attribute_moves_only_its_own_weight" classname="test_family_weight_contract" time="0.015">
+		</testcase>
+		<testcase name="test_an_emphasis_level_is_never_read_as_an_attribute_index" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_declaration_order_does_not_change_semantic_ownership" classname="test_family_weight_contract" time="0.012">
+		</testcase>
+		<testcase name="test_dictionary_insertion_order_does_not_change_the_output" classname="test_family_weight_contract" time="0.011">
+		</testcase>
+		<testcase name="test_the_committed_family_catalog_is_well_formed" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_a_duplicate_family_declaration_fails_loudly" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_an_unknown_attribute_key_fails_loudly" classname="test_family_weight_contract" time="0.011">
+		</testcase>
+		<testcase name="test_an_undeclared_coverage_gap_fails_loudly" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_a_neutral_declaration_that_contradicts_the_catalog_fails_loudly" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_an_emphasis_level_with_no_defined_weight_fails_loudly" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_a_wrongly_sized_emphasis_vector_fails_loudly" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_an_unknown_family_fails_loudly" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_the_weight_vector_is_a_pure_function_of_the_family" classname="test_family_weight_contract" time="0.008">
+		</testcase>
+		<testcase name="test_the_same_seed_and_family_reproduce_the_builder_exactly" classname="test_family_weight_contract" time="0.049">
+		</testcase>
+		<testcase name="test_families_that_declare_differently_weight_and_build_differently" classname="test_family_weight_contract" time="0.008">
+		</testcase>
+		<testcase name="test_a_families_primaries_outrank_the_same_attributes_elsewhere" classname="test_family_weight_contract" time="0.031">
+		</testcase>
+		<testcase name="test_no_family_collapses_onto_the_old_universal_trio" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_the_guard_emphasizes_none_of_the_defect_trio" classname="test_family_weight_contract" time="0.009">
+		</testcase>
+		<testcase name="test_every_canonical_attribute_is_emphasized_or_declared_neutral" classname="test_family_weight_contract" time="0.010">
+		</testcase>
+		<testcase name="test_the_declared_neutral_set_is_exactly_the_documented_three" classname="test_family_weight_contract" time="0.008">
+		</testcase>
+		<testcase name="test_the_repair_introduces_no_competition_specific_behaviour" classname="test_family_weight_contract" time="0.011">
+		</testcase>
+		<testcase name="test_weighted_allocation_stays_legal_for_every_family" classname="test_family_weight_contract" time="0.033">
+		</testcase>
+	</testsuite>
+	<testsuite id="10" name="test_layered_identity" package="tests/unit/basketball" timestamp="2026-09-15T02:24:38" hostname="localhost" tests="11" failures="0" errors="0" skipped="0" flaky="0" time="0.163">
+		<testcase name="test_rotation_roles_are_the_seven_locked_ids" classname="test_layered_identity" time="0.013">
+		</testcase>
+		<testcase name="test_tactical_roles_are_the_eleven_locked_ids" classname="test_layered_identity" time="0.013">
+		</testcase>
+		<testcase name="test_the_legacy_balanced_role_is_gone" classname="test_layered_identity" time="0.010">
+		</testcase>
+		<testcase name="test_migration_does_not_turn_a_dnp_into_a_demotion" classname="test_layered_identity" time="0.011">
+		</testcase>
+		<testcase name="test_archetype_classification_is_side_effect_free" classname="test_layered_identity" time="0.012">
+		</testcase>
+		<testcase name="test_archetype_has_no_memory" classname="test_layered_identity" time="0.011">
+		</testcase>
+		<testcase name="test_hybrid_builds_receive_composite_descriptors" classname="test_layered_identity" time="0.008">
+		</testcase>
+		<testcase name="test_archetype_grants_nothing" classname="test_layered_identity" time="0.010">
+		</testcase>
+		<testcase name="test_no_gameplay_balance_profile_contains_archetype_data" classname="test_layered_identity" time="0.014">
+		</testcase>
+		<testcase name="test_a_player_carries_exactly_one_tactical_role" classname="test_layered_identity" time="0.012">
+		</testcase>
+		<testcase name="test_archetype_is_not_a_match_profile_field" classname="test_layered_identity" time="0.009">
+		</testcase>
+	</testsuite>
+	<testsuite id="11" name="test_builder" package="tests/unit/basketball" timestamp="2026-09-15T02:24:38" hostname="localhost" tests="19" failures="0" errors="0" skipped="0" flaky="0" time="0.942">
+		<testcase name="test_balance_profiles_validate" classname="test_builder" time="0.014">
+		</testcase>
+		<testcase name="test_confirmation_is_blocked_while_creation_ap_remains" classname="test_builder" time="0.018">
+		</testcase>
+		<testcase name="test_creation_ap_cannot_carry_into_the_career" classname="test_builder" time="0.018">
+		</testcase>
+		<testcase name="test_the_career_ledger_rejects_creation_sourced_grants" classname="test_builder" time="0.011">
+		</testcase>
+		<testcase name="test_allocation_spend_reconciles_with_the_cost_table" classname="test_builder" time="0.017">
+		</testcase>
+		<testcase name="test_cost_table_reproduces_the_documented_examples" classname="test_builder" time="0.012">
+		</testcase>
+		<testcase name="test_the_absolute_starting_maximum_is_enforced" classname="test_builder" time="0.010">
+		</testcase>
+		<testcase name="test_allocation_never_exceeds_an_exact_cap" classname="test_builder" time="0.018">
+		</testcase>
+		<testcase name="test_cap_generation_is_deterministic" classname="test_builder" time="0.015">
+		</testcase>
+		<testcase name="test_caps_stay_inside_their_domain" classname="test_builder" time="0.053">
+		</testcase>
+		<testcase name="test_body_redistribution_stays_inside_its_bounds" classname="test_builder" time="0.062">
+		</testcase>
+		<testcase name="test_confirmation_view_reports_every_required_value" classname="test_builder" time="0.038">
+		</testcase>
+		<testcase name="test_projected_adult_range_is_bounded_and_forward_looking" classname="test_builder" time="0.009">
+		</testcase>
+		<testcase name="test_the_empty_preview_is_not_a_completed_build" classname="test_builder" time="0.036">
+		</testcase>
+		<testcase name="test_reset_restores_the_full_budget" classname="test_builder" time="0.016">
+		</testcase>
+		<testcase name="test_randomization_is_deterministic_and_confirmable" classname="test_builder" time="0.034">
+		</testcase>
+		<testcase name="test_prospect_profiles_receive_distinct_budgets" classname="test_builder" time="0.015">
+		</testcase>
+		<testcase name="test_completed_builds_land_in_their_locked_bands" classname="test_builder" time="0.238">
+		</testcase>
+		<testcase name="test_no_ordinary_completed_build_exceeds_the_ceiling" classname="test_builder" time="0.233">
+		</testcase>
+	</testsuite>
+	<testsuite id="12" name="test_simulation_balance" package="tests/unit/basketball" timestamp="2026-09-15T02:24:39" hostname="localhost" tests="10" failures="0" errors="0" skipped="0" flaky="0" time="0.191">
+		<testcase name="test_every_simulation_tunable_is_named_and_inside_its_safe_range" classname="test_simulation_balance" time="0.030">
+		</testcase>
+		<testcase name="test_the_profile_carries_an_identity_and_version" classname="test_simulation_balance" time="0.010">
+		</testcase>
+		<testcase name="test_shot_baselines_are_monotonic_in_the_rating" classname="test_simulation_balance" time="0.011">
+		</testcase>
+		<testcase name="test_shot_floors_and_ceilings_bound_every_family" classname="test_simulation_balance" time="0.010">
+		</testcase>
+		<testcase name="test_opposed_curves_respond_within_the_required_band" classname="test_simulation_balance" time="0.015">
+		</testcase>
+		<testcase name="test_tendency_multipliers_are_centred_and_reciprocal" classname="test_simulation_balance" time="0.022">
+		</testcase>
+		<testcase name="test_candidate_weights_are_clamped_to_their_band" classname="test_simulation_balance" time="0.017">
+		</testcase>
+		<testcase name="test_capability_weight_table_is_complete_and_bounded" classname="test_simulation_balance" time="0.011">
+		</testcase>
+		<testcase name="test_role_opportunity_stays_inside_its_bounds" classname="test_simulation_balance" time="0.009">
+		</testcase>
+		<testcase name="test_rule_profiles_model_their_bonus_structures" classname="test_simulation_balance" time="0.010">
+		</testcase>
+	</testsuite>
+	<testsuite id="13" name="test_development_contract" package="tests/unit/basketball" timestamp="2026-09-15T02:24:39" hostname="localhost" tests="15" failures="0" errors="0" skipped="0" flaky="0" time="0.578">
+		<testcase name="test_user_and_npc_pay_the_same_costs" classname="test_development_contract" time="0.034">
+		</testcase>
+		<testcase name="test_the_allocator_cannot_spend_currency_it_was_not_granted" classname="test_development_contract" time="0.025">
+		</testcase>
+		<testcase name="test_the_allocator_never_exceeds_a_cap" classname="test_development_contract" time="0.082">
+		</testcase>
+		<testcase name="test_every_ledger_entry_names_its_source_and_executor" classname="test_development_contract" time="0.026">
+		</testcase>
+		<testcase name="test_detail_promotion_is_invariant" classname="test_development_contract" time="0.116">
+		</testcase>
+		<testcase name="test_the_aggregate_executor_respects_caps_costs_and_the_ledger" classname="test_development_contract" time="0.035">
+		</testcase>
+		<testcase name="test_aggregate_and_full_detail_spend_comparably" classname="test_development_contract" time="0.040">
+		</testcase>
+		<testcase name="test_receipts_prevent_duplicate_annual_development" classname="test_development_contract" time="0.023">
+		</testcase>
+		<testcase name="test_receipts_are_shared_across_executors" classname="test_development_contract" time="0.020">
+		</testcase>
+		<testcase name="test_age_advances_once_per_career_year" classname="test_development_contract" time="0.017">
+		</testcase>
+		<testcase name="test_natural_annual_resolution_runs_once" classname="test_development_contract" time="0.022">
+		</testcase>
+		<testcase name="test_a_cap_reduction_never_lowers_the_current_rating" classname="test_development_contract" time="0.017">
+		</testcase>
+		<testcase name="test_direct_progress_resolves_points_and_carries_surplus" classname="test_development_contract" time="0.020">
+		</testcase>
+		<testcase name="test_direct_progress_respects_the_cost_band_boundary" classname="test_development_contract" time="0.019">
+		</testcase>
+		<testcase name="test_direct_progress_converts_at_cap" classname="test_development_contract" time="0.018">
+		</testcase>
+	</testsuite>
+	<testsuite id="14" name="test_overall_exclusion" package="tests/unit/basketball" timestamp="2026-09-15T02:24:40" hostname="localhost" tests="4" failures="0" errors="0" skipped="0" flaky="0" time="0.078">
+		<testcase name="test_no_resolution_path_reads_a_development_projection" classname="test_overall_exclusion" time="0.023">
+		</testcase>
+		<testcase name="test_the_match_profile_carries_no_development_value" classname="test_overall_exclusion" time="0.012">
+		</testcase>
+		<testcase name="test_no_persisted_state_stores_a_development_value" classname="test_overall_exclusion" time="0.012">
+		</testcase>
+		<testcase name="test_no_capability_reads_an_identity_layer" classname="test_overall_exclusion" time="0.012">
+		</testcase>
+	</testsuite>
+	<testsuite id="15" name="test_ap_accounting" package="tests/unit/basketball" timestamp="2026-09-15T02:24:40" hostname="localhost" tests="13" failures="0" errors="0" skipped="0" flaky="0" time="2.477">
+		<testcase name="test_equal_rating_gains_cost_more_at_higher_destinations" classname="test_ap_accounting" time="0.032">
+		</testcase>
+		<testcase name="test_reported_ap_spent_equals_the_cost_table_for_those_destinations" classname="test_ap_accounting" time="0.021">
+		</testcase>
+		<testcase name="test_reported_ap_spent_equals_the_ledgers_own_debits" classname="test_ap_accounting" time="0.043">
+		</testcase>
+		<testcase name="test_the_spend_total_survives_ledger_duplication" classname="test_ap_accounting" time="0.024">
+		</testcase>
+		<testcase name="test_decline_is_not_counted_as_attribute_spending" classname="test_ap_accounting" time="0.023">
+		</testcase>
+		<testcase name="test_unrealized_opportunity_is_not_counted_as_attribute_spending" classname="test_ap_accounting" time="0.019">
+		</testcase>
+		<testcase name="test_granted_minus_spent_minus_other_debits_equals_the_balance" classname="test_ap_accounting" time="0.035">
+		</testcase>
+		<testcase name="test_a_career_reports_ap_spent_and_rating_points_separately" classname="test_ap_accounting" time="0.116">
+		</testcase>
+		<testcase name="test_every_outcome_path_reconciles_its_ledger" classname="test_ap_accounting" time="1.193">
+		</testcase>
+		<testcase name="test_realized_and_ledger_grants_differ_when_opportunity_is_unrealized" classname="test_ap_accounting" time="0.063">
+		</testcase>
+		<testcase name="test_every_executor_reports_the_same_ap_accounting" classname="test_ap_accounting" time="0.830">
+		</testcase>
+		<testcase name="test_the_corrected_ap_means_pool_exactly_across_shards" classname="test_ap_accounting" time="0.009">
+		</testcase>
+		<testcase name="test_a_reconciliation_failure_survives_shard_pooling" classname="test_ap_accounting" time="0.010">
+		</testcase>
+	</testsuite>
+	<testsuite id="16" name="test_parse_gate" package="tests/unit/tools" timestamp="2026-09-15T02:24:42" hostname="localhost" tests="7" failures="0" errors="0" skipped="0" flaky="0" time="17.705">
+		<testcase name="test_a_malformed_script_makes_the_gate_exit_nonzero" classname="test_parse_gate" time="9.087">
+		</testcase>
+		<testcase name="test_the_reported_count_agrees_with_the_exit_status" classname="test_parse_gate" time="0.011">
+		</testcase>
+		<testcase name="test_removing_the_fixture_returns_the_gate_to_a_pass" classname="test_parse_gate" time="8.540">
+		</testcase>
+		<testcase name="test_the_gate_verifies_its_own_detector_before_walking" classname="test_parse_gate" time="0.010">
+		</testcase>
+		<testcase name="test_a_valid_script_is_not_reported" classname="test_parse_gate" time="0.010">
+		</testcase>
+		<testcase name="test_every_configured_root_exists_and_contains_scripts" classname="test_parse_gate" time="0.010">
+		</testcase>
+		<testcase name="test_the_calibration_root_is_covered" classname="test_parse_gate" time="0.009">
+		</testcase>
+	</testsuite>
+	<testsuite id="17" name="test_seeded_random_source" package="tests/unit/shared" timestamp="2026-09-15T02:25:00" hostname="localhost" tests="2" failures="0" errors="0" skipped="0" flaky="0" time="0.031">
+		<testcase name="test_same_seed_reproduces_draws" classname="test_seeded_random_source" time="0.010">
+		</testcase>
+		<testcase name="test_child_stream_is_independent_of_parent_consumption" classname="test_seeded_random_source" time="0.009">
+		</testcase>
+	</testsuite>
+	<testsuite id="18" name="test_home_environment" package="tests/simulation" timestamp="2026-09-15T02:25:00" hostname="localhost" tests="22" failures="1" errors="0" skipped="0" flaky="0" time="184.073">
+		<testcase name="test_a_neutral_court_applies_no_home_effect" classname="test_home_environment" time="0.014">
+		</testcase>
+		<testcase name="test_a_missing_home_context_uses_the_documented_default" classname="test_home_environment" time="0.013">
+		</testcase>
+		<testcase name="test_swapping_the_venue_swaps_the_advantage" classname="test_home_environment" time="184.005">
+			<failure message="FAILED: res://tests/simulation/test_home_environment.gd:103" type="FAILURE">
+<![CDATA[
+the home side did not hold a turnover edge
+	at 'test_swapping_the_venue_swaps_the_advantage' in res://tests/simulation/test_home_environment.gd:103
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="19" name="test_passing_and_defense" package="tests/simulation" timestamp="2026-09-15T02:28:04" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="1.442">
+		<testcase name="test_assists_qualify_against_a_made_basket_by_a_team_mate" classname="test_passing_and_defense" time="0.330">
+		</testcase>
+		<testcase name="test_assists_never_exceed_made_field_goals" classname="test_passing_and_defense" time="1.031">
+		</testcase>
+		<testcase name="test_assisted_state_is_recorded_on_every_made_basket" classname="test_passing_and_defense" time="0.011">
+		</testcase>
+		<testcase name="test_steals_are_credited_only_for_defender_caused_turnovers" classname="test_passing_and_defense" time="0.015">
+		</testcase>
+		<testcase name="test_unforced_turnovers_credit_no_steal" classname="test_passing_and_defense" time="0.013">
+		</testcase>
+		<testcase name="test_blocks_accompany_a_missed_attempt_by_a_defender" classname="test_passing_and_defense" time="0.014">
+		</testcase>
+	</testsuite>
+	<testsuite id="20" name="test_rebounding" package="tests/simulation" timestamp="2026-09-15T02:28:06" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="0.770">
+		<testcase name="test_every_reboundable_miss_produces_one_rebound" classname="test_rebounding" time="0.029">
+		</testcase>
+		<testcase name="test_offensive_and_defensive_rebounds_are_both_attributed" classname="test_rebounding" time="0.014">
+		</testcase>
+		<testcase name="test_offensive_rebound_percentage_uses_the_required_denominator" classname="test_rebounding" time="0.010">
+		</testcase>
+		<testcase name="test_offensive_rebounds_produce_putbacks" classname="test_rebounding" time="0.017">
+		</testcase>
+		<testcase name="test_second_chance_points_are_recorded" classname="test_rebounding" time="0.010">
+		</testcase>
+		<testcase name="test_defensive_rebounding_rating_changes_the_defensive_glass" classname="test_rebounding" time="0.660">
+		</testcase>
+	</testsuite>
+	<testsuite id="21" name="test_free_throw_stopped_clock" package="tests/simulation" timestamp="2026-09-15T02:28:06" hostname="localhost" tests="4" failures="0" errors="0" skipped="0" flaky="0" time="4.235">
+		<testcase name="test_all_profiles_preserve_both_clocks_and_playing_time_during_attempts" classname="test_free_throw_stopped_clock" time="4.077">
+		</testcase>
+		<testcase name="test_awarded_one_two_and_three_shot_trips_preserve_the_whistle_clock" classname="test_free_throw_stopped_clock" time="0.040">
+		</testcase>
+		<testcase name="test_one_and_one_earns_second_attempt_only_after_first_make" classname="test_free_throw_stopped_clock" time="0.074">
+		</testcase>
+		<testcase name="test_intentional_miss_keeps_time_then_live_rebound_consumes_it" classname="test_free_throw_stopped_clock" time="0.018">
+		</testcase>
+	</testsuite>
+	<testsuite id="22" name="test_overtime_trigger" package="tests/simulation" timestamp="2026-09-15T02:28:11" hostname="localhost" tests="13" failures="0" errors="0" skipped="0" flaky="0" time="52.843">
+		<testcase name="test_only_a_level_score_leaves_regulation_incomplete" classname="test_overtime_trigger" time="0.025">
+		</testcase>
+		<testcase name="test_a_running_clock_never_completes_a_match" classname="test_overtime_trigger" time="0.017">
+		</testcase>
+		<testcase name="test_a_level_score_before_the_final_period_is_not_overtime" classname="test_overtime_trigger" time="0.021">
+		</testcase>
+		<testcase name="test_no_competition_profile_can_bypass_or_shorten_away_overtime" classname="test_overtime_trigger" time="0.018">
+		</testcase>
+		<testcase name="test_the_overtime_counter_is_the_period_number_past_regulation" classname="test_overtime_trigger" time="0.017">
+		</testcase>
+		<testcase name="test_every_replayed_regulation_tie_entered_overtime_and_no_other_game_did" classname="test_overtime_trigger" time="13.628">
+		</testcase>
+		<testcase name="test_a_level_overtime_opens_another_one" classname="test_overtime_trigger" time="10.112">
+		</testcase>
+		<testcase name="test_no_score_is_committed_after_the_horn_and_none_before_it_is_lost" classname="test_overtime_trigger" time="0.557">
+		</testcase>
+		<testcase name="test_an_expired_possession_ends_at_exactly_zero" classname="test_overtime_trigger" time="0.466">
+		</testcase>
+		<testcase name="test_a_free_throw_trip_drawn_before_the_horn_is_shot_in_full" classname="test_overtime_trigger" time="0.436">
+		</testcase>
+		<testcase name="test_a_missed_final_free_throw_is_rebounded_or_expires" classname="test_overtime_trigger" time="0.476">
+		</testcase>
+		<testcase name="test_the_final_regulation_score_is_committed_before_the_period_ends" classname="test_overtime_trigger" time="13.176">
+		</testcase>
+		<testcase name="test_play_sim_and_skip_agree_about_regulation_ties" classname="test_overtime_trigger" time="13.812">
+		</testcase>
+	</testsuite>
+	<testsuite id="23" name="test_game_management" package="tests/simulation" timestamp="2026-09-15T02:29:03" hostname="localhost" tests="16" failures="8" errors="0" skipped="0" flaky="0" time="98.381">
+		<testcase name="test_pressure_is_zero_through_ordinary_basketball" classname="test_game_management" time="0.021">
+		</testcase>
+		<testcase name="test_pressure_reaches_its_ceiling_when_the_clock_runs_out" classname="test_game_management" time="0.016">
+		</testcase>
+		<testcase name="test_a_large_early_margin_is_not_an_endgame" classname="test_game_management" time="0.012">
+		</testcase>
+		<testcase name="test_both_teams_share_one_pressure" classname="test_game_management" time="0.015">
+		</testcase>
+		<testcase name="test_the_policy_mirrors_when_the_scoreboard_is_reversed" classname="test_game_management" time="0.013">
+		</testcase>
+		<testcase name="test_the_policy_cannot_read_strength_or_an_intended_winner" classname="test_game_management" time="0.012">
+		</testcase>
+		<testcase name="test_pace_control_is_bounded" classname="test_game_management" time="0.013">
+		</testcase>
+		<testcase name="test_the_chasing_strategy_changes_selection_and_stays_inside_its_guardrail" classname="test_game_management" time="0.013">
+		</testcase>
+		<testcase name="test_the_score_grants_no_shot_probability" classname="test_game_management" time="0.013">
+		</testcase>
+		<testcase name="test_the_free_throw_pressure_term_is_symmetric" classname="test_game_management" time="0.011">
+		</testcase>
+		<testcase name="test_the_endgame_rule_seeks_the_tying_shot_value" classname="test_game_management" time="0.013">
+		</testcase>
+		<testcase name="test_the_endgame_rule_applies_only_to_a_levelling_deficit" classname="test_game_management" time="0.012">
+		</testcase>
+		<testcase name="test_every_competition_grants_a_bounded_timeout_allowance" classname="test_game_management" time="0.011">
+		</testcase>
+		<testcase name="test_timeouts_are_spent_and_never_replenished" classname="test_game_management" time="3.618">
+		</testcase>
+		<testcase name="test_timeouts_trigger_only_under_valid_conditions" classname="test_game_management" time="94.514">
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:409" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:409
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:409" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:409
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:404" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:404
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:404" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:404
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:404" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:404
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:409" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:409
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:404" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:404
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/simulation/test_game_management.gd:409" type="FAILURE">
+<![CDATA[
+Expecting to be less than or equal:
+ 4 but was 5
+	at 'test_timeouts_trigger_only_under_valid_conditions' in res://tests/simulation/test_game_management.gd:409
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="24" name="test_assist_attribution" package="tests/simulation" timestamp="2026-09-15T02:30:42" hostname="localhost" tests="22" failures="0" errors="0" skipped="0" flaky="0" time="17.536">
+		<testcase name="test_every_made_field_goal_is_classified_exactly_once" classname="test_assist_attribution" time="0.026">
+		</testcase>
+		<testcase name="test_every_assist_is_explained_by_a_recorded_creation_event" classname="test_assist_attribution" time="0.026">
+		</testcase>
+		<testcase name="test_a_missed_shot_produces_no_assist" classname="test_assist_attribution" time="0.019">
+		</testcase>
+		<testcase name="test_free_throws_produce_no_assists" classname="test_assist_attribution" time="0.016">
+		</testcase>
+		<testcase name="test_a_self_created_shot_is_unassisted" classname="test_assist_attribution" time="0.011">
+		</testcase>
+		<testcase name="test_a_catch_and_shoot_preserves_and_credits_its_creator" classname="test_assist_attribution" time="0.012">
+		</testcase>
+		<testcase name="test_a_delivery_only_creates_for_the_man_it_reached" classname="test_assist_attribution" time="0.013">
+		</testcase>
+		<testcase name="test_a_turnover_and_a_possession_change_clear_creation_context" classname="test_assist_attribution" time="0.016">
+		</testcase>
+		<testcase name="test_no_credited_assist_crosses_an_invalidating_event" classname="test_assist_attribution" time="0.022">
+		</testcase>
+		<testcase name="test_a_delivery_creates_at_most_one_attempt" classname="test_assist_attribution" time="5.644">
+		</testcase>
+		<testcase name="test_a_later_pass_replaces_the_previous_creator" classname="test_assist_attribution" time="0.013">
+		</testcase>
+		<testcase name="test_a_putback_never_inherits_a_pre_rebound_creator" classname="test_assist_attribution" time="0.014">
+		</testcase>
+		<testcase name="test_team_and_player_assists_reconcile" classname="test_assist_attribution" time="0.011">
+		</testcase>
+		<testcase name="test_the_reducer_counts_assisted_makes_from_the_ledger" classname="test_assist_attribution" time="0.014">
+		</testcase>
+		<testcase name="test_the_attempt_records_the_creation_state_before_the_shot_resolves" classname="test_assist_attribution" time="0.019">
+		</testcase>
+		<testcase name="test_every_completed_pass_records_the_contract_fields" classname="test_assist_attribution" time="0.019">
+		</testcase>
+		<testcase name="test_the_credited_assist_rule_comes_from_the_competition_profile" classname="test_assist_attribution" time="0.011">
+		</testcase>
+		<testcase name="test_identical_seeds_reproduce_identical_attribution" classname="test_assist_attribution" time="2.898">
+		</testcase>
+		<testcase name="test_no_target_or_aggregate_reaches_the_attribution_decision" classname="test_assist_attribution" time="0.641">
+		</testcase>
+		<testcase name="test_passing_drives_the_conditional_credit_rate_in_production" classname="test_assist_attribution" time="5.418">
+		</testcase>
+		<testcase name="test_play_sim_and_skip_agree_on_every_credited_assist" classname="test_assist_attribution" time="0.963">
+		</testcase>
+		<testcase name="test_game_stakes_do_not_reach_the_assist_chain" classname="test_assist_attribution" time="1.592">
+		</testcase>
+	</testsuite>
+	<testsuite id="25" name="test_game_stakes" package="tests/simulation" timestamp="2026-09-15T02:30:59" hostname="localhost" tests="22" failures="1" errors="0" skipped="0" flaky="0" time="76.607">
+		<testcase name="test_the_contract_is_exactly_three_ordered_tiers" classname="test_game_stakes" time="0.014">
+		</testcase>
+		<testcase name="test_a_match_built_without_stakes_is_a_regular_season_game" classname="test_game_stakes" time="0.020">
+		</testcase>
+		<testcase name="test_the_regular_tier_multiplies_every_effect_by_exactly_one" classname="test_game_stakes" time="0.010">
+		</testcase>
+		<testcase name="test_the_default_and_an_explicit_regular_tier_are_the_same_game" classname="test_game_stakes" time="1.741">
+		</testcase>
+		<testcase name="test_every_tier_reproduces_byte_for_byte_and_across_executors" classname="test_game_stakes" time="8.523">
+		</testcase>
+		<testcase name="test_the_four_authorized_thresholds_move_and_stay_bounded" classname="test_game_stakes" time="0.013">
+		</testcase>
+		<testcase name="test_no_step_can_push_a_factor_past_the_declared_maximum" classname="test_game_stakes" time="0.018">
+		</testcase>
+		<testcase name="test_higher_stakes_widen_and_sharpen_the_tie_seeking_window_only" classname="test_game_stakes" time="0.014">
+		</testcase>
+		<testcase name="test_the_same_shot_resolves_identically_at_every_tier" classname="test_game_stakes" time="0.012">
+		</testcase>
+		<testcase name="test_turnover_foul_and_rebound_resolution_are_identical_at_every_tier" classname="test_game_stakes" time="0.016">
+		</testcase>
+		<testcase name="test_the_endgame_window_changes_selection_and_never_resolution" classname="test_game_stakes" time="0.014">
+		</testcase>
+		<testcase name="test_no_rating_or_capability_moves_with_the_stakes" classname="test_game_stakes" time="0.029">
+		</testcase>
+		<testcase name="test_reversing_the_scoreboard_reverses_the_policy_at_every_tier" classname="test_game_stakes" time="0.021">
+		</testcase>
+		<testcase name="test_mirroring_home_and_away_mirrors_the_whole_game" classname="test_game_stakes" time="16.819">
+		</testcase>
+		<testcase name="test_strength_identity_and_the_expected_winner_do_not_reach_the_policy" classname="test_game_stakes" time="0.024">
+		</testcase>
+		<testcase name="test_high_stakes_settle_later_but_still_settle" classname="test_game_stakes" time="0.015">
+		</testcase>
+		<testcase name="test_the_settled_guards_survive_the_highest_tier" classname="test_game_stakes" time="0.011">
+		</testcase>
+		<testcase name="test_a_settled_championship_coach_is_released_when_the_lead_is_cut" classname="test_game_stakes" time="0.011">
+		</testcase>
+		<testcase name="test_championship_games_still_blow_out_and_still_reach_garbage_time" classname="test_game_stakes" time="22.638">
+		</testcase>
+		<testcase name="test_regular_season_games_still_reach_overtime" classname="test_game_stakes" time="26.530">
+			<failure message="FAILED: res://tests/simulation/test_game_stakes.gd:649" type="FAILURE">
+<![CDATA[
+no regular-season game in forty even fixtures reached overtime
+	at 'test_regular_season_games_still_reach_overtime' in res://tests/simulation/test_game_stakes.gd:649
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="26" name="test_opening_clock_contract" package="tests/simulation" timestamp="2026-09-15T02:32:16" hostname="localhost" tests="17" failures="0" errors="0" skipped="0" flaky="0" time="5.532">
+		<testcase name="test_a_dead_ball_possession_emits_inbound_without_reducing_the_game_clock" classname="test_opening_clock_contract" time="0.045">
+		</testcase>
+		<testcase name="test_the_game_clock_begins_consuming_only_after_the_inbound_touch" classname="test_opening_clock_contract" time="0.028">
+		</testcase>
+		<testcase name="test_an_ordinary_possession_still_consumes_advance_and_half_court_entry" classname="test_opening_clock_contract" time="0.031">
+		</testcase>
+		<testcase name="test_a_timeout_advanced_possession_skips_only_the_backcourt_it_purchased" classname="test_opening_clock_contract" time="0.024">
+		</testcase>
+		<testcase name="test_a_live_ball_transfer_neither_emits_nor_charges_a_dead_ball_inbound" classname="test_opening_clock_contract" time="0.021">
+		</testcase>
+		<testcase name="test_a_possession_starting_at_five_thousand_ms_reaches_action_selection" classname="test_opening_clock_contract" time="0.840">
+		</testcase>
+		<testcase name="test_a_possession_below_five_thousand_ms_gets_no_free_half_court_setup" classname="test_opening_clock_contract" time="0.197">
+		</testcase>
+		<testcase name="test_a_possession_too_short_to_cross_half_court_never_emits_an_advance" classname="test_opening_clock_contract" time="0.084">
+		</testcase>
+		<testcase name="test_the_tactical_location_depth_ladder_orders_backcourt_beyond_deep" classname="test_opening_clock_contract" time="0.012">
+		</testcase>
+		<testcase name="test_a_backcourt_attempt_does_not_receive_ordinary_arc_shot_odds" classname="test_opening_clock_contract" time="0.021">
+		</testcase>
+		<testcase name="test_an_ordinary_possession_carries_no_location_and_no_location_penalty" classname="test_opening_clock_contract" time="0.018">
+		</testcase>
+		<testcase name="test_the_location_consequence_is_independent_of_score_and_margin" classname="test_opening_clock_contract" time="0.020">
+		</testcase>
+		<testcase name="test_no_desperation_path_guarantees_an_attempt_a_make_or_a_tie" classname="test_opening_clock_contract" time="0.767">
+		</testcase>
+		<testcase name="test_period_expiration_remains_terminal_and_actions_stay_before_the_horn" classname="test_opening_clock_contract" time="0.799">
+		</testcase>
+		<testcase name="test_a_possession_shorter_than_any_action_draw_still_selects_one" classname="test_opening_clock_contract" time="0.152">
+		</testcase>
+		<testcase name="test_event_clocks_are_monotonic_within_a_period_and_never_negative" classname="test_opening_clock_contract" time="2.124">
+		</testcase>
+		<testcase name="test_the_ordinary_opening_keeps_its_event_shape" classname="test_opening_clock_contract" time="0.244">
+		</testcase>
+	</testsuite>
+	<testsuite id="27" name="test_possession_determinism" package="tests/simulation" timestamp="2026-09-15T02:32:21" hostname="localhost" tests="1" failures="0" errors="0" skipped="0" flaky="0" time="0.058">
+		<testcase name="test_same_fixture_and_seed_reproduce_possession" classname="test_possession_determinism" time="0.044">
+		</testcase>
+	</testsuite>
+	<testsuite id="28" name="test_fouls_and_free_throws" package="tests/simulation" timestamp="2026-09-15T02:32:22" hostname="localhost" tests="10" failures="1" errors="0" skipped="0" flaky="0" time="0.339">
+		<testcase name="test_multiple_foul_types_occur_across_the_fixture_set" classname="test_fouls_and_free_throws" time="0.017">
+		</testcase>
+		<testcase name="test_offensive_fouls_become_turnovers_and_do_not_advance_the_bonus" classname="test_fouls_and_free_throws" time="0.011">
+		</testcase>
+		<testcase name="test_and_one_awards_exactly_one_attempt_after_a_made_basket" classname="test_fouls_and_free_throws" time="0.013">
+		</testcase>
+		<testcase name="test_free_throw_attempts_are_attributed_exactly_once" classname="test_fouls_and_free_throws" time="0.022">
+		</testcase>
+		<testcase name="test_one_and_one_second_attempt_must_be_earned" classname="test_fouls_and_free_throws" time="0.177">
+		</testcase>
+		<testcase name="test_awarded_free_throws_survive_the_period_buzzer" classname="test_fouls_and_free_throws" time="0.014">
+		</testcase>
+		<testcase name="test_missed_final_free_throw_is_reboundable" classname="test_fouls_and_free_throws" time="0.021">
+		</testcase>
+		<testcase name="test_bonus_state_converts_non_shooting_fouls_into_free_throws" classname="test_fouls_and_free_throws" time="0.012">
+			<failure message="FAILED: res://tests/simulation/test_fouls_and_free_throws.gd:290" type="FAILURE">
+<![CDATA[
+Expecting to be greater than:
+ 0 but was 0
+	at 'test_bonus_state_converts_non_shooting_fouls_into_free_throws' in res://tests/simulation/test_fouls_and_free_throws.gd:290
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="29" name="test_lineups_and_rotations" package="tests/simulation" timestamp="2026-09-15T02:32:22" hostname="localhost" tests="7" failures="0" errors="0" skipped="0" flaky="0" time="1.115">
+		<testcase name="test_five_eligible_players_per_team_throughout" classname="test_lineups_and_rotations" time="0.378">
+		</testcase>
+		<testcase name="test_no_replaced_player_participates" classname="test_lineups_and_rotations" time="0.015">
+		</testcase>
+		<testcase name="test_substitutions_control_actual_participants" classname="test_lineups_and_rotations" time="0.013">
+		</testcase>
+		<testcase name="test_foul_out_does_not_change_the_rotation_role" classname="test_lineups_and_rotations" time="0.291">
+		</testcase>
+		<testcase name="test_minutes_reconcile_from_the_event_stream" classname="test_lineups_and_rotations" time="0.014">
+		</testcase>
+		<testcase name="test_planned_minutes_follow_rotation_role" classname="test_lineups_and_rotations" time="0.011">
+		</testcase>
+		<testcase name="test_unavailable_players_never_participate" classname="test_lineups_and_rotations" time="0.349">
+		</testcase>
+	</testsuite>
+	<testsuite id="30" name="test_endgame_corrections" package="tests/simulation" timestamp="2026-09-15T02:32:23" hostname="localhost" tests="19" failures="0" errors="0" skipped="0" flaky="0" time="74.524">
+		<testcase name="test_college_refuses_to_advance_the_ball_on_a_timeout" classname="test_endgame_corrections" time="0.021">
+		</testcase>
+		<testcase name="test_no_college_game_emits_an_advance_timeout" classname="test_endgame_corrections" time="4.239">
+		</testcase>
+		<testcase name="test_top_domestic_still_advances_the_ball_when_a_coach_would" classname="test_endgame_corrections" time="0.014">
+		</testcase>
+		<testcase name="test_the_advance_timeout_is_still_reachable_in_real_top_domestic_games" classname="test_endgame_corrections" time="28.295">
+		</testcase>
+		<testcase name="test_an_advancing_team_finishes_the_match_still_holding_its_reserve" classname="test_endgame_corrections" time="28.753">
+		</testcase>
+		<testcase name="test_a_tied_team_holds_for_the_final_shot" classname="test_endgame_corrections" time="0.014">
+		</testcase>
+		<testcase name="test_a_comfortable_lead_drains_the_clock_instead_of_boosting_its_closer" classname="test_endgame_corrections" time="0.016">
+		</testcase>
+		<testcase name="test_a_trailing_team_intentionally_misses_its_final_free_throw" classname="test_endgame_corrections" time="0.016">
+		</testcase>
+		<testcase name="test_the_intentional_miss_enters_the_ordinary_live_rebound" classname="test_endgame_corrections" time="0.015">
+		</testcase>
+		<testcase name="test_the_defence_can_win_the_board_after_an_intentional_miss" classname="test_endgame_corrections" time="0.516">
+		</testcase>
+		<testcase name="test_a_leading_team_at_the_line_never_intentionally_misses" classname="test_endgame_corrections" time="0.383">
+		</testcase>
+		<testcase name="test_no_leading_by_three_foul_is_committed_outside_the_bonus" classname="test_endgame_corrections" time="0.398">
+		</testcase>
+		<testcase name="test_at_most_one_leading_by_three_foul_per_possession" classname="test_endgame_corrections" time="0.105">
+		</testcase>
+		<testcase name="test_no_played_match_commits_two_leading_by_three_fouls_in_one_possession" classname="test_endgame_corrections" time="11.242">
+		</testcase>
+		<testcase name="test_quick_two_never_overlaps_the_tie_seeking_window_at_any_stakes_tier" classname="test_endgame_corrections" time="0.016">
+		</testcase>
+		<testcase name="test_regular_season_quick_two_clock_boundaries_are_unchanged" classname="test_endgame_corrections" time="0.013">
+		</testcase>
+		<testcase name="test_quick_two_does_not_depend_on_an_unspent_timeout" classname="test_endgame_corrections" time="0.014">
+		</testcase>
+		<testcase name="test_putbacks_carry_the_endgame_decision_in_force" classname="test_endgame_corrections" time="0.338">
+		</testcase>
+		<testcase name="test_validate_refuses_a_quick_two_window_with_no_span" classname="test_endgame_corrections" time="0.012">
+		</testcase>
+	</testsuite>
+	<testsuite id="31" name="test_play_sim_skip_parity" package="tests/simulation" timestamp="2026-09-15T02:33:38" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="3.177">
+		<testcase name="test_stepped_play_matches_full_simulation" classname="test_play_sim_skip_parity" time="0.709">
+		</testcase>
+		<testcase name="test_skip_to_final_matches_full_simulation" classname="test_play_sim_skip_parity" time="0.668">
+		</testcase>
+		<testcase name="test_all_three_executors_agree_on_a_game_that_reaches_overtime" classname="test_play_sim_skip_parity" time="0.495">
+		</testcase>
+		<testcase name="test_skip_to_appearance_then_finish_matches_full_simulation" classname="test_play_sim_skip_parity" time="0.813">
+		</testcase>
+		<testcase name="test_resuming_a_partial_session_does_not_reroll" classname="test_play_sim_skip_parity" time="0.410">
+		</testcase>
+		<testcase name="test_manual_and_automatic_free_throws_share_one_contract" classname="test_play_sim_skip_parity" time="0.036">
+		</testcase>
+	</testsuite>
+	<testsuite id="32" name="test_endgame_strategy" package="tests/simulation" timestamp="2026-09-15T02:33:41" hostname="localhost" tests="35" failures="0" errors="0" skipped="0" flaky="0" time="37.787">
+		<testcase name="test_two_for_one_is_off_outside_its_window" classname="test_endgame_strategy" time="0.020">
+		</testcase>
+		<testcase name="test_two_for_one_is_on_for_a_trailing_or_tied_team_with_a_second_possession_to_win" classname="test_endgame_strategy" time="0.022">
+		</testcase>
+		<testcase name="test_hold_is_off_outside_its_window" classname="test_endgame_strategy" time="0.022">
+		</testcase>
+		<testcase name="test_hold_is_on_for_a_leading_team_with_the_game_in_hand" classname="test_endgame_strategy" time="0.015">
+		</testcase>
+		<testcase name="test_a_tied_team_may_hold_when_the_shot_clock_outlasts_the_game_clock" classname="test_endgame_strategy" time="0.018">
+		</testcase>
+		<testcase name="test_the_shot_clock_condition_binds_only_the_tied_team" classname="test_endgame_strategy" time="0.013">
+		</testcase>
+		<testcase name="test_two_for_one_and_hold_are_mutually_exclusive" classname="test_endgame_strategy" time="0.017">
+		</testcase>
+		<testcase name="test_quick_two_needs_the_exact_deficit_and_the_outer_window" classname="test_endgame_strategy" time="0.024">
+		</testcase>
+		<testcase name="test_designed_play_is_on_only_for_the_truly_final_possession" classname="test_endgame_strategy" time="0.021">
+		</testcase>
+		<testcase name="test_designed_play_refuses_a_leading_team_at_every_lead" classname="test_endgame_strategy" time="0.020">
+		</testcase>
+		<testcase name="test_designed_play_refuses_a_deficit_the_clock_cannot_close" classname="test_endgame_strategy" time="0.017">
+		</testcase>
+		<testcase name="test_selected_designed_play_action_releases_before_the_horn" classname="test_endgame_strategy" time="0.013">
+		</testcase>
+		<testcase name="test_final_release_deadline_is_scoped_to_a_tieable_designed_play" classname="test_endgame_strategy" time="0.017">
+		</testcase>
+		<testcase name="test_recoverable_deficit_grows_one_possession_at_a_time" classname="test_endgame_strategy" time="0.016">
+		</testcase>
+		<testcase name="test_designated_closer_is_the_best_shot_selection_rating_on_the_floor" classname="test_endgame_strategy" time="0.014">
+		</testcase>
+		<testcase name="test_action_multiplier_is_the_identity_through_ordinary_basketball" classname="test_endgame_strategy" time="0.014">
+		</testcase>
+		<testcase name="test_two_for_one_reweights_reset_versus_a_direct_shot" classname="test_endgame_strategy" time="0.012">
+		</testcase>
+		<testcase name="test_hold_stops_boosting_the_reset_once_the_shot_clock_is_late" classname="test_endgame_strategy" time="0.013">
+		</testcase>
+		<testcase name="test_quick_two_swings_two_point_weight_against_three_point_weight" classname="test_endgame_strategy" time="0.030">
+		</testcase>
+		<testcase name="test_designed_play_boosts_only_the_designated_actor" classname="test_endgame_strategy" time="0.013">
+		</testcase>
+		<testcase name="test_intentional_miss_applies_only_to_a_two_point_deficit_before_the_final_attempt" classname="test_endgame_strategy" time="0.023">
+		</testcase>
+		<testcase name="test_intentional_miss_reads_the_margin_the_earlier_makes_of_the_trip_produced" classname="test_endgame_strategy" time="0.019">
+		</testcase>
+		<testcase name="test_a_leading_team_never_intentionally_misses" classname="test_endgame_strategy" time="0.033">
+		</testcase>
+		<testcase name="test_intentional_miss_refuses_where_the_final_attempt_is_not_reboundable" classname="test_endgame_strategy" time="0.013">
+		</testcase>
+		<testcase name="test_intentional_miss_refuses_below_the_clock_the_rebound_and_shot_need" classname="test_endgame_strategy" time="0.016">
+		</testcase>
+		<testcase name="test_the_shipped_profile_keeps_the_miss_window_above_its_own_floor" classname="test_endgame_strategy" time="0.014">
+		</testcase>
+		<testcase name="test_intentional_miss_never_touches_free_throw_probability" classname="test_endgame_strategy" time="0.019">
+		</testcase>
+		<testcase name="test_timeout_advance_needs_the_rule_flag_a_trailing_margin_a_timeout_and_the_window" classname="test_endgame_strategy" time="0.020">
+		</testcase>
+		<testcase name="test_timeout_advance_is_a_decision_rather_than_an_automatic_expenditure" classname="test_endgame_strategy" time="0.019">
+		</testcase>
+		<testcase name="test_the_timeout_advance_window_is_no_wider_than_the_benefit_it_buys" classname="test_endgame_strategy" time="0.022">
+		</testcase>
+		<testcase name="test_a_timeout_advance_possession_skips_the_backcourt_walk" classname="test_endgame_strategy" time="0.046">
+		</testcase>
+		<testcase name="test_leading_by_three_foul_fires_only_when_eligible" classname="test_endgame_strategy" time="0.023">
+		</testcase>
+		<testcase name="test_leading_by_three_foul_refuses_when_ineligible" classname="test_endgame_strategy" time="0.017">
+		</testcase>
+		<testcase name="test_leading_by_three_foul_refuses_outside_the_bonus" classname="test_endgame_strategy" time="0.012">
+		</testcase>
+		<testcase name="test_two_for_one_and_designed_play_are_reachable_in_real_games" classname="test_endgame_strategy" time="36.937">
+		</testcase>
+	</testsuite>
+	<testsuite id="33" name="test_identity_and_usage" package="tests/simulation" timestamp="2026-09-15T02:34:19" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="55.517">
+		<testcase name="test_tactical_role_changes_opportunity_only" classname="test_identity_and_usage" time="0.020">
+		</testcase>
+		<testcase name="test_tactical_role_moves_shot_mix_but_not_shooting_quality" classname="test_identity_and_usage" time="27.833">
+		</testcase>
+		<testcase name="test_rotation_role_changes_minutes_only" classname="test_identity_and_usage" time="0.015">
+		</testcase>
+		<testcase name="test_tendency_changes_attempt_mix_without_touching_ratings" classname="test_identity_and_usage" time="27.331">
+		</testcase>
+		<testcase name="test_coach_instruction_shapes_behaviour_within_its_band" classname="test_identity_and_usage" time="0.113">
+		</testcase>
+		<testcase name="test_usage_responds_monotonically_to_opportunity_inputs" classname="test_identity_and_usage" time="0.033">
+		</testcase>
+		<testcase name="test_usage_remains_a_constrained_budget" classname="test_identity_and_usage" time="0.012">
+		</testcase>
+		<testcase name="test_usage_budget_sums_across_the_lineup" classname="test_identity_and_usage" time="0.111">
+		</testcase>
+	</testsuite>
+	<testsuite id="34" name="test_attribute_contracts" package="tests/simulation" timestamp="2026-09-15T02:35:14" hostname="localhost" tests="23" failures="0" errors="0" skipped="0" flaky="0" time="0.743">
+		<testcase name="test_short_range_changes_close_finishing" classname="test_attribute_contracts" time="0.023">
+		</testcase>
+		<testcase name="test_mid_range_changes_midrange_shotmaking" classname="test_attribute_contracts" time="0.025">
+		</testcase>
+		<testcase name="test_three_point_changes_three_point_shotmaking" classname="test_attribute_contracts" time="0.017">
+		</testcase>
+		<testcase name="test_dunking_changes_dunk_finishing" classname="test_attribute_contracts" time="0.018">
+		</testcase>
+		<testcase name="test_free_throw_changes_free_throw_quality" classname="test_attribute_contracts" time="0.018">
+		</testcase>
+		<testcase name="test_handle_changes_creation_and_ball_security" classname="test_attribute_contracts" time="0.030">
+		</testcase>
+		<testcase name="test_passing_changes_delivery_execution_and_assist_conversion" classname="test_attribute_contracts" time="0.039">
+		</testcase>
+		<testcase name="test_vision_changes_open_target_recognition_and_creation" classname="test_attribute_contracts" time="0.096">
+		</testcase>
+		<testcase name="test_vision_and_passing_remain_meaningfully_distinct" classname="test_attribute_contracts" time="0.064">
+		</testcase>
+		<testcase name="test_offensive_iq_changes_shot_selection" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+		<testcase name="test_perimeter_defense_changes_containment_and_contest" classname="test_attribute_contracts" time="0.012">
+		</testcase>
+		<testcase name="test_interior_defense_changes_interior_positioning" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+		<testcase name="test_stealing_changes_strip_and_interception_success" classname="test_attribute_contracts" time="0.032">
+		</testcase>
+		<testcase name="test_blocking_changes_block_success" classname="test_attribute_contracts" time="0.028">
+		</testcase>
+		<testcase name="test_defensive_iq_changes_help_and_discipline" classname="test_attribute_contracts" time="0.030">
+		</testcase>
+		<testcase name="test_offensive_rebounding_changes_crash_positioning" classname="test_attribute_contracts" time="0.115">
+		</testcase>
+		<testcase name="test_defensive_rebounding_changes_box_out_share" classname="test_attribute_contracts" time="0.015">
+		</testcase>
+		<testcase name="test_speed_changes_court_speed_and_creation" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+		<testcase name="test_strength_changes_contact_force_and_leverage" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+		<testcase name="test_stamina_changes_fatigue_accumulation_and_recovery" classname="test_attribute_contracts" time="0.010">
+		</testcase>
+		<testcase name="test_vertical_changes_reach_and_dunk_access" classname="test_attribute_contracts" time="0.010">
+		</testcase>
+		<testcase name="test_every_rating_feeds_at_least_one_capability" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+		<testcase name="test_every_capability_keeps_its_primary_input_dominant" classname="test_attribute_contracts" time="0.011">
+		</testcase>
+	</testsuite>
+	<testsuite id="35" name="test_possession_state_machine" package="tests/simulation" timestamp="2026-09-15T02:35:15" hostname="localhost" tests="1" failures="0" errors="0" skipped="0" flaky="0" time="0.022">
+		<testcase name="test_declares_all_authoritative_nodes" classname="test_possession_state_machine" time="0.012">
+		</testcase>
+	</testsuite>
+	<testsuite id="36" name="test_golden_ledgers" package="tests/simulation" timestamp="2026-09-15T02:35:15" hostname="localhost" tests="7" failures="0" errors="0" skipped="0" flaky="0" time="5.104">
+		<testcase name="test_every_required_scenario_has_a_committed_hash" classname="test_golden_ledgers" time="0.014">
+		</testcase>
+		<testcase name="test_committed_hashes_reproduce_exactly" classname="test_golden_ledgers" time="1.371">
+		</testcase>
+		<testcase name="test_committed_shape_matches_the_reproduced_match" classname="test_golden_ledgers" time="0.012">
+		</testcase>
+		<testcase name="test_every_scenario_still_covers_its_behaviour" classname="test_golden_ledgers" time="0.012">
+		</testcase>
+		<testcase name="test_repeated_simulation_reproduces_the_full_ledger" classname="test_golden_ledgers" time="2.898">
+		</testcase>
+		<testcase name="test_a_different_seed_changes_the_ledger" classname="test_golden_ledgers" time="0.739">
+		</testcase>
+		<testcase name="test_canonical_serialization_is_explicit_and_ordered" classname="test_golden_ledgers" time="0.019">
+		</testcase>
+	</testsuite>
+	<testsuite id="37" name="test_fatigue" package="tests/simulation" timestamp="2026-09-15T02:35:20" hostname="localhost" tests="5" failures="0" errors="0" skipped="0" flaky="0" time="0.425">
+		<testcase name="test_fatigue_accumulates_on_court_and_recovers_on_the_bench" classname="test_fatigue" time="0.147">
+		</testcase>
+		<testcase name="test_stamina_changes_accumulated_fatigue_over_a_match" classname="test_fatigue" time="0.212">
+		</testcase>
+		<testcase name="test_fatigue_penalty_is_not_uniform_across_capabilities" classname="test_fatigue" time="0.012">
+		</testcase>
+		<testcase name="test_fatigue_band_penalty_is_monotonic_from_zero" classname="test_fatigue" time="0.012">
+		</testcase>
+		<testcase name="test_fatigue_drives_substitutions" classname="test_fatigue" time="0.013">
+		</testcase>
+	</testsuite>
+	<testsuite id="38" name="test_full_game_determinism" package="tests/simulation" timestamp="2026-09-15T02:35:20" hostname="localhost" tests="2" failures="0" errors="0" skipped="0" flaky="0" time="1.410">
+		<testcase name="test_same_seed_reproduces_complete_result_and_ledger" classname="test_full_game_determinism" time="0.693">
+		</testcase>
+		<testcase name="test_different_seed_changes_complete_result_or_ledger" classname="test_full_game_determinism" time="0.698">
+		</testcase>
+	</testsuite>
+	<testsuite id="39" name="test_restart_contract" package="tests/simulation" timestamp="2026-09-15T02:35:22" hostname="localhost" tests="35" failures="1" errors="0" skipped="0" flaky="0" time="16.614">
+		<testcase name="test_every_whistle_restart_emits_its_throw_in_at_the_starting_clock" classname="test_restart_contract" time="0.059">
+		</testcase>
+		<testcase name="test_the_inbound_event_records_the_restart_cause_it_was_opened_under" classname="test_restart_contract" time="0.065">
+		</testcase>
+		<testcase name="test_a_made_field_goal_in_open_play_still_charges_its_throw_in" classname="test_restart_contract" time="0.017">
+		</testcase>
+		<testcase name="test_a_running_clock_restart_still_runs_the_ordinary_opening" classname="test_restart_contract" time="0.033">
+		</testcase>
+		<testcase name="test_a_made_free_throw_and_a_made_field_goal_do_not_restart_alike" classname="test_restart_contract" time="0.047">
+		</testcase>
+		<testcase name="test_the_policy_separates_the_two_made_basket_causes" classname="test_restart_contract" time="0.025">
+		</testcase>
+		<testcase name="test_every_launch_profile_declares_the_owner_ruled_timing_matrix" classname="test_restart_contract" time="0.015">
+		</testcase>
+		<testcase name="test_the_period_category_ordering_the_ruling_table_relies_on" classname="test_restart_contract" time="0.014">
+		</testcase>
+		<testcase name="test_every_nonzero_window_stops_the_clock_exactly_at_its_inclusive_boundary" classname="test_restart_contract" time="0.016">
+		</testcase>
+		<testcase name="test_every_zero_window_leaves_the_clock_running_at_every_remaining_time" classname="test_restart_contract" time="0.011">
+		</testcase>
+		<testcase name="test_a_non_final_regulation_period_does_not_borrow_the_final_period_window" classname="test_restart_contract" time="0.012">
+		</testcase>
+		<testcase name="test_overtime_reads_the_overtime_window_and_not_a_regulation_one" classname="test_restart_contract" time="0.012">
+		</testcase>
+		<testcase name="test_a_constructed_profile_routes_each_period_category_to_its_own_window" classname="test_restart_contract" time="0.011">
+		</testcase>
+		<testcase name="test_the_middle_school_and_high_school_ruling_is_no_made_field_goal_stoppage" classname="test_restart_contract" time="0.012">
+		</testcase>
+		<testcase name="test_other_dead_ball_causes_still_stop_the_clock_where_a_made_field_goal_does_not" classname="test_restart_contract" time="0.011">
+		</testcase>
+		<testcase name="test_a_made_free_throw_stays_distinct_from_a_made_field_goal_everywhere" classname="test_restart_contract" time="0.011">
+		</testcase>
+		<testcase name="test_a_stopped_made_field_goal_restart_charges_nothing_then_runs_on_the_touch" classname="test_restart_contract" time="0.016">
+		</testcase>
+		<testcase name="test_the_window_boundary_changes_a_simulated_possession" classname="test_restart_contract" time="0.025">
+		</testcase>
+		<testcase name="test_a_profile_with_no_window_never_stops_the_clock_for_a_made_basket" classname="test_restart_contract" time="0.016">
+		</testcase>
+		<testcase name="test_a_profile_that_declares_no_rule_at_all_gets_no_stoppage" classname="test_restart_contract" time="0.011">
+		</testcase>
+		<testcase name="test_a_negative_window_is_rejected" classname="test_restart_contract" time="0.012">
+		</testcase>
+		<testcase name="test_a_contradictory_regulation_shape_is_rejected" classname="test_restart_contract" time="0.013">
+		</testcase>
+		<testcase name="test_a_window_longer_than_its_own_period_is_rejected" classname="test_restart_contract" time="0.013">
+		</testcase>
+		<testcase name="test_a_single_regulation_period_competition_cannot_scope_a_non_final_window" classname="test_restart_contract" time="0.013">
+		</testcase>
+		<testcase name="test_every_throw_in_carries_the_cause_the_preceding_ledger_implies" classname="test_restart_contract" time="3.960">
+		</testcase>
+		<testcase name="test_the_possession_record_and_the_inbound_event_never_disagree" classname="test_restart_contract" time="1.057">
+		</testcase>
+		<testcase name="test_one_end_reason_produces_both_restart_causes_in_a_single_game" classname="test_restart_contract" time="0.667">
+		</testcase>
+		<testcase name="test_made_free_throw_throw_ins_are_never_charged_and_field_goal_ones_usually_are" classname="test_restart_contract" time="0.688">
+		</testcase>
+		<testcase name="test_a_timeout_restart_is_never_charged_even_after_a_made_basket" classname="test_restart_contract" time="5.604">
+		</testcase>
+		<testcase name="test_every_period_opens_on_a_period_start_restart_at_the_full_clock" classname="test_restart_contract" time="3.960">
+		</testcase>
+		<testcase name="test_an_overtime_period_opens_on_a_stopped_clock_like_any_other" classname="test_restart_contract" time="0.019">
+			<failure message="FAILED: res://tests/simulation/test_restart_contract.gd:1110" type="FAILURE">
+<![CDATA[
+period 3 opened on a timeout restart
+	at '_assert_period_openings' in res://tests/simulation/test_restart_contract.gd:1110
+	at 'test_an_overtime_period_opens_on_a_stopped_clock_like_any_other' in res://tests/simulation/test_restart_contract.gd:776
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="40" name="test_score_margin" package="tests/simulation" timestamp="2026-09-15T02:35:38" hostname="localhost" tests="18" failures="0" errors="0" skipped="0" flaky="0" time="114.863">
+		<testcase name="test_identical_rosters_have_no_systematic_edge" classname="test_score_margin" time="38.590">
+		</testcase>
+		<testcase name="test_identical_rosters_receive_the_same_rotation" classname="test_score_margin" time="0.136">
+		</testcase>
+		<testcase name="test_swapping_identical_rosters_preserves_the_ledger" classname="test_score_margin" time="1.921">
+		</testcase>
+		<testcase name="test_capability_edge_moves_the_margin_monotonically_and_boundedly" classname="test_score_margin" time="66.553">
+		</testcase>
+		<testcase name="test_a_capability_edge_does_not_decide_every_game" classname="test_score_margin" time="0.054">
+		</testcase>
+		<testcase name="test_even_matchups_retain_stochastic_variation" classname="test_score_margin" time="0.052">
+		</testcase>
+		<testcase name="test_no_clamp_bounds_the_final_margin" classname="test_score_margin" time="0.054">
+		</testcase>
+		<testcase name="test_resolution_ignores_the_score_in_the_body_of_the_game" classname="test_score_margin" time="0.095">
+		</testcase>
+		<testcase name="test_no_trailing_or_leading_modifier_exists" classname="test_score_margin" time="0.100">
+		</testcase>
+		<testcase name="test_the_managed_window_changes_selection_and_not_resolution" classname="test_score_margin" time="0.308">
+		</testcase>
+		<testcase name="test_intentional_fouling_activates_only_under_valid_conditions" classname="test_score_margin" time="0.049">
+		</testcase>
+		<testcase name="test_the_rotation_reads_the_settled_mode_and_does_not_recompute_it" classname="test_score_margin" time="0.049">
+		</testcase>
+		<testcase name="test_settled_game_rotation_converges" classname="test_score_margin" time="0.061">
+		</testcase>
+		<testcase name="test_regulation_ties_enter_overtime" classname="test_score_margin" time="0.056">
+		</testcase>
+		<testcase name="test_overtime_games_reconcile" classname="test_score_margin" time="0.055">
+		</testcase>
+		<testcase name="test_possessions_scores_and_points_per_possession_reconcile" classname="test_score_margin" time="0.078">
+		</testcase>
+		<testcase name="test_repeated_games_do_not_leak_state" classname="test_score_margin" time="3.701">
+		</testcase>
+		<testcase name="test_play_sim_and_skip_agree_on_the_margin" classname="test_score_margin" time="2.761">
+		</testcase>
+	</testsuite>
+	<testsuite id="41" name="test_garbage_time" package="tests/simulation" timestamp="2026-09-15T02:37:33" hostname="localhost" tests="22" failures="0" errors="0" skipped="0" flaky="0" time="19.577">
+		<testcase name="test_safety_is_one_shared_property_of_the_game" classname="test_garbage_time" time="0.056">
+		</testcase>
+		<testcase name="test_a_level_game_has_no_safety_and_no_role" classname="test_garbage_time" time="0.062">
+		</testcase>
+		<testcase name="test_safety_grows_with_the_margin_and_with_the_clock_running_out" classname="test_garbage_time" time="0.065">
+		</testcase>
+		<testcase name="test_reversing_the_scoreboard_swaps_the_two_roles" classname="test_garbage_time" time="0.068">
+		</testcase>
+		<testcase name="test_the_rule_cannot_read_strength_or_an_intended_winner" classname="test_garbage_time" time="0.066">
+		</testcase>
+		<testcase name="test_the_leading_coach_settles_before_the_trailing_one" classname="test_garbage_time" time="0.065">
+		</testcase>
+		<testcase name="test_garbage_time_cannot_activate_in_a_close_game" classname="test_garbage_time" time="0.068">
+		</testcase>
+		<testcase name="test_garbage_time_cannot_activate_too_early" classname="test_garbage_time" time="0.065">
+		</testcase>
+		<testcase name="test_garbage_time_does_not_begin_with_no_time_to_rest_anyone" classname="test_garbage_time" time="0.066">
+		</testcase>
+		<testcase name="test_returning_to_the_competitive_rotation_is_rule_based_and_symmetric" classname="test_garbage_time" time="0.049">
+		</testcase>
+		<testcase name="test_the_state_has_hysteresis" classname="test_garbage_time" time="0.058">
+		</testcase>
+		<testcase name="test_a_lead_changing_hands_ends_the_state" classname="test_garbage_time" time="0.055">
+		</testcase>
+		<testcase name="test_the_same_shot_keeps_its_probability_in_and_out_of_garbage_time" classname="test_garbage_time" time="0.057">
+		</testcase>
+		<testcase name="test_the_trailing_team_receives_no_rating_or_capability_bonus" classname="test_garbage_time" time="0.068">
+		</testcase>
+		<testcase name="test_intentional_fouling_and_garbage_time_cannot_overlap" classname="test_garbage_time" time="0.051">
+		</testcase>
+		<testcase name="test_timeout_logic_survives_the_settled_state" classname="test_garbage_time" time="2.830">
+		</testcase>
+		<testcase name="test_every_settled_substitution_is_explained_by_a_ledger_entry" classname="test_garbage_time" time="5.441">
+		</testcase>
+		<testcase name="test_minutes_and_lineup_participation_reconcile" classname="test_garbage_time" time="1.851">
+		</testcase>
+		<testcase name="test_play_sim_and_skip_agree_with_the_settled_state" classname="test_garbage_time" time="3.674">
+		</testcase>
+		<testcase name="test_the_settled_state_does_not_leak_between_games" classname="test_garbage_time" time="4.485">
+		</testcase>
+		<testcase name="test_safety_obeys_the_square_root_law" classname="test_garbage_time" time="0.063">
+		</testcase>
+		<testcase name="test_the_thresholds_scale_across_game_lengths" classname="test_garbage_time" time="0.064">
+		</testcase>
+	</testsuite>
+	<testsuite id="42" name="test_match_invariants" package="tests/simulation" timestamp="2026-09-15T02:37:53" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="0.751">
+		<testcase name="test_exactly_one_offence_is_live_at_a_time" classname="test_match_invariants" time="0.073">
+		</testcase>
+		<testcase name="test_each_attempt_has_one_shooter_and_at_most_one_assister" classname="test_match_invariants" time="0.068">
+		</testcase>
+		<testcase name="test_rebounds_follow_a_miss" classname="test_match_invariants" time="0.062">
+		</testcase>
+		<testcase name="test_the_clock_is_monotonic_within_each_period" classname="test_match_invariants" time="0.178">
+		</testcase>
+		<testcase name="test_score_changes_only_through_scoring_events" classname="test_match_invariants" time="0.064">
+		</testcase>
+		<testcase name="test_completed_matches_are_terminal_and_decided" classname="test_match_invariants" time="0.064">
+		</testcase>
+		<testcase name="test_match_events_are_contiguous" classname="test_match_invariants" time="0.070">
+		</testcase>
+		<testcase name="test_overtime_follows_a_tied_regulation" classname="test_match_invariants" time="0.065">
+		</testcase>
+	</testsuite>
+	<testsuite id="43" name="test_possession_contract" package="tests/simulation" timestamp="2026-09-15T02:37:54" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="0.924">
+		<testcase name="test_every_possession_has_exactly_one_start_and_one_end" classname="test_possession_contract" time="0.063">
+		</testcase>
+		<testcase name="test_possession_and_action_identity_are_stable" classname="test_possession_contract" time="0.067">
+		</testcase>
+		<testcase name="test_offensive_rebound_does_not_start_a_new_possession" classname="test_possession_contract" time="0.053">
+		</testcase>
+		<testcase name="test_possession_end_identifies_the_offence_that_ended" classname="test_possession_contract" time="0.056">
+		</testcase>
+		<testcase name="test_terminal_reasons_transfer_possession_correctly" classname="test_possession_contract" time="0.054">
+		</testcase>
+		<testcase name="test_period_expiry_terminates_a_possession" classname="test_possession_contract" time="0.055">
+		</testcase>
+		<testcase name="test_offensive_rebound_applies_the_rule_profile_reset" classname="test_possession_contract" time="0.421">
+		</testcase>
+		<testcase name="test_shot_clock_violations_are_recorded_as_turnovers" classname="test_possession_contract" time="0.054">
+		</testcase>
+	</testsuite>
+	<testsuite id="44" name="test_event_stat_reconciliation" package="tests/simulation" timestamp="2026-09-15T02:37:54" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="0.622">
+		<testcase name="test_box_score_reconciles_from_events_in_every_scenario" classname="test_event_stat_reconciliation" time="0.055">
+		</testcase>
+		<testcase name="test_projection_state_and_result_agree_on_score" classname="test_event_stat_reconciliation" time="0.058">
+		</testcase>
+		<testcase name="test_every_scoring_event_appears_exactly_once" classname="test_event_stat_reconciliation" time="0.063">
+		</testcase>
+		<testcase name="test_period_scores_sum_to_the_final_score" classname="test_event_stat_reconciliation" time="0.058">
+		</testcase>
+		<testcase name="test_engine_possessions_and_estimate_are_separate" classname="test_event_stat_reconciliation" time="0.060">
+		</testcase>
+		<testcase name="test_event_ledger_is_contiguous" classname="test_event_stat_reconciliation" time="0.115">
+		</testcase>
+		<testcase name="test_role_evaluation_evidence_comes_from_events" classname="test_event_stat_reconciliation" time="0.054">
+		</testcase>
+		<testcase name="test_paint_summary_matches_the_zones_in_the_ledger" classname="test_event_stat_reconciliation" time="0.059">
+		</testcase>
+	</testsuite>
+	<testsuite id="45" name="test_fg_decomposition" package="tests/calibration" timestamp="2026-09-15T02:37:55" hostname="localhost" tests="22" failures="3" errors="0" skipped="0" flaky="0" time="72.683">
+		<testcase name="test_the_field_goal_identities_close_on_every_axis" classname="test_fg_decomposition" time="4.076">
+		</testcase>
+		<testcase name="test_made_field_goals_are_exactly_the_two_and_three_pointers" classname="test_fg_decomposition" time="3.991">
+		</testcase>
+		<testcase name="test_the_ledger_and_the_box_score_agree_about_field_goals" classname="test_fg_decomposition" time="5.566">
+		</testcase>
+		<testcase name="test_the_field_goal_gate_reports_a_breach_rather_than_absorbing_it" classname="test_fg_decomposition" time="1.417">
+		</testcase>
+		<testcase name="test_contest_band_accuracy_is_monotone_in_the_bands_the_fixture_uses" classname="test_fg_decomposition" time="15.751">
+		</testcase>
+		<testcase name="test_the_zone_and_contest_shares_each_sum_to_one" classname="test_fg_decomposition" time="4.924">
+		</testcase>
+		<testcase name="test_shooter_capability_moves_make_probability" classname="test_fg_decomposition" time="7.251">
+		</testcase>
+		<testcase name="test_defender_capability_moves_contest_pressure" classname="test_fg_decomposition" time="7.249">
+		</testcase>
+		<testcase name="test_rating_normalization_round_trips_through_the_baseline_curve" classname="test_fg_decomposition" time="0.056">
+		</testcase>
+		<testcase name="test_the_roster_ladder_preserves_the_intended_rating_gap_between_levels" classname="test_fg_decomposition" time="0.054">
+		</testcase>
+		<testcase name="test_the_shot_probe_cannot_change_the_ledger" classname="test_fg_decomposition" time="1.344">
+		</testcase>
+		<testcase name="test_the_probe_is_detached_by_default" classname="test_fg_decomposition" time="0.053">
+		</testcase>
+		<testcase name="test_a_probe_whose_owner_was_freed_is_ignored" classname="test_fg_decomposition" time="1.363">
+		</testcase>
+		<testcase name="test_the_probe_terms_sum_to_the_probability_they_describe" classname="test_fg_decomposition" time="3.604">
+		</testcase>
+		<testcase name="test_the_field_goal_interval_is_a_ratio_estimator" classname="test_fg_decomposition" time="0.051">
+		</testcase>
+		<testcase name="test_the_published_field_goal_interval_goes_through_the_ratio_estimator" classname="test_fg_decomposition" time="0.050">
+		</testcase>
+		<testcase name="test_the_ratio_estimator_refuses_an_unusable_series" classname="test_fg_decomposition" time="0.048">
+		</testcase>
+		<testcase name="test_shot_resolution_has_no_compensation_channel" classname="test_fg_decomposition" time="0.043">
+		</testcase>
+		<testcase name="test_shot_resolution_cannot_name_a_competition" classname="test_fg_decomposition" time="0.058">
+		</testcase>
+		<testcase name="test_make_resolution_cannot_see_the_scoreboard" classname="test_fg_decomposition" time="0.050">
+		</testcase>
+		<testcase name="test_every_competition_shoots_against_one_shared_shot_profile" classname="test_fg_decomposition" time="0.052">
+		</testcase>
+		<testcase name="test_the_compensation_channels_are_pinned_on_a_fixed_fixture" classname="test_fg_decomposition" time="15.390">
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:642" type="FAILURE">
+<![CDATA[
+turnover rate moved to 0.1534 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:642
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:648" type="FAILURE">
+<![CDATA[
+offensive-rebound share moved to 0.2418 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:648
+]]>
+			</failure>
+			<failure message="FAILED: res://tests/calibration/test_fg_decomposition.gd:677" type="FAILURE">
+<![CDATA[
+possessions per game moved to 148.83 on a fixed fixture
+	at 'test_the_compensation_channels_are_pinned_on_a_fixed_fixture' in res://tests/calibration/test_fg_decomposition.gd:677
+]]>
+			</failure>
+		</testcase>
+	</testsuite>
+	<testsuite id="46" name="test_roster_provenance" package="tests/calibration" timestamp="2026-09-15T02:39:08" hostname="localhost" tests="7" failures="0" errors="0" skipped="0" flaky="0" time="3.978">
+		<testcase name="test_the_college_snapshot_is_not_taken_by_default" classname="test_roster_provenance" time="0.127">
+		</testcase>
+		<testcase name="test_taking_the_college_snapshot_changes_no_career_outcome" classname="test_roster_provenance" time="1.731">
+		</testcase>
+		<testcase name="test_each_college_class_year_holds_its_own_ratings" classname="test_roster_provenance" time="0.127">
+		</testcase>
+		<testcase name="test_the_snapshot_covers_exactly_the_college_seasons" classname="test_roster_provenance" time="0.897">
+		</testcase>
+		<testcase name="test_the_college_snapshot_reconciles_with_the_season_record" classname="test_roster_provenance" time="0.891">
+		</testcase>
+		<testcase name="test_production_constructs_no_roster_and_no_player_profile" classname="test_roster_provenance" time="0.068">
+		</testcase>
+		<testcase name="test_the_fixture_roster_is_one_scalar_per_player" classname="test_roster_provenance" time="0.050">
+		</testcase>
+	</testsuite>
+	<testsuite id="47" name="test_home_win_verdict_ownership" package="tests/calibration" timestamp="2026-09-15T02:39:12" hostname="localhost" tests="6" failures="0" errors="0" skipped="0" flaky="0" time="0.354">
+		<testcase name="test_the_paired_estimator_is_the_judged_metric" classname="test_home_win_verdict_ownership" time="0.046">
+		</testcase>
+		<testcase name="test_the_marginal_metric_is_informational_and_cannot_fail_the_gate" classname="test_home_win_verdict_ownership" time="0.049">
+		</testcase>
+		<testcase name="test_a_disagreement_is_resolved_by_the_judged_metric" classname="test_home_win_verdict_ownership" time="0.046">
+		</testcase>
+		<testcase name="test_the_judged_metric_still_fails_when_the_venue_effect_is_wrong" classname="test_home_win_verdict_ownership" time="0.041">
+		</testcase>
+		<testcase name="test_the_fourteen_two_band_is_untouched" classname="test_home_win_verdict_ownership" time="0.050">
+		</testcase>
+		<testcase name="test_the_runner_emits_exactly_one_judged_home_win_metric" classname="test_home_win_verdict_ownership" time="0.054">
+		</testcase>
+	</testsuite>
+	<testsuite id="48" name="test_ppp_decomposition" package="tests/calibration" timestamp="2026-09-15T02:39:12" hostname="localhost" tests="11" failures="0" errors="0" skipped="0" flaky="0" time="32.993">
+		<testcase name="test_the_scoring_terms_account_for_every_point" classname="test_ppp_decomposition" time="5.353">
+		</testcase>
+		<testcase name="test_a_made_free_throw_is_worth_one_point_by_event_type" classname="test_ppp_decomposition" time="1.802">
+		</testcase>
+		<testcase name="test_the_possession_denominator_reconciles_against_every_source" classname="test_ppp_decomposition" time="3.770">
+		</testcase>
+		<testcase name="test_the_reconciliation_reports_a_breach_rather_than_absorbing_it" classname="test_ppp_decomposition" time="0.051">
+		</testcase>
+		<testcase name="test_widening_the_capability_span_shifts_contest_pressure_upward" classname="test_ppp_decomposition" time="10.879">
+		</testcase>
+		<testcase name="test_the_shipped_capability_span_is_the_corrected_value" classname="test_ppp_decomposition" time="0.049">
+		</testcase>
+		<testcase name="test_the_correction_does_not_pay_for_itself_with_turnovers_or_rebounds" classname="test_ppp_decomposition" time="10.758">
+		</testcase>
+		<testcase name="test_the_balance_profile_is_shared_and_the_rules_are_per_competition" classname="test_ppp_decomposition" time="0.058">
+		</testcase>
+		<testcase name="test_the_contest_path_cannot_read_a_competition_or_a_target" classname="test_ppp_decomposition" time="0.059">
+		</testcase>
+		<testcase name="test_contest_pressure_never_reads_the_scoreboard" classname="test_ppp_decomposition" time="0.047">
+		</testcase>
+		<testcase name="test_every_golden_scenario_still_exercises_its_named_behaviour" classname="test_ppp_decomposition" time="0.048">
+		</testcase>
+	</testsuite>
+	<testsuite id="49" name="test_scoring_covariance" package="tests/calibration" timestamp="2026-09-15T02:39:45" hostname="localhost" tests="10" failures="0" errors="0" skipped="0" flaky="0" time="0.866">
+		<testcase name="test_the_margin_variance_identity_closes_exactly" classname="test_scoring_covariance" time="0.052">
+		</testcase>
+		<testcase name="test_a_known_covariance_is_recovered" classname="test_scoring_covariance" time="0.050">
+		</testcase>
+		<testcase name="test_orthogonal_columns_report_no_covariance" classname="test_scoring_covariance" time="0.046">
+		</testcase>
+		<testcase name="test_residualization_removes_a_shared_predictor" classname="test_scoring_covariance" time="0.044">
+		</testcase>
+		<testcase name="test_the_corrected_variance_ratio_is_one_without_serial_structure" classname="test_scoring_covariance" time="0.048">
+		</testcase>
+		<testcase name="test_the_corrected_variance_ratio_moves_with_the_real_statistic" classname="test_scoring_covariance" time="0.042">
+		</testcase>
+		<testcase name="test_damping_the_leading_team_reduces_dispersion_monotonically" classname="test_scoring_covariance" time="0.305">
+		</testcase>
+		<testcase name="test_the_damped_model_keeps_the_margin_on_the_lattice" classname="test_scoring_covariance" time="0.086">
+		</testcase>
+		<testcase name="test_margin_classification_uses_the_specified_boundaries" classname="test_scoring_covariance" time="0.049">
+		</testcase>
+		<testcase name="test_score_states_use_the_documented_boundaries" classname="test_scoring_covariance" time="0.044">
+		</testcase>
+	</testsuite>
+	<testsuite id="50" name="test_venue_effect_estimator" package="tests/calibration" timestamp="2026-09-15T02:39:46" hostname="localhost" tests="31" failures="0" errors="0" skipped="0" flaky="0" time="1.792">
+		<testcase name="test_the_reversed_arm_moves_the_published_contribution" classname="test_venue_effect_estimator" time="0.053">
+		</testcase>
+		<testcase name="test_the_neutral_control_cancels_out_of_the_pooled_estimate" classname="test_venue_effect_estimator" time="0.054">
+		</testcase>
+		<testcase name="test_a_missing_neutral_arm_is_refused_even_though_it_cancels" classname="test_venue_effect_estimator" time="0.041">
+		</testcase>
+		<testcase name="test_arms_are_differenced_within_a_fixture_and_not_across_fixtures" classname="test_venue_effect_estimator" time="0.041">
+		</testcase>
+		<testcase name="test_correct_pairing_shows_up_as_zero_dispersion_not_as_the_mean" classname="test_venue_effect_estimator" time="0.043">
+		</testcase>
+		<testcase name="test_the_paired_series_is_ordered_by_fixture_key_not_by_arrival" classname="test_venue_effect_estimator" time="0.040">
+		</testcase>
+		<testcase name="test_a_fixture_with_one_arm_contributes_to_no_published_figure" classname="test_venue_effect_estimator" time="0.054">
+		</testcase>
+		<testcase name="test_the_estimate_is_invariant_to_the_order_the_arms_arrive_in" classname="test_venue_effect_estimator" time="0.047">
+		</testcase>
+		<testcase name="test_the_pooled_estimate_is_symmetric_in_the_two_venue_arms" classname="test_venue_effect_estimator" time="0.053">
+		</testcase>
+		<testcase name="test_disjoint_shards_pool_by_union_of_fixtures" classname="test_venue_effect_estimator" time="0.048">
+		</testcase>
+		<testcase name="test_fixture_rows_replay_into_an_identical_estimator" classname="test_venue_effect_estimator" time="0.060">
+		</testcase>
+		<testcase name="test_fixture_rows_omit_an_incomplete_fixture" classname="test_venue_effect_estimator" time="0.056">
+		</testcase>
+		<testcase name="test_pooling_from_rows_matches_pooling_the_estimators" classname="test_venue_effect_estimator" time="0.046">
+		</testcase>
+		<testcase name="test_pooling_is_independent_of_shard_order" classname="test_venue_effect_estimator" time="0.046">
+		</testcase>
+		<testcase name="test_an_overlapping_shard_is_refused_rather_than_pooled" classname="test_venue_effect_estimator" time="0.044">
+		</testcase>
+		<testcase name="test_pairs_and_complete_games_are_reported_as_different_numbers" classname="test_venue_effect_estimator" time="0.061">
+		</testcase>
+		<testcase name="test_an_incomplete_fixture_raises_neither_count" classname="test_venue_effect_estimator" time="0.046">
+		</testcase>
+		<testcase name="test_a_duplicated_observation_is_refused_and_changes_nothing" classname="test_venue_effect_estimator" time="0.050">
+		</testcase>
+		<testcase name="test_replaying_the_whole_sample_does_not_narrow_the_interval" classname="test_venue_effect_estimator" time="0.050">
+		</testcase>
+		<testcase name="test_the_three_win_rates_are_each_what_they_claim_to_be" classname="test_venue_effect_estimator" time="0.053">
+		</testcase>
+		<testcase name="test_the_paired_form_equals_the_canonical_ruling_form" classname="test_venue_effect_estimator" time="0.042">
+		</testcase>
+		<testcase name="test_the_equivalence_survives_a_tied_fixture" classname="test_venue_effect_estimator" time="0.044">
+		</testcase>
+		<testcase name="test_reversing_the_venue_arms_preserves_the_judged_estimate" classname="test_venue_effect_estimator" time="0.040">
+		</testcase>
+		<testcase name="test_a_biased_neutral_control_cannot_contaminate_the_judged_estimate" classname="test_venue_effect_estimator" time="0.046">
+		</testcase>
+		<testcase name="test_pooling_weights_by_matched_pairs_and_not_by_report_count" classname="test_venue_effect_estimator" time="0.048">
+		</testcase>
+		<testcase name="test_no_malformed_pair_can_reach_the_judged_estimate" classname="test_venue_effect_estimator" time="0.042">
+		</testcase>
+		<testcase name="test_the_cap_judges_the_pooled_contribution_and_not_the_home_arm" classname="test_venue_effect_estimator" time="0.043">
+		</testcase>
+		<testcase name="test_a_genuine_breach_of_the_cap_is_still_reported" classname="test_venue_effect_estimator" time="0.054">
+		</testcase>
+		<testcase name="test_the_possession_base_is_taken_across_the_arms" classname="test_venue_effect_estimator" time="0.058">
+		</testcase>
+		<testcase name="test_the_reversal_control_fails_on_disagreement_and_passes_on_agreement" classname="test_venue_effect_estimator" time="0.047">
+		</testcase>
+		<testcase name="test_an_empty_estimator_reports_nothing_rather_than_a_number" classname="test_venue_effect_estimator" time="0.047">
+		</testcase>
+	</testsuite>
+	<testsuite id="51" name="test_margin_decomposition" package="tests/calibration" timestamp="2026-09-15T02:39:48" hostname="localhost" tests="8" failures="0" errors="0" skipped="0" flaky="0" time="0.896">
+		<testcase name="test_margin_classification_uses_the_specified_boundaries" classname="test_margin_decomposition" time="0.050">
+		</testcase>
+		<testcase name="test_classification_is_signless" classname="test_margin_decomposition" time="0.042">
+		</testcase>
+		<testcase name="test_the_six_term_identity_reconstructs_the_margin" classname="test_margin_decomposition" time="0.060">
+		</testcase>
+		<testcase name="test_component_variance_shares_sum_to_one" classname="test_margin_decomposition" time="0.069">
+		</testcase>
+		<testcase name="test_independent_possessions_report_a_ratio_near_one" classname="test_margin_decomposition" time="0.246">
+		</testcase>
+		<testcase name="test_a_persistent_game_level_effect_raises_the_ratio" classname="test_margin_decomposition" time="0.235">
+		</testcase>
+		<testcase name="test_the_strength_regression_recovers_a_known_slope" classname="test_margin_decomposition" time="0.044">
+		</testcase>
+		<testcase name="test_matchup_bands_partition_the_sample" classname="test_margin_decomposition" time="0.053">
+		</testcase>
+	</testsuite>
+	<testsuite id="52" name="test_opening_possession" package="tests/calibration" timestamp="2026-09-15T02:39:49" hostname="localhost" tests="12" failures="0" errors="0" skipped="0" flaky="0" time="5.187">
+		<testcase name="test_no_production_script_constructs_a_match_input" classname="test_opening_possession" time="0.062">
+		</testcase>
+		<testcase name="test_rebuilding_an_input_for_new_stakes_keeps_the_same_opener" classname="test_opening_possession" time="0.047">
+		</testcase>
+		<testcase name="test_an_opening_possession_outside_the_two_teams_is_rejected" classname="test_opening_possession" time="0.053">
+		</testcase>
+		<testcase name="test_the_possession_arrow_rule_flag_is_still_unread" classname="test_opening_possession" time="0.070">
+		</testcase>
+		<testcase name="test_the_population_fixture_alternates_the_opening_inbound" classname="test_opening_possession" time="0.057">
+		</testcase>
+		<testcase name="test_the_mirror_fixture_alternates_the_opening_inbound" classname="test_opening_possession" time="0.059">
+		</testcase>
+		<testcase name="test_the_opening_inbound_is_split_exactly_evenly_over_a_range" classname="test_opening_possession" time="0.288">
+		</testcase>
+		<testcase name="test_a_diagnostic_can_hold_the_opening_inbound_on_one_side" classname="test_opening_possession" time="0.068">
+		</testcase>
+		<testcase name="test_the_counterbalance_moves_the_opener_and_nothing_else" classname="test_opening_possession" time="0.058">
+		</testcase>
+		<testcase name="test_the_counterbalance_is_deterministic_and_consumes_no_randomness" classname="test_opening_possession" time="1.230">
+		</testcase>
+		<testcase name="test_the_named_side_actually_receives_the_first_possession" classname="test_opening_possession" time="1.253">
+		</testcase>
+		<testcase name="test_moving_the_opening_inbound_changes_the_game" classname="test_opening_possession" time="1.796">
+		</testcase>
+	</testsuite>
+</testsuites>

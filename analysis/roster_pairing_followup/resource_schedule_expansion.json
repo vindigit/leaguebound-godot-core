@@ -1,0 +1,29 @@
+{
+  "recorded_utc": "2026-09-23T22:30:40.675634+00:00",
+  "reason": "Two-processor trial still yielded low throughput under host contention; widen only LeagueBound processes to four of eight logical processors while leaving four available to other applications",
+  "previous_affinity_hex": "C0",
+  "new_affinity_hex": "F0",
+  "priority": "AboveNormal",
+  "processor_count": 8,
+  "process_ids_at_adjustment": [
+    21196,
+    20312,
+    21636,
+    24128,
+    27412,
+    20460,
+    28092,
+    36648,
+    40384,
+    41280,
+    43568,
+    1808,
+    33992,
+    39376,
+    40484,
+    41632,
+    44712
+  ],
+  "effect_on_protocol": "None; source, seed, variation, roster, environment, metric definition and output labels unchanged",
+  "recorded_after_change": true
+}

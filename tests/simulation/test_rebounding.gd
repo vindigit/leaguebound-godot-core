@@ -74,10 +74,22 @@ func test_offensive_rebound_percentage_uses_the_required_denominator() -> void:
 	var expected: float = float(home.offensive_rebounds) / float(
 		home.offensive_rebounds + away.defensive_rebounds)
 	assert_float(home.offensive_rebound_percentage(away)).is_equal_approx(expected, 0.0001)
-	# The denominator is the opponent's defensive rebounds, not the team's own.
-	assert_int(home.offensive_rebounds + away.defensive_rebounds).is_not_equal(
-		home.offensive_rebounds + home.defensive_rebounds)
 	assert_float(home.offensive_rebound_percentage(away)).is_between(0.0, 1.0)
+
+	# The denominator is the *opponent's* defensive rebounds, not the team's
+	# own. Proven on lines built so the two differ, rather than on whichever
+	# pair of numbers a fixture happens to produce: this assertion used to read
+	# `away.defensive_rebounds != home.defensive_rebounds` on the golden
+	# scenario, which tests the rule only for as long as the two stay unequal by
+	# luck — and they stopped being unequal the first time the scoring shape
+	# moved.
+	var team := TeamStatLine.new(&"team")
+	team.offensive_rebounds = 10
+	team.defensive_rebounds = 90
+	var opponent := TeamStatLine.new(&"opponent")
+	opponent.defensive_rebounds = 30
+	assert_float(team.offensive_rebound_percentage(opponent)).is_equal_approx(
+		10.0 / 40.0, 0.0001)
 
 
 ## §14.4: an offensive rebound can produce an immediate putback, and a putback

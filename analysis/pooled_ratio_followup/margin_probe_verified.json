@@ -1,0 +1,86 @@
+{
+  "population": {
+    "file": "reports/margin_covariance_interval_probe_population.json",
+    "sha256": "aabd684c92a2adab11d5bd88d6dda7d25fd1c7b91d3fd5eec98f4926cff67f7a",
+    "rows": [
+      {
+        "metric": "shape.blowout_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "fail",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.close_game_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "fail",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.overtime_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "fail",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.home_win_rate",
+        "successes": 2,
+        "trials": 2,
+        "estimate": 1,
+        "verdict": "fail",
+        "low": 0.342380223954649,
+        "high": 1
+      }
+    ]
+  },
+  "mirror": {
+    "file": "reports/margin_covariance_interval_probe_mirror.json",
+    "sha256": "b2429dda5569a68e625233ba97e0ac58f43e9f432f4247d9e0d54d91a13f0b5d",
+    "rows": [
+      {
+        "metric": "shape.blowout_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "informational",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.close_game_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "informational",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.overtime_rate",
+        "successes": 0,
+        "trials": 2,
+        "estimate": 0,
+        "verdict": "informational",
+        "low": 0,
+        "high": 0.657619776045351
+      },
+      {
+        "metric": "shape.home_win_rate",
+        "successes": 2,
+        "trials": 2,
+        "estimate": 1,
+        "verdict": "informational",
+        "low": 0.342380223954649,
+        "high": 1
+      }
+    ]
+  }
+}

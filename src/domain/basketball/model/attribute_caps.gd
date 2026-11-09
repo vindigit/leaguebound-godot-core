@@ -29,14 +29,19 @@ func _init(p_caps: Array[int] = []) -> void:
 			"exactly one cap per canonical attribute is required")
 		for index in range(p_caps.size()):
 			var cap: int = p_caps[index]
-			assert(
-				cap >= ProgressionProfile.CAP_MINIMUM and cap <= ProgressionProfile.CAP_MAXIMUM,
-				"cap for %s must lie between %d and %d" % [
-					AttributeKey.name_of(index),
-					ProgressionProfile.CAP_MINIMUM,
-					ProgressionProfile.CAP_MAXIMUM,
-				]
-			)
+			# The formatted message is built only when the cap is actually out
+			# of range. Formatting it unconditionally charged every career-year
+			# resolution twenty string builds for a check that virtually never
+			# fires; see the note in `Rating` for the measurement.
+			if cap < ProgressionProfile.CAP_MINIMUM or cap > ProgressionProfile.CAP_MAXIMUM:
+				assert(
+					false,
+					"cap for %s must lie between %d and %d" % [
+						AttributeKey.name_of(index),
+						ProgressionProfile.CAP_MINIMUM,
+						ProgressionProfile.CAP_MAXIMUM,
+					]
+				)
 			_caps.append(cap)
 
 

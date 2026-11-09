@@ -13,6 +13,7 @@ enum Reason {
 	FOUL_TROUBLE,
 	FATIGUE,
 	PLANNED_MINUTES,
+	DECIDED_GAME,
 	CLOSING_LINEUP,
 }
 
@@ -22,6 +23,7 @@ const REASON_IDS: PackedStringArray = [
 	"foul_trouble",
 	"fatigue",
 	"planned_minutes",
+	"decided_game",
 	"closing_lineup",
 ]
 

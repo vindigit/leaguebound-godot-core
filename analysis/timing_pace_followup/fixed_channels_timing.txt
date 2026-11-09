@@ -1,0 +1,3 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+{"assisted_share":0.645331325301205,"college_pace":1.041,"extension_rate":0.119060927892677,"games":24,"offensive_rebound_rate":0.24457892082703,"possessions_both_teams_per_game":149.083333333333,"ruleset":"simulation-v17-stopped-foul-clock-and-live-rebound","turnover_rate":0.154276131917272,"variation_first":905000,"variation_last":905023}

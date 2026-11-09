@@ -1,0 +1,33 @@
+{
+  "games_per_cell": 468,
+  "phases": {
+    "validation_a": 28080000,
+    "validation_b": 32760000,
+    "diagnosis": 23400000
+  },
+  "competitions": [
+    "high_school",
+    "college",
+    "development",
+    "overseas",
+    "top_domestic_pro"
+  ],
+  "seed": "variation + 1, matched before/after and environment arms",
+  "created_utc": "2026-09-22T17:12:34.9976196Z",
+  "runner_sha256": "B50AC6884FB0E3C99C28F864E098BA2DCB825DE7C62F09F329A26BD965A6FAED",
+  "limitation": "Each 468-game cell covers 117 base pairs, spanning 13/169 ladder cells in the base orientation; including reversals gives 231 roster cells and 25/169 ladder cells. Uniform marginals and exact venue/opener crossover do not establish independent joint population sampling.",
+  "baseline": "11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4",
+  "environments": [
+    0.5,
+    0.0
+  ],
+  "uncertainty": "117 aligned four-game clusters per cell; paired ratio-of-sums influence intervals and paired block bootstrap for final-margin SD; exploratory fixed-schedule uncertainty, not full-population certification",
+  "instrumentation_smoke": "4 college games at variations40000000..40000003, separate discarded instrumentation-only cell",
+  "constraints": "No downstream tuning. All source-engine, rules, ratings, probability, target and tolerance bytes remain unchanged. Holdouts open only after candidate freeze.",
+  "clarification": "Independent review corrected base-orientation versus reversed-union support counts before candidate outcomes. No ranges, sample sizes, mapping, canonical metrics, judgments or parameters changed. Paired diagnostics additionally expose the already recorded turnover, rebound and assist channels.",
+  "rare_event_refinement": {
+    "rule": "Event/complement-bearing and paired-disagreement quartet counts reported. Fewer than10 relevant quartets flags sparse approximation, never a target or tolerance. Zero empirical interval variation is unavailable rather than falsely precise. Sparse/unavailable intervals cannot support replicated-signal wording.",
+    "recorded_utc": "2026-09-22T17:55:09.6646142Z",
+    "before_candidate_outcomes": true
+  }
+}

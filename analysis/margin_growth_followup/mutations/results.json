@@ -1,0 +1,101 @@
+{
+  "source_commit": "74b2c55028bbb1a4cc43440ffec52f015c9ba7b2",
+  "started_utc": "2026-09-24T17:05:30.156Z",
+  "isolated_copy": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-margin-growth-6VPHkL",
+  "godot": "4.7.1.stable.official.a13da4feb",
+  "source_sha256": {
+    "calibration/harness/margin_growth_audit.gd": "6c08010ba04919485321e162f49553483a528e691e43e956f45115f124941428",
+    "tests/fixtures/margin_growth_fixtures.gd": "af4527bca5b4840c1413ca50b4b516bd92deb2e2ce4079f7f033a286a1e29833",
+    "tests/calibration/test_margin_growth_audit.gd": "27f1ab79cf67c0f5735813fb8217d3bf52cd37704176b838cdb2aee05ea8dd7b",
+    "tests/calibration/test_margin_growth_live.gd": "1fabc91577d0b64146c5d9e2d04cad0608c10fe2124b64c22ada38670bd38867"
+  },
+  "results": [
+    {
+      "id": "baseline",
+      "exit_code": 0,
+      "summary": "9 test cases | 0 errors | 0 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "turnover_sign",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "rebound_hidden_in_residual",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "ft_event_points_schema",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 6 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "ft_awards_as_makes",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "blocked_expected_points",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "innovation_removed",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 5 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "late_boundary_excluded",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "college_native_periods_as_quarters",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 2 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "drop_straddled_clock_split",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 3 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "offensive_rebound_extra_possession",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "coverage_accepts_zero",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 14 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "period_score_check_bypassed",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "nan_probability_accepted",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "shot_shooter_linkage_bypassed",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "shot_clock_linkage_bypassed",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    },
+    {
+      "id": "shot_period_linkage_bypassed",
+      "exit_code": 100,
+      "summary": "9 test cases | 0 errors | 1 failures | 0 flaky | 0 skipped | 0 orphans |"
+    }
+  ],
+  "killed": 16,
+  "finished_utc": "2026-09-24T17:28:28.539Z"
+}

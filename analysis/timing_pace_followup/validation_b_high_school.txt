@@ -1,0 +1,57 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  high_school 25/400 pace=0.920000
+  high_school 50/400 pace=0.920000
+  high_school 75/400 pace=0.920000
+  high_school 100/400 pace=0.920000
+  high_school 125/400 pace=0.920000
+  high_school 150/400 pace=0.920000
+  high_school 175/400 pace=0.920000
+  high_school 200/400 pace=0.920000
+  high_school 225/400 pace=0.920000
+  high_school 250/400 pace=0.920000
+  high_school 275/400 pace=0.920000
+  high_school 300/400 pace=0.920000
+  high_school 325/400 pace=0.920000
+  high_school 350/400 pace=0.920000
+  high_school 375/400 pace=0.920000
+  high_school 400/400 pace=0.920000
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  high_school          66.4   63.2  0.952   38.5   30.8   31.9   66.9   19.5   16.5   25.5   48.9   15.6   5.3   2.6
+
+  home win rate / overtime / close / blowout, by competition:
+  high_school          56.8%    3.0%   28.5%   10.0%
+
+=== Competition basketball calibration ===
+  commit=743d845145268d223736e1bfb3a53bd2bf52fa6b godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=high_school/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 47500 of 47501, seeds 19000001..19000400 inclusive n=400 complete games per competition elapsed=957648ms rate=0.4/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 400.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  high_school.possessions_per_game                          66.4287 ±0.2183  target[61.0000, 72.0000]  PASS
+  high_school.possession_estimate_per_game                  70.2994  INFORMATIONAL
+  high_school.points_per_game                               63.2150 ±0.6573  INFORMATIONAL
+  high_school.points_per_possession                          0.9516 ±0.0097  target[0.9100, 1.0500]  PASS
+  high_school.field_goal_percentage                          0.3848 ±0.0040  target[0.3900, 0.4700]  FAIL
+  high_school.three_point_percentage                         0.3075 ±0.0071  target[0.2800, 0.3600]  PASS
+  high_school.three_point_attempt_rate                       0.3187 ±0.0041  target[0.2400, 0.3900]  PASS
+  high_school.free_throw_percentage                          0.6694 ±0.0093  target[0.6200, 0.7600]  PASS
+  high_school.free_throw_attempt_rate                        0.1945 ±0.0034  target[0.1800, 0.3800]  PASS
+  high_school.turnovers_per_100_possessions                 16.5083  target[15.0000, 24.0000]  PASS
+  high_school.offensive_rebound_percentage                   0.2555 ±0.0050  target[0.2500, 0.3800]  PASS
+  high_school.assist_percentage                              0.4886 ±0.0070  target[0.4200, 0.6600]  PASS
+  high_school.home_win_rate                                  0.5675 ±0.0483  target[0.5300, 0.5600]  FAIL
+  high_school.overtime_rate                                  0.0300 ±0.0172  target[0.0400, 0.0800]  FAIL
+  high_school.close_game_rate                                0.2850 ±0.0441  target[0.2200, 0.3400]  PASS
+  high_school.blowout_rate                                   0.1000 ±0.0295  target[0.0800, 0.1800]  PASS
+  high_school.starter_mean_minutes                          19.7929 ±0.1029  INFORMATIONAL
+  high_school.team_leading_scorer_mean                      14.2937 ±0.2274  INFORMATIONAL
+  high_school.team_leading_scorer_p99                       23.0000  INFORMATIONAL
+
+  report: res://reports/competition_calibration_validation_b_high_school.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL high_school.field_goal_percentage: estimate 0.3848 outside BALANCE_SPEC.md §14.1 target [0.3900, 0.4700]
+  FAIL high_school.home_win_rate: estimate 0.5675 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL high_school.overtime_rate: estimate 0.0300 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  20 metric(s), 15 judged, 4 failure(s): FAIL

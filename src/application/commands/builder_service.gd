@@ -53,12 +53,16 @@ func default_body_for_family(family: int) -> BodyProfile:
 ## Begin a build. Caps and the projected adult range are drawn here, once, from
 ## the career seed, and are then immutable and displayable for the whole of
 ## allocation.
+## `ceiling_selection_pool` carries §8.1's selection pressure through to the cap
+## draw. The user's own Builder always uses one — a career is not pre-selected —
+## and generated populations pass the pool their competition implies.
 func begin_build(
 	family: int,
 	prospect: int,
 	maturity: int,
 	body: BodyProfile,
 	career_source: RandomSource,
+	ceiling_selection_pool: int = 1,
 ) -> BuilderState:
 	var failures: PackedStringArray = BuilderRules.body_selection_failures(
 		body, family, _profiles.builder)
@@ -69,7 +73,7 @@ func begin_build(
 		body, _archetype_profile)
 	var emphasis: Array[int] = CapGenerator.emphasis_from_family(family, incompatible)
 	var caps: AttributeCaps = CapGenerator.generate(
-		prospect, emphasis, stream, _profiles.progression)
+		prospect, emphasis, stream, _profiles.progression, ceiling_selection_pool)
 
 	var bases: Array[int] = BuilderRules.body_adjusted_bases(body, family, _profiles.builder)
 	caps = _raise_caps_to_permit_bases(caps, bases)

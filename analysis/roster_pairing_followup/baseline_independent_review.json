@@ -1,0 +1,172 @@
+[
+  {
+    "cell": "diagnosis_baseline_home_college",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "college.field_goal_percentage",
+      "college.overtime_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_home_development",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "development.overtime_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_home_high_school",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "high_school.field_goal_percentage",
+      "high_school.home_win_rate",
+      "high_school.overtime_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_home_overseas",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "overseas.home_win_rate",
+      "overseas.overtime_rate",
+      "overseas.blowout_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_home_top_domestic_pro",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "top_domestic_pro.home_win_rate",
+      "top_domestic_pro.overtime_rate",
+      "top_domestic_pro.close_game_rate",
+      "top_domestic_pro.blowout_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_neutral_college",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "college.field_goal_percentage",
+      "college.home_win_rate",
+      "college.overtime_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_neutral_development",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "development.home_win_rate",
+      "development.overtime_rate",
+      "development.close_game_rate",
+      "development.blowout_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_neutral_high_school",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "high_school.field_goal_percentage",
+      "high_school.home_win_rate",
+      "high_school.overtime_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_neutral_overseas",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "overseas.home_win_rate",
+      "overseas.overtime_rate",
+      "overseas.blowout_rate"
+    ],
+    "exit": 1
+  },
+  {
+    "cell": "diagnosis_baseline_neutral_top_domestic_pro",
+    "games": 468,
+    "states": 117,
+    "each_state_count": 4,
+    "ratios_reconciled": 15,
+    "gap_positive": 396,
+    "gap_negative": 72,
+    "gap_mean": 0.0,
+    "retained_failures": [
+      "sample.meets_certification_size",
+      "top_domestic_pro.home_win_rate",
+      "top_domestic_pro.overtime_rate",
+      "top_domestic_pro.close_game_rate",
+      "top_domestic_pro.blowout_rate"
+    ],
+    "exit": 1
+  }
+]

@@ -1,0 +1,112 @@
+{
+  "recorded_utc": "2026-09-23T21:57:18.670096+00:00",
+  "note": "Recorded after detached restart began; this manifest does not predate launch. The process records and archived log bytes identify previous completed/interrupted work.",
+  "starting_commit": "11c4eaecb19c662fa6e0eff61b2d54dc5c47dda4",
+  "resume_started_head": "a15bdd00debf2e75925c9376ff316650b46b516b",
+  "resume_pid": 21196,
+  "fresh_gate_pid": 20312,
+  "completed_kept": [
+    {
+      "cell": "validation_a_baseline_home_high_school",
+      "process_sha256": "f75b136e75198581324b29b3196788babb7075b92b4ec85b66bae32fa7c766a9",
+      "raw_sha256": "ec5ee461d2ac6f4447a625f845f7a1e3deebe74098dd60e156c20769f83d4949",
+      "report_sha256": "a561b9f0f6215fbf326dba00cb31891d97382fcad4f72861f623f17ca707eb65",
+      "log_sha256": "b42f3cb33f44e6555f19ebc0ec9944f62357ef4157066b4562ddc36d4a2a8a32"
+    },
+    {
+      "cell": "validation_a_baseline_neutral_high_school",
+      "process_sha256": "8e695ced3e8ddb326f3e7edb4a31fcc8e53399deef997dc679a6588e8ebe409d",
+      "raw_sha256": "1d4416aec67a265e58fa54af8300d1aa077007f5f368ab17ba563fbb9eb1d728",
+      "report_sha256": "380d2f14bb52acaf87645bd4e08401abf1f8dfb4d4cb558aa54e20900ff384f7",
+      "log_sha256": "8d137b3db5955e837b5f775162f5f1d2a65936503898e4ba7d827841bb5f72d8"
+    },
+    {
+      "cell": "validation_a_baseline_home_college",
+      "process_sha256": "ae831105ce15563a417dc3e3cc5fa031e95d01d9b2f7e17be59bf9dd8818cf0e",
+      "raw_sha256": "d63fdb4ce916a4fbf89efc5d6f7f0f574207f5aa914a3d106f12c6dd7e430f0b",
+      "report_sha256": "27ef03456704af82479dcb8210a3aaf4228249ea8fbafc2797587ab49e8b1890",
+      "log_sha256": "2c956645e8191884cb72f25aad16a214a890741d59dcecf73731a85fbba255c4"
+    },
+    {
+      "cell": "validation_a_baseline_neutral_college",
+      "process_sha256": "d3a44f9c14ed7177dd3733a928d944912de07cd09566a6f1283c49c55bb12ca4",
+      "raw_sha256": "32c18ec7a8dbdc899c738fea79652f38f354b5230c8e8170185f6ac16459c0eb",
+      "report_sha256": "5c7895ffaaf37a043181f4fb2731bc94b6708bd87ebe6faa99e5cc78f8237e1d",
+      "log_sha256": "dc83e82fb78d9e83406277f0869c4507b08c0a166208c9dc69ee7627eb750f80"
+    },
+    {
+      "cell": "validation_a_baseline_home_development",
+      "process_sha256": "67b739fc8af5449a7ababce7807dcb185a7f093122141893e1782c6a8de915f6",
+      "raw_sha256": "d4d6f24885d076e1e2afbafe8bc71bcb20de80b9f1b7df4884ac3a7754103ec8",
+      "report_sha256": "04d5831e33f55aae2026ba7a5577e38b9cae1ed31f40a3623218b06fbfa03e43",
+      "log_sha256": "158083ec816e9ab041cd0ad783839ad10872c8adcd740d376e0121e0e75b1cea"
+    }
+  ],
+  "missing_resumed": [
+    "validation_a_baseline_neutral_development",
+    "validation_a_baseline_home_overseas",
+    "validation_a_baseline_neutral_overseas",
+    "validation_a_baseline_home_top_domestic_pro",
+    "validation_a_baseline_neutral_top_domestic_pro",
+    "validation_a_candidate_home_high_school",
+    "validation_a_candidate_neutral_high_school",
+    "validation_a_candidate_home_college",
+    "validation_a_candidate_neutral_college",
+    "validation_a_candidate_home_development",
+    "validation_a_candidate_neutral_development",
+    "validation_a_candidate_home_overseas",
+    "validation_a_candidate_neutral_overseas",
+    "validation_a_candidate_home_top_domestic_pro",
+    "validation_a_candidate_neutral_top_domestic_pro",
+    "validation_b_baseline_home_high_school",
+    "validation_b_baseline_neutral_high_school",
+    "validation_b_baseline_home_college",
+    "validation_b_baseline_neutral_college",
+    "validation_b_baseline_home_development",
+    "validation_b_baseline_neutral_development",
+    "validation_b_baseline_home_overseas",
+    "validation_b_baseline_neutral_overseas",
+    "validation_b_baseline_home_top_domestic_pro",
+    "validation_b_baseline_neutral_top_domestic_pro",
+    "validation_b_candidate_home_high_school",
+    "validation_b_candidate_neutral_high_school",
+    "validation_b_candidate_home_college",
+    "validation_b_candidate_neutral_college",
+    "validation_b_candidate_home_development",
+    "validation_b_candidate_neutral_development",
+    "validation_b_candidate_home_overseas",
+    "validation_b_candidate_neutral_overseas",
+    "validation_b_candidate_home_top_domestic_pro",
+    "validation_b_candidate_neutral_top_domestic_pro"
+  ],
+  "interrupted_partial_logs": [
+    {
+      "file": "validation_a_baseline_home_overseas.txt",
+      "sha256": "81e6af03ad74a33f7beab1e6525fdda4d96a597403bfb446ffafaabc1a2a0423",
+      "bytes": 1352
+    },
+    {
+      "file": "validation_a_baseline_home_top_domestic_pro.txt",
+      "sha256": "1878b561556e547df20bff22a96db6c66d0202008f3e8d3f589174f7cbc5f9ad",
+      "bytes": 1303
+    },
+    {
+      "file": "validation_a_baseline_neutral_development.txt",
+      "sha256": "549e6d7cac2522ca8167ce490b08c1654c30705cc9a434e3a5fea98334e16a75",
+      "bytes": 1261
+    },
+    {
+      "file": "validation_a_baseline_neutral_overseas.txt",
+      "sha256": "7391e3ef2312a387534be6fdf3aaaacd3a9bea7684faa5bfa3846aead89c1e8f",
+      "bytes": 1415
+    },
+    {
+      "file": "validation_a_baseline_neutral_top_domestic_pro.txt",
+      "sha256": "4faea2233ba5bc6b701e193e3700f3107eeadedbbf4d523c884019ef4999aaa9",
+      "bytes": 871
+    }
+  ],
+  "resume_source_sha256": "8f71d301780c4d8207696bef99eaa10a8200571700821a8ed5174c88f572ae87",
+  "original_run_cells_sha256": "e62660b8be27d23a0e5e4c6676e76f0b2ba77ee15ad3fbba4e59ec6fbd9d345d",
+  "partial_gate_v2_sha256": "68f172f9cbb490308fb1b0e9e83c3562b490a0e5a3fd63166f01f78f3263f5af"
+}

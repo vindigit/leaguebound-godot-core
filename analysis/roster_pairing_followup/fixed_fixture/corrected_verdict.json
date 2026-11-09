@@ -1,0 +1,11 @@
+{
+  "exit_code": 0,
+  "test_count": 22,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "flaky": 0,
+  "orphans": 0,
+  "test_sha256": "AAC8EC317D7808A35935CD3B4781C0813B4BD5A1D5EEF6155391876A71B8C6A2",
+  "unchanged_during_run": true
+}

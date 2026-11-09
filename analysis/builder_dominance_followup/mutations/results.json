@@ -1,0 +1,117 @@
+{
+  "started_utc": "2026-10-01T02:53:00.978Z",
+  "execution_head": "51a115ee22d1bd622fae991fc450a4eef7e43bcb",
+  "isolated_directory": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-builder-dominance-PIpZyd",
+  "source_sha256": {
+    "calibration/harness/builder_dominance_fixtures.gd": "da79e27f4027fa29b29f7e60bc77f39cfd952d0b9bf20d459617b2cb8d18d6d2",
+    "calibration/harness/builder_dominance_audit.gd": "cd698d7d09423769067ef7f711eedbfdc4c60f095bdfd542b53b784f7af98fd8",
+    "analysis/builder_dominance_followup/analyze.py": "235d05b56cd8b77f4f9217061effd78eac4e858f3c6fada7aacde8b43e8fdbc0",
+    "calibration/runners/run_builder_dominance_followup.gd": "4cafe90c77bf4659a82d3c3b9deb4035d28f3522e4b2467683362be2c7b5839c",
+    "tests/calibration/test_builder_dominance_followup.gd": "c9a5ee84548554321e15191265c53feed8b7d80ea1dd1999cceb80d92963e26c",
+    "analysis/builder_dominance_followup/test_analysis.py": "6bf382363e7e92c75080e43f023c8ad9a76b1c425d958a471ac004a369272dbb"
+  },
+  "results": [
+    {
+      "id": "gd_baseline",
+      "exit_code": 0
+    },
+    {
+      "id": "py_baseline",
+      "exit_code": 0
+    },
+    {
+      "id": "spent_record_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_independent_validator_rejects_ap_economics_and_cap_corruptions",
+      "killed": true
+    },
+    {
+      "id": "seeded_caps_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_independent_validator_rejects_ap_economics_and_cap_corruptions",
+      "killed": true
+    },
+    {
+      "id": "standing_reach_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_independent_validator_rejects_shape_body_and_tendency_corruptions",
+      "killed": true
+    },
+    {
+      "id": "duplicate_seed_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_schedule_rejects_duplicates_incomplete_quartets_and_venue_bias",
+      "killed": true
+    },
+    {
+      "id": "incomplete_quartet_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_schedule_rejects_duplicates_incomplete_quartets_and_venue_bias",
+      "killed": true
+    },
+    {
+      "id": "venue_balance_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_schedule_rejects_duplicates_incomplete_quartets_and_venue_bias",
+      "killed": true
+    },
+    {
+      "id": "defended_denominator_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_denominator_and_score_corruptions_fail_for_intended_reason",
+      "killed": true
+    },
+    {
+      "id": "ledger_touches_unchecked",
+      "exit_code": 100,
+      "intended_test": "test_denominator_and_score_corruptions_fail_for_intended_reason",
+      "killed": true
+    },
+    {
+      "id": "python_pooled_ratio_as_mean",
+      "exit_code": 1,
+      "intended_test": "test_sum_ratio_uses_opportunities_not_mean_game_percentages",
+      "killed": true
+    },
+    {
+      "id": "python_turnover_direction_reversed",
+      "exit_code": 1,
+      "intended_test": "test_primary_metric_direction_and_zero_denominator",
+      "killed": true
+    },
+    {
+      "id": "python_multiplicity_omits_validation_range",
+      "exit_code": 1,
+      "intended_test": "test_matched_cluster_covariance_and_familywise_intervals",
+      "killed": true
+    },
+    {
+      "id": "python_venue_opener_unchecked",
+      "exit_code": 1,
+      "intended_test": "test_duplicate_seeds_missing_coverage_and_venue_bias_rejected",
+      "killed": true
+    },
+    {
+      "id": "python_tendency_facts_unchecked",
+      "exit_code": 1,
+      "intended_test": "test_tendency_facts_and_teammate_control_corruptions_rejected",
+      "killed": true
+    },
+    {
+      "id": "python_uncertainty_as_independent_events",
+      "exit_code": 1,
+      "intended_test": "test_matched_cluster_covariance_and_familywise_intervals",
+      "killed": true
+    },
+    {
+      "id": "gd_restored",
+      "exit_code": 0
+    },
+    {
+      "id": "py_restored",
+      "exit_code": 0
+    }
+  ],
+  "completed_utc": "2026-10-01T02:59:38.302Z",
+  "mutants_killed": 14
+}

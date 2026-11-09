@@ -1,0 +1,50 @@
+{
+  "protocol_version": "ovr-truthfulness-v1",
+  "frozen_before_confirmation": "2026-09-30",
+  "source_head": "899a3972e48e8ce63de07b47b2e593e9c97df4d2",
+  "ratings_profile": "ratings-v1",
+  "formula": "round(clamp((78*sum20 + 75*sumTop8 + 40*sumBottom6)/2400,25,99))",
+  "production_changes": false,
+  "within_player": {
+    "context": "high_school; legally confirmed Balanced freshmen, Average maturity, default family bodies",
+    "families": ["guard", "wing", "big"],
+    "clusters_per_family_per_range": 8,
+    "arms": ["baseline", "all20_plus10_toward_caps", "scoring5_plus10_toward_caps"],
+    "scoring_attributes": ["short_range", "dunking", "mid_range", "three_point", "free_throw"],
+    "construction": "BuilderService begin/raise/confirm; DevelopmentService grant/spend exact legal AP. Improvements are controlled interventions, not equal-resource Builder comparisons or predictions of natural opportunity.",
+    "counterbalance": "Four slots per source-player cluster: home/open, away/open, away/not-open, home/not-open; each arm uses the same gameplay seed in its slot. Body, all teammates, opponent and role held fixed within a cluster.",
+    "environment": 0.0,
+    "A": {"source_seed_first": 9800001, "source_seed_last": 9800024, "game_seed_first": 9810001, "game_seed_last": 9810096},
+    "B": {"source_seed_first": 9900001, "source_seed_last": 9900024, "game_seed_first": 9910001, "game_seed_last": 9910096},
+    "primary": ["team_margin", "points_per32", "field_goal_fraction", "assists_per100_touches", "turnovers_per100_touches", "rebounds_per32", "steals_blocks_per32"],
+    "secondary": "scoring5 versus baseline FG%; all other metrics and all family strata descriptive",
+    "uncertainty": "Paired source-player-cluster percentile bootstrap, 10000 deterministic resamples; each cluster retains all four slots and both arms. Ratio of pooled raw terms. Pointwise 95% and familywise 95% Bonferroni intervals over 7 primary outcomes x 2 ranges = 14. Sparse n=8 family strata are explicitly descriptive, not simultaneous hypothesis tests.",
+    "effect_interpretation": "No locked minimum OVR-to-performance effect or all-observables win requirement exists. Report measured magnitudes, practical units, intervals and weakness/inversion causes; do not manufacture thresholds or pass/fail from correlations. Direction of basketball effects is empirical; only arithmetic monotonicity is an exact contract."
+  },
+  "catalog_extension": {
+    "population": "unaltered competition-catalog-v4-roster-pairing; five competitions; synthetic calibration player population, no career ages or caps",
+    "quartets_per_competition_per_range": 2,
+    "A": {"seed_first": 9820001, "seed_last": 9820040},
+    "B": {"seed_first": 9920001, "seed_last": 9920040},
+    "variation_first": 0,
+    "variation_last": 7,
+    "histogram": "All 117 existing full-roster states x 10 players x five competitions, current OVR only; count each roster-state/player once. Descriptive finite fixture distribution, not mature-world rarity evidence.",
+    "relationships": "Player quartet aggregates, Pearson correlations and within-stratum demeaned correlations using direct basketball observables. Competition, position, tactical/rotation role, specialization, minutes and touches/opportunities. Cluster bootstrap by quartet/source population; tiny strata intervals flagged sparse. Aggregate correlations are not accepted as within-stratum relationships."
+  },
+  "college_generation_extension": {
+    "construction": "Natural CareerSimulator paths with diagnostics; recorded college class snapshots (class index = roster index mod 3), original exact caps, original creation budget and source seed. Bodies resolved through canonical BodyMaturationService at chronological milestones 2 through snapshot career year from the original confirm stream. No selection on OVR or basketball outcome; arbitrary experimental rosters are not production roster evidence.",
+    "quartets_per_range": 2,
+    "players_per_quartet": 20,
+    "A": {"career_seed_first": 9840001, "career_seed_last": 9840040, "game_seed_first": 9850001, "game_seed_last": 9850008},
+    "B": {"career_seed_first": 9940001, "career_seed_last": 9940040, "game_seed_first": 9950001, "game_seed_last": 9950008},
+    "role_assignment": "First five in each ten-player experimental roster start; remaining five rotate. Tactical role and nominal position use recorded family. Natural source draws retained; roster composition is an experimental choice.",
+    "interpretation": "Descriptive college-age legal player evidence; two independent source populations per range is sparse and cannot establish roster representativeness."
+  },
+  "natural_histograms": {
+    "A": {"career_seed_first": 9860001, "career_seed_last": 9861000},
+    "B": {"career_seed_first": 9960001, "career_seed_last": 9961000},
+    "observations": "Natural career starting current and exact-cap potential, college snapshots by age/class, peak and final current. No imposed peak path. Career peak/final are not contemporaneous active-world season samples."
+  },
+  "untested": ["stable mature top-domestic 95+/93+/90+ seasonal prevalence", "production roster selection", "top-domestic natural age/phase performance", "population lifecycle survival and selection", "full SQLite save/reload adapter absent", "all legal Builder configurations", "OVR guarantee across every role and matchup", "27.1 certification"],
+  "exploration": "No basketball output used to select frozen arms/ranges/sample. Smoke only validates executability and instruments and is separately labeled. Shared Builder exploration is not reused as confirmation."
+}

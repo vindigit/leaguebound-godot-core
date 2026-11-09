@@ -52,6 +52,24 @@ func is_spend() -> bool:
 	return amount < 0.0
 
 
+## Whether this entry is AP-equivalent consumed to raise a rating.
+##
+## §9.1 prices a rating increase and §9.2 resolves focused direct progress at
+## the same price, so both are attribute spending and both are written here as a
+## negative `TRAINING` entry naming the attribute they bought.
+##
+## The other two ways AP-equivalent leaves the wallet are deliberately excluded.
+## A §10.3 decline debit names an attribute but removes standing rather than
+## buying a point, and an unrealized-opportunity debit names no attribute at
+## all. Summing every negative entry therefore answers "how much left the
+## wallet", which is a different question from "how much bought ratings" — and
+## reporting the first as the second is how an AP figure stops meaning anything.
+func is_attribute_spend() -> bool:
+	return (amount < 0.0
+		and attribute >= 0
+		and source == AttributePointSource.Value.TRAINING)
+
+
 func signature() -> String:
 	var attribute_name: String = (
 		String(AttributeKey.name_of(attribute)) if attribute >= 0 else "-"

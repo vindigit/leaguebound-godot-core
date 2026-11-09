@@ -1,0 +1,275 @@
+{
+  "regulation": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 1178,
+    "after_events": 1182,
+    "first_divergence": {
+      "before": [
+        "fixture_match_001",
+        "104",
+        "1",
+        "201000",
+        "shot_clock_reset",
+        "home",
+        "7",
+        "3",
+        "home_p1",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ],
+      "after": [
+        "fixture_match_001",
+        "104",
+        "1",
+        "202000",
+        "shot_clock_reset",
+        "home",
+        "7",
+        "3",
+        "home_p1",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ]
+    }
+  },
+  "overtime": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 479,
+    "after_events": 374,
+    "first_divergence": {
+      "before": [
+        "fixture_match_001",
+        "59",
+        "1",
+        "121000",
+        "shot_clock_reset",
+        "away",
+        "4",
+        "1",
+        "away_p2",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ],
+      "after": [
+        "fixture_match_001",
+        "59",
+        "1",
+        "122000",
+        "shot_clock_reset",
+        "away",
+        "4",
+        "1",
+        "away_p2",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ]
+    }
+  },
+  "offensive_rebound": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 1214,
+    "after_events": 1246,
+    "first_divergence": {
+      "before": [
+        "fixture_match_001",
+        "32",
+        "1",
+        "272000",
+        "shot_clock_reset",
+        "away",
+        "2",
+        "1",
+        "away_p3",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ],
+      "after": [
+        "fixture_match_001",
+        "32",
+        "1",
+        "273000",
+        "shot_clock_reset",
+        "away",
+        "2",
+        "1",
+        "away_p3",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ]
+    }
+  },
+  "foul_free_throw": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 477,
+    "after_events": 477,
+    "first_divergence": null
+  },
+  "substitution_foul_out": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 1142,
+    "after_events": 1162,
+    "first_divergence": {
+      "before": [
+        "fixture_match_001",
+        "337",
+        "2",
+        "148009",
+        "shot_clock_reset",
+        "home",
+        "22",
+        "1",
+        "home_p10",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ],
+      "after": [
+        "fixture_match_001",
+        "337",
+        "2",
+        "149009",
+        "shot_clock_reset",
+        "home",
+        "22",
+        "1",
+        "home_p10",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "0",
+        "14000",
+        ""
+      ]
+    },
+    "linked_checkouts": [
+      {
+        "foulout": 334,
+        "checkout": 335,
+        "player": "away_p4"
+      },
+      {
+        "foulout": 736,
+        "checkout": 737,
+        "player": "away_p14"
+      },
+      {
+        "foulout": 802,
+        "checkout": 803,
+        "player": "away_p8"
+      },
+      {
+        "foulout": 892,
+        "checkout": 893,
+        "player": "away_p5"
+      },
+      {
+        "foulout": 981,
+        "checkout": 982,
+        "player": "away_p10"
+      },
+      {
+        "foulout": 1058,
+        "checkout": 1059,
+        "player": "away_p1"
+      },
+      {
+        "foulout": 1102,
+        "checkout": 1103,
+        "player": "home_p10"
+      }
+    ]
+  },
+  "late_game": {
+    "comparison": "same original fixture/seed; overtime replacement documented separately",
+    "before_events": 494,
+    "after_events": 494,
+    "first_divergence": null,
+    "verified_one_and_one_trips": [
+      {
+        "award_sequence": 47,
+        "team_fouls": 2,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 69,
+        "team_fouls": 3,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 100,
+        "team_fouls": 4,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 134,
+        "team_fouls": 2,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 172,
+        "team_fouls": 5,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 278,
+        "team_fouls": 1,
+        "first_made": true,
+        "attempts": 2
+      },
+      {
+        "award_sequence": 381,
+        "team_fouls": 1,
+        "first_made": true,
+        "attempts": 2
+      }
+    ]
+  }
+}

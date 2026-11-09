@@ -1,0 +1,229 @@
+{
+  "verdict": "ACCEPT exact observed raw-row replay",
+  "cells": 20,
+  "games": 80,
+  "summary_sha256": "80af8ff4d4c6d31c517b1666a16def9261a9dd3fd45408833322c7088bc0b0b5",
+  "checked_cells": [
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "home"
+      ],
+      "result_sha256": "ee31c476b9e79ff2c41da930d945bab023cf26ee70e35a83507c23eb0faee6b6",
+      "command_sha256": "b21948615fe6645b2d7d5f7f5693c820e3be51664c1f5b91b38c6f47ee962c19",
+      "raw_sha256": "d216c69d0e943a4ee12d052cb7ba50b792570ca66912d99310625f8ced5c7aba"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "neutral"
+      ],
+      "result_sha256": "b5b74471eb9d3026327cfdca9199686d96b3404ca17013268f6af76ce238bc71",
+      "command_sha256": "82f9aa71045b645e16cfbf9586b0aa8c7bbef78e5bf27f0888b189563da722e0",
+      "raw_sha256": "006fdf1e5546082a9eb13f31d612ea6ccc35c675f36f2f1de8c6924cd558e67e"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "home"
+      ],
+      "result_sha256": "b7c919caaa5462821cd7f8d07dd51e1f43e26673f4b947abb0e6884c31ba39c3",
+      "command_sha256": "5559819557ae1e1643ee3b63ebfade9e3cadc1fb358ba20c63cb2b64a617c96e",
+      "raw_sha256": "e2eec98dabba3aba94f0842143ea6b7d0023858c609fa98e3ce2fe825e65d24f"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "neutral"
+      ],
+      "result_sha256": "4c539e98d4196be08a465006873d0222f0866d3be3d70102601d724aaa04e587",
+      "command_sha256": "736a3d66537636cdb6b1f390cbe271fb538eb78131d16e04efc6eabd9150418e",
+      "raw_sha256": "dc2d3241346f53d8795d643c98421273b08066dcdb3476ffa152cdb29763b63c"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "home"
+      ],
+      "result_sha256": "232c5b7cd724fc3329e21c8d4d04eb032221c85b6a4333ab7c92badc980760ae",
+      "command_sha256": "021e86764b533b723162c434682363d3f19281dd6f7ba82939a47c43727e80fb",
+      "raw_sha256": "0b0a0a8f99c29bcf37a424e2dcf5993a150aea9f5b4917e41e8fdf99306d238d"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "neutral"
+      ],
+      "result_sha256": "7bd3c949bdbe46b72c890466472ed1e660c555cd3760205aab7bef860fa78cc0",
+      "command_sha256": "71c10a261d1f774858cb6f490bac6ef4174b8c8876027649e314d96deeccef22",
+      "raw_sha256": "ab2f14d6e7fbb28c5099818251ff4c4f2a9575e353c99df025977c7460928692"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "home"
+      ],
+      "result_sha256": "7ff50059d3d0450f69bf5ec48238c7be3de72a51944c3a3ed65ef4fc9446324a",
+      "command_sha256": "19642d0f2220f1608ad7f717dfc3a6189c0e81c83db3e492a33c12b5daf99cbb",
+      "raw_sha256": "cfc1f7582d1438de049faf95f3dda8fb61927a056e517b4c1d98ae7264ab39e7"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "neutral"
+      ],
+      "result_sha256": "81301073cb41af57e4683471baacd3b841cba32e6185669adabb7043bc78ec68",
+      "command_sha256": "be0ba53f3f8c1dfad81d534bd39d309aef7f5a9d39209b5b603734a7ceb27f65",
+      "raw_sha256": "e9bdd6375b0e7190d1bf49a154c9e06be5bb68e70079e117ccfd7ec944e0ff0b"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "home"
+      ],
+      "result_sha256": "7b52e5e571007b01b0ca86f3847bfb621b0c23197ea5f0ce92badf60dd587018",
+      "command_sha256": "246cb81e3a62143518e1a66047af7c08fe272fbe8c78c2664e7665f61c15ab81",
+      "raw_sha256": "96ef81c02d033dd21f9dd97727c545e652c165251ff2e6b3823ae0fe466fde9b"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "result_sha256": "d6913bef04f5ee0c69874891244ffb2b8315f0e166a6bccc3ae40a3d5af6c0b4",
+      "command_sha256": "11654d183f056cfa434414bbfa928446376711eef5bb0b35f41e56f1aa61b0c4",
+      "raw_sha256": "0ed2bf1bbb9456d3341f3f9e35f751da148af4f30fe302a11c7cce636c15861f"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "home"
+      ],
+      "result_sha256": "60c521e27d87050190b5569fc19d58319411f223115d86961a31cee189ecb1d7",
+      "command_sha256": "c26c6ca272aef879edaccc4befb6e8f9134b9f40e987ecd65054dab28ecae00e",
+      "raw_sha256": "57ebeb5da170020343353662af07fc076382c30690b54504c833d855b0594627"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "neutral"
+      ],
+      "result_sha256": "31f839702897268aee242582d5fd77614d12d8033c71c1118f3fc42ece3dbfd9",
+      "command_sha256": "ff1e47b1d2e9605a86a8998789d9d9717fcfd2eee476532b5053cc936b91f51e",
+      "raw_sha256": "f14719e53fcce790ed26d06ae3ab4c62ea06d7667ee943a01130e453d53b6ec9"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "home"
+      ],
+      "result_sha256": "06c675a7eef94ccca8b9777abd413d742c7274ede25500a9f187adb72d4b225a",
+      "command_sha256": "b9c6b9390286a1a35def7c5243fe9af8188799b4e943969e2741f51085b0c7ed",
+      "raw_sha256": "1c80c519a0a9ae741cecc0dd3e9ce6abb39c602d149745c01ffda262b982a318"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "neutral"
+      ],
+      "result_sha256": "72ffdcf808f25b43e0bd9b4b8468529c943f50ca1f231abc413ef1a7e142d2f8",
+      "command_sha256": "f6a008262122676e48c7bbd842e63e85dbb5ef722a3a713886022816ab3fc41e",
+      "raw_sha256": "3acf639a4a5742d875c83b491ea30a6f5d8512d1f896daed5a75e92cf777bdbc"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "home"
+      ],
+      "result_sha256": "c3d60687e609a8ee7613acde62a25ebcbaffba29bf5a77f3c1f8a6c5618adc9c",
+      "command_sha256": "80880f4500ec2660d5b989eecd2ff5f9b0093d5d33c6651266ef3f6b7e018940",
+      "raw_sha256": "2096f76d4ae384814c4ce89ac68c67813f606dd3767c7de53af7d0a0791e65e6"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "neutral"
+      ],
+      "result_sha256": "0d6b7eac623e2b2a3fd7b9a4fd87749d7cfa9452e8865ed014dba732a6c1adf7",
+      "command_sha256": "e56a311082162bfa10383eab6ade1e9ca4290d32a090485e4cf057be158c781e",
+      "raw_sha256": "6d3ba91e0d5aa5ffeff218f99833c3d0ea6115aa9cb79ada4ae3938a2e01fd89"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "home"
+      ],
+      "result_sha256": "0f731663dc09ad3ffd95504a81678744d8f56b6f191c7d03c2f7807e7cde9987",
+      "command_sha256": "61088035238a5a4aa76843ae9e9c375a305072938c7469fc2a616e693f32d570",
+      "raw_sha256": "78383d4eb6315c58cdb51a3ad39ca148d1348947df5f6a5de9ddaab526506f06"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "neutral"
+      ],
+      "result_sha256": "9b2b7ff067a3177703910e2a9bb9c3d92fada26b05fa3ce4d1ca655d6612e13f",
+      "command_sha256": "51b9cf0f9fd399f05554dc11c11abb380ec886efceebcfcfa6ff7be665ff972b",
+      "raw_sha256": "f714821410303f7b56df8bcf5768f03b90e6573822d6b6c21b90b96ae8b88932"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "home"
+      ],
+      "result_sha256": "7ff1b0d71ad442a207198483b8105b13e86dea1912a616391d8557cea8fe5d2a",
+      "command_sha256": "2bddf2c54be476276b79f31ba58569357874c7a5fa0f6219ea5923acce3dd2d1",
+      "raw_sha256": "d305cb4d3d8b387f45d676a6a58a8f158c048a2fd14c3fb4cc8eb854fdf4e444"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "result_sha256": "cc3e4ad47ba7ca6020b2592b1cad3b4896b5ca5a88afc3f6a5b6e90c5e983ae9",
+      "command_sha256": "b1ee7119e091ad0176aa776650124d4866be27fdc2fa2b74ade30030e2129c0f",
+      "raw_sha256": "df007520d1776941a8f11cc1c5c7298ed4ecac16b6caeadbee507bacdaf65a3c"
+    }
+  ],
+  "scope": "Complete canonical per-game raw rows exactly match archived prefixes. This is not event-ledger-byte replay and is not additional calibration evidence."
+}

@@ -50,8 +50,13 @@ func crashes(
 		context.offense.game_plan.crash_instruction)
 	var role: float = _balance.role_opportunity(
 		player.tactical_role.role, ActionFamily.Value.PUTBACK)
+	# §18.2 score and time, applied to the offensive glass. A team protecting a
+	# lead sends nobody to it and retreats instead; a team chasing one sends more.
+	# This is a coaching decision about where five players stand, and it changes
+	# no rebounding probability for anybody who does go.
 	var share: float = clampf(
-		_balance.crash_share_base * tendency * coach * role,
+		_balance.crash_share_base * tendency * coach * role
+		* GameManagement.crash_multiplier(context, _balance),
 		_balance.crash_share_min,
 		_balance.crash_share_max)
 	return random_source.next_float() < share

@@ -1,0 +1,10 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+regulation             seed=20260815   3fea5362a2683415eeed3094b71a3238f19b2ac4601827f7fb935f56783a450f  43-34  events=1182
+overtime               seed=7919       815f21da0b417e69890da0530bc3efbbec12b2251db06f236602610b22b6cd7c  15-12  events=374
+offensive_rebound      seed=7001       20c17da40ed0df768a40dfa609580e907b1a3a57e338782338041ab7895834d8  43-25  events=1246
+foul_free_throw        seed=4242       50a1b2214b4f16008860b58b40808044f44dd6401ed073aca63c35747d3b50c1  23-18  events=477
+substitution_foul_out  seed=31337      7147173388013ca747de36108311fbe0ab08a56fcb37e60f2aa27cf4e4e1d3fb  41-24  events=1162
+late_game              seed=8675309    421b3d7354073ec02b24c1fc076aeb03d29fae0885b40908695d0c49251f2beb  30-16  events=494
+SCENARIO: scenario 'overtime' no longer produces at least one overtime period
+Golden scenarios no longer cover what they claim; fix the fixture or the seed.

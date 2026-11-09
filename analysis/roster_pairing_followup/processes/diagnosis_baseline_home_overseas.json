@@ -1,0 +1,33 @@
+{
+  "cell": [
+    "diagnosis",
+    "baseline",
+    "overseas",
+    "home"
+  ],
+  "args": [
+    "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-roster-baseline-11c4eae",
+    "--script",
+    "res://calibration/runners/run_roster_pairing_followup.gd",
+    "--",
+    "--games=468",
+    "--competition=overseas",
+    "--shard=50000",
+    "--shards=50001",
+    "--environment=0.5",
+    "--label=diagnosis_baseline_home_overseas"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 1582.5496673583984,
+  "started_unix": 1790098411.0424194,
+  "source_hashes": {
+    "calibration/targets/competition_catalog.gd": "7289331d4cd9eb028940072c98e3503f9f9a45431e55a93795a9c7bea555b0be",
+    "calibration/runners/run_roster_pairing_followup.gd": "b50ac6884fb0e3c99c28f864e098ba2dcb825de7c62f09f329a26bd965a6faed",
+    "src/domain/basketball/config/competition_rule_profile.gd": "6907c519b9fc9a31db5f37df93f38917938488b196e89034b46a7e6d3707bc3d"
+  },
+  "raw_sha256": "7deabd306456eda0339f587ddcb08ba3634cc1c75d9ffef621f3c99564431bfd",
+  "report_sha256": "da7fc7aabf09c0bb300ad783e399290a02d9c9599d00d65ae04dcbd7e0595636"
+}

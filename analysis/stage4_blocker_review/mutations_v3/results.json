@@ -1,0 +1,113 @@
+{
+  "source_sha256": "0de89e1dcb21f2e0ab4a55ab33ec9c679700df84dbcac4d657b6d0effe5658a1",
+  "test_source_sha256": "f8d18b5c9e600659a4e4fe6afeb3c40aa0ffe54cce67bbc7d109fff472109ab2",
+  "driver_sha256": "80ec222a3c34e28158e7f555d0f519e6461f559c7b59ed48a65e34ec3c7668ef",
+  "node_version": "v24.13.1",
+  "clean_before": 0,
+  "clean_after": 0,
+  "clean_before_log_sha256": "4683166a325060b8d76923abae67fa1498411365041e9b7c51b8790625e74505",
+  "clean_after_log_sha256": "cfe76290657be8434b762095a3883a1a2f926f1c62c1c83845907a17e9f256bf",
+  "killed": 10,
+  "results": [
+    {
+      "id": "denominator_guard",
+      "intended_test": "invalid denominator is rejected",
+      "needle": "assert.ok(Number.isFinite(a.denominator) && a.denominator > 0, 'positive finite denominator');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/denominator_guard.log",
+      "log_sha256": "f46398170858324c9e27b75f301b0bc56c0a26fb81aa48a18026d57ba044ae04"
+    },
+    {
+      "id": "duplicate_metric",
+      "intended_test": "duplicate metrics are rejected",
+      "needle": "assert.ok(!seen.has(m.metric), 'unique metric ids');",
+      "replacement": "if (seen.has(m.metric)) continue;",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/duplicate_metric.log",
+      "log_sha256": "6e819fb1dd66e1add0b75fc56796638d568d90891c814e63809b6fe73d78f8cf"
+    },
+    {
+      "id": "verdict_guard",
+      "intended_test": "changed verdict is rejected for its target",
+      "needle": "assert.equal(m.verdict, verdict, 'canonical verdict matches unchanged target');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/verdict_guard.log",
+      "log_sha256": "19a3a350c7a4183994c8b2f2d883ae52ccd2894dd0e62eda2f621f85ec4a5e8e"
+    },
+    {
+      "id": "target_guard",
+      "intended_test": "changed target is rejected against the reference",
+      "needle": "assert.deepEqual(m.target, refs.get(m.metric).target, 'locked target unchanged');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/target_guard.log",
+      "log_sha256": "9f83ad4a1dc70dfe3181fe8a56b77993a8315f4dd3f5fe02cb10bcf6ffbacd3f"
+    },
+    {
+      "id": "duplicate_seed",
+      "intended_test": "duplicate seeds are rejected",
+      "needle": "assert.ok(!seen.has(r.seed), 'duplicate seeds rejected');",
+      "replacement": "if (seen.has(r.seed)) continue;",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/duplicate_seed.log",
+      "log_sha256": "b17f27d765e4dcb13147fd14b4af0649a982f92a2d9ce0badaeeca3a8a7df9c5"
+    },
+    {
+      "id": "opener_guard",
+      "intended_test": "broken opener and roster pairings are rejected",
+      "needle": "assert.equal(r.opening_home, r.variation % 2 === 0, 'balanced opener');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/opener_guard.log",
+      "log_sha256": "67018c8191112708e96d3003aaabdec84f04d5129ba75edb6dbc0238f0bc7675"
+    },
+    {
+      "id": "ratio_scale",
+      "intended_test": "raw totals use weighted denominator, never a mean of rates",
+      "needle": "return (a.scale ?? 1) * a.numerator / a.denominator;",
+      "replacement": "return a.numerator / a.denominator;",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/ratio_scale.log",
+      "log_sha256": "d91c26556879ac504465d37378c0dc6a3fd7b754c55f915905ab01c5bc942b62"
+    },
+    {
+      "id": "venue_sign",
+      "intended_test": "venue uses symmetrized triples and rejects duplicates",
+      "needle": "marginSum += 0.5 * (r.home_margin + r.reversed_margin);",
+      "replacement": "marginSum += 0.5 * (r.home_margin - r.reversed_margin);",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/venue_sign.log",
+      "log_sha256": "54f6448e5eb90e4cd598c7d97c757ba33b5247c5cfa0febf5374616119b1739b"
+    },
+    {
+      "id": "venue_duplicate",
+      "intended_test": "venue uses symmetrized triples and rejects duplicates",
+      "needle": "assert.ok(!seen.has(r.fixture), 'unique venue fixture');",
+      "replacement": "",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/venue_duplicate.log",
+      "log_sha256": "41c6b9868a59a571add614692a6d5c0908a9cd819288f3de8e2b79214558cf27"
+    },
+    {
+      "id": "Wilson_center",
+      "intended_test": "probability reproducer preserves actual and correct Wilson endpoints",
+      "needle": "const center = (p + z2 / (2 * trials)) / divisor;",
+      "replacement": "const center = p;",
+      "exit_code": 1,
+      "killed": true,
+      "log_path": "analysis/stage4_blocker_review/mutations_v3/Wilson_center.log",
+      "log_sha256": "593803f287e6f9182b598a5bd86c42c114342afdf0914c06f9b55e84c25f8811"
+    }
+  ]
+}

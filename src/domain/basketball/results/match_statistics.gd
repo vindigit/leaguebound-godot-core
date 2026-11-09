@@ -80,6 +80,7 @@ func reconcile() -> PackedStringArray:
 			totals.offensive_rebounds += line.offensive_rebounds
 			totals.defensive_rebounds += line.defensive_rebounds
 			totals.assists += line.assists
+			totals.assisted_field_goals_made += line.assisted_field_goals_made
 			totals.steals += line.steals
 			totals.blocks += line.blocks
 			totals.turnovers += line.turnovers
@@ -94,6 +95,14 @@ func reconcile() -> PackedStringArray:
 		_require(failures, team.team_id, "offensive rebounds", team.offensive_rebounds, totals.offensive_rebounds)
 		_require(failures, team.team_id, "defensive rebounds", team.defensive_rebounds, totals.defensive_rebounds)
 		_require(failures, team.team_id, "assists", team.assists, totals.assists)
+		_require(failures, team.team_id, "assisted field goals made",
+			team.assisted_field_goals_made, totals.assisted_field_goals_made)
+		# §11.3: a made field goal has at most one assister, and only a make
+		# carrying a recorded creator can have one at all.
+		if team.assists > team.assisted_field_goals_made:
+			failures.append(
+				"team %s has %d assists against %d made field goals with a recorded creator"
+					% [team.team_id, team.assists, team.assisted_field_goals_made])
 		_require(failures, team.team_id, "steals", team.steals, totals.steals)
 		_require(failures, team.team_id, "blocks", team.blocks, totals.blocks)
 		_require(failures, team.team_id, "turnovers", team.turnovers, totals.turnovers)

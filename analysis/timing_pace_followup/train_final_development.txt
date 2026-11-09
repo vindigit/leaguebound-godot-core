@@ -1,0 +1,48 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+  development 25/200 pace=1.009000
+  development 50/200 pace=1.009000
+  development 75/200 pace=1.009000
+  development 100/200 pace=1.009000
+  development 125/200 pace=1.009000
+  development 150/200 pace=1.009000
+  development 175/200 pace=1.009000
+  development 200/200 pace=1.009000
+
+  competition          poss    pts    PPP    FG%    3P%   3PAr    FT%   FTAr    TOV   ORB%   AST%     PF   STL   BLK
+  development          94.3  102.7  1.089   43.1   35.0   35.2   75.6   22.4   15.2   24.8   53.7   21.1   6.7   4.3
+
+  home win rate / overtime / close / blowout, by competition:
+  development          58.0%    1.0%   24.5%   17.5%
+
+=== Competition basketball calibration ===
+  commit=76ce60c6b14b92afb12531291a309ff9bf9d8b45 godot=4.7.1-stable (official) build=editor-debug (asserts active) rules=domestic_development/competition-v2-stopped-clock-pace balance=simulation_baseline/simulation-v17-stopped-foul-clock-and-live-rebound ratings=ratings-v1 targets=calibration-targets-v1 rng=godot-pcg32-v1+sha256-stream-key-v1 seeds=shard 85000 of 85001, seeds 17000001..17000200 inclusive n=200 complete games per competition elapsed=559854ms rate=0.4/s
+  note: §27.1 certification sample is 100000 complete games per competition; this run used 200.
+  note: Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id.
+
+  sample.meets_certification_size                            0.0000  target[1.0000, 1.0000]  FAIL
+  development.possessions_per_game                          94.2800 ±0.2798  target[88.0000, 101.0000]  PASS
+  development.possession_estimate_per_game                 100.2391  INFORMATIONAL
+  development.points_per_game                              102.6525 ±1.1774  INFORMATIONAL
+  development.points_per_possession                          1.0888 ±0.0121  target[1.0000, 1.1200]  PASS
+  development.field_goal_percentage                          0.4306 ±0.0050  target[0.4300, 0.5000]  PASS
+  development.three_point_percentage                         0.3500 ±0.0084  target[0.3100, 0.3800]  PASS
+  development.three_point_attempt_rate                       0.3521 ±0.0050  target[0.3200, 0.4700]  PASS
+  development.free_throw_percentage                          0.7559 ±0.0094  target[0.6800, 0.8000]  PASS
+  development.free_throw_attempt_rate                        0.2243 ±0.0043  target[0.1800, 0.3600]  PASS
+  development.turnovers_per_100_possessions                 15.2180  target[14.0000, 20.0000]  PASS
+  development.offensive_rebound_percentage                   0.2478 ±0.0061  target[0.2300, 0.3300]  PASS
+  development.assist_percentage                              0.5370 ±0.0079  target[0.4800, 0.6900]  PASS
+  development.home_win_rate                                  0.5800 ±0.0678  target[0.5300, 0.5600]  FAIL
+  development.overtime_rate                                  0.0100 ±0.0165  target[0.0400, 0.0800]  FAIL
+  development.close_game_rate                                0.2450 ±0.0592  target[0.2200, 0.3400]  PASS
+  development.blowout_rate                                   0.1750 ±0.0525  target[0.0800, 0.1800]  PASS
+  development.starter_mean_minutes                          29.3493 ±0.2191  INFORMATIONAL
+  development.team_leading_scorer_mean                      20.7950 ±0.3955  INFORMATIONAL
+  development.team_leading_scorer_p99                       31.0100  INFORMATIONAL
+
+  report: res://reports/competition_calibration_train_final_development.json
+  FAIL sample.meets_certification_size: estimate 0.0000 outside BALANCE_SPEC.md §27.1 target [1.0000, 1.0000]
+  FAIL development.home_win_rate: estimate 0.5800 outside BALANCE_SPEC.md §14.2 target [0.5300, 0.5600]
+  FAIL development.overtime_rate: estimate 0.0100 outside BALANCE_SPEC.md §14.2 target [0.0400, 0.0800]
+  20 metric(s), 15 judged, 3 failure(s): FAIL

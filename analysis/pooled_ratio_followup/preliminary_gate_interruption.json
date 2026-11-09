@@ -1,0 +1,10 @@
+{
+  "reason": "Preliminary gate interrupted after independent review identified remaining console, margin runner and metric-reuse defects. Restart full gate after regression and correction; this is not a test failure or gate verdict.",
+  "time_utc": "2026-11-09T15:53:16.5185415Z",
+  "process_id": 112532,
+  "parent_id": 45540,
+  "command": "C:\\Users\\valexander\\Downloads\\Godot_v4.7.1-stable_win64.exe\\Godot_v4.7.1-stable_win64.exe --path . -s -d --remote-debug tcp://127.0.0.1:0 res://addons/gdUnit4/bin/GdUnitCmdTool.gd --headless --ignoreHeadlessMode --add res://tests",
+  "preliminary_log": "reports/interval_full_gate_interrupted.log",
+  "log_sha256": "88ef2bf76dffc3c99a273ff449ea0162609557f04843c77a298bfafac8e47bee",
+  "launcher_exit": 127
+}

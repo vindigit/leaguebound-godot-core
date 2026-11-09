@@ -1,0 +1,79 @@
+{
+  "version": "ovr-cap-ordering-owner-v1",
+  "execution_head": "dfe2b4f62f62228c985a21f60107960e180c2eaa",
+  "godot_version": "4.7.1.stable.official.a13da4feb",
+  "classification": "Explicit owner decision: BALANCE_SPEC6.3 exact-cap potential plus universal ordering conflict with8.3 permitted caps below current.",
+  "production_behavior_changed": false,
+  "fixture_kind": "Domain-level uniform80 arithmetic counterexample; not proven natural/Builder lifecycle reachability.",
+  "attributes": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+  ],
+  "original_caps": [
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
+  ],
+  "permitted_injury_cap_changes": [
+    {
+      "attribute": "speed",
+      "from": 80,
+      "to": 72
+    },
+    {
+      "attribute": "stamina",
+      "from": 80,
+      "to": 72
+    }
+  ],
+  "current_raw": 80,
+  "current_display": 80,
+  "potential_raw": 79.21333333333332,
+  "potential_display": 79,
+  "consumer_result": "Expected logged assertion at DevelopmentProjection._init line41; object returned partly initialized with default0/0; process exit0 does not establish success.",
+  "normal_runtime_gate": false,
+  "mutation_kill": false,
+  "retained_probe_log": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org\r\n\r\nOWNER_CONTRACT_EXAMPLE current=80 exact_cap_potential=79 injury_entries=2\r\nSCRIPT ERROR: Assertion failed: CurrentOverall <= MaximumPotentialOverall must always hold (§6.3 rule 4)\r\n   at: DevelopmentProjection._init (res://src/domain/basketball/ratings/development_projection.gd:41)\r\n   GDScript backtrace (most recent call first):\r\n       [0] _init (res://src/domain/basketball/ratings/development_projection.gd:41)\r\n       [1] _init (res://tools/ovr_cap_ordering_probe.gd:19)\r\nOWNER_CONTRACT_PROBE_RETURNED defaults=0/0\r\n",
+  "source_sha256": {
+    "tools/ovr_cap_ordering_probe.gd": "4a050a5566bceda461ec9c341098f308c9206121f168073eeecd123fc7c34d0b",
+    "tools/ovr_cap_ordering_probe.gd.uid": "1457f34ead3c12c35b1ba01074e7261fc34abdf4b37bad257405182de5c87ff7",
+    "src/domain/basketball/ratings/development_projection.gd": "b269ed7f9e366df89affdae9cc59963c74c4e167c02e4242c5f19bd04a8c3d41",
+    "src/domain/basketball/ratings/overall_calculator.gd": "3d2a6b23fa6802c2b308ce2ff77644e97cd981efdf9407364e53da9991a24bc7",
+    "analysis/ovr_truthfulness_followup/cap_ordering_probe.log": "5d37c8346bf4f34b2e3cdb825265e7ccaf947251adfe046df5235c1866676f20"
+  }
+}

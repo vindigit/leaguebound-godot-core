@@ -1,0 +1,50 @@
+{
+  "schema": "leaguebound.stage4.analysis-test-proof/1",
+  "captured_utc": "2026-10-01T04:46:54.8424665Z",
+  "head": "bdeb425b40dfe1d4b80602cd07f3ae9ae8c7c80e",
+  "node": "24.13.1",
+  "python": "3.12.14",
+  "total_cases": 54,
+  "reports": [
+    {
+      "label": "blocker",
+      "command": "& 'C:\\nvm4w\\nodejs\\node.exe' --test tests/tooling/test_stage4_blocker_audit.cjs",
+      "cases": 13,
+      "exit_code": 0,
+      "log_sha256": "19a981706165d3e9ca2ae562ce1abe46a15991580e6fb15759279d28a8693c23",
+      "source": "tools/stage4_blocker_audit.cjs",
+      "source_sha256": "0de89e1dcb21f2e0ab4a55ab33ec9c679700df84dbcac4d657b6d0effe5658a1",
+      "test_source": "tests/tooling/test_stage4_blocker_audit.cjs",
+      "test_source_sha256": "f8d18b5c9e600659a4e4fe6afeb3c40aa0ffe54cce67bbc7d109fff472109ab2",
+      "portable_command": "node --test tests/tooling/test_stage4_blocker_audit.cjs",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe"
+    },
+    {
+      "label": "ovr",
+      "command": "& 'C:\\nvm4w\\nodejs\\node.exe' tests/tooling/test_ovr_truthfulness_analysis.cjs",
+      "cases": 31,
+      "exit_code": 0,
+      "log_sha256": "add2e43c286b4935fcefc52dede6e0c2fec2a1213e3e901700d2cb740090fd5b",
+      "source": "analysis/ovr_truthfulness_followup/analyze.cjs",
+      "source_sha256": "5b41d2cfdf3ac578d421569dd98a1a0fdbabffa949a26b8e662f77ac8c797424",
+      "test_source": "tests/tooling/test_ovr_truthfulness_analysis.cjs",
+      "test_source_sha256": "9dc13e93eb2a307a32e5c96dc635136c6000a868c83a7f663d10651d47187b8b",
+      "portable_command": "node tests/tooling/test_ovr_truthfulness_analysis.cjs",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe"
+    },
+    {
+      "label": "builder",
+      "command": "& 'C:\\Users\\valexander\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe' analysis/builder_dominance_followup/test_analysis.py",
+      "cases": 10,
+      "exit_code": 0,
+      "log_sha256": "f53769fc593dba93c7f15fee3481bb6dc27b7f32b25fc17ba55bdb2280dfd2a6",
+      "source": "analysis/builder_dominance_followup/analyze.py",
+      "source_sha256": "235d05b56cd8b77f4f9217061effd78eac4e858f3c6fada7aacde8b43e8fdbc0",
+      "test_source": "analysis/builder_dominance_followup/test_analysis.py",
+      "test_source_sha256": "0070150d039b0fbd19e9033df5ec93a63706b980231107a80cecf51791b49f95",
+      "portable_command": "python3 analysis/builder_dominance_followup/test_analysis.py",
+      "executable": "C:\\Users\\valexander\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe"
+    }
+  ],
+  "execution_note": "Blocker13 and Builder10 retained from unchanged-source execution051; corrected OVR31 freshly re-executed at this captured head. Individual logs and source hashes retained."
+}

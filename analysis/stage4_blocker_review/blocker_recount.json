@@ -1,0 +1,4212 @@
+{
+  "schema": "leaguebound.stage4.blocker-recount/1",
+  "current": {
+    "metric_count": 98,
+    "judged": 74,
+    "recomputed": 92,
+    "failures": [
+      {
+        "metric": "sample.meets_certification_size",
+        "definition": "Whether this run reached the §27.1 sample size for a certifying competition report.",
+        "denominator": "boolean invariant",
+        "estimate": 0,
+        "sample_count": 40,
+        "verdict": "fail",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §27.1"
+        }
+      },
+      {
+        "metric": "high_school.field_goal_percentage",
+        "definition": "Field goals made divided by field goals attempted.",
+        "denominator": "field-goal attempts",
+        "estimate": 0.371484375,
+        "sample_count": 5120,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0120395046320392,
+          "low": 0.359444870367961,
+          "high": 0.383523879632039
+        },
+        "target": {
+          "minimum": 0.39,
+          "maximum": 0.47,
+          "source": "BALANCE_SPEC.md §14.1"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 1902,
+          "denominator": 5120,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "college.field_goal_percentage",
+        "definition": "Field goals made divided by field goals attempted.",
+        "denominator": "field-goal attempts",
+        "estimate": 0.402632597754549,
+        "sample_count": 5166,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0135833204923229,
+          "low": 0.389049277262226,
+          "high": 0.416215918246872
+        },
+        "target": {
+          "minimum": 0.42,
+          "maximum": 0.49,
+          "source": "BALANCE_SPEC.md §14.1"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 2080,
+          "denominator": 5166,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "college.three_point_percentage",
+        "definition": "Three-pointers made divided by three-pointers attempted.",
+        "denominator": "three-point attempts",
+        "estimate": 0.307649043869516,
+        "sample_count": 1778,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0214331399972914,
+          "low": 0.286215903872225,
+          "high": 0.329082183866808
+        },
+        "target": {
+          "minimum": 0.31,
+          "maximum": 0.38,
+          "source": "BALANCE_SPEC.md §14.1"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 547,
+          "denominator": 1778,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "college.home_win_rate",
+        "definition": "Home wins divided by games with a decided result.",
+        "denominator": "decided games",
+        "estimate": 0.4,
+        "sample_count": 40,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.145278904326145,
+          "low": 0.254721095673855,
+          "high": 0.545278904326145
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 16,
+          "denominator": 40,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "development.overtime_rate",
+        "definition": "Games reaching at least one overtime period, divided by games played.",
+        "denominator": "complete games",
+        "estimate": 0,
+        "sample_count": 40,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0438108012292318,
+          "low": -0.0438108012292318,
+          "high": 0.0438108012292318
+        },
+        "target": {
+          "minimum": 0.04,
+          "maximum": 0.08,
+          "source": "BALANCE_SPEC.md §14.2"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 0,
+          "denominator": 40,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "overseas.home_win_rate",
+        "definition": "Home wins divided by games with a decided result.",
+        "denominator": "decided games",
+        "estimate": 0.575,
+        "sample_count": 40,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.146477695546574,
+          "low": 0.428522304453426,
+          "high": 0.721477695546574
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 23,
+          "denominator": 40,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "overseas.overtime_rate",
+        "definition": "Games reaching at least one overtime period, divided by games played.",
+        "denominator": "complete games",
+        "estimate": 0,
+        "sample_count": 40,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0438108012292318,
+          "low": -0.0438108012292318,
+          "high": 0.0438108012292318
+        },
+        "target": {
+          "minimum": 0.04,
+          "maximum": 0.08,
+          "source": "BALANCE_SPEC.md §14.2"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 0,
+          "denominator": 40,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      },
+      {
+        "metric": "top_domestic_pro.overtime_rate",
+        "definition": "Games reaching at least one overtime period, divided by games played.",
+        "denominator": "complete games",
+        "estimate": 0.025,
+        "sample_count": 40,
+        "verdict": "fail",
+        "interval_95": {
+          "half_width": 0.0621934297140659,
+          "low": -0.0371934297140659,
+          "high": 0.0871934297140659
+        },
+        "target": {
+          "minimum": 0.04,
+          "maximum": 0.08,
+          "source": "BALANCE_SPEC.md §14.2"
+        },
+        "aggregation": {
+          "kind": "proportion",
+          "numerator": 1,
+          "denominator": 40,
+          "count": 0,
+          "sum": 0,
+          "sum_of_squares": 0,
+          "scale": 1,
+          "buckets": [],
+          "percentile_share": 0.5
+        }
+      }
+    ],
+    "total_games": 200,
+    "per_competition_games": 40,
+    "seed_range": {
+      "start": 1,
+      "end": 40
+    },
+    "context": {
+      "report_id": "competition_calibration",
+      "title": "Competition basketball calibration",
+      "commit_sha": "899a3972e48e8ce63de07b47b2e593e9c97df4d2",
+      "commit_note": "",
+      "godot_version": "4.7.1-stable (official)",
+      "build_mode": "editor-debug (asserts active)",
+      "rules_profile": {
+        "id": "high_school",
+        "version": "competition-v2-stopped-clock-pace"
+      },
+      "balance_profile": {
+        "id": "simulation_baseline",
+        "version": "simulation-v17-stopped-foul-clock-and-live-rebound"
+      },
+      "ratings_profile_version": "ratings-v1",
+      "targets_version": "calibration-targets-v1",
+      "rng": {
+        "algorithm": "godot-pcg32-v1",
+        "stream_key_version": "sha256-stream-key-v1"
+      },
+      "seeds": "shard 0 of 1, seeds 1..40 inclusive",
+      "seed_range": {
+        "start": 1,
+        "end": 40
+      },
+      "shard": {
+        "index": 0,
+        "count": 1
+      },
+      "competition": "",
+      "certification": {
+        "required_sample": 100000,
+        "source": "BALANCE_SPEC.md §27.1"
+      },
+      "sample_count": 200,
+      "sample_unit": "complete games per competition",
+      "elapsed_ms": 425848,
+      "throughput_per_second": 0.469651143130882,
+      "notes": [
+        "§27.1 certification sample is 100000 complete games per competition; this run used 40.",
+        "Rule profiles are per competition; the provenance block names the first only. Each metric row carries its own competition id."
+      ]
+    },
+    "note": "context.sample_count is total across competitions; the historical sample_unit says per competition. This audit uses table/metric counts. Intervals retained from canonical report, not certified."
+  },
+  "corrected": {
+    "validation_a": {
+      "high_school": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 28080000,
+        "last_variation": 28080467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 62354,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 66.6175213675214,
+            "verdict": "pass",
+            "target": {
+              "minimum": 61,
+              "maximum": 72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              66.3026812275168,
+              66.93236150752593
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 59550,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 63.6217948717949,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              62.9568038821307,
+              64.28678586145904
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 59550,
+            "denominator": 62354,
+            "scale": 1,
+            "estimate": 0.955030952304583,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.91,
+              "maximum": 1.05,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.9456627084220349,
+              0.964399196187132
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 22759,
+            "denominator": 59392,
+            "scale": 1,
+            "estimate": 0.383199757543103,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.39,
+              "maximum": 0.47,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.379215713076855,
+              0.3871838020093519
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 5835,
+            "denominator": 18981,
+            "scale": 1,
+            "estimate": 0.307412675833728,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.28,
+              "maximum": 0.36,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.30094994011724946,
+              0.31387541155020743
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 8197,
+            "denominator": 12234,
+            "scale": 1,
+            "estimate": 0.670017982671244,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.62,
+              "maximum": 0.76,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.6610347560188189,
+              0.6790012093236694
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 18981,
+            "denominator": 59392,
+            "scale": 1,
+            "estimate": 0.319588496767241,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.24,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.31549935673613155,
+              0.3236776367983512
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 12234,
+            "denominator": 59392,
+            "scale": 1,
+            "estimate": 0.205987338362069,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.20099885247867494,
+              0.21097582424546302
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 10247,
+            "denominator": 62354,
+            "scale": 100,
+            "estimate": 16.4335888635853,
+            "verdict": "pass",
+            "target": {
+              "minimum": 15,
+              "maximum": 24,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              16.136277161615315,
+              16.730900565555356
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8806,
+            "denominator": 34606,
+            "scale": 1,
+            "estimate": 0.254464543720742,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.25,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24999936872474243,
+              0.2589297187167417
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 11179,
+            "denominator": 22759,
+            "scale": 1,
+            "estimate": 0.491190298343512,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.42,
+              "maximum": 0.66,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.48434442748233164,
+              0.4980361692046933
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 236,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.504273504273504,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.4585907547345696,
+              0.549956253812439
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 17,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0363247863247863,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.01922426074390469,
+              0.05342531190566796
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 132,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.282051282051282,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.24103920980354346,
+              0.32306335429902067
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 50,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.106837606837607,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.07811536037660148,
+              0.1355598532986122
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "college": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 28080000,
+        "last_variation": 28080467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 63726,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 68.0833333333333,
+            "verdict": "pass",
+            "target": {
+              "minimum": 64,
+              "maximum": 73,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              67.79374155356477,
+              68.37292511310189
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 66481,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 71.0267094017094,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              70.40555987573701,
+              71.64785892768178
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 66481,
+            "denominator": 63726,
+            "scale": 1,
+            "estimate": 1.04323196183661,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.98,
+              "maximum": 1.1,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.0342375274126614,
+              1.0522263962605647
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 24637,
+            "denominator": 60045,
+            "scale": 1,
+            "estimate": 0.410308934965443,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.42,
+              "maximum": 0.49,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.40647434108194275,
+              0.4141435288489424
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 6595,
+            "denominator": 20229,
+            "scale": 1,
+            "estimate": 0.326017104157398,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.31,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.31943736561608804,
+              0.3325968426987076
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 10612,
+            "denominator": 14869,
+            "scale": 1,
+            "estimate": 0.713699643553702,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.67,
+              "maximum": 0.79,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7056648092061684,
+              0.7217344779012362
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 20229,
+            "denominator": 60045,
+            "scale": 1,
+            "estimate": 0.336897327004746,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.46,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3329300060550892,
+              0.3408646479544037
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 14869,
+            "denominator": 60045,
+            "scale": 1,
+            "estimate": 0.247630943459072,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24179844526942967,
+              0.25346344164871504
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 9952,
+            "denominator": 63726,
+            "scale": 100,
+            "estimate": 15.6168596805072,
+            "verdict": "pass",
+            "target": {
+              "minimum": 15,
+              "maximum": 21,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              15.357806801717352,
+              15.875912559296992
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8753,
+            "denominator": 34112,
+            "scale": 1,
+            "estimate": 0.256595919324578,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.24,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.25248428615098256,
+              0.2607075524981732
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 12915,
+            "denominator": 24637,
+            "scale": 1,
+            "estimate": 0.524211551731136,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.48,
+              "maximum": 0.68,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5175104525404908,
+              0.5309126509217814
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 245,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.523504273504274,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.4762979150554566,
+              0.5707106319530905
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 15,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.032051282051282,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.01684136172598486,
+              0.047261202376579235
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 115,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.245726495726496,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.20906727349673515,
+              0.2823857179562563
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 64,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.136752136752137,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.10284412868841551,
+              0.170660144815858
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "development": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 28080000,
+        "last_variation": 28080467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 88383,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 94.4262820512821,
+            "verdict": "pass",
+            "target": {
+              "minimum": 88,
+              "maximum": 101,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              94.06932323961942,
+              94.7832408629447
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 96794,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 103.412393162393,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              102.62181140738251,
+              104.20297491740381
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 96794,
+            "denominator": 88383,
+            "scale": 1,
+            "estimate": 1.09516535985427,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1,
+              "maximum": 1.12,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.087091183035408,
+              1.1032395366731331
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 36221,
+            "denominator": 83551,
+            "scale": 1,
+            "estimate": 0.433519646682864,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.43,
+              "maximum": 0.5,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.43012403153437473,
+              0.436915261831354
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 10179,
+            "denominator": 29083,
+            "scale": 1,
+            "estimate": 0.349998280782588,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.31,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.34470377690102316,
+              0.3552927846641524
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 14173,
+            "denominator": 18721,
+            "scale": 1,
+            "estimate": 0.757064259387853,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.68,
+              "maximum": 0.8,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7504669091074577,
+              0.7636616096682488
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 29083,
+            "denominator": 83551,
+            "scale": 1,
+            "estimate": 0.34808679728549,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.47,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3445939141487034,
+              0.3515796804222772
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 18721,
+            "denominator": 83551,
+            "scale": 1,
+            "estimate": 0.224066737681177,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.36,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.21907869439009772,
+              0.22905478097225582
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 13621,
+            "denominator": 88383,
+            "scale": 100,
+            "estimate": 15.4113347589469,
+            "verdict": "pass",
+            "target": {
+              "minimum": 14,
+              "maximum": 20,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              15.15133926147358,
+              15.671330256420134
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 11417,
+            "denominator": 44676,
+            "scale": 1,
+            "estimate": 0.25555107887904,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.23,
+              "maximum": 0.33,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.25090736530887736,
+              0.26019479244920307
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 19726,
+            "denominator": 36221,
+            "scale": 1,
+            "estimate": 0.544601198199939,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.48,
+              "maximum": 0.69,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5397527167686166,
+              0.5494496796312619
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 272,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.581196581196581,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.5359628702750052,
+              0.6264302921181573
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 14,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0299145299145299,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.013995440180438062,
+              0.04583361964862177
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 105,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.224358974358974,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.18213704000117223,
+              0.2665809087167765
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 94,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.200854700854701,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.16554428040024893,
+              0.2361651213091528
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "overseas": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 28080000,
+        "last_variation": 28080467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 70940,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 75.7905982905983,
+            "verdict": "pass",
+            "target": {
+              "minimum": 70,
+              "maximum": 82,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              75.52018462490841,
+              76.06101195628818
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 78506,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 83.8739316239316,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              83.15116736170788,
+              84.59669588615537
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 78506,
+            "denominator": 70940,
+            "scale": 1,
+            "estimate": 1.10665351000846,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1,
+              "maximum": 1.13,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.0975958425195649,
+              1.1157111774973507
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 29090,
+            "denominator": 66616,
+            "scale": 1,
+            "estimate": 0.436681878227453,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.43,
+              "maximum": 0.51,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.43308649084226025,
+              0.44027726561264546
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 8177,
+            "denominator": 23462,
+            "scale": 1,
+            "estimate": 0.348521012701389,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3431020664620465,
+              0.35393995894073244
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 12149,
+            "denominator": 15743,
+            "scale": 1,
+            "estimate": 0.771708060725402,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.69,
+              "maximum": 0.82,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7649591924354945,
+              0.778456929015309
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 23462,
+            "denominator": 66616,
+            "scale": 1,
+            "estimate": 0.352197670229374,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.3,
+              "maximum": 0.46,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3483604853719497,
+              0.35603485508679894
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 15743,
+            "denominator": 66616,
+            "scale": 1,
+            "estimate": 0.236324606701093,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.23081013865361444,
+              0.24183907474857125
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 10469,
+            "denominator": 70940,
+            "scale": 100,
+            "estimate": 14.7575415844376,
+            "verdict": "pass",
+            "target": {
+              "minimum": 13,
+              "maximum": 19,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              14.49440632416327,
+              15.020676844711835
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8937,
+            "denominator": 35269,
+            "scale": 1,
+            "estimate": 0.253395333011994,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.23,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.2491748809734306,
+              0.25761578505055643
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 15792,
+            "denominator": 29090,
+            "scale": 1,
+            "estimate": 0.542866964592644,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.5,
+              "maximum": 0.72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5367354873328644,
+              0.5489984418524226
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 249,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.532051282051282,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.48852795406621796,
+              0.5755746100363461
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 13,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0277777777777778,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.013479966199719102,
+              0.042075589355836454
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 112,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.239316239316239,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.19836689079988698,
+              0.2802655878325917
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 60,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.128205128205128,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.09694687531044491,
+              0.15946338109981148
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "top_domestic_pro": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 28080000,
+        "last_variation": 28080467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 92907,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 99.2596153846154,
+            "verdict": "pass",
+            "target": {
+              "minimum": 96,
+              "maximum": 103,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              98.98447825549694,
+              99.53475251373384
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 107721,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 115.086538461538,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              114.1713125115838,
+              116.00176441149313
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 107721,
+            "denominator": 92907,
+            "scale": 1,
+            "estimate": 1.159449772353,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1.08,
+              "maximum": 1.18,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.1505315061563302,
+              1.1683680385496662
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 40098,
+            "denominator": 88854,
+            "scale": 1,
+            "estimate": 0.451279627253697,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.45,
+              "maximum": 0.51,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.4478586015792776,
+              0.45470065292811657
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 11820,
+            "denominator": 31981,
+            "scale": 1,
+            "estimate": 0.36959444670273,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.34,
+              "maximum": 0.4,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.364549639342655,
+              0.37463925406280446
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 15705,
+            "denominator": 19563,
+            "scale": 1,
+            "estimate": 0.802790982978071,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.73,
+              "maximum": 0.83,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7970962088092122,
+              0.8084857571469295
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 31981,
+            "denominator": 88854,
+            "scale": 1,
+            "estimate": 0.359927521552209,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.36,
+              "maximum": 0.49,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.35679318549282385,
+              0.36306185761159465
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 19563,
+            "denominator": 88854,
+            "scale": 1,
+            "estimate": 0.220170166790465,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.21553527467184652,
+              0.22480505890908398
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 13123,
+            "denominator": 92907,
+            "scale": 100,
+            "estimate": 14.1248775657378,
+            "verdict": "pass",
+            "target": {
+              "minimum": 11,
+              "maximum": 16,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              13.886690269455684,
+              14.363064862019879
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 11658,
+            "denominator": 45626,
+            "scale": 1,
+            "estimate": 0.255512207951607,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.31,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.2514641318429379,
+              0.2595602840602752
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 22862,
+            "denominator": 40098,
+            "scale": 1,
+            "estimate": 0.570153124844132,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.52,
+              "maximum": 0.72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5649245452943977,
+              0.5753817043938659
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 247,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.527777777777778,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.48415728389410506,
+              0.5713982716614505
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 7,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.014957264957265,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.004167137214696271,
+              0.025747392699833643
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 91,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.194444444444444,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.15869991549929777,
+              0.23018897338959113
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 117,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.25,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.20752100430618997,
+              0.29247899569381003
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      }
+    },
+    "validation_b": {
+      "high_school": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 32760000,
+        "last_variation": 32760467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 62145,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 66.3942307692308,
+            "verdict": "pass",
+            "target": {
+              "minimum": 61,
+              "maximum": 72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              66.12621914698586,
+              66.66224239147569
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 59077,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 63.116452991453,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              62.42376458545204,
+              63.809141397453935
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 59077,
+            "denominator": 62145,
+            "scale": 1,
+            "estimate": 0.950631587416526,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.91,
+              "maximum": 1.05,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.9407880590788478,
+              0.960475115754204
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 22709,
+            "denominator": 59240,
+            "scale": 1,
+            "estimate": 0.383338960162053,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.39,
+              "maximum": 0.47,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3789893848729582,
+              0.3876885354511471
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 5686,
+            "denominator": 18847,
+            "scale": 1,
+            "estimate": 0.301692577067968,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.28,
+              "maximum": 0.36,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.29511704415873613,
+              0.3082681099772006
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 7973,
+            "denominator": 12026,
+            "scale": 1,
+            "estimate": 0.662980209545984,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.62,
+              "maximum": 0.76,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.654163161273836,
+              0.6717972578181314
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 18847,
+            "denominator": 59240,
+            "scale": 1,
+            "estimate": 0.318146522619851,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.24,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.314419099661585,
+              0.3218739455781179
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 12026,
+            "denominator": 59240,
+            "scale": 1,
+            "estimate": 0.203004726536124,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.19791943426830966,
+              0.20809001880393885
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 10173,
+            "denominator": 62145,
+            "scale": 100,
+            "estimate": 16.3697803524016,
+            "verdict": "pass",
+            "target": {
+              "minimum": 15,
+              "maximum": 24,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              16.056595935324275,
+              16.682964769479007
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8767,
+            "denominator": 34650,
+            "scale": 1,
+            "estimate": 0.253015873015873,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.25,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24896425580040313,
+              0.2570674902313429
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 11113,
+            "denominator": 22709,
+            "scale": 1,
+            "estimate": 0.489365449821657,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.42,
+              "maximum": 0.66,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.48305327106438395,
+              0.49567762857892933
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 246,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.525641025641026,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.4801905571501854,
+              0.5710914941318659
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 14,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0299145299145299,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.015148496262198639,
+              0.04468056356686119
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 146,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.311965811965812,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.27166407189378455,
+              0.3522675520378394
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 75,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.16025641025641,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.1296581525882416,
+              0.19085466792457895
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "college": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 32760000,
+        "last_variation": 32760467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 63806,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 68.1688034188034,
+            "verdict": "pass",
+            "target": {
+              "minimum": 64,
+              "maximum": 73,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              67.84822760502125,
+              68.48937923258559
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 66474,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 71.0192307692308,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              70.35955401110752,
+              71.67890752735403
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 66474,
+            "denominator": 63806,
+            "scale": 1,
+            "estimate": 1.04181424944363,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.98,
+              "maximum": 1.1,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.0326896692114902,
+              1.0509388296757618
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 24551,
+            "denominator": 60128,
+            "scale": 1,
+            "estimate": 0.408312267163385,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.42,
+              "maximum": 0.49,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.40451978233395774,
+              0.41210475199281177
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 6571,
+            "denominator": 20406,
+            "scale": 1,
+            "estimate": 0.32201313339214,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.31,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3149180083690098,
+              0.3291082584152693
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 10801,
+            "denominator": 15048,
+            "scale": 1,
+            "estimate": 0.717769803296119,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.67,
+              "maximum": 0.79,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.710799902334226,
+              0.7247397042580122
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 20406,
+            "denominator": 60128,
+            "scale": 1,
+            "estimate": 0.339375997871208,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.46,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3357834853268793,
+              0.3429685104155369
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 15048,
+            "denominator": 60128,
+            "scale": 1,
+            "estimate": 0.250266098988824,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24420846702074683,
+              0.25632373095690086
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 9834,
+            "denominator": 63806,
+            "scale": 100,
+            "estimate": 15.4123436667398,
+            "verdict": "pass",
+            "target": {
+              "minimum": 15,
+              "maximum": 21,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              15.150925951532743,
+              15.67376138194687
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8616,
+            "denominator": 34264,
+            "scale": 1,
+            "estimate": 0.251459257529769,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.24,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.2465351787406255,
+              0.2563833363189122
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 12768,
+            "denominator": 24551,
+            "scale": 1,
+            "estimate": 0.520060282676877,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.48,
+              "maximum": 0.68,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5137055738913621,
+              0.5264149914623912
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 257,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.549145299145299,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.5057437344362317,
+              0.5925468638543667
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 13,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0277777777777778,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.01118890342771272,
+              0.04436665212784283
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 138,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.294871794871795,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.25091291165331703,
+              0.33883067809027273
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 68,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.145299145299145,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.11541588725609904,
+              0.17518240334219157
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "development": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 32760000,
+        "last_variation": 32760467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 88446,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 94.4935897435897,
+            "verdict": "pass",
+            "target": {
+              "minimum": 88,
+              "maximum": 101,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              94.21634380006417,
+              94.77083568711531
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 96790,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 103.40811965812,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              102.62373190299223,
+              104.19250741324709
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 96790,
+            "denominator": 88446,
+            "scale": 1,
+            "estimate": 1.09434004929562,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1,
+              "maximum": 1.12,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.0866012087166361,
+              1.1020788898745948
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 36214,
+            "denominator": 83522,
+            "scale": 1,
+            "estimate": 0.433586360479874,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.43,
+              "maximum": 0.5,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.43061025769230354,
+              0.43656246326744363
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 10153,
+            "denominator": 29250,
+            "scale": 1,
+            "estimate": 0.347111111111111,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.31,
+              "maximum": 0.38,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.34189004122464167,
+              0.3523321809975805
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 14209,
+            "denominator": 18673,
+            "scale": 1,
+            "estimate": 0.760938253092701,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.68,
+              "maximum": 0.8,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7545738626109053,
+              0.7673026435744961
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 29250,
+            "denominator": 83522,
+            "scale": 1,
+            "estimate": 0.350207131055291,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.47,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.34672589468729526,
+              0.3536883674232864
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 18673,
+            "denominator": 83522,
+            "scale": 1,
+            "estimate": 0.223569837887024,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.36,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.21897492972416255,
+              0.22816474604988501
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 13550,
+            "denominator": 88446,
+            "scale": 100,
+            "estimate": 15.3200823101101,
+            "verdict": "pass",
+            "target": {
+              "minimum": 14,
+              "maximum": 20,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              15.10338634751338,
+              15.536778272706863
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 11265,
+            "denominator": 44649,
+            "scale": 1,
+            "estimate": 0.252301283343412,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.23,
+              "maximum": 0.33,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24827647836463265,
+              0.2563260883221913
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 19524,
+            "denominator": 36214,
+            "scale": 1,
+            "estimate": 0.539128513834429,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.48,
+              "maximum": 0.69,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5337979357488958,
+              0.5444590919199617
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 252,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.538461538461538,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.49963109426974084,
+              0.577291982653336
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 13,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0277777777777778,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.013479966199719102,
+              0.042075589355836454
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 113,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.241452991452991,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.202935322747161,
+              0.2799706601588219
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 95,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.202991452991453,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.16635698657018577,
+              0.2396259194127202
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "overseas": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 32760000,
+        "last_variation": 32760467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 70715,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 75.5502136752137,
+            "verdict": "pass",
+            "target": {
+              "minimum": 70,
+              "maximum": 82,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              75.27981259085028,
+              75.82061475957705
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 78145,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 83.4882478632479,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              82.73042374432885,
+              84.24607198216688
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 78145,
+            "denominator": 70715,
+            "scale": 1,
+            "estimate": 1.10506964576115,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1,
+              "maximum": 1.13,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.0961206543777222,
+              1.1140186371445857
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 28990,
+            "denominator": 66524,
+            "scale": 1,
+            "estimate": 0.435782574709879,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.43,
+              "maximum": 0.51,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.43212689318501174,
+              0.4394382562347465
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 8196,
+            "denominator": 23214,
+            "scale": 1,
+            "estimate": 0.353062806926854,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.32,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.3466555502731106,
+              0.35947006358059835
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 11969,
+            "denominator": 15534,
+            "scale": 1,
+            "estimate": 0.770503411870735,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.69,
+              "maximum": 0.82,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.7634411994135254,
+              0.7775656243279448
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 23214,
+            "denominator": 66524,
+            "scale": 1,
+            "estimate": 0.348956767482412,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.3,
+              "maximum": 0.46,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.34496923587794964,
+              0.35294429908687514
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 15534,
+            "denominator": 66524,
+            "scale": 1,
+            "estimate": 0.233509710781071,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.39,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.22799979801647352,
+              0.23901962354566947
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 10429,
+            "denominator": 70715,
+            "scale": 100,
+            "estimate": 14.7479318390723,
+            "verdict": "pass",
+            "target": {
+              "minimum": 13,
+              "maximum": 19,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              14.514069662486724,
+              14.981794015657938
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 8948,
+            "denominator": 35299,
+            "scale": 1,
+            "estimate": 0.253491600328621,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.23,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.24838660563267018,
+              0.2585965950245723
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 15644,
+            "denominator": 28990,
+            "scale": 1,
+            "estimate": 0.539634356674715,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.5,
+              "maximum": 0.72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5334425967587538,
+              0.5458261165906769
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 271,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.579059829059829,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.5388708003301722,
+              0.619248857789486
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 8,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0170940170940171,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.005611437456972276,
+              0.028576596731061915
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 111,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.237179487179487,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.20010602330151617,
+              0.27425295105745817
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 76,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.162393162393162,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.13130467393959022,
+              0.19348165084673458
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      },
+      "top_domestic_pro": {
+        "games": 468,
+        "clusters": 117,
+        "first_variation": 32760000,
+        "last_variation": 32760467,
+        "metrics": {
+          "possessions_per_game": {
+            "numerator": 92882,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 99.232905982906,
+            "verdict": "pass",
+            "target": {
+              "minimum": 96,
+              "maximum": 103,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              98.93828886571019,
+              99.52752310010176
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_game": {
+            "numerator": 107995,
+            "denominator": 936,
+            "scale": 1,
+            "estimate": 115.379273504274,
+            "verdict": "informational",
+            "target": null,
+            "interval": [
+              114.44450878971816,
+              116.31403821882884
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "points_per_possession": {
+            "numerator": 107995,
+            "denominator": 92882,
+            "scale": 1,
+            "estimate": 1.16271182791068,
+            "verdict": "pass",
+            "target": {
+              "minimum": 1.08,
+              "maximum": 1.18,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              1.1537891781586036,
+              1.171634477662761
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "field_goal_percentage": {
+            "numerator": 40141,
+            "denominator": 88608,
+            "scale": 1,
+            "estimate": 0.453017786204406,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.45,
+              "maximum": 0.51,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.4497277458232704,
+              0.4563078265855414
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_percentage": {
+            "numerator": 11935,
+            "denominator": 32028,
+            "scale": 1,
+            "estimate": 0.372642687648308,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.34,
+              "maximum": 0.4,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.366686813367343,
+              0.37859856192927244
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_percentage": {
+            "numerator": 15778,
+            "denominator": 19661,
+            "scale": 1,
+            "estimate": 0.802502415950359,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.73,
+              "maximum": 0.83,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.797010322935867,
+              0.80799450896485
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "three_point_attempt_rate": {
+            "numerator": 32028,
+            "denominator": 88608,
+            "scale": 1,
+            "estimate": 0.361457204767064,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.36,
+              "maximum": 0.49,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.35821255765823284,
+              0.36470185187589504
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "free_throw_attempt_rate": {
+            "numerator": 19661,
+            "denominator": 88608,
+            "scale": 1,
+            "estimate": 0.221887414228964,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.18,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.2167123227731905,
+              0.22706250568473654
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "turnovers_per_100_possessions": {
+            "numerator": 13084,
+            "denominator": 92882,
+            "scale": 100,
+            "estimate": 14.0866906397364,
+            "verdict": "pass",
+            "target": {
+              "minimum": 11,
+              "maximum": 16,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              13.876040760912192,
+              14.29734051856069
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "offensive_rebound_percentage": {
+            "numerator": 11483,
+            "denominator": 45251,
+            "scale": 1,
+            "estimate": 0.253762347793419,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.2,
+              "maximum": 0.31,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.25013117122864825,
+              0.25739352435818963
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "assist_percentage": {
+            "numerator": 22997,
+            "denominator": 40141,
+            "scale": 1,
+            "estimate": 0.572905508084004,
+            "verdict": "pass",
+            "target": {
+              "minimum": 0.52,
+              "maximum": 0.72,
+              "source": "BALANCE_SPEC.md §14.1"
+            },
+            "interval": [
+              0.5681197983956764,
+              0.5776912177723313
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "home_win_rate": {
+            "numerator": 245,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.523504273504274,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.53,
+              "maximum": 0.56,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.48496305859020883,
+              0.5620454884183382
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "overtime_rate": {
+            "numerator": 10,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.0213675213675214,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.04,
+              "maximum": 0.08,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.008647931370146428,
+              0.03408711136489631
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "close_game_rate": {
+            "numerator": 81,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.173076923076923,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.22,
+              "maximum": 0.34,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.13918675663930616,
+              0.20696708951454
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          },
+          "blowout_rate": {
+            "numerator": 108,
+            "denominator": 468,
+            "scale": 1,
+            "estimate": 0.230769230769231,
+            "verdict": "fail",
+            "target": {
+              "minimum": 0.08,
+              "maximum": 0.18,
+              "source": "BALANCE_SPEC.md §14.2"
+            },
+            "interval": [
+              0.1921496321766486,
+              0.26938882936181296
+            ],
+            "interval_status": "exploratory normal approximation; no guaranteed coverage"
+          }
+        }
+      }
+    }
+  },
+  "venue": {
+    "high_school": {
+      "competition": "high_school",
+      "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+      "pairs": 200,
+      "games": 600,
+      "seed_range": {
+        "start": 710001,
+        "end": 710200
+      },
+      "controlled_win": {
+        "metric": "high_school.venue.attributable_home_win_rate",
+        "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+        "denominator": "matched pairs",
+        "estimate": 0.5575,
+        "sample_count": 200,
+        "verdict": "pass",
+        "interval_95": {
+          "half_width": 0.0334451256861266,
+          "low": 0.524054874313873,
+          "high": 0.590945125686127
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        }
+      },
+      "controlled_cap": {
+        "metric": "high_school.venue.cap_respected",
+        "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+        "denominator": "boolean invariant",
+        "estimate": 1,
+        "sample_count": 200,
+        "verdict": "pass",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §17.4"
+        }
+      },
+      "paired_points_per100": {
+        "metric": "high_school.venue.points_per_100",
+        "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+        "denominator": "points per 100 possessions",
+        "estimate": 2.03216337590005,
+        "sample_count": 200,
+        "verdict": "informational",
+        "interval_95": {
+          "half_width": 0.918051550944522,
+          "low": 1.11411182495553,
+          "high": 2.95021492684457
+        }
+      },
+      "legacy_points_per100": {
+        "metric": "high_school.home.points_per_100_contribution",
+        "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+        "denominator": "points per 100 possessions",
+        "estimate": 2.44298176451011,
+        "sample_count": 200,
+        "verdict": "informational"
+      },
+      "failed_metrics": [],
+      "note": "Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification."
+    },
+    "college": {
+      "competition": "college",
+      "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+      "pairs": 200,
+      "games": 600,
+      "seed_range": {
+        "start": 710001,
+        "end": 710200
+      },
+      "controlled_win": {
+        "metric": "college.venue.attributable_home_win_rate",
+        "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+        "denominator": "matched pairs",
+        "estimate": 0.5375,
+        "sample_count": 200,
+        "verdict": "pass",
+        "interval_95": {
+          "half_width": 0.0317879081653329,
+          "low": 0.505712091834667,
+          "high": 0.569287908165333
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        }
+      },
+      "controlled_cap": {
+        "metric": "college.venue.cap_respected",
+        "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+        "denominator": "boolean invariant",
+        "estimate": 1,
+        "sample_count": 200,
+        "verdict": "pass",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §17.4"
+        }
+      },
+      "paired_points_per100": {
+        "metric": "college.venue.points_per_100",
+        "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.73171267481877,
+        "sample_count": 200,
+        "verdict": "informational",
+        "interval_95": {
+          "half_width": 0.8186533865494,
+          "low": 0.913059288269375,
+          "high": 2.55036606136817
+        }
+      },
+      "legacy_points_per100": {
+        "metric": "college.home.points_per_100_contribution",
+        "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.47488905989088,
+        "sample_count": 200,
+        "verdict": "informational"
+      },
+      "failed_metrics": [],
+      "note": "Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification."
+    },
+    "development": {
+      "competition": "development",
+      "source_commit": "401be246fded71af173326cb8c53d7b95b626fad",
+      "pairs": 200,
+      "games": 600,
+      "seed_range": {
+        "start": 710001,
+        "end": 710200
+      },
+      "controlled_win": {
+        "metric": "development.venue.attributable_home_win_rate",
+        "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+        "denominator": "matched pairs",
+        "estimate": 0.545,
+        "sample_count": 200,
+        "verdict": "pass",
+        "interval_95": {
+          "half_width": 0.0319790100757846,
+          "low": 0.513020989924215,
+          "high": 0.576979010075785
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        }
+      },
+      "controlled_cap": {
+        "metric": "development.venue.cap_respected",
+        "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+        "denominator": "boolean invariant",
+        "estimate": 1,
+        "sample_count": 200,
+        "verdict": "pass",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §17.4"
+        }
+      },
+      "paired_points_per100": {
+        "metric": "development.venue.points_per_100",
+        "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.40493535357099,
+        "sample_count": 200,
+        "verdict": "informational",
+        "interval_95": {
+          "half_width": 0.77319851227077,
+          "low": 0.631736841300218,
+          "high": 2.17813386584176
+        }
+      },
+      "legacy_points_per100": {
+        "metric": "development.home.points_per_100_contribution",
+        "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.93009517384566,
+        "sample_count": 200,
+        "verdict": "informational"
+      },
+      "failed_metrics": [],
+      "note": "Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification."
+    },
+    "overseas": {
+      "competition": "overseas",
+      "source_commit": "743d845145268d223736e1bfb3a53bd2bf52fa6b",
+      "pairs": 200,
+      "games": 600,
+      "seed_range": {
+        "start": 710001,
+        "end": 710200
+      },
+      "controlled_win": {
+        "metric": "overseas.venue.attributable_home_win_rate",
+        "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+        "denominator": "matched pairs",
+        "estimate": 0.5575,
+        "sample_count": 200,
+        "verdict": "pass",
+        "interval_95": {
+          "half_width": 0.0334451256861265,
+          "low": 0.524054874313873,
+          "high": 0.590945125686127
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        }
+      },
+      "controlled_cap": {
+        "metric": "overseas.venue.cap_respected",
+        "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+        "denominator": "boolean invariant",
+        "estimate": 1,
+        "sample_count": 200,
+        "verdict": "pass",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §17.4"
+        }
+      },
+      "paired_points_per100": {
+        "metric": "overseas.venue.points_per_100",
+        "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.9445730537734,
+        "sample_count": 200,
+        "verdict": "informational",
+        "interval_95": {
+          "half_width": 0.802446593382479,
+          "low": 1.14212646039092,
+          "high": 2.74701964715588
+        }
+      },
+      "legacy_points_per100": {
+        "metric": "overseas.home.points_per_100_contribution",
+        "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+        "denominator": "points per 100 possessions",
+        "estimate": 2.63216429108761,
+        "sample_count": 200,
+        "verdict": "informational"
+      },
+      "failed_metrics": [
+        {
+          "metric": "overseas.home.combined_cap_respected",
+          "definition": "The measured environment contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+          "denominator": "boolean invariant",
+          "estimate": 0,
+          "sample_count": 200,
+          "verdict": "fail",
+          "target": {
+            "minimum": 1,
+            "maximum": 1,
+            "source": "BALANCE_SPEC.md §17.4"
+          }
+        }
+      ],
+      "note": "Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification."
+    },
+    "top_domestic_pro": {
+      "competition": "top_domestic_pro",
+      "source_commit": "401be246fded71af173326cb8c53d7b95b626fad",
+      "pairs": 200,
+      "games": 600,
+      "seed_range": {
+        "start": 710001,
+        "end": 710200
+      },
+      "controlled_win": {
+        "metric": "top_domestic_pro.venue.attributable_home_win_rate",
+        "definition": "JUDGED §14.2 metric. The controlled, symmetrized paired venue-side win rate: 0.5 x [P(venue side wins when the environment favours it) + P(opposite venue side wins when the environment is reversed)], computed per matched fixture. Weight 1 per matched pair; interval is 1.96 x SE of the paired series; pooling is the union of fixture keys.",
+        "denominator": "matched pairs",
+        "estimate": 0.535,
+        "sample_count": 200,
+        "verdict": "pass",
+        "interval_95": {
+          "half_width": 0.0329600062204219,
+          "low": 0.502039993779578,
+          "high": 0.567960006220422
+        },
+        "target": {
+          "minimum": 0.53,
+          "maximum": 0.56,
+          "source": "BALANCE_SPEC.md §14.2"
+        }
+      },
+      "controlled_cap": {
+        "metric": "top_domestic_pro.venue.cap_respected",
+        "definition": "The paired two-arm venue contribution is at or below the §17.4 combined cap of +2.5 points per 100 possessions.",
+        "denominator": "boolean invariant",
+        "estimate": 1,
+        "sample_count": 200,
+        "verdict": "pass",
+        "target": {
+          "minimum": 1,
+          "maximum": 1,
+          "source": "BALANCE_SPEC.md §17.4"
+        }
+      },
+      "paired_points_per100": {
+        "metric": "top_domestic_pro.venue.points_per_100",
+        "definition": "Venue-attributable points per 100 possessions: the paired two-arm margin gain over the possession base taken across the arms. **This is the figure §17.4 caps at +2.5.**",
+        "denominator": "points per 100 possessions",
+        "estimate": 1.39326671584736,
+        "sample_count": 200,
+        "verdict": "informational",
+        "interval_95": {
+          "half_width": 0.749195655687878,
+          "low": 0.644071060159483,
+          "high": 2.14246237153524
+        }
+      },
+      "legacy_points_per100": {
+        "metric": "top_domestic_pro.home.points_per_100_contribution",
+        "definition": "Venue-minus-visitor points per 100 possessions at the production environment, net of the neutral arm. §17.4 caps this at +2.5.",
+        "denominator": "points per 100 possessions",
+        "estimate": 0.632684422666352,
+        "sample_count": 200,
+        "verdict": "informational"
+      },
+      "failed_metrics": [],
+      "note": "Reused controlled mirror triples. Points uncertainty fixes the observed denominator; source report has no independent per-arm box aggregates for the legacy efficiency-gap calculation. No new venue simulation or certification."
+    }
+  },
+  "reporting_interval_problem": [
+    {
+      "metric": "high_school.overtime_rate",
+      "numerator": 2,
+      "denominator": 40,
+      "published": {
+        "half_width": 0.07560905384475,
+        "low": -0.02560905384475,
+        "high": 0.12560905384475
+      },
+      "Wilson_endpoints": [
+        0.01382066726155863,
+        0.16503877495105868
+      ],
+      "category": "Infrastructure/reporting problem",
+      "proven_reporting_defect": true,
+      "gameplay_defect_inferred": false,
+      "note": "Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed."
+    },
+    {
+      "metric": "college.overtime_rate",
+      "numerator": 2,
+      "denominator": 40,
+      "published": {
+        "half_width": 0.07560905384475,
+        "low": -0.02560905384475,
+        "high": 0.12560905384475
+      },
+      "Wilson_endpoints": [
+        0.01382066726155863,
+        0.16503877495105868
+      ],
+      "category": "Infrastructure/reporting problem",
+      "proven_reporting_defect": true,
+      "gameplay_defect_inferred": false,
+      "note": "Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed."
+    },
+    {
+      "metric": "development.overtime_rate",
+      "numerator": 0,
+      "denominator": 40,
+      "published": {
+        "half_width": 0.0438108012292318,
+        "low": -0.0438108012292318,
+        "high": 0.0438108012292318
+      },
+      "Wilson_endpoints": [
+        0,
+        0.08762160245846368
+      ],
+      "category": "Infrastructure/reporting problem",
+      "proven_reporting_defect": true,
+      "gameplay_defect_inferred": false,
+      "note": "Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed."
+    },
+    {
+      "metric": "overseas.overtime_rate",
+      "numerator": 0,
+      "denominator": 40,
+      "published": {
+        "half_width": 0.0438108012292318,
+        "low": -0.0438108012292318,
+        "high": 0.0438108012292318
+      },
+      "Wilson_endpoints": [
+        0,
+        0.08762160245846368
+      ],
+      "category": "Infrastructure/reporting problem",
+      "proven_reporting_defect": true,
+      "gameplay_defect_inferred": false,
+      "note": "Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed."
+    },
+    {
+      "metric": "top_domestic_pro.overtime_rate",
+      "numerator": 1,
+      "denominator": 40,
+      "published": {
+        "half_width": 0.0621934297140659,
+        "low": -0.0371934297140659,
+        "high": 0.0871934297140659
+      },
+      "Wilson_endpoints": [
+        0.004426831453704344,
+        0.12881369088183614
+      ],
+      "category": "Infrastructure/reporting problem",
+      "proven_reporting_defect": true,
+      "gameplay_defect_inferred": false,
+      "note": "Wilson endpoints discarded by existing half-width serialization. Historical values retained; no verdict or probability changed."
+    }
+  ],
+  "failed_verdict_registry": [
+    {
+      "metric": "college.field_goal_percentage",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Audit ledger FGA conventions and appropriate roster shape first; retain locked shooting bands. Contract changes require owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.402632597754549,
+          "target": {
+            "minimum": 0.42,
+            "maximum": 0.49,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "sample_count": 5166,
+          "interval": {
+            "half_width": 0.0135833204923229,
+            "low": 0.389049277262226,
+            "high": 0.416215918246872
+          },
+          "denominator": "field-goal attempts"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 24637,
+          "denominator": 60045,
+          "scale": 1,
+          "estimate": 0.410308934965443,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.42,
+            "maximum": 0.49,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "interval": [
+            0.40647434108194275,
+            0.4141435288489424
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 24551,
+          "denominator": 60128,
+          "scale": 1,
+          "estimate": 0.408312267163385,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.42,
+            "maximum": 0.49,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "interval": [
+            0.40451978233395774,
+            0.41210475199281177
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "college.home_win_rate",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.4,
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "sample_count": 40,
+          "interval": {
+            "half_width": 0.145278904326145,
+            "low": 0.254721095673855,
+            "high": 0.545278904326145
+          },
+          "denominator": "decided games"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 245,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.523504273504274,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.4762979150554566,
+            0.5707106319530905
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "college.overtime_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 15,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.032051282051282,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.01684136172598486,
+            0.047261202376579235
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 13,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0277777777777778,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.01118890342771272,
+            0.04436665212784283
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "college.three_point_percentage",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Audit ledger FGA conventions and appropriate roster shape first; retain locked shooting bands. Contract changes require owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.307649043869516,
+          "target": {
+            "minimum": 0.31,
+            "maximum": 0.38,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "sample_count": 1778,
+          "interval": {
+            "half_width": 0.0214331399972914,
+            "low": 0.286215903872225,
+            "high": 0.329082183866808
+          },
+          "denominator": "three-point attempts"
+        }
+      ]
+    },
+    {
+      "metric": "development.blowout_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 94,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.200854700854701,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.08,
+            "maximum": 0.18,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.16554428040024893,
+            0.2361651213091528
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 95,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.202991452991453,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.08,
+            "maximum": 0.18,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.16635698657018577,
+            0.2396259194127202
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "development.home_win_rate",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 272,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.581196581196581,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.5359628702750052,
+            0.6264302921181573
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "development.overtime_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0,
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "sample_count": 40,
+          "interval": {
+            "half_width": 0.0438108012292318,
+            "low": -0.0438108012292318,
+            "high": 0.0438108012292318
+          },
+          "denominator": "complete games"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 14,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0299145299145299,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.013995440180438062,
+            0.04583361964862177
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 13,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0277777777777778,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.013479966199719102,
+            0.042075589355836454
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "high_school.field_goal_percentage",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Audit ledger FGA conventions and appropriate roster shape first; retain locked shooting bands. Contract changes require owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.371484375,
+          "target": {
+            "minimum": 0.39,
+            "maximum": 0.47,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "sample_count": 5120,
+          "interval": {
+            "half_width": 0.0120395046320392,
+            "low": 0.359444870367961,
+            "high": 0.383523879632039
+          },
+          "denominator": "field-goal attempts"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 22759,
+          "denominator": 59392,
+          "scale": 1,
+          "estimate": 0.383199757543103,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.39,
+            "maximum": 0.47,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "interval": [
+            0.379215713076855,
+            0.3871838020093519
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 22709,
+          "denominator": 59240,
+          "scale": 1,
+          "estimate": 0.383338960162053,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.39,
+            "maximum": 0.47,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "interval": [
+            0.3789893848729582,
+            0.3876885354511471
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "high_school.home_win_rate",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 236,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.504273504273504,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.4585907547345696,
+            0.549956253812439
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 246,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.525641025641026,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.4801905571501854,
+            0.5710914941318659
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "high_school.overtime_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 17,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0363247863247863,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.01922426074390469,
+            0.05342531190566796
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 14,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0299145299145299,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.015148496262198639,
+            0.04468056356686119
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "overseas.home_win_rate",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.575,
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "sample_count": 40,
+          "interval": {
+            "half_width": 0.146477695546574,
+            "low": 0.428522304453426,
+            "high": 0.721477695546574
+          },
+          "denominator": "decided games"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 271,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.579059829059829,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.5388708003301722,
+            0.619248857789486
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "overseas.home.combined_cap_respected",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Retain the legacy failed verdict and canonical paired cap separately; reconcile the measurement definitions, then assess controlled disjoint venue ranges before any tuning.",
+      "evidence": [
+        {
+          "kind": "reused v17 controlled venue report, legacy estimand",
+          "estimate": 0,
+          "target": {
+            "minimum": 1,
+            "maximum": 1,
+            "source": "BALANCE_SPEC.md §17.4"
+          },
+          "sample_count": 200,
+          "actual_legacy_points_per100": 2.63216429108761,
+          "canonical_paired_points_per100": 1.9445730537734
+        }
+      ]
+    },
+    {
+      "metric": "overseas.overtime_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0,
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "sample_count": 40,
+          "interval": {
+            "half_width": 0.0438108012292318,
+            "low": -0.0438108012292318,
+            "high": 0.0438108012292318
+          },
+          "denominator": "complete games"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 13,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0277777777777778,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.013479966199719102,
+            0.042075589355836454
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 8,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0170940170940171,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.005611437456972276,
+            0.028576596731061915
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "sample.meets_certification_size",
+      "category": "Insufficient sample or missing coverage",
+      "next_action": "Close mechanism, population, owner and infrastructure blockers before the authorized later §27.1 run. No gameplay defect inferred.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0,
+          "target": {
+            "minimum": 1,
+            "maximum": 1,
+            "source": "BALANCE_SPEC.md §27.1"
+          },
+          "sample_count": 40,
+          "interval": null,
+          "denominator": "boolean invariant"
+        }
+      ]
+    },
+    {
+      "metric": "top_domestic_pro.blowout_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 117,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.25,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.08,
+            "maximum": 0.18,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.20752100430618997,
+            0.29247899569381003
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 108,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.230769230769231,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.08,
+            "maximum": 0.18,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.1921496321766486,
+            0.26938882936181296
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "top_domestic_pro.close_game_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 91,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.194444444444444,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.22,
+            "maximum": 0.34,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.15869991549929777,
+            0.23018897338959113
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 81,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.173076923076923,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.22,
+            "maximum": 0.34,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.13918675663930616,
+            0.20696708951454
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "top_domestic_pro.home_win_rate",
+      "category": "Infrastructure/reporting problem",
+      "next_action": "Preserve canonical population verdict; separately run the locked controlled equal-team §17.4 estimand with balanced disjoint ranges. Do not infer home-court tuning from population win rates.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 247,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.527777777777778,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.48415728389410506,
+            0.5713982716614505
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 245,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.523504273504274,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.53,
+            "maximum": 0.56,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.48496305859020883,
+            0.5620454884183382
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "top_domestic_pro.overtime_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Use disjoint controlled diagnostics to identify a mechanism; preserve §14.2 bands, clocks and probabilities. Any policy/target change needs owner direction.",
+      "evidence": [
+        {
+          "kind": "fresh canonical",
+          "estimate": 0.025,
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "sample_count": 40,
+          "interval": {
+            "half_width": 0.0621934297140659,
+            "low": -0.0371934297140659,
+            "high": 0.0871934297140659
+          },
+          "denominator": "complete games"
+        },
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 7,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.014957264957265,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.004167137214696271,
+            0.025747392699833643
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        },
+        {
+          "kind": "validation_b corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 10,
+          "denominator": 468,
+          "scale": 1,
+          "estimate": 0.0213675213675214,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.04,
+            "maximum": 0.08,
+            "source": "BALANCE_SPEC.md §14.2"
+          },
+          "interval": [
+            0.008647931370146428,
+            0.03408711136489631
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    },
+    {
+      "metric": "top_domestic_pro.three_point_attempt_rate",
+      "category": "Statistical target miss without a proven defect",
+      "next_action": "Audit ledger FGA conventions and appropriate roster shape first; retain locked shooting bands. Contract changes require owner direction.",
+      "evidence": [
+        {
+          "kind": "validation_a corrected pairing, reused evidence",
+          "games": 468,
+          "clusters": 117,
+          "numerator": 31981,
+          "denominator": 88854,
+          "scale": 1,
+          "estimate": 0.359927521552209,
+          "verdict": "fail",
+          "target": {
+            "minimum": 0.36,
+            "maximum": 0.49,
+            "source": "BALANCE_SPEC.md §14.1"
+          },
+          "interval": [
+            0.35679318549282385,
+            0.36306185761159465
+          ],
+          "interval_status": "exploratory normal approximation; no guaranteed coverage"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "analysis/stage4_blocker_review/competition_current_40_each.json": "a575e4c0f2848e2b16fe7f7e7a2cf3de51fc1b06a1a1a463435f26806daec1e4",
+    "analysis/margin_growth_followup/competition_calibration_current_40_each.json": "0cc9332b8cdba181d398a03c0b7b0de3602f93cf1ce883caa5fe26d324d2a7a0",
+    "calibration/harness/metric_aggregation.gd": "fea4a6c65e8d5c3fddb6c4aa8736e11809a19558c3562c811411118ffe9ad72b",
+    "calibration/harness/calibration_metric.gd": "172f335fb31627ed32814e6daa64df1bb9e283fbf7db7eddeaea5d95c973cead",
+    "calibration/harness/calibration_statistics.gd": "c1d6148d1808ca1dcd6ed78bdc7bc63c7b967440fa93f5407fbc598123b8115b",
+    "analysis/roster_pairing_followup/validation_a_summary.json": "f52c239b65f76d32436ceb3a67580e70448209ed6da37b71104906aaeda90e23",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_high_school_high_school.json": "90d6525f42b86119bc4a7b3f36eb76285f97632c18b3824a99741df6708674a3",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_high_school.json": "f0c487b79e0a7a6a30ba98b0ec0fdcb7b77a88ee8eb0237cd5f2948a70cb1aa5",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_college_college.json": "0e6c36395f1f2387d7cdc76eafdd3e786380235b62984c16711506fc3117bd00",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_college.json": "6e18d38089ad86b914dca3296c11a47208d0b1e884ec6879961789dd1f370203",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_development_development.json": "a99cb5fab1765cdf6df4049422ee2163c8c551f68cfb31a6d07765e7ad123155",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_development.json": "b2fe4d55e058ff8c6a0e62f5c3800fc60724b9ccfb4d8b3a8ef7c459dc766745",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_overseas_overseas.json": "db058ca8d4a2474bf8803d59e0b8caa9f8461baf1bd84f4efc50afa8a3795438",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_overseas.json": "ec895370cd08aa9e2e85fc3d88dc4e90dc92951e6aebcddd32239034b5e8b05b",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_a_candidate_home_top_domestic_pro_top_domestic_pro.json": "90e340f124620eae82489f8d197f3287e6f68c49240ee7d6aee0056ca6e6e84b",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_a_candidate_home_top_domestic_pro.json": "12db3db5fb593031683de1f302d061d0af7e5ea9cab3ee91f1d2d70b28cbd4dd",
+    "analysis/roster_pairing_followup/validation_b_summary.json": "683faff2ba06556316359b4b42f833d4a3790e9ebc8c94d26ddea534cca29b41",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_b_candidate_home_high_school_high_school.json": "50c1589f2eca39658276d3fafccb902c8ef3a2b95062bee1634d8f9a9ad3eff4",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_b_candidate_home_high_school.json": "c4d0f48089de9abb7b87da9aac071613e5bfe501c2142670b321a3ad70d8a982",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_b_candidate_home_college_college.json": "d7bc01e994c69bee41a140dee19a612c37528e569bf0c6ac98fda594bbdf167a",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_b_candidate_home_college.json": "559b6b6540dc6746207f252e7fd198d66596da7a39b80d09d6e88a0580838bde",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_b_candidate_home_development_development.json": "eeb32613efe70a7d4a836835003438ea9e1dcebf502c349565acab1bb7751e02",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_b_candidate_home_development.json": "3b7300a876643aadfbcf02d3c0cc8e13c46de3008fedaa45aa82703200418f6d",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_b_candidate_home_overseas_overseas.json": "e3d401e85cc84b795c810f5b2bedd4f4e29783bbf1e178ce343f98d856796732",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_b_candidate_home_overseas.json": "49579aed366c8890afdd6496c0375ea2bb90d184372f5de42cc45d0f1039b787",
+    "analysis/roster_pairing_followup/reports/roster_raw_validation_b_candidate_home_top_domestic_pro_top_domestic_pro.json": "0cac1e8c19d30b73ea85398f9230c26c7db06e071cce15debb9e714726275506",
+    "analysis/roster_pairing_followup/reports/competition_calibration_validation_b_candidate_home_top_domestic_pro.json": "ba7d1a9ccfd03b3778db7c9a6ffb2115dcfb925c82b1834f545138e62a80f47a",
+    "analysis/timing_pace_followup/reports/home_court_diagnostics_v17_high_school.json": "84cbd443d1eb40c9899ea323680cba138be3e5bf26da457ef943acc178d5940e",
+    "analysis/timing_pace_followup/reports/home_court_diagnostics_v17_college.json": "da1618bf6500065df93a658b9ae19d49640e49b1651517e14e456ab87d3112ac",
+    "analysis/timing_pace_followup/reports/home_court_diagnostics_v17_development.json": "31d256b6c3fe99ac19804f0dfd0138b6cb98ad27e271c3cd56a1485317b6a744",
+    "analysis/timing_pace_followup/reports/home_court_diagnostics_v17_overseas.json": "e357754209365e7a71bc4202ba96a394c7ace7f424d332d3e652bb5a9a5f2fdc",
+    "analysis/timing_pace_followup/reports/home_court_diagnostics_v17_top_domestic_pro.json": "5cd28a0cb1ab23ff98dc0bea732dac4af98058b531727e71c2b8fef3d2ad4fb4"
+  },
+  "limitation": "No certification. Exact raw and canonical recount, not fresh simulation of the archived validation games. Population home-win is not the controlled §17.4 verdict. Additional missing reports/owner blockers are documented separately."
+}

@@ -1,0 +1,208 @@
+{
+  "success": true,
+  "completed_cells": [
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_home_high_school",
+      "result_sha256": "ee31c476b9e79ff2c41da930d945bab023cf26ee70e35a83507c23eb0faee6b6"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "high_school",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_neutral_high_school",
+      "result_sha256": "b5b74471eb9d3026327cfdca9199686d96b3404ca17013268f6af76ce238bc71"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_home_college",
+      "result_sha256": "b7c919caaa5462821cd7f8d07dd51e1f43e26673f4b947abb0e6884c31ba39c3"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "college",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_neutral_college",
+      "result_sha256": "4c539e98d4196be08a465006873d0222f0866d3be3d70102601d724aaa04e587"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_home_development",
+      "result_sha256": "232c5b7cd724fc3329e21c8d4d04eb032221c85b6a4333ab7c92badc980760ae"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "development",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_neutral_development",
+      "result_sha256": "7bd3c949bdbe46b72c890466472ed1e660c555cd3760205aab7bef860fa78cc0"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_home_overseas",
+      "result_sha256": "7ff50059d3d0450f69bf5ec48238c7be3de72a51944c3a3ed65ef4fc9446324a"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "overseas",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_neutral_overseas",
+      "result_sha256": "81301073cb41af57e4683471baacd3b841cba32e6185669adabb7043bc78ec68"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_home_top_domestic_pro",
+      "result_sha256": "7b52e5e571007b01b0ca86f3847bfb621b0c23197ea5f0ce92badf60dd587018"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "baseline",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_baseline_neutral_top_domestic_pro",
+      "result_sha256": "d6913bef04f5ee0c69874891244ffb2b8315f0e166a6bccc3ae40a3d5af6c0b4"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_home_high_school",
+      "result_sha256": "60c521e27d87050190b5569fc19d58319411f223115d86961a31cee189ecb1d7"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "high_school",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_neutral_high_school",
+      "result_sha256": "31f839702897268aee242582d5fd77614d12d8033c71c1118f3fc42ece3dbfd9"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_home_college",
+      "result_sha256": "06c675a7eef94ccca8b9777abd413d742c7274ede25500a9f187adb72d4b225a"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "college",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_neutral_college",
+      "result_sha256": "72ffdcf808f25b43e0bd9b4b8468529c943f50ca1f231abc413ef1a7e142d2f8"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_home_development",
+      "result_sha256": "c3d60687e609a8ee7613acde62a25ebcbaffba29bf5a77f3c1f8a6c5618adc9c"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "development",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_neutral_development",
+      "result_sha256": "0d6b7eac623e2b2a3fd7b9a4fd87749d7cfa9452e8865ed014dba732a6c1adf7"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_home_overseas",
+      "result_sha256": "0f731663dc09ad3ffd95504a81678744d8f56b6f191c7d03c2f7807e7cde9987"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "overseas",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_neutral_overseas",
+      "result_sha256": "9b2b7ff067a3177703910e2a9bb9c3d92fada26b05fa3ce4d1ca655d6612e13f"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "home"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_home_top_domestic_pro",
+      "result_sha256": "7ff1b0d71ad442a207198483b8105b13e86dea1912a616391d8557cea8fe5d2a"
+    },
+    {
+      "cell": [
+        "diagnosis",
+        "candidate",
+        "top_domestic_pro",
+        "neutral"
+      ],
+      "directory": "C:\\Users\\valexander\\leaguebound-godot-core\\analysis\\roster_pairing_followup\\replay_prefixes\\final_20260924\\replay_prefix_final_20260924_candidate_neutral_top_domestic_pro",
+      "result_sha256": "cc3e4ad47ba7ca6020b2592b1cad3b4896b5ca5a88afc3f6a5b6e90c5e983ae9"
+    }
+  ],
+  "cells": 20,
+  "games": 80,
+  "comparison": "Every complete raw per-game row, exact canonical JSON; no tolerance"
+}

@@ -1,0 +1,24 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[2J[H[38;2;233;150;122m
+--------------------------------------------------------------------------------------------------
+GdUnit4 Comandline Tool
+--------------------------------------------------------------------------------------------------[0m
+[38;2;218;165;32m
+Headless mode is ignored by option '--ignoreHeadlessMode'"
+
+Please note that tests that use UI interaction do not work correctly in headless mode.
+Godot 'InputEvents' are not transported by the Godot engine in headless mode and therefore
+have no effect in the test!
+[0m
+[38;2;100;149;237mInstalling GdUnit4 session system hooks.[0m
+[38;2;100;149;237mSession hook 'GdUnitHtmlTestReporter' installed.[0m
+[38;2;100;149;237mSession hook 'GdUnitXMLTestReporter' installed.[0m
+[38;2;0;206;209mRun Test Suite: [0m[38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_legacy_pairing_has_a_two_point_raw_ladder_gap[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 11ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_full_cartesian_cycle_and_aligned_marginals[0m[38;2;34;139;34m PASSED[0m[38;2;100;149;237m 10s 222ms[0m
+[38;2;128;128;128m[0m
+  [38;2;250;235;215mres://tests/calibration/test_population_pairing.gd[0m[38;2;128;128;128m > [0m[38;2;250;235;215mtest_actual_rounded_rosters_cross_venue_and_opener[0m[38;2;34;139;34m STARTED[0m[38;2;128;128;128m[0m

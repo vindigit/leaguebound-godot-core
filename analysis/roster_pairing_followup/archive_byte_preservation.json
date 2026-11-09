@@ -1,0 +1,209 @@
+{
+  "checked_against_head": "7a206187ad52e0e287342ff97bfb51c867c5d7c4",
+  "status": "PASS",
+  "scope": "Every staged blob matches working bytes; all48 existing files differ only by CRLF preservation, including semantically equal JSON. No BOM removed.",
+  "files": [
+    {
+      "path": "analysis/roster_pairing_followup/.gitattributes",
+      "sha256": "28b3ed675289d64e2f240e007a03538a702a675b176fa8d148e489f7d3cfabdc"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/analysis_checks.json",
+      "sha256": "6438776577728d620bc23ab788da2c8abde0906c4c0f10762befae87baed85bf"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/candidate_freeze.json",
+      "sha256": "cea55fa95b752b90cbe2378afd38070e249b79be5437b58cfa0755cf1a8bd7d2"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/construction_audit.log",
+      "sha256": "1e7e1ac9b868ea53ce333d32627aa667bfd71326140a18ed197fd2748e242c1d"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/construction_audit_metadata.json",
+      "sha256": "29fd9cbc546a34b9e3a0539535e9564ab6a3d5a19288c9323f119c8c52eb509d"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/SUPERSEDED.txt",
+      "sha256": "37ea7d617edc3d8f212e16f23aa0922d621f720f6b78d1bea4fd30b5d85f6841"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/baseline.log",
+      "sha256": "33fc85009fe35e9c890095c4e9cf48f9c69ebd6909348519c5eff68b54ee8fd9"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/collapse_noise_states.log",
+      "sha256": "b90137eb868f389cf0ba072020d1620010892623eaf656782926d2db9f0ef2d5"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/contest_consumer_legacy.log",
+      "sha256": "ae3e758b90d22bdaa171c086eb067e68375f0e249e59e4bb2b608cc98bb8bece"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/homecourt_consumer_legacy.log",
+      "sha256": "ea2646f8f276db701ff3defb0c8307c7250c550b6d4a7f5ff401032db586027c"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/import.log",
+      "sha256": "4e28dbc159a135f83678b2c54060458432a488f5fc017da5b28a10e2b14aab97"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/missing_cartesian_round.log",
+      "sha256": "1e38d0cba03923445a8dafbde65f93002e415e8a485b2f03ba7727d7f6c92dd4"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/noncoprime_marginal.log",
+      "sha256": "ee8211710301c8ce4d5e35c3d52f314021f5a039e80dcc35e8812f9fabd8b0ef"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/opener_correlated_orientation.log",
+      "sha256": "20599d7d843a373a2a705a2561bd743d14f57328e6c560c0979407fe5689146a"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/restore_adjacent_population.log",
+      "sha256": "6f8041d305555d92bd6403c31f92e900ec4672d09c4503da4b11092edd513c01"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/results.json",
+      "sha256": "3e82688652253106f552643d5b56a6a331f1a71966d957348ce008dc686992d6"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/final_mutations/swap_explicit_away_offset.log",
+      "sha256": "6f31d29b725c652bf33ae28894eb528f9bca43e09d30a4f35dd50edcef332d35"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/baseline.txt",
+      "sha256": "75744b70380bcd1fc63f680a4b414af877516b9f1ee62636fd9079880376351c"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/baseline_exit.txt",
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/candidate.txt",
+      "sha256": "9b75c4baf6befbb807a95e870e97c460e573bdb2390178631c47aa1046dad621"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/candidate_exit.txt",
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/corrected_fg_suite.txt",
+      "sha256": "e2cdc9baad49db9e2d255cd99438eb60f949563abe750118296f4b49f9fdfa3b"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/corrected_fg_suite_exit.txt",
+      "sha256": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/corrected_test_hash.json",
+      "sha256": "ec7dd2bb00ceb2aac13f006bb88355af24b30793fbf8bfa031ac1f1e75faee28"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/corrected_verdict.json",
+      "sha256": "2b289d5f0299127e9cc8f4c516ff058fef930de8be0f6953ef6c40e87565aa95"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/original_fg_suite.txt",
+      "sha256": "a33a1c11578870c24f744c9fe57966c1e050b6d36c47935c170aa1e29f3435b4"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/original_fg_suite_exit.txt",
+      "sha256": "90b53df56816c127246136d4403aba3b26cec599b2b950fb2ba78d6c1fb4e6bf"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/original_test_hash.json",
+      "sha256": "d2472f52d334bea2de3363dbe7f0f13e79712a960d4953aa81233789f0358a69"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/fixed_fixture/provenance.json",
+      "sha256": "fbd1916750d239b836547235486838c41aec8755593ce0c17a7429efa4d56c20"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/freeze_comment_amendment.json",
+      "sha256": "fd6a769c218c6d6c2c08132414003bd1f2d3fe88e89655e2226c03939752fbe9"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/mutations/SUPERSEDED.txt",
+      "sha256": "a466c1fb450ac938983934ad009f6de28e0adbc81688659bbe2d947cd325370a"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/mutations/baseline.log",
+      "sha256": "a1933c4a335ffd0e30eb81cbc4c7794a27328bb10caab0b08b3734c34861c988"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/mutations/import.log",
+      "sha256": "d9d5567b85e60c3b9b211f8df642b1922641f9d01aac3a7dea74640f017294e2"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/mutations/restore_adjacent_population.log",
+      "sha256": "52108552249ddde8334983cfd537249c2c5f361097b28cd420fc1438a6b2692f"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/protocol.json",
+      "sha256": "d9b72de7670e95edd17cdf717973f3d7d8f239f1488fbb03ca0956e19b8e67aa"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/starting_ci.json",
+      "sha256": "2e610787e28994f1654596e4a9b04e97332652d0bf5047e3bf57a02b3c0448c1"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/starting_pr.json",
+      "sha256": "b4b532aca527751b9e8578224bab17a40f7b4c449275b822733eaa30f75f6d92"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/structural_release.json",
+      "sha256": "dfe69d66df8218d2b824c64c19b0baceb925a5288c764f7564b7333c588c0579"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/baseline.log",
+      "sha256": "2bc3cd2fd22c63deea5dcb6d2e895ae6b0bb13f746b24b202793c0fbafe71ceb"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/collapse_noise_states.log",
+      "sha256": "575b6c6b177f8f1393d7df8a1839f7d8af6679afceddfc44687dc4d581c646cc"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/contest_consumer_legacy.log",
+      "sha256": "607f93b5ce8c4fe43c4f4fc3b7e38109e16ea554b00d8ef3b73b97abebcbf987"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/homecourt_consumer_legacy.log",
+      "sha256": "41c4dcccbd60bfd3dc0b03900160a21f52779fa44564fd1a2ffbc81437264647"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/import.log",
+      "sha256": "4e28dbc159a135f83678b2c54060458432a488f5fc017da5b28a10e2b14aab97"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/missing_cartesian_round.log",
+      "sha256": "abe9ffe23305db979bccebad4cf1ab596d4c6b297640e50eef472daa4012fdbc"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/noncoprime_marginal.log",
+      "sha256": "f0e4dfc81f50345f4420fd5119910ac3f2864da8790ba740faa2a7f6a3338cb4"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/opener_correlated_orientation.log",
+      "sha256": "e15d1ce43a65f74b37649707447a9007ccbcfdfc2e8a3bb6febe210eef15e607"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/restore_adjacent_population.log",
+      "sha256": "c5d00bee14e46eb8cfa5ebcb5d2a29df0b992b66273568b13ad1ce23dca56ff9"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/results.json",
+      "sha256": "01e440db1b8c47189b2b2e2a67e032ab458cae2fcc55abc2c96034fb57a2fff4"
+    },
+    {
+      "path": "analysis/roster_pairing_followup/verified_mutations/swap_explicit_away_offset.log",
+      "sha256": "1dd6aee6db50bad4d2f97a8ce35f4d346ba2b2d8cbefd5c2ba8d5767db5636d2"
+    }
+  ],
+  "fresh_index_checkout": {
+    "directory": "C:\\Users\\VALEXA~1\\AppData\\Local\\Temp\\leaguebound-evidence-checkout-20tonh_5",
+    "files": 49,
+    "exact_bytes": "PASS",
+    "method": "git checkout-index into a new empty temporary directory under current scoped attributes"
+  }
+}
