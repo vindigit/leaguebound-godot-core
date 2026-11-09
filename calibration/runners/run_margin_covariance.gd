@@ -1241,14 +1241,14 @@ func _share(
 	judged: bool,
 ) -> void:
 	var interval: PackedFloat64Array = CalibrationStatistics.wilson_interval(successes, trials)
-	var half_width: float = 0.5 * (interval[1] - interval[0])
 	if judged:
 		report.add_metric(CalibrationMetric.banded(
-			metric_id, definition, "games", estimate, band, trials, half_width))
+			metric_id, definition, "games", estimate, band, trials)
+			.with_interval_bounds(interval[0], interval[1]))
 		return
 	var metric: CalibrationMetric = CalibrationMetric.raw(
 		metric_id, definition, "games", estimate, trials)
-	metric.interval_half_width = half_width
+	metric.with_interval_bounds(interval[0], interval[1])
 	report.add_metric(metric)
 
 

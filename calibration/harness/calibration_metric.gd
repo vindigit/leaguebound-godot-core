@@ -23,6 +23,9 @@ var denominator: String
 var estimate: float
 ## Half-width of the 95% interval; negative means "not applicable".
 var interval_half_width: float
+## Explicit endpoints preserve asymmetric intervals and archived report values.
+var interval_low: float = NAN
+var interval_high: float = NAN
 ## Standardized effect size where two conditions are compared; NAN when unused.
 var effect_size: float
 var effect_size_kind: StringName
@@ -105,6 +108,17 @@ func with_effect_size(value: float, kind: StringName) -> CalibrationMetric:
 
 func with_interval(half_width: float) -> CalibrationMetric:
 	interval_half_width = half_width
+	interval_low = NAN
+	interval_high = NAN
+	return self
+
+
+## An asymmetric interval must retain its actual endpoints, not be recentered.
+func with_interval_bounds(low: float, high: float) -> CalibrationMetric:
+	assert(low <= high, "interval endpoints must be ordered")
+	interval_low = low
+	interval_high = high
+	interval_half_width = (high - low) / 2.0
 	return self
 
 
@@ -122,8 +136,15 @@ func with_aggregation(value: MetricAggregation) -> CalibrationMetric:
 	estimate = value.estimate()
 	sample_count = value.effective_sample()
 	var half_width: float = value.interval_half_width()
+	interval_low = NAN
+	interval_high = NAN
+	interval_half_width = half_width
 	if half_width >= 0.0:
-		interval_half_width = half_width
+		if value.kind == MetricAggregation.Kind.PROPORTION:
+			var bounds := CalibrationStatistics.wilson_interval(
+				int(roundf(value.numerator)), int(roundf(value.denominator)))
+			interval_low = bounds[0]
+			interval_high = bounds[1]
 	if verdict != Verdict.INFORMATIONAL:
 		verdict = (
 			Verdict.PASS
@@ -159,8 +180,8 @@ func to_dictionary() -> Dictionary:
 	if interval_half_width >= 0.0:
 		payload["interval_95"] = {
 			"half_width": interval_half_width,
-			"low": estimate - interval_half_width,
-			"high": estimate + interval_half_width,
+			"low": interval_low if not is_nan(interval_low) else estimate - interval_half_width,
+			"high": interval_high if not is_nan(interval_high) else estimate + interval_half_width,
 		}
 	if not is_nan(effect_size):
 		payload["effect_size"] = {"kind": String(effect_size_kind), "value": effect_size}
@@ -196,6 +217,8 @@ static func from_dictionary(payload: Dictionary) -> CalibrationMetric:
 	var interval: Dictionary = JsonRead.dictionary_at(payload, "interval_95")
 	if not interval.is_empty():
 		metric.interval_half_width = JsonRead.float_at(interval, "half_width", -1.0)
+		metric.interval_low = JsonRead.optional_float_at(interval, "low")
+		metric.interval_high = JsonRead.optional_float_at(interval, "high")
 	var target: Dictionary = JsonRead.dictionary_at(payload, "target")
 	if not target.is_empty():
 		metric.target_minimum = JsonRead.optional_float_at(target, "minimum")
@@ -212,7 +235,10 @@ static func from_dictionary(payload: Dictionary) -> CalibrationMetric:
 func describe() -> String:
 	var text: String = "%-52s %12.4f" % [String(metric_id), estimate]
 	if interval_half_width >= 0.0:
-		text += " ±%.4f" % interval_half_width
+		if not is_nan(interval_low) and not is_nan(interval_high):
+			text += " [%.4f, %.4f]" % [interval_low, interval_high]
+		else:
+			text += " ±%.4f" % interval_half_width
 	if not is_nan(target_minimum) and not is_nan(target_maximum):
 		text += "  target[%.4f, %.4f]" % [target_minimum, target_maximum]
 	if not is_nan(effect_size):

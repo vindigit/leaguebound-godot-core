@@ -66,6 +66,12 @@ static func _pooling_is_not_averaging(failures: PackedStringArray) -> void:
 			% metric.aggregation.denominator)
 	if metric.sample_count != 1010:
 		failures.append("pooling: effective sample was %d, expected 1010" % metric.sample_count)
+	var bounds := CalibrationStatistics.wilson_interval(905, 1010)
+	var interval: Dictionary = metric.to_dictionary()["interval_95"]
+	if absf(JsonRead.float_at(interval, "low") - bounds[0]) > TOLERANCE:
+		failures.append("pooling: lower Wilson endpoint does not match pooled raw terms")
+	if absf(JsonRead.float_at(interval, "high") - bounds[1]) > TOLERANCE:
+		failures.append("pooling: upper Wilson endpoint does not match pooled raw terms")
 
 
 ## A pooled mean and its interval must come from summed moments, so the combined
